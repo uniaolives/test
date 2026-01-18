@@ -2,3 +2,5 @@
 *.tim
 build/
 canoscript/build/
+mobile/rust/target/
+.gradle/
