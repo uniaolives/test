@@ -4,10 +4,16 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
-crate-type = ["cdylib"]
+crate-type = ["cdylib", "rlib"]
 
 [dependencies]
 jni = "0.21.1"
 sha3 = "0.10.8"
 ed25519-dalek = "2.1.1"
 hex = "0.4.3"
+sasc-governance = { path = "../sasc-governance", features = ["cathedral", "eip712", "bio-extraction"] }
+zeroize = { version = "1.7", features = ["zeroize_derive"] }
+
+[features]
+sat = []
+zeroize = ["zeroize/zeroize_derive"]

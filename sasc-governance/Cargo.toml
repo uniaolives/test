@@ -1,0 +1,12 @@
+[package]
+name = "sasc-governance"
+version = "15.0.0"
+edition = "2021"
+
+[dependencies]
+zeroize = { version = "1.7", features = ["zeroize_derive"] }
+
+[features]
+cathedral = []
+eip712 = []
+bio-extraction = []

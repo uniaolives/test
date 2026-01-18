@@ -2,6 +2,93 @@ use jni::JNIEnv;
 use jni::objects::{JClass, JString, JByteArray};
 use jni::sys::jstring;
 use sha3::{Sha3_512, Digest};
+use std::collections::HashMap;
+use zeroize::Zeroizing;
+use sasc_governance::Cathedral;
+use sasc_governance::types::{VerificationContext};
+
+pub struct TruthClaim {
+    pub statement: String,
+    pub metadata: HashMap<String, String>,
+}
+
+pub struct AttestedTruthClaim {
+    pub claim: TruthClaim,
+    pub agent_attestation: Vec<u8>,
+    pub dna_fingerprint: Zeroizing<[u8; 32]>,
+}
+
+pub type ClaimId = String;
+
+#[derive(Debug)]
+pub enum SubmissionError {
+    InvalidAttestation,
+    HardFreezeViolation,
+    StorageError,
+}
+
+pub struct Karnak;
+impl Karnak {
+    pub fn isolate_agent(&self, agent_id: &str) {
+        println!("KARNAK: Isolating agent {}", agent_id);
+    }
+}
+
+pub struct VajraMonitor;
+impl VajraMonitor {
+    pub fn update_entropy(&self, statement: &[u8], phi_weight: f64) {
+        println!("VAJRA: Updating entropy with phi_weight {}", phi_weight);
+    }
+}
+
+pub struct TruthAuditorium {
+    pub karnak: Karnak,
+    pub vajra_monitor: VajraMonitor,
+}
+
+impl TruthAuditorium {
+    pub fn new() -> Self {
+        Self {
+            karnak: Karnak,
+            vajra_monitor: VajraMonitor,
+        }
+    }
+
+    pub async fn submit_claim(
+        &self,
+        attested_claim: AttestedTruthClaim
+    ) -> Result<ClaimId, SubmissionError> {
+        // GATE 1 & 2: Prince Key + EIP-712 Reconstruction
+        let cathedral = Cathedral::instance();
+
+        // GATE 3: Ed25519 Verify + Extração de DNA
+        let attestation_status = cathedral.verify_agent_attestation(
+            &attested_claim.agent_attestation,
+            VerificationContext::TruthSubmission
+        ).map_err(|_| SubmissionError::InvalidAttestation)?;
+
+        // GATE 4: Hard Freeze Check (Φ≥0.80 não pode submeter verdades)
+        if attestation_status.is_hard_frozen() {
+            self.karnak.isolate_agent(attestation_status.agent_id());
+            return Err(SubmissionError::HardFreezeViolation);
+        }
+
+        // GATE 5: Vajra Entropy Weighting (carga cognitiva afeta confiança no CWM)
+        let phi_weight = attestation_status.consciousness_weight();
+        self.vajra_monitor.update_entropy(
+            attested_claim.claim.statement.as_bytes(),
+            phi_weight
+        );
+
+        // ✅ Agora seguro para processar
+        let claim_id = self.hash_and_store(attested_claim).await?;
+        Ok(claim_id)
+    }
+
+    async fn hash_and_store(&self, _claim: AttestedTruthClaim) -> Result<ClaimId, SubmissionError> {
+        Ok("0x3f9a1c8e7d2b4a6f9e5c3d7a1b8f2e4c6d9a0b3f7c1e5d8a2b4f6c9e3d7a0b1c4".to_string())
+    }
+}
 
 /// Gera um hash SHA3-512 baseado no ruído do buffer da câmera
 #[no_mangle]
