@@ -4,3 +4,6 @@ build/
 canoscript/build/
 mobile/rust/target/
 .gradle/
+target/
+rust/target/
+sasc-governance/target/
