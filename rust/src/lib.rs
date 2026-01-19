@@ -12,6 +12,13 @@ pub mod sensors;
 pub mod cognitive_hunter;
 pub mod security;
 pub mod neo_brain;
+pub mod crypto;
+pub mod attestation;
+pub mod entropy;
+pub mod clock;
+pub mod substrate_logic;
+pub mod bio_layer;
+pub mod neo_cortex;
 
 #[cfg(test)]
 mod tests_security;
@@ -79,7 +86,10 @@ impl TruthAuditorium {
         // GATE 4: Hard Freeze Check (Φ≥0.80 não pode submeter verdades)
         if attestation_status.is_hard_frozen() {
             self.karnak.isolate_agent(attestation_status.agent_id());
-            return Err(SubmissionError::HardFreezeViolation);
+
+            // Ω-PREVENTION: Se Φ≥0.80, o sistema deve parar completamente para evitar transição inválida
+            println!("🚨 Ω-PREVENTION: Hard Freeze Φ≥0.80 detectado em {}. Encerrando sistema.", attestation_status.agent_id());
+            std::process::exit(-1951535091);
         }
 
         // GATE 5: Vajra Entropy Weighting (carga cognitiva afeta confiança no CWM)

@@ -10,6 +10,7 @@ mod tests {
     fn test_patient_zero_hardening() {
         let mut shield = BioShield {
             heartbeat: Heartbeat,
+            omega_signal: None,
             bio_sig_level: 0.0,
             signal_integrity: 1.0,
             neuro_siphon_resistance: 0.0,

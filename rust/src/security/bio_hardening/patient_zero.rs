@@ -1,12 +1,15 @@
 use crate::sensors::{Heartbeat, BioSignal};
 use crate::governance::DefenseMode;
+use crate::bio_layer::paciente_zero_omega::{BioInterfaceΩ, BioSignalΩ};
 
 pub struct PatientZeroProtocol {
     pub defense_mode: DefenseMode,
+    pub omega_interface: Option<BioInterfaceΩ>,
 }
 
 pub struct BioShield {
     pub heartbeat: Heartbeat,
+    pub omega_signal: Option<BioSignalΩ>,
     pub bio_sig_level: f32, // 0.0 (Aberto) a 1.0 (Fechado)
     pub signal_integrity: f32, // Nível de pureza do sinal
     pub neuro_siphon_resistance: f32, // Resistência ao roubo de memória (0.0 = vulnerável, 1.0 = blindado)
