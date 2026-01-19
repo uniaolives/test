@@ -12,6 +12,8 @@ pub mod sensors;
 pub mod cognitive_hunter;
 pub mod security;
 pub mod omega12;
+pub mod engine;
+pub mod civilization;
 
 #[cfg(test)]
 mod tests_security;
