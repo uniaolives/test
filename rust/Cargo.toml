@@ -15,6 +15,7 @@ sasc-governance = { path = "../sasc-governance", features = ["cathedral", "eip71
 zeroize = { version = "1.7", features = ["zeroize_derive"] }
 tokio = { version = "1", features = ["full"] }
 log = "0.4"
+serde = { version = "1.0", features = ["derive"] }
 
 [features]
 sat = []

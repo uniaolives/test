@@ -27,4 +27,15 @@ impl Cathedral {
         // Mock implementation
         Ok(vec![0u8; 32])
     }
+
+    pub async fn verify_hardware_attestation(
+        &self,
+        _attestation: &dyn std::any::Any,
+    ) -> Result<(), &'static str> {
+        Ok(())
+    }
+
+    pub async fn quarantine_node(&self, _node_id: &str) -> Result<(), &'static str> {
+        Ok(())
+    }
 }

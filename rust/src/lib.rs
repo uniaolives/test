@@ -9,6 +9,8 @@ use sasc_governance::types::{VerificationContext};
 
 pub mod bootstrap;
 pub mod monitor;
+pub mod bio_interface;
+pub mod neo_brain;
 
 pub struct TruthClaim {
     pub statement: String,
