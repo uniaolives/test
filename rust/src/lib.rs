@@ -7,6 +7,15 @@ use zeroize::Zeroizing;
 use sasc_governance::Cathedral;
 use sasc_governance::types::{VerificationContext};
 
+pub mod governance;
+pub mod sensors;
+pub mod cognitive_hunter;
+pub mod security;
+pub mod omega12;
+
+#[cfg(test)]
+mod tests_security;
+
 pub struct TruthClaim {
     pub statement: String,
     pub metadata: HashMap<String, String>,
