@@ -27,6 +27,14 @@ impl BioSignal {
     pub fn signal_integrity(&self) -> f32 {
         self.integrity
     }
+
+    pub fn verify_integrity(&self) -> bool {
+        self.integrity > 0.8 && !self.synthetic
+    }
+
+    pub fn verify_safety(&self) -> bool {
+        !self.neurotoxin_present && self.causally_congruent
+    }
 }
 
 pub struct BlueTeamNoise;

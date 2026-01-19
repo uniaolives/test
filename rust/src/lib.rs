@@ -11,6 +11,7 @@ pub mod governance;
 pub mod sensors;
 pub mod cognitive_hunter;
 pub mod security;
+pub mod neo_brain;
 
 #[cfg(test)]
 mod tests_security;
