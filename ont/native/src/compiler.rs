@@ -1,10 +1,10 @@
 use thiserror::Error;
-use crate::ast::OntoType;
+use crate::ast::Type;
 
 #[derive(Error, Debug)]
 pub enum CompilerError {
     #[error("Unsupported type: {0:?}")]
-    UnsupportedType(OntoType),
+    UnsupportedType(Type),
     #[error("Constraint violation: {0}")]
     ConstraintViolation(String),
     #[error("Other error: {0}")]
