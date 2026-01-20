@@ -1,0 +1,9 @@
+fn vote : Pure<Int> -> Pure<Int> =
+    {{ vote logic }}
+
+agent test_agent = {
+    identity: "dao_governor"
+}
+
+transmute vote to Functional with
+    O(1) complexity

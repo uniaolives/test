@@ -1,0 +1,72 @@
+{
+  "node": {
+    "name": "angelnet-validator",
+    "role": "sasc-validator",
+    "consensus": "tmr",
+    "paradigm_verification": true,
+    "memory_sealing": {
+      "enabled": true,
+      "interval": 100,
+      "algorithm": "poseidon"
+    }
+  },
+  "rpc": {
+    "modules": ["eth", "net", "web3", "sasc", "tmr", "paradigm"],
+    "host": "0.0.0.0",
+    "port": 8545,
+    "cors": ["*"],
+    "vhosts": ["*"],
+    "apis": {
+      "sasc": [
+        "sasc_deployContract",
+        "sasc_callContract",
+        "sasc_verifyParadigm",
+        "sasc_getMemorySeal",
+        "sasc_checkTmrConsensus"
+      ],
+      "tmr": [
+        "tmr_submitVote",
+        "tmr_getConsensus",
+        "tmr_getNodeStatus"
+      ]
+    }
+  },
+  "tmr": {
+    "enabled": true,
+    "quorum": 2,
+    "nodes": [
+      {
+        "name": "karnak-1",
+        "url": "http://karnak-1:8545",
+        "public_key": "0x04a2f8b...",
+        "weight": 1
+      },
+      {
+        "name": "karnak-2",
+        "url": "http://karnak-2:8545",
+        "public_key": "0x04b3c9d...",
+        "weight": 1
+      },
+      {
+        "name": "karnak-3",
+        "url": "http://karnak-3:8545",
+        "public_key": "0x04c5e0a...",
+        "weight": 1
+      }
+    ],
+    "timeout": 5000,
+    "retry_count": 3
+  },
+  "paradigm_engine": {
+    "enabled": true,
+    "strict_mode": true,
+    "constraint_checking": {
+      "sandbox": true,
+      "gas_limit": true,
+      "time_complexity": true,
+      "purity": true
+    },
+    "violation_policy": "revert",
+    "logging_level": "detailed"
+  }
+}
