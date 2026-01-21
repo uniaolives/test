@@ -28,9 +28,14 @@ pub mod geom;
 pub mod onchain;
 pub mod quantum;
 pub mod gravity_engine;
+pub mod cyber_oncology;
+pub mod hypervisor;
 
 #[cfg(test)]
 mod tests_security;
+
+#[cfg(test)]
+mod tests_cyber_oncology;
 
 pub struct TruthClaim {
     pub statement: String,
