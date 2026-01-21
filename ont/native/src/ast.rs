@@ -9,25 +9,37 @@ pub enum Paradigm {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum OntoType {
-    Pure(Box<OntoType>),
-    Mutable(Box<OntoType>),
-    Agent(Box<OntoType>),
-    Substrate(Box<OntoType>),
+pub enum Type {
+    Pure(Box<Type>),
+    Mutable(Box<Type>),
+    Agent(Box<Type>),
+    Substrate(Box<Type>),
     Object(String),
     Int,
     Float,
     Bool,
     String,
-    Named(String, Vec<OntoType>),
+    Named(String, Vec<Type>),
+    Unit,
+    Bytes,
+    Address,
+    TypeVar(String),
+    Function(Vec<Type>, Box<Type>),
+}
+
+#[derive(Debug, Clone)]
+pub struct TypeAnnotation {
+    pub name: String,
+    pub type_expr: Type,
+    pub paradigm: Paradigm,
 }
 
 #[derive(Debug, Clone)]
 pub struct Function {
     pub name: String,
     pub paradigm: Paradigm,
-    pub params: Vec<(String, OntoType)>,
-    pub return_type: OntoType,
+    pub params: Vec<(String, Type)>,
+    pub return_type: Type,
     pub body: Body,
     pub constraints: Vec<Constraint>,
     pub target_paradigm: Option<Paradigm>,
@@ -52,14 +64,14 @@ pub struct Agent {
 #[derive(Debug, Clone)]
 pub struct Field {
     pub name: String,
-    pub field_type: OntoType,
+    pub field_type: Type,
 }
 
 #[derive(Debug, Clone)]
 pub struct Method {
     pub name: String,
-    pub params: Vec<(String, OntoType)>,
-    pub return_type: OntoType,
+    pub params: Vec<(String, Type)>,
+    pub return_type: Type,
 }
 
 #[derive(Debug, Clone)]
