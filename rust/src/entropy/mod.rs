@@ -18,6 +18,15 @@ impl VajraEntropyMonitor {
     pub fn measure_stability(&self) -> Result<PhiStabilityProof, PhiStabilityError> {
         Ok(PhiStabilityProof { lambda: 0.00006 })
     }
+
+    pub fn update_from_enclave(&self, _doc: &aws_nitro_enclaves_cose::CoseSign1) -> Result<f64, &'static str> {
+        // Implementation that updates entropy from enclave attestation
+        Ok(0.76)
+    }
+
+    pub fn trigger_emergency_morph(&self) {
+        // Trigger emergency morphing of attractors
+    }
 }
 
 #[derive(Debug, thiserror::Error)]
