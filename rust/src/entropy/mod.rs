@@ -134,6 +134,13 @@ impl VajraEntropyMonitor {
         &INSTANCE
     }
 
+    pub fn clone_monitor(&self) -> Self {
+        Self {
+            current_phi: std::sync::Mutex::new(*self.current_phi.lock().unwrap()),
+            quantum_decoherence: std::sync::Mutex::new(*self.quantum_decoherence.lock().unwrap()),
+        }
+    }
+
     pub fn update_phi(&self, phi: f64) {
         let mut current = self.current_phi.lock().unwrap();
         *current = phi;
@@ -162,6 +169,30 @@ impl VajraEntropyMonitor {
     pub fn trigger_emergency_morph(&self) {
         log::warn!("VAJRA: EMERGENCY MORPH TRIGGERED - Reshaping attractors for Φ stability");
         // Implementation that reshapes geometric attractors
+    }
+
+    pub fn validate_embedding_coherence(&self, _embedding: &[f32; 384]) -> Result<f64, String> {
+        Ok(0.0001) // Mock coherence value
+    }
+
+    pub fn current_entropy(&self) -> Result<f64, String> {
+        Ok(0.72)
+    }
+
+    pub fn current_phi(&self) -> Result<f64, String> {
+        Ok(*self.current_phi.lock().unwrap())
+    }
+
+    pub fn current_lyapunov(&self) -> Result<f64, String> {
+        Ok(1e-7)
+    }
+
+    pub fn validate_cache_coherence(&self, _entry: &crate::memory::continuum_system::CacheEntry) -> Result<bool, String> {
+        Ok(true)
+    }
+
+    pub fn validate_response_coherence(&self, _prompt: &str, _response: &str, _similarity: f64) -> Result<f64, String> {
+        Ok(0.0001)
     }
 }
 

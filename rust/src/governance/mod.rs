@@ -53,4 +53,12 @@ impl SASCCathedral {
             prince_key: "prince_key_alpha".to_string(),
         })
     }
+
+    pub fn create_attestation(&self, _key: &[u8], _agent: &str, _phi: f64) -> Result<[u8; 32], String> {
+        Ok([0u8; 32]) // Mock attestation
+    }
+
+    pub fn verify_attestation(&self, _attestation: &[u8; 32], _key: &[u8], _agent: &str) -> Result<bool, String> {
+        Ok(true) // Mock verification
+    }
 }
