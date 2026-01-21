@@ -48,12 +48,14 @@ impl Cathedral {
     pub fn verify_agent_attestation(
         &self,
         attestation_doc: &[u8],
+        agent_id: &str,
         _context: VerificationContext,
     ) -> Result<types::AttestationStatus, String> {
         // In a real implementation, this would check 5 Gates (Memória 20)
         // For now, we simulate a positive attestation
         let agent_id = format!("agent_{}", hex::encode(&attestation_doc[..std::cmp::min(4, attestation_doc.len())]));
         Ok(types::AttestationStatus::new(false, &agent_id, 0.76))
+        Ok(types::AttestationStatus::new(false, agent_id, 0.72))
     }
 
     pub fn submit_global_decision(
@@ -63,6 +65,7 @@ impl Cathedral {
     ) -> Result<DecisionId, HardFreeze> {
         // 1. Verificar attestation do nó (5 gates - Memória 20)
         if self.verify_agent_attestation(decision.agent_id.as_bytes(), VerificationContext::GlobalDecision).is_err() {
+        if self.verify_agent_attestation(&decision.agent_id, VerificationContext::GlobalDecision).is_err() {
             self.trigger_karnak_isolation(cloud, &decision.agent_id);
             return Err(HardFreeze::Triggered("ATTESTATION_FAILED".to_string()));
         }

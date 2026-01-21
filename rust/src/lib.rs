@@ -84,8 +84,10 @@ impl TruthAuditorium {
         let cathedral = Cathedral::instance();
 
         // GATE 3: Ed25519 Verify + Extração de DNA
+        // In a real implementation, agent_attestation would be parsed to get agent_id
+        let agent_id = String::from_utf8_lossy(&attested_claim.agent_attestation).to_string();
         let attestation_status = cathedral.verify_agent_attestation(
-            &attested_claim.agent_attestation,
+            &agent_id,
             VerificationContext::TruthSubmission
         ).map_err(|_| SubmissionError::InvalidAttestation)?;
 

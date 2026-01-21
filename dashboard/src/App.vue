@@ -42,6 +42,8 @@
           </div>
         </div>
       </div>
+
+      <NeuroStressDashboard />
     </main>
 
     <footer>
@@ -51,7 +53,12 @@
 </template>
 
 <script>
+import NeuroStressDashboard from './components/NeuroStressDashboard.vue'
+
 export default {
+  components: {
+    NeuroStressDashboard
+  },
   data() {
     return {
       contractAddress: '0x5FbDB...80aa3',
