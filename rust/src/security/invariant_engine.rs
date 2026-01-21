@@ -3,6 +3,11 @@ use ed25519_dalek::{Verifier, VerifyingKey, Signature};
 use blake3;
 use zeroize::{Zeroize, ZeroizeOnDrop};
 use crate::entropy::VajraEntropyMonitor;
+use crate::gates::gate7_quantum_consent::Gate7QuantumConsent;
+use crate::gates::gate8_multiverse_regulator::{Gate8MultiverseRegulator, ComplexityClass};
+use crate::crypto::pqc::NeuralSignature;
+use crate::security::karnak_sealer::KarnakQuantumSealer;
+use crate::security::quantum_phi::QuantumPhiMonitor;
 
 pub const PLUTON_TPM_BASE: usize = 0xFED40000;
 pub const PCR16_OFFSET: usize = 0x320;
@@ -56,6 +61,8 @@ pub struct InvariantVerificationEngine {
     pub lyapunov_threshold: f64,
     #[zeroize(skip)]
     pub nonce_cache: NonceCache,
+    #[zeroize(skip)]
+    pub multiverse_regulator: crate::gates::gate8_multiverse_regulator::Gate8MultiverseRegulator,
 }
 
 #[derive(Debug, PartialEq)]
@@ -65,19 +72,31 @@ pub enum GateError {
     Gate3Failure, // Replay
     Gate4Failure, // Hard Freeze
     Gate5Failure, // Omega-Collapse
+    Gate6Failure, // Quantum-Integrity
+    Gate7Failure, // Quantum-Consent
+    Gate8Failure, // Multiverse-Quota
 }
 
 impl InvariantVerificationEngine {
-    pub const fn new(prince_pubkey: [u8; 32], pcr0: [u8; 48]) -> Self {
+    pub fn new(prince_pubkey: [u8; 32], pcr0: [u8; 48]) -> Self {
         Self {
             prince_public_key: prince_pubkey,
             pcr0_invariant: pcr0,
             lyapunov_threshold: 0.001,
             nonce_cache: NonceCache::new(),
+            multiverse_regulator: crate::gates::gate8_multiverse_regulator::Gate8MultiverseRegulator::new(1_000_000_000_000),
         }
     }
 
-    pub fn verify_5_gates(&mut self, attestation_doc: &[u8], signature: &[u8; 64], nonce: u64) -> Result<(), GateError> {
+    pub fn verify_8_gates(
+        &mut self,
+        attestation_doc: &[u8],
+        signature: &[u8; 64],
+        nonce: u64,
+        em_noise: f64,
+        quantum_sig: &NeuralSignature,
+        complexity: ComplexityClass
+    ) -> Result<(), GateError> {
         // --- GATE 1: Verificar assinatura Ed25519 do Prince Creator ---
         let mut hasher = blake3::Hasher::new();
         hasher.update(attestation_doc);
@@ -120,7 +139,50 @@ impl InvariantVerificationEngine {
             return Err(GateError::Gate5Failure);
         }
 
+        // --- GATE 6: Verificação de Integridade Quântica (Decoerência) ---
+        if self.verify_quantum_integrity(em_noise).is_err() {
+            crate::security::karnak_sealer::KarnakQuantumSealer::seal_multiverse("QUANTUM_INTEGRITY_VIOLATION");
+            self.trigger_karnak_isolation();
+            self.log_failure_to_tpm_nvram(0xBAD006);
+            return Err(GateError::Gate6Failure);
+        }
+
+        // Monitor Φ_Quantum
+        crate::security::quantum_phi::QuantumPhiMonitor::update_global_quantum_phi();
+
+        // --- GATE 7: Consentimento Multiversal (Article VI) ---
+        let gate7 = Gate7QuantumConsent::new(self.prince_public_key);
+        let auth_token = match gate7.verify_multiversal_consent(quantum_sig) {
+            Ok(token) => token,
+            Err(_) => {
+                self.trigger_karnak_isolation();
+                self.log_failure_to_tpm_nvram(0xBAD007);
+                return Err(GateError::Gate7Failure);
+            }
+        };
+
+        // Ensure Φ_Quantum persistence
+        VajraEntropyMonitor::global().update_quantum_decoherence(1.0 - auth_token.phi_q);
+
+        // --- GATE 8: Regulador de Recursos Multiversais ---
+        if self.multiverse_regulator.authorize_computation(complexity).is_err() {
+            self.trigger_karnak_isolation();
+            self.log_failure_to_tpm_nvram(0xBAD008);
+            return Err(GateError::Gate8Failure);
+        }
+
         Ok(())
+    }
+
+    fn verify_quantum_integrity(&self, em_noise: f64) -> Result<(), GateError> {
+        use crate::entropy::quantum_monitor::QuantumDecoherenceMonitor;
+        let q_monitor = QuantumDecoherenceMonitor::new(0.05); // 5% threshold
+
+        if q_monitor.detect_quantum_attack(em_noise) {
+            Err(GateError::Gate6Failure)
+        } else {
+            Ok(())
+        }
     }
 
     fn read_mmio_pcr0(&self) -> [u8; 48] {

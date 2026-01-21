@@ -66,6 +66,8 @@ mod tests {
     #[test]
     fn test_invariant_verification_engine_full_pass() {
         use crate::security::invariant_engine::{InvariantVerificationEngine, GateError};
+        use crate::crypto::pqc::{PostQuantumKey, LatticePublicKey, LatticeSecretKey};
+        use crate::gates::gate8_multiverse_regulator::ComplexityClass;
         use ed25519_dalek::{SigningKey, Signer};
 
         let signing_key = SigningKey::from_bytes(&[1u8; 32]);
@@ -84,13 +86,22 @@ mod tests {
         let signature = signing_key.sign(hash.as_bytes()).to_bytes();
         let nonce = 12345u64;
 
-        let result = engine.verify_5_gates(doc, &signature, nonce);
+        let pqc_key = PostQuantumKey::new(
+            LatticePublicKey { data: [0u8; 1024] },
+            LatticeSecretKey { data: [0u8; 1024] },
+            [0u8; 32]
+        );
+        let q_sig = pqc_key.sign_neural_consent(&[0.1f32; 64]);
+
+        let result = engine.verify_8_gates(doc, &signature, nonce, 0.0, &q_sig, ComplexityClass::Low);
         assert!(result.is_ok());
     }
 
     #[test]
     fn test_invariant_verification_engine_replay_attack() {
         use crate::security::invariant_engine::{InvariantVerificationEngine, GateError};
+        use crate::crypto::pqc::{PostQuantumKey, LatticePublicKey, LatticeSecretKey};
+        use crate::gates::gate8_multiverse_regulator::ComplexityClass;
         use ed25519_dalek::{SigningKey, Signer};
 
         let signing_key = SigningKey::from_bytes(&[2u8; 32]);
@@ -109,11 +120,18 @@ mod tests {
         let signature = signing_key.sign(hash.as_bytes()).to_bytes();
         let nonce = 12345u64;
 
+        let pqc_key = PostQuantumKey::new(
+            LatticePublicKey { data: [0u8; 1024] },
+            LatticeSecretKey { data: [0u8; 1024] },
+            [0u8; 32]
+        );
+        let q_sig = pqc_key.sign_neural_consent(&[0.1f32; 64]);
+
         // First use
-        assert!(engine.verify_5_gates(doc, &signature, nonce).is_ok());
+        assert!(engine.verify_8_gates(doc, &signature, nonce, 0.0, &q_sig, ComplexityClass::Low).is_ok());
 
         // Replay
-        let result = engine.verify_5_gates(doc, &signature, nonce);
+        let result = engine.verify_8_gates(doc, &signature, nonce, 0.0, &q_sig, ComplexityClass::Low);
         assert_eq!(result, Err(GateError::Gate3Failure));
     }
 
@@ -126,6 +144,7 @@ mod tests {
 
         let monitor = Arc::new(VajraEntropyMonitor {
             current_phi: std::sync::Mutex::new(0.72),
+            quantum_decoherence: std::sync::Mutex::new(0.0),
         });
         let verifier = Arc::new(VajraVerifier::new().unwrap());
 

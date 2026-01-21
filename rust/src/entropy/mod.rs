@@ -3,6 +3,8 @@ pub struct PhiStabilityProof {
     pub lambda: f32,
 }
 
+pub mod quantum_monitor;
+
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::Duration;
@@ -118,6 +120,7 @@ impl VajraVerifier {
 
 pub struct VajraEntropyMonitor {
     pub current_phi: std::sync::Mutex<f64>,
+    pub quantum_decoherence: std::sync::Mutex<f64>,
 }
 
 impl VajraEntropyMonitor {
@@ -125,6 +128,7 @@ impl VajraEntropyMonitor {
         lazy_static::lazy_static! {
             static ref INSTANCE: VajraEntropyMonitor = VajraEntropyMonitor {
                 current_phi: std::sync::Mutex::new(0.72),
+                quantum_decoherence: std::sync::Mutex::new(0.0),
             };
         }
         &INSTANCE
@@ -134,6 +138,12 @@ impl VajraEntropyMonitor {
         let mut current = self.current_phi.lock().unwrap();
         *current = phi;
         log::info!("VAJRA: Global Coherence updated: Φ = {:.4}", phi);
+    }
+
+    pub fn update_quantum_decoherence(&self, decoherence: f64) {
+        let mut current = self.quantum_decoherence.lock().unwrap();
+        *current = decoherence;
+        log::info!("VAJRA: Quantum Decoherence updated: Δ = {:.4}", decoherence);
     }
 
     pub fn verify_stability(&self, proof: &crate::bio_layer::paciente_zero_omega::LyapunovProof) -> Result<bool, &'static str> {

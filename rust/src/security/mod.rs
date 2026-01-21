@@ -3,3 +3,5 @@ pub mod gateway_alpha;
 pub mod integrity;
 pub mod invariant_engine;
 pub mod memory;
+pub mod karnak_sealer;
+pub mod quantum_phi;

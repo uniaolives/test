@@ -114,6 +114,7 @@ impl ContinuousAudit {
     /// Executa um ciclo completo de auditoria
     async fn run_audit_cycle(&self, _iteration: u64) -> Result<CycleMetrics, String> {
         let mut violations = 0;
+        let mut phi_q = 1.0;
 
         // 1. Verificar integridade do ambiente (APK Pinning)
         if let Some(env_ptr) = self.jni_env {
@@ -179,6 +180,14 @@ impl ContinuousAudit {
             violations += 1;
         }
 
+        // 7. Auditoria de Article VI (Quantum Governance)
+        phi_q = self.audit_quantum_governance(current_block).await?;
+        if phi_q < 0.85 {
+            error!("Article VI Violation: Φ_Quantum = {:.4}", phi_q);
+            violations += 1;
+            crate::security::karnak_sealer::KarnakQuantumSealer::seal_multiverse("AUDIT_PHI_Q_LOW");
+        }
+
         Ok(CycleMetrics {
             block_number: current_block,
             violations_found: violations,
@@ -186,6 +195,15 @@ impl ContinuousAudit {
             quantum_signature_valid: quantum_valid,
             contract_healthy: contract_state.is_healthy,
         })
+    }
+
+    async fn audit_quantum_governance(&self, _block: u64) -> Result<f64, String> {
+        use crate::entropy::VajraEntropyMonitor;
+        let monitor = VajraEntropyMonitor::global();
+        let decoherence = *monitor.quantum_decoherence.lock().unwrap();
+
+        // Φ_Quantum = 1 - (decoherence / max_allowed)
+        Ok((1.0 - decoherence).max(0.0).min(1.0))
     }
 
     /// Verificar se conselhos estão ativos
@@ -201,7 +219,7 @@ impl ContinuousAudit {
     /// Verifica o invariante geométrico atual
     async fn check_geometric_invariant(&self, _block_number: u64) -> InvariantCheckResult {
         // Obter estado atual do atrator do contrato
-        let attractor_state = self.evm_client.call_contract(
+        let attractor_state: Result<Vec<u8>, String> = self.evm_client.call_contract(
             &self.contract_address,
             "getAttractorState()",
             &[]

@@ -13,6 +13,7 @@ pub mod cognitive_hunter;
 pub mod security;
 pub mod neo_brain;
 pub mod crypto;
+pub mod gates;
 pub mod attestation;
 pub mod entropy;
 pub mod clock;
