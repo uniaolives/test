@@ -15,6 +15,9 @@ hex = "0.4.3"
 thiserror = "1.0"
 blake3 = "1.5"
 tokio = { version = "1", features = ["full"] }
+nalgebra = "0.32"
+ndarray = "0.15"
+num-complex = "0.4"
 aws-nitro-enclaves-cose = "0.5.2"
 x509-parser = "0.15"
 ring = "0.17"
@@ -24,6 +27,7 @@ sasc-governance = { path = "../sasc-governance", features = ["cathedral", "eip71
 zeroize = { version = "1.7", features = ["zeroize_derive"] }
 lazy_static = "1.4"
 serde_json = "1.0"
+once_cell = "1.18"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.56", features = [
@@ -31,6 +35,10 @@ windows = { version = "0.56", features = [
     "Win32_Storage_FileSystem",
     "Win32_System_IO",
 ] }
+
+[[bin]]
+name = "trajectory_generator"
+path = "src/bin/trajectory_generator.rs"
 
 [features]
 sat = []
