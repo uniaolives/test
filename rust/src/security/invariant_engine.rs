@@ -125,7 +125,7 @@ impl InvariantVerificationEngine {
 
     fn read_mmio_pcr0(&self) -> [u8; 48] {
         let mut pcr0 = [0u8; 48];
-        let _addr = (PLUTON_TPM_BASE + PCR16_OFFSET) as *const u64;
+        let addr = (PLUTON_TPM_BASE + PCR16_OFFSET) as *const u64;
 
         // In a sandbox, this WILL segfault if we actually try to read physical memory.
         // For the purpose of this implementation, we use a conditional check to simulate the read.
@@ -146,7 +146,7 @@ impl InvariantVerificationEngine {
     }
 
     fn is_hard_freeze_active(&self) -> bool {
-        let _addr = (PLUTON_TPM_BASE + NVRAM_SASC_OFFSET) as *const u8;
+        let addr = (PLUTON_TPM_BASE + NVRAM_SASC_OFFSET) as *const u8;
 
         #[cfg(not(test))]
         unsafe {
@@ -167,7 +167,7 @@ impl InvariantVerificationEngine {
 
     // Emergency Protocols
     pub fn log_failure_to_tpm_nvram(&self, error_code: u32) {
-        let _addr = (PLUTON_TPM_BASE + AUDIT_LOG_OFFSET) as *mut u32;
+        let addr = (PLUTON_TPM_BASE + AUDIT_LOG_OFFSET) as *mut u32;
         #[cfg(not(test))]
         unsafe {
             core::ptr::write_volatile(addr, error_code);
