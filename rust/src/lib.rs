@@ -17,6 +17,7 @@ pub mod gates;
 pub mod attestation;
 pub mod entropy;
 pub mod clock;
+pub mod bridge;
 pub mod substrate_logic;
 pub mod bio_layer;
 pub mod neuro_twin;
