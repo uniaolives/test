@@ -186,6 +186,20 @@ impl VajraEntropyMonitor {
     }
 }
 
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub enum AttackPattern {
+    PureGhostInjection,
+    MixedInjection,
+    ProbingAttack,
+    Noise,
+}
+
+pub struct PhantomPenaltyReason {
+    pub phantom_density: f64,
+    pub attack_pattern: AttackPattern,
+    pub timestamp: u64,
+}
+
 pub fn vajra_verifier_thread(verifier: Arc<VajraVerifier>, monitor: Arc<VajraEntropyMonitor>) {
     let interval = Duration::from_millis(10); // 100Hz
 

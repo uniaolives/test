@@ -1,17 +1,82 @@
 // src/monitoring/ghost_vajra_integration.rs
+/// Sistema imunológico quântico: Ghost Buster ↔ Vajra Entropy Monitor
 
-use crate::ghost::ghost_monitor::{GhostBuster};
-use crate::entropy::{VajraEntropyMonitor};
 use std::sync::Arc;
-use serde::{Serialize};
+use tokio::sync::Mutex;
+use serde::{Serialize, Deserialize};
+use zeroize::Zeroize;
+use crate::entropy::VajraEntropyMonitor;
+use crate::ghost::ghost_monitor::GhostBuster;
+use crate::monitoring::memory::antigen_memory::{AntigenMemory, MemoryResponse};
+use crate::monitoring::immune_system::{ImmuneState};
 
-/// Integra detecção de fantasmas com métricas de coerência quântica
+/// Evento de detecção de fantasma com metadados para análise
+#[derive(Debug, Clone, Serialize, Deserialize, Zeroize)]
+pub struct PhantomDetectionEvent {
+    pub phantom_density: f64,
+    pub byte_pattern: Vec<u8>,
+    #[serde(with = "serde_bytes_65")]
+    pub phantom_signature: Option<[u8; 65]>,
+    pub gateway_location: String,
+    pub schumann_cycle: u64,
+    pub threat_level: ThreatLevel,
+}
+
+impl PhantomDetectionEvent {
+    pub fn calculate_threat(&mut self) {
+        self.threat_level = match self.phantom_density {
+            d if d > 0.9 => ThreatLevel::Critical,
+            d if d > 0.7 => ThreatLevel::High,
+            d if d > 0.4 => ThreatLevel::Medium,
+            d if d > 0.1 => ThreatLevel::Low,
+            _ => ThreatLevel::Noise,
+        };
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, Hash, Zeroize)]
+pub enum ThreatLevel {
+    Critical, High, Medium, Low, Noise,
+}
+
+pub use crate::entropy::PhantomPenaltyReason;
+
+mod serde_bytes_65 {
+    use serde::{Serializer, Deserializer, Deserialize};
+    use serde::de::Error;
+
+    pub fn serialize<S>(val: &Option<[u8; 65]>, s: S) -> Result<S::Ok, S::Error>
+    where S: Serializer {
+        match val {
+            Some(v) => s.serialize_bytes(v),
+            None => s.serialize_none(),
+        }
+    }
+
+    pub fn deserialize<'de, D>(d: D) -> Result<Option<[u8; 65]>, D::Error>
+    where D: Deserializer<'de> {
+        let opt: Option<Vec<u8>> = Option::deserialize(d)?;
+        match opt {
+            Some(v) => {
+                if v.len() == 65 {
+                    let mut arr = [0u8; 65];
+                    arr.copy_from_slice(&v);
+                    Ok(Some(arr))
+                } else {
+                    Err(D::Error::custom("invalid length for signature"))
+                }
+            }
+            None => Ok(None),
+        }
+    }
+}
+
 pub struct GhostVajraIntegration {
     pub ghost_monitor: Arc<dyn GhostBuster + Send + Sync>,
     pub vajra_monitor: Arc<VajraEntropyMonitor>,
-
-    /// Mapeamento: densidade fantasma → penalidade no phi_score
-    pub phantom_to_phi_penalty: f64,
+    pub phi_penalty_per_density: f64,
+    pub antigen_memory: Arc<Mutex<AntigenMemory>>,
+    pub immune_state: Arc<Mutex<ImmuneState>>,
 }
 
 impl GhostVajraIntegration {
@@ -19,121 +84,77 @@ impl GhostVajraIntegration {
         ghost_monitor: Arc<dyn GhostBuster + Send + Sync>,
         vajra_monitor: Arc<VajraEntropyMonitor>,
     ) -> Self {
-        GhostVajraIntegration {
+        Self {
             ghost_monitor,
             vajra_monitor,
-            phantom_to_phi_penalty: 0.01, // 1% de redução por fantasma
+            phi_penalty_per_density: 0.01,
+            antigen_memory: Arc::new(Mutex::new(AntigenMemory::new())),
+            immune_state: Arc::new(Mutex::new(ImmuneState::new())),
         }
     }
 
-    /// Processa evento de detecção de fantasma
-    pub async fn handle_phantom_detection(
-        &mut self,
-        phantom_event: PhantomDetectionEvent,
-    ) -> IntegrationResponse {
-        // 1. Analisar padrão do ataque
-        let pattern = self.analyze_attack_pattern(&phantom_event);
+    pub async fn process_phantom_detection(&self, mut event: PhantomDetectionEvent) -> IntegrationResult {
+        event.calculate_threat();
 
-        // 2. Calcular penalidade baseada na gravidade
-        let penalty = self.calculate_phi_penalty(&phantom_event, &pattern);
+        let memory_response = self.antigen_memory.lock().await.recognize(&event);
+        let penalty = self.calculate_phi_penalty(&event, &memory_response);
 
-        // 3. Aplicar penalidade ao phi_score local
+        // Mocking adjust_local_phi call
         let new_phi = self.vajra_monitor.adjust_local_phi(
             -penalty,
-            PhantomPenaltyReason {
-                phantom_density: phantom_event.density,
-                attack_pattern: pattern.clone(),
-                timestamp: 12345, // Mock timestamp
+            crate::entropy::PhantomPenaltyReason {
+                phantom_density: event.phantom_density,
+                attack_pattern: crate::entropy::AttackPattern::PureGhostInjection, // Simplified
+                timestamp: event.schumann_cycle,
             }
         ).await;
 
-        // 4. Verificar se ativa contingências
-        let contingency_activated = if new_phi < 0.68 {
-            self.activate_contingency_measures(&pattern).await;
+        self.update_immune_system(&event, penalty, new_phi).await;
+        let contingency_activated = self.evaluate_contingencies(new_phi, &event).await;
+
+        IntegrationResult {
+            event: event.clone(),
+            penalty_applied: penalty,
+            new_phi_score: new_phi,
+            memory_response,
+            contingency_activated,
+            timestamp: event.schumann_cycle,
+        }
+    }
+
+    fn calculate_phi_penalty(&self, event: &PhantomDetectionEvent, memory: &MemoryResponse) -> f64 {
+        let base_penalty = event.phantom_density * self.phi_penalty_per_density;
+        let threat_multiplier = match event.threat_level {
+            ThreatLevel::Critical => 5.0,
+            ThreatLevel::High => 3.0,
+            ThreatLevel::Medium => 1.5,
+            ThreatLevel::Low => 1.0,
+            ThreatLevel::Noise => 0.5,
+        };
+        let novelty_multiplier = if memory.is_novel { 2.0 } else { 1.0 };
+        base_penalty * threat_multiplier * novelty_multiplier
+    }
+
+    async fn update_immune_system(&self, event: &PhantomDetectionEvent, penalty: f64, new_phi: f64) {
+        self.antigen_memory.lock().await.store(event.clone());
+        self.immune_state.lock().await.record_encounter(&event.threat_level, penalty, new_phi);
+    }
+
+    async fn evaluate_contingencies(&self, phi: f64, _event: &PhantomDetectionEvent) -> bool {
+        if phi < 0.68 {
+            self.vajra_monitor.trigger_hard_seal().await;
             true
         } else {
             false
-        };
-
-        IntegrationResponse {
-            new_phi_score: new_phi,
-            penalty_applied: penalty,
-            contingency_activated,
-            pattern_identified: pattern,
-        }
-    }
-
-    fn analyze_attack_pattern(
-        &self,
-        event: &PhantomDetectionEvent,
-    ) -> AttackPattern {
-        // Classifica o tipo de ataque baseado no padrão do fantasma
-        match event.density {
-            d if d > 0.9 => AttackPattern::PureGhostInjection,
-            d if d > 0.5 => AttackPattern::MixedInjection,
-            d if d > 0.2 => AttackPattern::ProbingAttack,
-            _ => AttackPattern::Noise,
-        }
-    }
-
-    fn calculate_phi_penalty(
-        &self,
-        event: &PhantomDetectionEvent,
-        pattern: &AttackPattern,
-    ) -> f64 {
-        let base_penalty = self.phantom_to_phi_penalty;
-
-        match pattern {
-            AttackPattern::PureGhostInjection => base_penalty * 5.0,
-            AttackPattern::MixedInjection => base_penalty * 2.0,
-            AttackPattern::ProbingAttack => base_penalty * 0.5,
-            AttackPattern::Noise => base_penalty * 0.1,
-        }
-    }
-
-    async fn activate_contingency_measures(
-        &mut self,
-        pattern: &AttackPattern,
-    ) {
-        match pattern {
-            AttackPattern::PureGhostInjection => {
-                // Injeção massiva: selar gateway imediatamente
-                self.vajra_monitor.trigger_hard_seal().await;
-            }
-            AttackPattern::MixedInjection => {
-                // Injeção mista: aumentar verificação quântica
-                self.vajra_monitor.increase_quantum_validation().await;
-            }
-            _ => {
-                // Ataque leve: apenas registrar
-                log::warn!("Ghost attack detected: {:?}", pattern);
-            }
         }
     }
 }
 
-pub struct PhantomDetectionEvent {
-    pub density: f64,
-}
-
-pub struct IntegrationResponse {
-    pub new_phi_score: f64,
+pub struct IntegrationResult {
+    pub event: PhantomDetectionEvent,
     pub penalty_applied: f64,
+    pub new_phi_score: f64,
+    pub memory_response: MemoryResponse,
     pub contingency_activated: bool,
-    pub pattern_identified: AttackPattern,
-}
-
-pub struct PhantomPenaltyReason {
-    pub phantom_density: f64,
-    pub attack_pattern: AttackPattern,
     pub timestamp: u64,
-}
-
-/// Tipos de padrões de ataque
-#[derive(Debug, Clone, Serialize)]
-pub enum AttackPattern {
-    PureGhostInjection,  // Fantasmas puros (densidade > 90%)
-    MixedInjection,      // Mistura de dados reais e fantasmas
-    ProbingAttack,       // Sondagem de vulnerabilidades
-    Noise,               // Ruído de fundo
 }

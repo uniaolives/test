@@ -1,6 +1,6 @@
 // src/monitoring/quantum_immune_system.rs
 
-use crate::monitoring::ghost_vajra_integration::{AttackPattern};
+use crate::entropy::{AttackPattern};
 use serde::{Serialize};
 
 /// Sistema que ajusta defesas baseado na gravidade dos ataques
