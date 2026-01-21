@@ -20,6 +20,7 @@ tempfile = "3.8"
 sha2 = "0.10"
 warp = "0.3"
 futures-util = "0.3"
+rand = "0.8"
 
 [features]
 onchain = []

@@ -3,6 +3,7 @@ pub mod compiler;
 pub mod utils;
 pub mod backends;
 pub mod onchain;
+pub mod gem_simulator;
 pub mod type_checker;
 pub mod std;
 pub mod cli;

@@ -80,4 +80,27 @@ pub enum Commands {
         #[arg(long)]
         rpc_url: String,
     },
+
+    /// Gravity Engine Module (GEM) Simulator
+    GemSimulator {
+        /// Geometry metric (Article VI baseline)
+        #[arg(short, long)]
+        geometry: String,
+
+        /// Matter input (Workload dataset)
+        #[arg(short, long)]
+        matter: String,
+
+        /// Duration of simulation in steps
+        #[arg(short, long, default_value = "100")]
+        duration_steps: u32,
+
+        /// Hubble parameter (Target metric for expansion)
+        #[arg(long, default_value = "sasc_phi_rate")]
+        hubble_parameter: String,
+
+        /// Output file for simulation report
+        #[arg(short, long, default_value = "gem_report.json")]
+        output_file: String,
+    },
 }

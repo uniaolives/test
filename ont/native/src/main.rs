@@ -123,6 +123,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("");
             println!("Feature coming soon...");
         }
+
+        Commands::GemSimulator { geometry, matter, duration_steps, hubble_parameter, output_file } => {
+            ontology_lang::gem_simulator::run_simulator(
+                geometry,
+                matter,
+                duration_steps,
+                hubble_parameter,
+                output_file
+            ).await?;
+        }
     }
 
     Ok(())
