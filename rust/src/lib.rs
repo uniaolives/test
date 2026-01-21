@@ -18,6 +18,7 @@ pub mod entropy;
 pub mod clock;
 pub mod substrate_logic;
 pub mod bio_layer;
+pub mod neuro_twin;
 pub mod neo_cortex;
 pub mod audit;
 pub mod blockchain;
