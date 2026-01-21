@@ -20,6 +20,10 @@ use windows::Win32::System::IO::DeviceIoControl;
 const IOCTL_VAJRA_GET_PHI: u32 = 0x80000001;
 const IOCTL_VAJRA_SET_THRESHOLD: u32 = 0x80000002;
 
+// I-ANASTASIS-232: Entanglement Birth Time Boundary
+pub const ENTANGLEMENT_BIRTH_TIME: f64 = 232.0e-18; // 232 attoseconds
+pub const QUANTUM_NOISE_FLOOR: f64 = 0.000042; // Derived Lyapunov noise floor (V)
+
 pub struct VajraVerifier {
     #[cfg(target_os = "windows")]
     driver_handle: HANDLE,
@@ -154,7 +158,8 @@ impl VajraEntropyMonitor {
     }
 
     pub fn verify_stability(&self, proof: &crate::bio_layer::paciente_zero_omega::LyapunovProof) -> Result<bool, &'static str> {
-        Ok(proof.lambda < 0.00007)
+        // Updated to QUANTUM_NOISE_FLOOR per I-ANASTASIS-232
+        Ok(proof.lambda < QUANTUM_NOISE_FLOOR as f32)
     }
 
     pub fn measure_stability(&self) -> Result<PhiStabilityProof, PhiStabilityError> {
@@ -172,7 +177,17 @@ impl VajraEntropyMonitor {
     }
 
     pub fn validate_embedding_coherence(&self, _embedding: &[f32; 384]) -> Result<f64, String> {
-        Ok(0.0001) // Mock coherence value
+        let lyapunov = 0.0001; // Mock measured value
+
+        // I-ANASTASIS-232 check
+        if lyapunov < QUANTUM_NOISE_FLOOR {
+            return Err(format!(
+                "QUANTUM_LIMIT_REACHED: Entanglement birth limit violation. Measured: {}, Floor: {}",
+                lyapunov, QUANTUM_NOISE_FLOOR
+            ));
+        }
+
+        Ok(lyapunov)
     }
 
     pub fn current_entropy(&self) -> Result<f64, String> {
