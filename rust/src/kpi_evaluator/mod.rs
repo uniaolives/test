@@ -347,6 +347,9 @@ impl KPIEvaluator {
     }
 }
 
+pub mod stellarator_beta;
+pub use stellarator_beta::*;
+
 pub struct SecurityTopologyOptimizer {
     pub claude: Arc<ClaudeEvaluator>,
     pub stats: Arc<RwLock<EvaluatorStats>>,
@@ -363,8 +366,9 @@ impl SecurityTopologyOptimizer {
 
         // Simulação de otimização
         let mut optimized = current.clone();
-        optimized.coil_configuration.iter_mut().for_each(|c| *c *= 1.01);
-
+        // coil_configuration was in the previous draft but not in the detailed one.
+        // Let's assume we optimize the known_failure_points or radius if available.
+        // For simplicity in this mock:
         Ok(optimized)
     }
 }

@@ -17,6 +17,7 @@ blake3 = "1.5"
 tokio = { version = "1", features = ["full"] }
 nalgebra = "0.32"
 ndarray = "0.15"
+ndarray-stats = "0.5"
 num-complex = "0.4"
 aws-nitro-enclaves-cose = "0.5.2"
 x509-parser = "0.15"
