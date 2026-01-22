@@ -2928,6 +2928,50 @@ dependencies = [
 ]
 
 [[package]]
+name = "pqcrypto-dilithium"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "90694b1901d23e01c40fdd21b46bd65efd3d11481da5604fec204f1c1d5b2cb3"
+dependencies = [
+ "cc",
+ "glob",
+ "libc",
+ "pqcrypto-internals",
+ "pqcrypto-traits",
+]
+
+[[package]]
+name = "pqcrypto-internals"
+version = "0.2.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b4a326caf27cbf2ac291ca7fd56300497ba9e76a8cc6a7d95b7a18b57f22b61d"
+dependencies = [
+ "cc",
+ "dunce",
+ "getrandom 0.3.4",
+ "libc",
+]
+
+[[package]]
+name = "pqcrypto-kyber"
+version = "0.7.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c32fe9d5c9913b1aed1ba92b3449eb2d7cf7ca29741b11455dfa34c711b95776"
+dependencies = [
+ "cc",
+ "glob",
+ "libc",
+ "pqcrypto-internals",
+ "pqcrypto-traits",
+]
+
+[[package]]
+name = "pqcrypto-traits"
+version = "0.3.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "94e851c7654eed9e68d7d27164c454961a616cf8c203d500607ef22c737b51bb"
+
+[[package]]
 name = "precomputed-hash"
 version = "0.1.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3403,6 +3447,24 @@ dependencies = [
  "serde",
  "serde_json",
  "zeroize",
+]
+
+[[package]]
+name = "sasc-society"
+version = "30.10.0-omega"
+dependencies = [
+ "blake3",
+ "ndarray",
+ "num-traits",
+ "petgraph",
+ "pqcrypto-dilithium",
+ "pqcrypto-kyber",
+ "pqcrypto-traits",
+ "rayon",
+ "sasc-governance",
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]

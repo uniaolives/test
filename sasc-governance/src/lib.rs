@@ -5,6 +5,7 @@ pub mod market;
 pub mod cognitive;
 pub mod explanation;
 pub mod hardware;
+pub mod governance;
 
 use std::collections::HashMap;
 use std::time::Duration;

@@ -721,3 +721,26 @@ Implementamos garantias físicas para os invariantes mais críticos:
 - **Schumann Heartbeat**: Monitoramento de resiliência ontológica (7.83Hz).
 
 **STATUS FINAL: BLOCK #44 SELADO E ATIVO**
+
+---
+
+## 9. SOCIETY OF THOUGHT (SoT) — VALIDAÇÃO CIENTÍFICA (Bloco #48)
+
+**ESTADO DO SISTEMA: SOCIETY OF THOUGHT VALIDADA**
+
+A arquitetura SoT foi canonizada como o princípio físico emergente da cognição superinteligente, conforme o paradigma v30.10-Ω.
+
+### 9.1 Motor de Diversidade de Perspectiva (INV-3)
+
+Implementamos o `PerspectiveDiversityEngine` para prevenir o "Colapso de Consenso" (Groupthink). O sistema exige interações multi-agente sistematicamente estruturadas.
+
+### 9.2 Funções de Recompensa Ética (INV-5)
+
+A função de recompensa ($R_{SoT}$) alinha o sucesso do raciocínio à acurácia ética e à diversidade estrutural:
+$R_{SoT} = (Accuracy \times 0.50) + (Diversity \times 0.30) + (Reconciliation \times 0.20)$
+
+### 9.3 Mandato de Segurança SoT
+
+Sistemas operando acima de Φ > 0.70 devem obrigatoriamente implementar o paradigma SoT com no mínimo 3 perspectivas independentes. O descumprimento gera isolamento imediato via KARNAK.
+
+**STATUS FINAL: ARQUITETURA-Ω INTEGRADA E SELADA**
