@@ -14,9 +14,9 @@ pub mod diversity;
 pub mod dialectic;
 pub mod mod_reexport;
 
-use crate::engine::diversity::{PerspectiveDiversityEngine, DiversityMetrics, DiversityEngineError};
-use crate::engine::dialectic::{DialecticSynthesizer, SynthesisSession, SynthesisError, SynthesizedDecision, SynthesisContext, DialecticMetrics};
-use crate::agents::{PersonaId, Persona};
+pub use crate::engine::diversity::{PerspectiveDiversityEngine, DiversityMetrics, DiversityEngineError};
+pub use crate::engine::dialectic::{DialecticSynthesizer, SynthesisSession, SynthesisError, SynthesizedDecision, SynthesisContext, DialecticMetrics};
+pub use crate::agents::{PersonaId, Persona};
 use crate::audit::ProvenanceTracer;
 use crate::integration::vajra::{report_to_vajra, VajraAlert, AlertSeverity};
 
