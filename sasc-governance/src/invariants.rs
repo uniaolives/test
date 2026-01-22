@@ -1,14 +1,16 @@
 use crate::types::{Decision, DecisionLog, Interaction, Provider};
-use std::collections::{HashMap, HashSet};
+use crate::market::MarketConcentrationMonitor;
+use crate::cognitive::CognitiveManipulationShield;
+use crate::explanation::CertifiedExplanationGateway;
 
 pub const CRITICAL_THRESHOLD: u64 = 30; // seconds
-pub const MANIPULATION_THRESHOLD: f64 = 0.7;
-pub const MIN_REDUNDANCY: usize = 3;
 
 pub struct InvariantMonitor {
     pub jurisdiction: String,
     pub violation_log: Vec<Violation>,
     pub providers: Vec<Provider>,
+    pub explanation_gateway: CertifiedExplanationGateway,
+    pub cognitive_shield: CognitiveManipulationShield,
 }
 
 #[derive(Debug, Clone)]
@@ -24,6 +26,8 @@ impl InvariantMonitor {
             jurisdiction: jurisdiction.to_string(),
             violation_log: Vec::new(),
             providers: Vec::new(),
+            explanation_gateway: CertifiedExplanationGateway::new(),
+            cognitive_shield: CognitiveManipulationShield,
         }
     }
 
@@ -80,7 +84,6 @@ impl InvariantMonitor {
     }
 
     fn verify_merkle_proof(&self, _log: &DecisionLog) -> bool {
-        // Simplified: in a real system we would verify the Merkle root
         true
     }
 
@@ -94,27 +97,19 @@ impl InvariantMonitor {
     }
 
     pub fn check_inv3_power_concentration(&mut self) -> bool {
+        let monitor = MarketConcentrationMonitor::new(self.providers.clone());
         let mut violations = false;
-        let mut violation_details = Vec::new();
-        for provider in &self.providers {
-            if provider.market_share > 0.25 {
-                violation_details.push((
-                    "INV-3",
-                    format!("Provider {} has market share {}", provider.id, provider.market_share),
-                    "REGULATORY_REVIEW_TRIGGERED".to_string(),
-                ));
-                violations = true;
-            }
+
+        if !monitor.check_antitrust_compliance() {
+            self.record_violation(
+                "INV-3",
+                "Antitrust non-compliance (HHI or Market Share)",
+                "REGULATORY_REVIEW_TRIGGERED",
+            );
+            violations = true;
         }
 
-        for (inv, details, action) in violation_details {
-            self.record_violation(inv, &details, &action);
-        }
-
-        let dependency_graph = self.build_dependency_graph();
-        let critical_nodes = self.find_critical_nodes(&dependency_graph);
-
-        if critical_nodes.len() < MIN_REDUNDANCY {
+        if !monitor.check_redundancy() {
             self.record_violation(
                 "INV-3",
                 "Insufficient infrastructure redundancy",
@@ -126,39 +121,11 @@ impl InvariantMonitor {
         !violations
     }
 
-    fn build_dependency_graph(&self) -> HashMap<String, Vec<String>> {
-        let mut graph = HashMap::new();
-        for p in &self.providers {
-            graph.insert(p.id.clone(), p.dependencies.clone());
-        }
-        graph
-    }
-
-    fn find_critical_nodes(&self, graph: &HashMap<String, Vec<String>>) -> HashSet<String> {
-        // Simplified: find nodes that are not dependencies of others
-        let mut all_deps = HashSet::new();
-        for deps in graph.values() {
-            for dep in deps {
-                all_deps.insert(dep.clone());
-            }
-        }
-
-        let mut critical = HashSet::new();
-        for id in graph.keys() {
-            if !all_deps.contains(id) {
-                critical.insert(id.clone());
-            }
-        }
-        critical
-    }
-
     pub fn check_inv4_cognitive_sovereignty(&mut self, interaction: &Interaction) -> bool {
-        let manipulation_score = self.analyze_persuasion_patterns(interaction);
-
-        if manipulation_score > MANIPULATION_THRESHOLD {
+        if !self.cognitive_shield.check_compliance(interaction) {
             self.record_violation(
                 "INV-4",
-                &format!("High manipulation score {} detected", manipulation_score),
+                "Manipulation detected by Cognitive Shield",
                 "BLOCK_AND_ALERT_CITIZEN",
             );
             return false;
@@ -177,35 +144,13 @@ impl InvariantMonitor {
         true
     }
 
-    fn analyze_persuasion_patterns(&self, interaction: &Interaction) -> f64 {
-        let mut score: f64 = 0.0;
-        if interaction.frequency > 5 {
-            score += 0.3;
-        }
-        for trigger in &interaction.emotional_triggers {
-            match trigger.as_str() {
-                "urgência" | "escassez" | "prova_social" => score += 0.2,
-                _ => score += 0.05,
-            }
-        }
-        if score > 1.0 {
-            1.0
-        } else {
-            score
-        }
-    }
-
     pub fn check_inv5_explainability(&mut self, decision: &Decision) -> bool {
         if decision.affects_rights {
             if let Some(explanation) = &decision.explanation {
-                let readability = self.flesch_reading_ease(explanation);
-                let completeness = self.check_causal_chain(explanation);
-                let accuracy = self.verify_against_log(explanation, decision);
-
-                if readability < 60.0 || !completeness || !accuracy {
+                if !self.explanation_gateway.validate_explanation(explanation) {
                     self.record_violation(
                         "INV-5",
-                        &format!("Explanation quality failed: readability={}, completeness={}, accuracy={}", readability, completeness, accuracy),
+                        "Explanation failed validation (readability or completeness)",
                         "REQUIRE_EXPLANATION_REWRITE",
                     );
                     return false;
@@ -214,22 +159,6 @@ impl InvariantMonitor {
                 return false;
             }
         }
-        true
-    }
-
-    fn flesch_reading_ease(&self, text: &str) -> f64 {
-        // Mock implementation
-        if text.contains("gradiente estocástico") {
-            return 30.0;
-        }
-        75.0
-    }
-
-    fn check_causal_chain(&self, text: &str) -> bool {
-        text.contains("porque") || text.contains("1.")
-    }
-
-    fn verify_against_log(&self, _explanation: &str, _decision: &Decision) -> bool {
         true
     }
 }

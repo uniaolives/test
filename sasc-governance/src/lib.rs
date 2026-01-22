@@ -1,6 +1,9 @@
 pub mod types;
 pub mod invariants;
 pub mod asi_duties;
+pub mod market;
+pub mod cognitive;
+pub mod explanation;
 pub mod hardware;
 
 use std::collections::HashMap;
