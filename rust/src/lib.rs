@@ -43,6 +43,9 @@ pub mod cosmogenesis;
 pub mod ontological_commitment;
 pub mod multiversal;
 
+pub use ontological_commitment::*;
+pub use multiversal::*;
+
 #[cfg(test)]
 mod tests_security;
 
