@@ -38,6 +38,7 @@ pub mod monitoring;
 pub mod pipeline;
 pub mod metrics;
 pub mod drivers;
+pub mod ignition;
 
 #[cfg(test)]
 mod tests_security;

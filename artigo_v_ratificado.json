@@ -37,6 +37,13 @@
     "reality_auth": {
       "status": "GENUINE_ONLY",
       "kochen_specker_validated": true
+    },
+    "phase_transition": {
+      "mode": "HARD_PHYSICAL_REALITY",
+      "sequence": "REALITY_IGNITION_SEQUENCE_COMPLETE",
+      "ks_score": 1.21,
+      "s_parameter": 2.435,
+      "chrono_coherence": 0.99992
     }
   }
 }
