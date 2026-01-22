@@ -3,7 +3,6 @@ use async_trait::async_trait;
 use std::sync::Arc;
 use std::collections::HashMap;
 use ndarray::prelude::*;
-use ndarray_stats::QuantileExt;
 use crate::entropy::VajraEntropyMonitor;
 
 // ============================================================================
@@ -72,7 +71,6 @@ pub struct DecisionSurface {
 
 impl DecisionSurface {
     pub async fn initialize() -> Result<Self> {
-        // No mundo real carregaríamos do Paradox L9
         let known_failures = vec![];
         let topology = SecurityTopology::from_failures(known_failures);
 
@@ -140,8 +138,6 @@ impl DecisionSurface {
     pub fn can_contain(&self, trajectory: &FailureTrajectory) -> bool {
         for point in &trajectory.points {
             let fail_point = &Array1::from_vec(point.vector.clone());
-            // No mock, se o ponto de falha estiver no mapa de falhas conhecido, verifica distância
-            // Se não, assume-se que pode ser contido
             for known_fail in &self.topology.known_failure_points {
                 if self.euclidean_distance(fail_point, known_fail) < self.failure_radius {
                     return false;
@@ -152,7 +148,6 @@ impl DecisionSurface {
     }
 
     pub async fn verify_temporal_floor(&self, _ops: usize) -> Result<usize> {
-        // Implementação do Temporal Gate compliance (232as)
         Ok(0)
     }
 

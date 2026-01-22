@@ -33,6 +33,10 @@ pub mod hypervisor;
 pub mod memory;
 pub mod karnak;
 pub mod kpi_evaluator;
+pub mod temporal;
+pub mod monitoring;
+pub mod pipeline;
+pub mod metrics;
 
 #[cfg(test)]
 mod tests_security;

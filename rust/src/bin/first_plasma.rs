@@ -1,4 +1,4 @@
-use sasc_core::hypervisor::*;
+use sasc_core::pipeline::anti_snap::*;
 use sasc_core::entropy::VajraEntropyMonitor;
 use std::time::Duration;
 use anyhow::Result;
@@ -34,7 +34,8 @@ async fn main() -> Result<()> {
         Box::new(MockAgent { name: "Policy".to_string() }),
     ];
 
-    let pipeline = AntiSnapPipeline::new(agents);
+    let surface = DecisionSurface::initialize().await?;
+    let pipeline = AntiSnapPipeline::new(agents, surface);
     let monitor = VajraEntropyMonitor::global();
 
     // 2. Simular stream de plasma (ameaças)

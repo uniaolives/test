@@ -1,4 +1,4 @@
-use sasc_core::hypervisor::stellarator::*;
+use sasc_core::pipeline::anti_snap::*;
 use anyhow::Result;
 
 #[tokio::main]

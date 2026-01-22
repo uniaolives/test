@@ -347,8 +347,6 @@ impl KPIEvaluator {
     }
 }
 
-pub mod stellarator_beta;
-pub use stellarator_beta::*;
 
 pub struct SecurityTopologyOptimizer {
     pub claude: Arc<ClaudeEvaluator>,
@@ -360,14 +358,12 @@ impl SecurityTopologyOptimizer {
         Self { claude, stats }
     }
 
-    pub async fn optimize_topology(&self, current: &crate::hypervisor::SecurityTopology) -> Result<crate::hypervisor::SecurityTopology> {
+    pub async fn optimize_topology(&self, current: &crate::pipeline::anti_snap::SecurityTopology) -> Result<crate::pipeline::anti_snap::SecurityTopology> {
         // Claude 4.5 como otimizador topológico
         log::info!("Stellarator: Optimizing security geometry via Claude 4.5");
 
         // Simulação de otimização
         let mut optimized = current.clone();
-        // coil_configuration was in the previous draft but not in the detailed one.
-        // Let's assume we optimize the known_failure_points or radius if available.
         // For simplicity in this mock:
         Ok(optimized)
     }
