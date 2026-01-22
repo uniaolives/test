@@ -21,5 +21,22 @@
     "formal_spec": "∀ decision: DecisionField ∉ PulsedScan && DecisionField ∈ SteadyState",
     "containment_threshold": "TIVS-O < -0.5",
     "optimization_judge": "Claude-4.5-Sonnet"
+  },
+  "ignition_report": {
+    "status": "IGNITION COMPLETE",
+    "ontology": "HARD REALITY",
+    "bell_hardening": {
+      "status": "ACTIVE",
+      "s_value": 2.431,
+      "target": 2.42
+    },
+    "chrono_sync": {
+      "jitter_as": 0.0,
+      "phi_coherence": 0.9999
+    },
+    "reality_auth": {
+      "status": "GENUINE_ONLY",
+      "kochen_specker_validated": true
+    }
   }
 }

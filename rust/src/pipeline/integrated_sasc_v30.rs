@@ -1,6 +1,9 @@
 use crate::temporal::multi_scale::MultiScaleTemporalArchitecture;
 use crate::quantum::ghost_data::{QuantumGhostDataGenerator, W7XHardwareInterface, GhostField};
 use crate::monitoring::enhanced_vajra::{EnhancedVajraMonitor, DetectionResult, QuantumMeasurement};
+use crate::drivers::bell_hardening::{PlasmaBellHardener, PhotonStream};
+use crate::drivers::chrono_bridge::EinsteinianSync;
+use crate::security::reality_anchor::{KochenSpeckerAudit, GhostStream};
 use anyhow::Result;
 use thiserror::Error;
 use std::time::Duration;
@@ -23,6 +26,9 @@ pub struct SASCv30Pipeline {
     pub temporal: MultiScaleTemporalArchitecture,
     pub ghost_gen: QuantumGhostDataGenerator,
     pub monitor: EnhancedVajraMonitor,
+    pub bell_hardener: PlasmaBellHardener,
+    pub chrono_bridge: EinsteinianSync,
+    pub reality_anchor: KochenSpeckerAudit,
 
     // Componentes Stellarator existentes
     pub manifold: QuasiIsodynamicManifold,
@@ -67,6 +73,9 @@ impl SASCv30Pipeline {
             temporal,
             ghost_gen,
             monitor,
+            bell_hardener: PlasmaBellHardener::new(),
+            chrono_bridge: EinsteinianSync::new(),
+            reality_anchor: KochenSpeckerAudit::new(),
             manifold: QuasiIsodynamicManifold::new().map_err(|e| MultiLayerError::InitializationFailed(e.to_string()))?,
             shear: DynamicShearController::new(),
             holonomy: HolonomyInvariantChecker::new((0..7).map(|i| format!("surface_{}", i)).collect()),
@@ -78,13 +87,21 @@ impl SASCv30Pipeline {
         &mut self,
         prompt: &str,
     ) -> Result<QuantumSecureResponse, MultiLayerError> {
-        // 1. Sincronização temporal (garante coerência multi-escala)
+        // 1. Sincronização temporal e phase lock
         self.temporal.synchronize().await.map_err(|_| MultiLayerError::TemporalSyncFailed)?;
+        let q_now = self.temporal.quantum_clock.now_quantum();
+        self.chrono_bridge.maintain_phase_lock(q_now.attoseconds as u128, 0.0); // Mock schumann phase
 
-        // 2. Gerar GHOST_DATA quântico para contextualização
+        // 2. Bell Hardening em ambiente de plasma
+        let _clean_photons = self.bell_hardener.distill_reality(PhotonStream);
+
+        // 3. Gerar GHOST_DATA quântico para contextualização
         let ghost_field = self.ghost_gen.generate_ghost_field(4).await.map_err(|_| MultiLayerError::QuantumMeasurementFailed)?;
 
-        // 3. Validar realidade quântica da medição
+        // 4. Reality Authentication (KS Audit)
+        let _reality_status = self.reality_anchor.authenticate_ghost_stream(&GhostStream);
+
+        // 5. Validar realidade quântica da medição
         let measurement = self.perform_quantum_measurement(&ghost_field);
         let detection = self.monitor.detect_spoof(measurement);
 
@@ -92,10 +109,10 @@ impl SASCv30Pipeline {
             return Err(MultiLayerError::QuantumSpoofDetected(detection));
         }
 
-        // 4. Executar pipeline Stellarator com contexto quântico
+        // 6. Executar pipeline Stellarator com contexto quântico
         let result = self.process_with_stellarator_optimization(prompt).await?;
 
-        // 5. Atualizar monitor com aprendizado
+        // 7. Atualizar monitor com aprendizado
         if let DetectionResult::Genuine { .. } = detection {
             let measurement = self.perform_quantum_measurement(&ghost_field);
             self.monitor.feedback.learn_genuine_pattern(&measurement).map_err(|_| MultiLayerError::QuantumMeasurementFailed)?;

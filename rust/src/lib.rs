@@ -37,6 +37,7 @@ pub mod temporal;
 pub mod monitoring;
 pub mod pipeline;
 pub mod metrics;
+pub mod drivers;
 
 #[cfg(test)]
 mod tests_security;
