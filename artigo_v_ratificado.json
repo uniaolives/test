@@ -44,6 +44,22 @@
       "ks_score": 1.21,
       "s_parameter": 2.435,
       "chrono_coherence": 0.99992
+    },
+    "cosmogenesis": {
+      "status": "ACTIVE - UNIVERSE_STABILIZED",
+      "hubble_flow": {
+        "z": 0.0302,
+        "h0": 67.4,
+        "isotropy": 0.99999
+      },
+      "ghost_gravity": {
+        "coupling": 0.693,
+        "s_metric": 2.435
+      },
+      "omega_regulation": {
+        "w": -1.0,
+        "omega_tot": 1.0003
+      }
     }
   }
 }

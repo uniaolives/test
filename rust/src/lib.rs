@@ -39,6 +39,7 @@ pub mod pipeline;
 pub mod metrics;
 pub mod drivers;
 pub mod ignition;
+pub mod cosmogenesis;
 
 #[cfg(test)]
 mod tests_security;
@@ -51,6 +52,9 @@ mod tests_continuum_memory;
 
 #[cfg(test)]
 mod tests_kpi_evaluator;
+
+#[cfg(test)]
+mod tests_cosmogenesis;
 
 pub struct TruthClaim {
     pub statement: String,
