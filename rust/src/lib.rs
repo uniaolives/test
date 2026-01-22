@@ -30,6 +30,12 @@ pub mod quantum;
 pub mod gravity_engine;
 pub mod cyber_oncology;
 pub mod hypervisor;
+pub mod consciousness;
+pub mod agi;
+pub mod learning;
+pub mod diagnostics;
+pub mod topology;
+pub mod geometry;
 
 #[cfg(test)]
 mod tests_security;
