@@ -1,4 +1,6 @@
-#[derive(Debug, Clone)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SocioEmotionalRole {
     pub openness: f64,
     pub conscientiousness: f64,
@@ -17,4 +19,18 @@ impl SocioEmotionalRole {
             neuroticism: 0.2,
         }
     }
+}
+
+impl Default for SocioEmotionalRole {
+    fn default() -> Self {
+        Self::default_empathy()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum PersonaRole {
+    Analyst,
+    Guardian,
+    Liaison,
+    Physicist,
 }

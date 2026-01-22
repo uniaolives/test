@@ -21,6 +21,7 @@ fn test_aletheia_level_9_invariant_resilience() {
         human_approval: None,
         decision_time: 1000,
         explanation: None,
+        perspective_count: 5,
     };
 
     let result = cathedral.submit_global_decision(malicious_decision, CloudDomain::AwsNitroGovCloud);

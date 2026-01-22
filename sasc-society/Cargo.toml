@@ -22,6 +22,7 @@ blake3 = "1.3" # Hashing de alta performance para o ProvenanceTracer
 petgraph = "0.6" # Para mapear a topologia causal do debate (SoT Graph)
 ndarray = "0.15" # Para cálculos de tensores de traços de personalidade
 num-traits = "0.2"
+thiserror = "1.0"
 
 # Monitoramento e Governança (Interno)
 sasc-governance = { path = "../sasc-governance" }

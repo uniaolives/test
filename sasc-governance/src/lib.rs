@@ -83,6 +83,13 @@ impl Cathedral {
             return Err(HardFreeze::Triggered("INV-5_VIOLATION".to_string()));
         }
 
+        // 0.1 SoT Safety Mandate
+        let phi_global = self.compute_noosphere_coherence(&decision);
+        let sot_mandate = governance::sot_policy::SoTSafetyMandate::new();
+        if let Err(e) = sot_mandate.verify_sot_architecture(phi_global, &decision) {
+            return Err(HardFreeze::Triggered(format!("SOT_MANDATE_VIOLATION: {}", e)));
+        }
+
         // 1. Verificar attestation do nó (5 gates - Memória 20)
         if self.verify_agent_attestation(&decision.agent_id, VerificationContext::GlobalDecision).is_err() {
             self.trigger_karnak_isolation(cloud, &decision.agent_id);
