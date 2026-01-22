@@ -40,6 +40,8 @@ pub mod metrics;
 pub mod drivers;
 pub mod ignition;
 pub mod cosmogenesis;
+pub mod ontological_commitment;
+pub mod multiversal;
 
 #[cfg(test)]
 mod tests_security;
@@ -55,6 +57,9 @@ mod tests_kpi_evaluator;
 
 #[cfg(test)]
 mod tests_cosmogenesis;
+
+#[cfg(test)]
+mod tests_omicron;
 
 pub struct TruthClaim {
     pub statement: String,
