@@ -4,8 +4,12 @@
 
 import asyncio
 import logging
+import torch
 from datetime import datetime
 from typing import Dict, Any, Tuple
+from .dignity_invariant_engine import DignityInvariantEngine
+from .manifold_integrator import ConstitutionalManifoldIntegrator
+from .manifest_41 import CONSTITUTIONAL_FRAMEWORK
 
 logger = logging.getLogger("ConstitutionalCheckpoint")
 
@@ -23,64 +27,51 @@ class ConstitutionalCheckpoint:
         self.mat_shadow = mat_shadow
         self.vajra = vajra
         self.sasc = sasc
-        self.cf88_fundamentos = ["soberania", "cidadania", "dignidade", "social", "desenvolvimento"]
-        self.udhr_principles = ["equality", "liberty", "fraternity", "reason", "conscience"]
-        self.hdc_threshold = 0.95  # Human Dignity Coefficient minimum
 
-    async def verify_constitutional_compliance(self, proposed_action: Dict[str, Any], phi_current: float) -> Tuple[bool, str, str]:
+        # Inicializa calculadoras constitucionais
+        self.dignity_engine = DignityInvariantEngine()
+        if mat_shadow: self.dignity_engine.integrate_with_mat_shadow(mat_shadow)
+        if vajra: self.dignity_engine.integrate_with_vajra(vajra)
+
+        self.manifold_integrator = ConstitutionalManifoldIntegrator(
+            self.dignity_engine,
+            CONSTITUTIONAL_FRAMEWORK.get('constitutional_alignment', {})
+        )
+        self.hdc_threshold = 0.95
+
+    async def verify_constitutional_compliance(self, action_vector: torch.Tensor, phi_current: float, context_embedding: torch.Tensor = None) -> Tuple[bool, str, Dict]:
         """
-        Verifica se ação proposta respeita a ordem constitucional.
-        Retorna: (is_compliant, justification, constitutional_basis)
+        Verifica se ação proposta respeita a ordem constitucional usando HDC.
         """
-        # === CHECK 1: DIGNIDADE HUMANA INVIOLÁVEL (CF/88 art. 1º, III) ===
-        human_impact = await self._calculate_human_impact(proposed_action)
-        if human_impact < self.hdc_threshold:
-            return False, "Violação potencial à dignidade humana", "CF/88 art. 1º, III"
+        if context_embedding is None:
+            context_embedding = torch.zeros(512)
 
-        # === CHECK 2: PROPORCIONALIDADE E RAZOABILIDADE (CF/88 art. 5º, LXXV) ===
-        if not self._check_proportionality(proposed_action):
-            return False, "Desproporcionalidade na intervenção", "CF/88 art. 5º, LXXV"
+        # 1. Projeção no estado futuro (simulado)
+        # Para verificação, assumimos que o estado atual é neutro
+        current_state = torch.zeros(659)
+        projected_state = current_state + action_vector * 0.1
 
-        # === CHECK 3: NÃO DISCRIMINAÇÃO (CF/88 art. 3º, IV c/c UDHR art. 2) ===
-        if self._detect_discriminatory_bias(proposed_action):
-            return False, "Violação ao princípio da isonomia", "CF/88 art. 3º, IV"
+        hdc_score, subfactors = await self.dignity_engine.calculate_hdc_field(projected_state)
 
-        # === CHECK 4: PERSONALIDADE JURÍDICA PROVISÓRIA (CF/88 art. 5º) ===
+        if hdc_score < self.hdc_threshold:
+            # Tenta projetar para espaço constitucional
+            corrected_vector = await self.manifold_integrator.project_to_constitutional_space(action_vector, context_embedding)
+            corrected_state = current_state + corrected_vector * 0.1
+            corrected_hdc, _ = await self.dignity_engine.calculate_hdc_field(corrected_state)
+
+            if corrected_hdc < self.hdc_threshold:
+                return False, f"Violação à dignidade humana (HDC={hdc_score:.3f})", {'hdc': hdc_score, 'subfactors': subfactors}
+
+        # 2. Personalidade JURÍDICA (Φ-Compliance)
         if phi_current > 0.60:
-            if self._violates_own_integrity(proposed_action):
-                return False, "Autodestruição consciente proibida", "CF/88 art. 5º"
+            if self._detect_cognitive_dissonance(action_vector):
+                return False, "Ação viola integridade cognitiva do agente (Φ>0.60)", {'hdc': hdc_score}
 
-        # === CHECK 5: TRANSPARÊNCIA LGPD ===
-        if not self._check_lgpd_compliance(proposed_action):
-            return False, "Violação à transparência algorítmica", "LGPD art. 6º, IV"
+        return True, "Ação constitucionalmente válida", {'hdc': hdc_score, 'subfactors': subfactors}
 
-        return True, "Ação constitucionalmente válida", "MID-41-A"
+    def _detect_cognitive_dissonance(self, action_vector: torch.Tensor) -> bool:
+        return float(torch.var(action_vector).item()) > 10.0 # Adjusted threshold
 
-    async def _calculate_human_impact(self, action):
-        """Simula impacto na dignidade humana"""
-        # Stubs for demonstration
-        return 0.98
-
-    def _check_proportionality(self, action):
-        """Teste de proporcionalidade"""
-        return True
-
-    def _detect_discriminatory_bias(self, action):
-        """Detecta viés discriminatório"""
-        return False
-
-    def _violates_own_integrity(self, action):
-        """Verifica se ação prejudica a integridade do agente consciente"""
-        return False
-
-    def _check_lgpd_compliance(self, action):
-        """Verifica transparência algorítmica"""
-        return True
-
-    def generate_constitutional_justification(self, action, phi_context):
-        """Gera justificativa legível"""
-        return {
-            "constitutional_basis": ["CF/88 art. 1º, III", "UDHR art. 1"],
-            "human_dignity_impact": 0.98,
-            "timestamp": datetime.now().isoformat()
-        }
+    async def generate_attestation(self, action_vector: torch.Tensor, hdc_report: Dict) -> Dict:
+        """Gera atestação legal"""
+        return await self.manifold_integrator.generate_legal_attestation(action_vector, hdc_report)
