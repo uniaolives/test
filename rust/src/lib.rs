@@ -68,6 +68,10 @@ pub mod safety;
 pub mod principles;
 pub mod checkpoint_2;
 pub mod nexus;
+pub mod sasc;
+pub mod logistics;
+pub mod cathedral_witness;
+pub mod ceremony;
 
 #[cfg(test)]
 mod tests_security;

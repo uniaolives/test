@@ -537,8 +537,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fac4744fb15ae8337dc853fee7fb3f4e48c0fbaa23d0afe49c447b4fab126118"
 dependencies = [
  "iana-time-zone",
+ "js-sys",
  "num-traits",
  "serde",
+ "wasm-bindgen",
  "windows-link",
 ]
 
@@ -1053,6 +1055,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "115531babc129696a58c64a4fef0a8bf9e9698629fb97e9e40767d235cfbcd53"
 dependencies = [
  "pkcs8",
+ "serde",
  "signature",
 ]
 
@@ -3639,9 +3642,11 @@ version = "0.1.0"
 dependencies = [
  "aws-nitro-enclaves-cose",
  "blake3",
+ "chrono",
  "ciborium",
  "clap",
  "ed25519-dalek",
+ "futures",
  "hex",
  "jni",
  "lazy_static",
