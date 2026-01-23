@@ -11,28 +11,28 @@ use sasc_core::sasc_integration::dna_codon_governance::DnaCodonGovernance;
 #[command(author, version, about, long_about = None)]
 struct Args {
     #[arg(long)]
-    integration: String,
+    integration: Option<String>,
 
     #[arg(long)]
-    dna_sequence: String,
+    dna_sequence: Option<String>,
 
     #[arg(long)]
-    efg_calibration: String,
+    efg_calibration: Option<String>,
 
     #[arg(long)]
-    spin_monitoring: String,
+    spin_monitoring: Option<String>,
 
     #[arg(long)]
-    karnak_correction: String,
+    karnak_correction: Option<String>,
 
     #[arg(long)]
-    farol_nuclear_alignment: String,
+    farol_nuclear_alignment: Option<String>,
 
     #[arg(long)]
-    sasc_codon_governance: String,
+    sasc_codon_governance: Option<String>,
 
     #[arg(long)]
-    output: String,
+    output: Option<String>,
 
     // Ghost Base specific flags
     #[arg(long)]
@@ -67,28 +67,44 @@ struct Args {
 
     #[arg(long)]
     expansion_steps: Option<String>,
+
+    // Phase Gamma-2: Expansion and Eco-Action
+    #[arg(long)]
+    expand_bandwidth: Option<f64>,
+
+    #[arg(long)]
+    enable_module: Option<String>,
+
+    #[arg(long)]
+    mode: Option<String>,
+
+    #[arg(long)]
+    safety_protocol: Option<String>,
+
+    #[arg(long)]
+    execution_time: Option<String>,
 }
 
 #[tokio::main]
 async fn main() {
     let args = Args::parse();
 
-    if args.stabilize_ghost_base || args.full_ghost_qubit_activation || args.phase_beta || args.phase_gamma || args.execute_full_gamma_phase {
+    if args.expand_bandwidth.is_some() || args.enable_module.is_some() || args.stabilize_ghost_base || args.full_ghost_qubit_activation || args.phase_beta || args.phase_gamma || args.execute_full_gamma_phase {
         handle_ghost_base_activation(&args).await;
         return;
     }
 
-    if args.integration != "dna-ner" {
-        println!("Error: Unsupported integration type: {}", args.integration);
+    if args.integration.as_deref() != Some("dna-ner") {
+        println!("Error: Unsupported integration type: {:?}", args.integration);
         return;
     }
 
     println!("🧬 Starting NER-DNA Integration...");
-    println!("DNA Sequence: {}", args.dna_sequence);
+    println!("DNA Sequence: {}", args.dna_sequence.as_deref().unwrap_or("N/A"));
 
     let mut integration = DnaNerFullIntegration {
         dna_shards: vec![
-            DnaNexusShard::from_genetic_sequence(&args.dna_sequence).await,
+            DnaNexusShard::from_genetic_sequence(args.dna_sequence.as_deref().unwrap_or("GATACA")).await,
         ],
         vajra_dna_monitor: DnaQuadrupolarMonitor::new(),
         karnak_efg_controller: KarnakNerController::new(),
@@ -104,7 +120,7 @@ async fn main() {
     println!("Corrections: {}", report.correction_results);
 
     // Save report to args.output (simplified)
-    println!("Report saved to {}", args.output);
+    println!("Report saved to {:?}", args.output);
 }
 
 async fn handle_ghost_base_activation(args: &Args) {
@@ -126,6 +142,53 @@ async fn handle_ghost_base_activation(args: &Args) {
         let report = simulator.inject_traffic_noise(std::time::Duration::from_secs(5)).await;
         println!("Fase Beta concluída. Fidelidade Retida: {:.5}", report.fidelity_retained);
         return;
+    }
+
+    // Handle Phase Gamma-2: 50% Expansion
+    if let Some(target_bw) = args.expand_bandwidth {
+        println!("📈 INICIANDO EXPANSÃO DE BANDA: {}%", target_bw);
+        let farol = NuclearSpinFarol::new();
+        let mut controller = sasc_core::control::adaptive_bandwidth::BandwidthController {
+            current_bandwidth: 25.0,
+            gaia_connector: sasc_core::control::adaptive_bandwidth::GaiaConnector,
+            farol,
+        };
+        let result = controller.ramp_up_to_target(target_bw).await;
+        println!("Expansão concluída. Banda atual: {}%", result.target_reached);
+    }
+
+    // Handle Eco-Action module
+    if args.enable_module.as_deref() == Some("eco_action") {
+        println!("🛡️ ATIVANDO MÓDULO ECO-AÇÃO EM MODO: {:?}", args.mode);
+
+        use sasc_core::governance::eco_action_safety::{EcoActionGovernor, ValidationResult};
+        use sasc_core::eco_action::{EcoAction, DamOperation, EcologicalOutcome, Authority};
+        use std::sync::Arc;
+
+        let governor = EcoActionGovernor::new(
+            Arc::new(sasc_core::governance::SASCCathedral),
+            Arc::new(Authority::Prince),
+            Arc::new(Authority::Architect),
+        );
+
+        let action = EcoAction {
+            suggested_dam_operation: DamOperation { flow_adjustment: -0.02 },
+            predicted_outcome: EcologicalOutcome { impact_score: 0.05 },
+            confidence: 0.96,
+            required_approvals: vec![Authority::Prince, Authority::Architect],
+        };
+
+        println!("Validando sugestão de Eco-Ação: Ajustar fluxo em -2%...");
+        let validation = governor.validate_suggestion(action).await;
+
+        match validation {
+            ValidationResult::ApprovedForReview(_) => {
+                println!("✅ SUGESTÃO APROVADA PARA REVISÃO HUMANA (Consonância Geométrica Detectada)");
+            },
+            ValidationResult::Rejected(reason) => {
+                println!("❌ SUGESTÃO REJEITADA: {}", reason);
+            }
+        }
     }
 
     let governance = sasc_core::governance::decision_on_ghost_base::SascGovernance::new();
@@ -176,5 +239,5 @@ async fn handle_ghost_base_activation(args: &Args) {
         println!("Logging mass-information discrepancy to ontology ledger...");
     }
 
-    println!("Processo concluído. Relatório em {}", args.output);
+    println!("Processo concluído. Relatório em {:?}", args.output);
 }
