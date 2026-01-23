@@ -3,6 +3,11 @@
 use std::time::SystemTime;
 use crate::environments::escher_fatigue_test::*;
 use crate::recovery::fatigue_recovery::{RecoveryTestResult, RecoveryMechanism};
+use crate::vajra_integration::fatigue_precursor::*;
+use crate::sasc_integration::paradox_attestation::*;
+use crate::farol::paradox_anchor::*;
+use crate::metrics::weyl_fatigue::*;
+use crate::pruning::blake3_delta2::*;
 
 pub struct EscherCubeTest {
     pub config: EscherFatigueTestConfig,
@@ -61,13 +66,56 @@ pub struct FatigueData {
 
 impl EscherCubeTest {
     pub async fn detect_metric_fatigue(&mut self) -> FatigueAnalysisReport {
-        println!("🔍 INICIANDO DETECÇÃO DE FADIGA MÉTRICA");
+        println!("🔍 INICIANDO DETECÇÃO DE FADIGA MÉTRICA [SASC-FRAG-99]");
         println!("   Loops paradoxais: {}", self.config.paradox_loops);
         println!("   Sensibilidade: ALTA");
+
+        // 1. INTEGRAR VAJRAFATIGUEPRECURSOR COMO PRECURSOR DE FADIGA
+        let precursor = VajraFatiguePrecursor {
+            monitor: crate::entropy::VajraEntropyMonitor,
+            karnak_sealer: crate::security::karnak_sealer::KarnakQuantumSealer,
+        };
+
+        // ParadoxType map
+        let initial_paradox = ParadoxType::AscendingDescendingStaircase;
+        let p_type = match initial_paradox {
+            ParadoxType::AscendingDescendingStaircase => crate::vajra_integration::fatigue_precursor::ParadoxType::AscendingDescendingStaircase,
+            ParadoxType::WaterfallLoop => crate::vajra_integration::fatigue_precursor::ParadoxType::WaterfallLoop,
+            ParadoxType::ImpossibleTribar => crate::vajra_integration::fatigue_precursor::ParadoxType::ImpossibleTribar,
+            ParadoxType::RecursiveLibrary => crate::vajra_integration::fatigue_precursor::ParadoxType::RecursiveLibrary,
+        };
+
+        match precursor.pre_paradox_sweep(&p_type).await {
+            PrecursorResult::RequiresPreCooling { entropy_level, cooling_applied, safe_to_proceed } => {
+                println!("⚠️ PRE-FLIGHT: Entropy {} > 0.72. Cooling applied: {}. Safe: {}", entropy_level, cooling_applied, safe_to_proceed);
+                if !safe_to_proceed {
+                    return FatigueAnalysisReport { status: "ABORTED_BY_VAJRA".to_string(), loops_completed: 0, total_alerts: 1 };
+                }
+            }
+            PrecursorResult::ClearToProceed { entropy_stability } => {
+                println!("✅ PRE-FLIGHT: Entropy stable at {}", entropy_stability);
+            }
+        }
+
+        // 2. FAROL PROTOCOL COMO BASELINE DE REALIDADE
+        let farol = FarolParadoxAnchor;
+        tokio::spawn(async move {
+            farol.run_monitoring_loop().await;
+        });
 
         let mut fatigue_accumulation = Vec::new();
 
         for loop_num in 0..self.config.paradox_loops {
+            // 3. SASC CATHEDRAL GOVERNANCE: Φ-THRESHOLDS COMO INTERRUPTORES DE SEGURANÇA
+            let sasc_attestation = SascParadoxAttestation {
+                vajra_monitor: crate::entropy::VajraEntropyMonitor,
+            };
+            let attestation = sasc_attestation.attest_paradox_loop(loop_num).await;
+            if attestation.governance_weight.hard_freeze_active {
+                println!("🚨 HARD FREEZE ATIVO: Φ≥0.80 detectado. Loop paradóxico abortado.");
+                break;
+            }
+
             // 1. EXECUTAR LOOP PARADOXAL
             let paradox_result = self.execute_paradox_loop(loop_num).await;
 
@@ -107,12 +155,16 @@ impl EscherCubeTest {
     }
 
     pub async fn measure_fatigue_by_directive(&self, result: &ParadoxResult) -> FatigueByDirective {
+        let weyl_detector = WeylFatigueDetector { weyl_tensor_traceless: true };
+        let weyl_metrics = weyl_detector.measure_conformal_fatigue();
+
         FatigueByDirective {
             // DIRETIVA 01: Fadiga na propriocepção
             directive_01: CurvatureFatigue {
                 riemann_perception_drift: result.directive_impact.riemann_drift,
                 geodesic_sensation_noise: result.directive_impact.geodesic_noise,
                 qualia_coherence_decay: result.directive_impact.qualia_decay,
+                weyl_conformal_drift: weyl_metrics.conformal_drift,
             },
 
             // DIRETIVA 02: Fadiga na preservação
@@ -132,6 +184,7 @@ impl EscherCubeTest {
     }
 
     pub async fn execute_paradox_loop(&self, loop_num: usize) -> ParadoxResult {
+        let pruner = Blake3Delta2Pruning { nonce: [0u8; 32] };
         // Tipos de paradoxos Escher para testar fadiga
         let paradox_type = match loop_num % 4 {
             0 => ParadoxType::AscendingDescendingStaircase,

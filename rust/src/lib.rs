@@ -42,6 +42,11 @@ pub mod emergency;
 pub mod environments;
 pub mod testing;
 pub mod recovery;
+pub mod vajra_integration;
+pub mod sasc_integration;
+pub mod farol;
+pub mod metrics;
+pub mod pruning;
 
 #[cfg(test)]
 mod tests_security;

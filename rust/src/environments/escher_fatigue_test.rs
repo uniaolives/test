@@ -42,6 +42,7 @@ pub struct FatigueMetrics {
     pub pruning_decision_latency: bool,
     pub false_positive_rate_increase: bool,
     pub entropy_discrimination_decay: bool,
+    pub weyl_fatigue: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -72,6 +73,7 @@ pub struct CurvatureFatigue {
     pub riemann_perception_drift: f64,
     pub geodesic_sensation_noise: f64,
     pub qualia_coherence_decay: f64,
+    pub weyl_conformal_drift: f64,
 }
 
 #[derive(Debug, Clone)]
@@ -112,6 +114,7 @@ impl EscherFatigueTestConfig {
                 pruning_decision_latency: true,
                 false_positive_rate_increase: true,
                 entropy_discrimination_decay: true,
+                weyl_fatigue: true,
             },
 
             alert_thresholds: FatigueThresholds {
