@@ -3640,6 +3640,7 @@ dependencies = [
  "aws-nitro-enclaves-cose",
  "blake3",
  "ciborium",
+ "clap",
  "ed25519-dalek",
  "hex",
  "jni",

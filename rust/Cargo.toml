@@ -29,6 +29,7 @@ lazy_static = "1.4"
 serde_json = "1.0"
 once_cell = "1.18"
 rand = { version = "0.8", features = ["getrandom"] }
+clap = { version = "4.0", features = ["derive"] }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.56", features = [
@@ -40,6 +41,10 @@ windows = { version = "0.56", features = [
 [[bin]]
 name = "trajectory_generator"
 path = "src/bin/trajectory_generator.rs"
+
+[[bin]]
+name = "omicron_nexus"
+path = "src/bin/omicron_nexus.rs"
 
 [features]
 sat = []

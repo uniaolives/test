@@ -48,6 +48,9 @@ pub mod farol;
 pub mod multi_nexus;
 pub mod metrics;
 pub mod pruning;
+pub mod substrate;
+pub mod karnak;
+pub mod integration;
 
 #[cfg(test)]
 mod tests_security;

@@ -14,8 +14,14 @@ impl Tensor {
     pub fn zero() -> Self {
         Self { data: vec![0.0] }
     }
+    pub fn add_component(&mut self, value: f64, _direction: [f64; 3]) {
+        self.data.push(value);
+    }
     pub fn norm(&self) -> f64 {
         self.data.iter().map(|x| x * x).sum::<f64>().sqrt()
+    }
+    pub fn subtract(&self, other: &Self) -> Self {
+        Self { data: self.data.iter().zip(other.data.iter()).map(|(a, b)| a - b).collect() }
     }
     pub fn contract_self(&self) -> Self {
         Self { data: self.data.iter().map(|x| x * 0.9).collect() }
