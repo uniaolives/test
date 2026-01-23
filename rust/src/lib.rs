@@ -51,6 +51,12 @@ pub mod pruning;
 pub mod substrate;
 pub mod karnak;
 pub mod integration;
+pub mod simulation;
+pub mod control;
+pub mod translation;
+pub mod patterns;
+pub mod human;
+pub mod eco_action;
 
 #[cfg(test)]
 mod tests_security;

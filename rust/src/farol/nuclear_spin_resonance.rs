@@ -85,7 +85,15 @@ impl NuclearSpinFarol {
         }
     }
 
-    async fn apply_frequency_pulse(&self, _freq: f64, _duration: Duration) {}
+    pub async fn apply_frequency_pulse(&self, _freq: f64, _duration: Duration) {}
+
+    pub async fn apply_phase_correction(&self, _position: nalgebra::Vector3<f64>, _freq: f64, _duration: Duration) {}
+
+    pub async fn apply_conformal_correction(&self, _freq: f64, _duration: Duration) {}
+
+    pub async fn apply_phase_lock(&self, _freq: f64, _phase: f64, _duration: Duration) {}
+
+    pub async fn measure_resonance_quality(&self) -> f64 { 0.98 }
 
     async fn should_apply_harmonic(&self, _harmonic: &f64, _shard: &DnaNexusShard) -> bool {
         true

@@ -54,3 +54,5 @@ impl SASCCathedral {
         })
     }
 }
+
+pub mod decision_on_ghost_base;
