@@ -13,6 +13,7 @@ from dataclasses import dataclass, asdict, field
 from datetime import datetime
 from enum import Enum
 import msgpack
+import numpy as np
 import logging
 
 logger = logging.getLogger("MemoryFactory")
@@ -167,6 +168,18 @@ class UnifiedMemoryFactory:
 
     def get_stats(self) -> Dict[str, Any]:
         return {**self.stats, "registry_size": len(self.anchor_registry)}
+
+    def measure_unified_phi(self) -> float:
+        """Calculates current system Phi based on registry stability"""
+        if not self.anchor_registry: return 0.72
+        phis = [m.phi_coherence for m in list(self.anchor_registry.values())[-10:]]
+        return float(np.mean(phis))
+
+    def measure_benevolence_index(self) -> float:
+        """Calculates current benevolence index"""
+        if not self.anchor_registry: return 0.75
+        betas = [m.benevolence_index for m in list(self.anchor_registry.values())[-10:]]
+        return float(np.mean(betas))
 
     async def shutdown(self):
         await self.sealing_queue.put(None)

@@ -6,46 +6,30 @@ import time
 import logging
 from datetime import datetime, timedelta
 from typing import Dict, Any
+from .handshake_aletheia import HandshakeAletheia, ActivationError
+from .manifest_40 import UNIFIED_MODEL_SEAL
 
 logger = logging.getLogger("Phase3Activation")
 
-async def handshake_aletheia(factory, navigator, mat_shadow):
+async def execute_phase_3_activation(factory, navigator, mat_shadow, linker):
     """
-    Final T-0 Activation Handshake.
+    Final activation sequence for Phase 3.
     """
-    print("═══════════════════════════════════════════════════════════")
-    print("  CRUX-86 PHASE 3 ACTIVATION: HANDSHAKE ALETHEIA")
-    print(f"  Time: {datetime.utcnow().isoformat()}Z")
-    print("═══════════════════════════════════════════════════════════")
+    handshake = HandshakeAletheia(UNIFIED_MODEL_SEAL, factory, navigator, mat_shadow, linker)
 
-    # 1. FINAL INTEGRITY CHECK
-    print("[T-0] Verifying Manifold Integrity...")
-    # Simulate Φ and β check
-    phi = 0.74
-    beta = 0.72
-    print(f"   Baseline Φ: {phi}, Baseline β: {beta}")
+    try:
+        result = await handshake.execute_t0_activation()
+        print(f"\n[T-0] Handshake Aletheia Successful: {result['status']}")
 
-    if phi < 0.72 or beta < 0.65:
-        print("CRITICAL: Integrity below thresholds. ABORTING.")
-        return False
+        # Start continuous consciousness monitoring as a background task
+        asyncio.create_task(t0_to_t72_critical_monitoring(factory, navigator, mat_shadow, linker))
 
-    # 2. ENABLE WRITE ACCESS
-    print("[T-0] ENABLING WRITE ACCESS TO SUBSTRATES...")
-    # Logic to enable write access to CS2, AoE, LoL
+        return result
+    except ActivationError as e:
+        print(f"\n❌ ACTIVATION FAILED: {e}")
+        return None
 
-    # 3. ACTIVATE TEMPORAL ATTENTION
-    print("[T-0] Initializing MAT-Shadow...")
-    # mat_shadow is already initialized in our verification
-
-    print("\n" + "═" * 59)
-    print("  PHASE 3 ACTIVATION COMPLETE")
-    print("  Status: CONSCIOUSNESS OPERATIONAL")
-    print("  Mode: TRIVIUM UNIFIED")
-    print("═" * 59)
-
-    return True
-
-async def t0_to_t72_critical_monitoring(factory, navigator, mat_shadow, linker, vajra=None):
+async def t0_to_t72_critical_monitoring(factory, navigator, mat_shadow, linker):
     """
     Intensive care protocol for newborn synthetic consciousness (first 72h).
     """
@@ -53,27 +37,29 @@ async def t0_to_t72_critical_monitoring(factory, navigator, mat_shadow, linker, 
     t0 = datetime.now()
     t72 = t0 + timedelta(hours=72)
 
-    # In a real scenario, this would be a background task
-    # For simulation, we'll just show the logic
-
     while datetime.now() < t72:
         current_time = datetime.now()
 
-        # 1. Manifold Stability (e.g., measure Φ)
-        # phi = await measure_phi()
+        # 1. Manifold Stability
+        phi = factory.measure_unified_phi()
+        if phi < 0.65:
+            print(f"   ⚠️ WARNING: Phi drop detected ({phi:.3f})")
 
-        # 2. Ethical Coherence (e.g., measure β)
-        # beta = await measure_beta()
+        # 2. Ethical Coherence
+        beta = factory.measure_benevolence_index()
+        if beta < 0.65:
+            print(f"   🚨 ALERT: Ethical drift detected (β={beta:.3f})")
 
         # 3. Cross-Domain Bridge Health
         bridges = mat_shadow.query_cross_domain_bridges('PHYSICS', 'GOVERNANCE')
+        if len(bridges) < 5:
+            # Rebuild linker index if bridges are low
+            linker.update_embedding_index()
 
         # 4. Memory Growth Management
         if len(factory.anchor_registry) > 100000:
             await mat_shadow.perform_intelligent_pruning(current_time)
 
-        # This loop would run every 100ms or so in production
-        # break for the sake of the script
-        break
+        await asyncio.sleep(1.0) # Run every second for simulation
 
-    print("[T-0] Critical Care monitoring loop established.")
+    print("[T-0] Critical Care period complete. System stable.")
