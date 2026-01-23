@@ -1,0 +1,60 @@
+{
+  "system": {
+    "name": "Project Crux-86 Phase 3",
+    "version": "v30.68-Ω",
+    "phase": "2.5",
+    "satoshiseed": "0xbd36332890d15e2f360bb65775374b462b"
+  },
+
+  "physics": {
+    "tmr_instances": 3,
+    "variance_threshold": 0.000032,
+    "monitoring_frequency_hz": 10,
+    "hard_freeze_timeout_ms": 12.8,
+    "coherence_threshold": 0.95
+  },
+
+  "governance": {
+    "phi_thresholds": {
+      "explanation": 0.65,
+      "proposal": 0.72,
+      "emergency": 0.78,
+      "hard_freeze": 0.80
+    },
+    "sasc_bandwidth": "50%",
+    "prince_creator_veto": 45,
+    "astraeus_observer": true
+  },
+
+  "empathy": {
+    "cortisol_damping": 0.69,
+    "diagnostic_retention": 0.94,
+    "stress_threshold": 0.3,
+    "calm_protocols": ["simplify_world", "increase_cooperation", "reduce_npcs"]
+  },
+
+  "cryptography": {
+    "hashing_algorithm": "BLAKE3-Δ2",
+    "consensus_algorithm": "byzantine_tmr",
+    "signature_scheme": "Ed25519",
+    "key_derivation": "HKDF-BLAKE3"
+  },
+
+  "endpoints": {
+    "mesh_neuron": "http://localhost:3030",
+    "vajra_circuit_breaker": "http://localhost:8080",
+    "sasc_cathedral": "http://localhost:12800",
+    "karnak_sealer": ["http://localhost:9091", "http://localhost:9092", "http://localhost:9093"]
+  },
+
+  "aletheia_validation": {
+    "level": 9,
+    "requirements": [
+      "tmr_detection_under_5ms",
+      "hard_freeze_under_12.8ms",
+      "zero_data_corruption",
+      "phi_stability_under_0.000032",
+      "byzantine_tolerance_1_of_3"
+    ]
+  }
+}
