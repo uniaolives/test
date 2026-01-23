@@ -39,6 +39,9 @@ pub mod geometry;
 pub mod ontology;
 pub mod counterfactual;
 pub mod emergency;
+pub mod environments;
+pub mod testing;
+pub mod recovery;
 
 #[cfg(test)]
 mod tests_security;
