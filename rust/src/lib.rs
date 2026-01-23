@@ -45,6 +45,7 @@ pub mod recovery;
 pub mod vajra_integration;
 pub mod sasc_integration;
 pub mod farol;
+pub mod multi_nexus;
 pub mod metrics;
 pub mod pruning;
 

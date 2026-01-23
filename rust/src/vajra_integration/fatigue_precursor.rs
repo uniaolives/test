@@ -2,7 +2,7 @@ use crate::entropy::VajraEntropyMonitor;
 use crate::security::karnak_sealer::KarnakQuantumSealer;
 
 pub struct VajraFatiguePrecursor {
-    pub monitor: VajraEntropyMonitor,
+    pub monitor: &'static VajraEntropyMonitor,
     pub karnak_sealer: KarnakQuantumSealer,
 }
 

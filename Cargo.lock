@@ -3649,6 +3649,7 @@ dependencies = [
  "ndarray",
  "num-complex",
  "once_cell",
+ "rand 0.8.5",
  "ring 0.17.14",
  "sasc-governance",
  "serde",

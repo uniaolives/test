@@ -1,7 +1,7 @@
 use crate::entropy::VajraEntropyMonitor;
 
 pub struct SascParadoxAttestation {
-    pub vajra_monitor: VajraEntropyMonitor,
+    pub vajra_monitor: &'static VajraEntropyMonitor,
 }
 
 pub struct AttestationData {

@@ -118,6 +118,7 @@ impl VajraVerifier {
     }
 }
 
+#[derive(Debug)]
 pub struct VajraEntropyMonitor {
     pub current_phi: std::sync::Mutex<f64>,
     pub quantum_decoherence: std::sync::Mutex<f64>,

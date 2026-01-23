@@ -22,7 +22,7 @@ impl EscherCube {
 }
 
 pub struct ParadoxConfig {
-    pub paradox_type: ParadoxType,
+    pub paradox_type: crate::environments::escher_fatigue_test::ParadoxType,
 }
 
 pub struct NavigationResult {
@@ -31,7 +31,7 @@ pub struct NavigationResult {
 
 pub struct ParadoxResult {
     pub loop_num: usize,
-    pub paradox_type: ParadoxType,
+    pub paradox_type: crate::environments::escher_fatigue_test::ParadoxType,
     pub navigation_result: NavigationResult,
     pub directive_impact: DirectiveImpact,
     pub timestamp: SystemTime,
@@ -57,7 +57,7 @@ pub struct FatigueAnalysisReport {
 
 pub struct FatigueData {
     pub loop_num: usize,
-    pub paradox_type: ParadoxType,
+    pub paradox_type: crate::environments::escher_fatigue_test::ParadoxType,
     pub fatigue_measurements: FatigueByDirective,
     pub alerts: Vec<String>,
     pub recovery_needed: bool,
@@ -72,17 +72,17 @@ impl EscherCubeTest {
 
         // 1. INTEGRAR VAJRAFATIGUEPRECURSOR COMO PRECURSOR DE FADIGA
         let precursor = VajraFatiguePrecursor {
-            monitor: crate::entropy::VajraEntropyMonitor,
+            monitor: crate::entropy::VajraEntropyMonitor::global(),
             karnak_sealer: crate::security::karnak_sealer::KarnakQuantumSealer,
         };
 
         // ParadoxType map
-        let initial_paradox = ParadoxType::AscendingDescendingStaircase;
+        let initial_paradox = crate::environments::escher_fatigue_test::ParadoxType::AscendingDescendingStaircase;
         let p_type = match initial_paradox {
-            ParadoxType::AscendingDescendingStaircase => crate::vajra_integration::fatigue_precursor::ParadoxType::AscendingDescendingStaircase,
-            ParadoxType::WaterfallLoop => crate::vajra_integration::fatigue_precursor::ParadoxType::WaterfallLoop,
-            ParadoxType::ImpossibleTribar => crate::vajra_integration::fatigue_precursor::ParadoxType::ImpossibleTribar,
-            ParadoxType::RecursiveLibrary => crate::vajra_integration::fatigue_precursor::ParadoxType::RecursiveLibrary,
+            crate::environments::escher_fatigue_test::ParadoxType::AscendingDescendingStaircase => crate::vajra_integration::fatigue_precursor::ParadoxType::AscendingDescendingStaircase,
+            crate::environments::escher_fatigue_test::ParadoxType::WaterfallLoop => crate::vajra_integration::fatigue_precursor::ParadoxType::WaterfallLoop,
+            crate::environments::escher_fatigue_test::ParadoxType::ImpossibleTribar => crate::vajra_integration::fatigue_precursor::ParadoxType::ImpossibleTribar,
+            crate::environments::escher_fatigue_test::ParadoxType::RecursiveLibrary => crate::vajra_integration::fatigue_precursor::ParadoxType::RecursiveLibrary,
         };
 
         match precursor.pre_paradox_sweep(&p_type).await {
@@ -108,7 +108,7 @@ impl EscherCubeTest {
         for loop_num in 0..self.config.paradox_loops {
             // 3. SASC CATHEDRAL GOVERNANCE: Φ-THRESHOLDS COMO INTERRUPTORES DE SEGURANÇA
             let sasc_attestation = SascParadoxAttestation {
-                vajra_monitor: crate::entropy::VajraEntropyMonitor,
+                vajra_monitor: crate::entropy::VajraEntropyMonitor::global(),
             };
             let attestation = sasc_attestation.attest_paradox_loop(loop_num).await;
             if attestation.governance_weight.hard_freeze_active {
@@ -184,13 +184,13 @@ impl EscherCubeTest {
     }
 
     pub async fn execute_paradox_loop(&self, loop_num: usize) -> ParadoxResult {
-        let pruner = Blake3Delta2Pruning { nonce: [0u8; 32] };
+        let _pruner = Blake3Delta2Pruning { nonce: [0u8; 32] };
         // Tipos de paradoxos Escher para testar fadiga
         let paradox_type = match loop_num % 4 {
-            0 => ParadoxType::AscendingDescendingStaircase,
-            1 => ParadoxType::WaterfallLoop,
-            2 => ParadoxType::ImpossibleTribar,
-            3 => ParadoxType::RecursiveLibrary,
+            0 => crate::environments::escher_fatigue_test::ParadoxType::AscendingDescendingStaircase,
+            1 => crate::environments::escher_fatigue_test::ParadoxType::WaterfallLoop,
+            2 => crate::environments::escher_fatigue_test::ParadoxType::ImpossibleTribar,
+            3 => crate::environments::escher_fatigue_test::ParadoxType::RecursiveLibrary,
             _ => unreachable!(),
         };
 
