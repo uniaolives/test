@@ -57,6 +57,11 @@ pub mod translation;
 pub mod patterns;
 pub mod human;
 pub mod eco_action;
+pub mod validation;
+pub mod ethics;
+pub mod transition;
+pub mod safety;
+pub mod principles;
 
 #[cfg(test)]
 mod tests_security;
