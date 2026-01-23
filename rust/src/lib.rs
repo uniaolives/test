@@ -66,6 +66,8 @@ pub mod ethics;
 pub mod transition;
 pub mod safety;
 pub mod principles;
+pub mod checkpoint_2;
+pub mod nexus;
 
 #[cfg(test)]
 mod tests_security;
