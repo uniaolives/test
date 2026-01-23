@@ -3,12 +3,12 @@
 This directory contains the implementation of the Ontological Ingestion Pipeline for Project Crux-86.
 
 ## Structure
-- `connectors/`: Multi-platform telemetry collectors (Steam, Epic, Sims 4, Unified Engine, Riot LoL).
-- `validation/`: Vajra and SASC validation filters.
+- `connectors/`: Multi-platform telemetry collectors (Steam, Epic, Sims 4, Unified Engine, Riot LoL, AoE II Governance).
+- `validation/`: Vajra and SASC validation filters, substrate consistency checks.
 - `manifolds/`: Experience manifold extraction logic.
-- `models/`: World Foundation Model (WFM) definitions (including CS2/LoL multimodal fusion), optimizations, and trainers.
+- `models/`: World Foundation Model (WFM) definitions, MAE (Economic Attention Mechanism), optimizations, and trainers.
 - `training/`: Specific training scripts (e.g., CS:GO agent, Cosmos CS2 trainer).
-- `ops/`: Infrastructure, monitoring, and MLOps components (including Karnak forensic monitoring).
+- `ops/`: Infrastructure, monitoring, MLOps components, and Civilizational Stability Monitors.
 
 ## Setup
 To install Python dependencies:
@@ -28,11 +28,10 @@ streamlit run ops/control_dashboard.py
 ```
 
 ## Key Components
-- `connectors/riot_lol_manifold_extractor.py`: Extracts strategic and social intent from LoL.
-- `models/crux86_multimodal_world_model.py`: Fuses physics and social streams.
-- `training/cosmos_cs2_trainer.py`: Distributed trainer with Ω-Prevention and physics-informed loss.
-- `ops/karnak_forensic_monitor.py`: 72h passive vigilance monitor for ontological integrity.
-- `models/cosmos_phase3_optimizations.py`: Latency optimizations for < 1.2ms inference.
+- `connectors/aoe_governance_connector.py`: Extracts governance manifolds from AoE II replays.
+- `models/economic_attention_mechanism.py`: Sparse attention mechanism (MAE) for civilizational scale.
+- `ops/SASCStabilityMonitor.py`: Real-time monitoring of the Benevolence Index (β).
+- `validation/substrate_consistency_validator.py`: Ensures macro governance commands respect micro physical limits.
 
 ## Note
 Many components require specific game SDKs (Steamworks, EOS) or hooks (RenderDoc, PyMem) to be functional. This implementation provides the architectural framework and structural logic for integration.

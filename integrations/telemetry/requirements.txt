@@ -21,3 +21,5 @@ streamlit
 plotly
 pandas
 prophet
+# Age of Empires II replay parsing
+# aoc-recs
