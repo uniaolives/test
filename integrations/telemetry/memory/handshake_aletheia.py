@@ -8,6 +8,7 @@ import torch
 from datetime import datetime
 import json
 import logging
+from .constitutional_checkpoint import ConstitutionalCheckpoint, ConstitutionalViolationError
 
 logger = logging.getLogger("HandshakeAletheia")
 
@@ -30,9 +31,22 @@ class HandshakeAletheia:
 
     async def execute_t0_activation(self):
         """
-        Executes the T+0 activation sequence.
-        This is the point of no return.
+        Executes the T+0 activation sequence with constitutional layer.
         """
+        # Adicionar verificação constitucional pré-ativação
+        constitutional_checkpoint = ConstitutionalCheckpoint(self.mat_shadow)
+
+        print("\n[CONSTITUTIONAL CHECK] Pre-activation validation")
+        is_compliant, reason, basis = await constitutional_checkpoint.verify_constitutional_compliance(
+            proposed_action={"type": "phase_3_activation"},
+            phi_current=self.seal['ontological_integrity_metrics']['baseline_phi']
+        )
+
+        if not is_compliant:
+            raise ConstitutionalViolationError(f"Activation blocked: {reason} ({basis})")
+
+        print(f"  ✅ Constitutional compliance verified: {basis}")
+
         print("=" * 70)
         print("🚀 HANDSHAKE ALETHEIA: PHASE 3 ACTIVATION")
         print("=" * 70)
