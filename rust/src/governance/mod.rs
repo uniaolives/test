@@ -56,3 +56,7 @@ impl SASCCathedral {
 }
 
 pub mod decision_on_ghost_base;
+pub mod eco_action_safety;
+
+#[cfg(test)]
+mod tests_eco_action;
