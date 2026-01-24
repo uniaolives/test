@@ -81,6 +81,7 @@ pub mod zk_vajra_circuit;
 pub mod zk_system;
 pub mod tcd_zk_integration;
 pub mod stress_test_privacy_zk;
+pub mod activation;
 
 #[cfg(test)]
 mod tests_security;

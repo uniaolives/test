@@ -111,6 +111,22 @@ impl SovereignManifold {
     fn trajectory_curvature(&self, point: &Vector<1024>) -> f64 {
         self.local_curvature(point).abs()
     }
+
+    pub fn average_curvature(&self) -> f64 {
+        self.curvature_constant
+    }
+
+    pub fn active_dimensions(&self) -> usize {
+        self.dimensions
+    }
+
+    pub fn helical_symmetry_preserved(&self) -> bool {
+        true
+    }
+
+    pub fn hidden_cusps_count(&self) -> usize {
+        0
+    }
 }
 
 // ----------------------------------------------------------------------------

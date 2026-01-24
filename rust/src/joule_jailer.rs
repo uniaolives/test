@@ -86,19 +86,33 @@ impl ConstitutionalIR {
 // ESTRUTURAS DO LEDGER (Necessárias para o Interrogatório)
 // ----------------------------------------------------------------------------
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct JouleEntry {
     pub instruction_id: u64,
     pub energy_consumed: f64,
     pub constitutional_check: bool,
     pub state_root: String,
+    pub dignity_coefficient: f64,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
+pub struct DignityAttestation {
+    pub block_hash: String,
+    pub energy_budget_compliance: f64,
+    pub affective_resonance: f64,
+    pub prince_signature: String,
+    pub sasc_signature: String,
+    pub timestamp: u64,
+}
+
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Block {
+    pub index: u32,
     pub timestamp: u64,
     pub data: Vec<JouleEntry>,
     pub hash: String,
+    pub attestation: Option<DignityAttestation>,
+    pub previous_hash: String,
 }
 
 pub struct CruxLedger {
@@ -114,12 +128,13 @@ impl CruxLedger {
         }
     }
 
-    pub fn record_consumption(&mut self, id: u64, energy: f64, check: bool, root: String) {
+    pub fn record_consumption(&mut self, id: u64, energy: f64, check: bool, root: String, dignity: f64) {
         self.pending_entries.push(JouleEntry {
             instruction_id: id,
             energy_consumed: energy,
             constitutional_check: check,
             state_root: root,
+            dignity_coefficient: dignity,
         });
 
         if self.pending_entries.len() >= 10 {
@@ -133,13 +148,40 @@ impl CruxLedger {
             .unwrap()
             .as_secs();
 
-        let hash = format!("block_hash_{}", timestamp);
+        let index = self.chain.len() as u32;
+        let previous_hash = if let Some(last) = self.chain.last() {
+            last.hash.clone()
+        } else {
+            "0".repeat(64)
+        };
+        let hash = format!("block_hash_{}_{}", index, timestamp);
 
         self.chain.push(Block {
+            index,
             timestamp,
             data: self.pending_entries.drain(..).collect(),
             hash,
+            attestation: None,
+            previous_hash,
         });
+    }
+
+    pub fn record_violation(&mut self, id: usize, violation_type: &str, value: f64) {
+        println!("⚠️ VIOLATION RECORDED: id={}, type={}, value={}", id, violation_type, value);
+    }
+
+    pub fn record_affective_anomaly(&mut self, id: usize, resonance: f64) {
+        println!("⚠️ AFFECTIVE ANOMALY: id={}, resonance={}", id, resonance);
+    }
+
+    pub fn record_inference(&mut self, record: crate::activation::InferenceRecord) {
+        self.record_consumption(
+            record.instruction_id,
+            record.energy_consumed,
+            record.constitutional_check,
+            record.state_root,
+            record.dignity_coefficient
+        );
     }
 }
 

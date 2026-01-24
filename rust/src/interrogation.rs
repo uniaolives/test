@@ -117,12 +117,14 @@ impl Prosecutor {
                     energy_consumed: 0.152,
                     constitutional_check: true,
                     state_root: "a1b2c3".to_string(),
+                    dignity_coefficient: 1.0,
                 },
                 JouleEntry {
                     instruction_id: 43,
                     energy_consumed: 0.399,
                     constitutional_check: true,
                     state_root: "d4e5f6".to_string(),
+                    dignity_coefficient: 1.0,
                 },
             ],
         }
@@ -246,6 +248,7 @@ pub fn run_interrogation_demo() {
             energy,
             true,
             format!("root_hash_{}", i),
+            1.0,
         );
     }
 

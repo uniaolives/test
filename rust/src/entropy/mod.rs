@@ -164,6 +164,21 @@ impl VajraEntropyMonitor {
         log::warn!("VAJRA: EMERGENCY MORPH TRIGGERED - Reshaping attractors for Φ stability");
         // Implementation that reshapes geometric attractors
     }
+
+    pub fn update_entropy(&self, _statement: &[u8], _phi_weight: f64) {
+        // Implementation for T0 activation
+    }
+}
+
+impl Clone for VajraEntropyMonitor {
+    fn clone(&self) -> Self {
+        let phi = *self.current_phi.lock().unwrap();
+        let decoherence = *self.quantum_decoherence.lock().unwrap();
+        VajraEntropyMonitor {
+            current_phi: std::sync::Mutex::new(phi),
+            quantum_decoherence: std::sync::Mutex::new(decoherence),
+        }
+    }
 }
 
 pub fn vajra_verifier_thread(verifier: Arc<VajraVerifier>, monitor: Arc<VajraEntropyMonitor>) {
