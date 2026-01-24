@@ -53,6 +53,10 @@ path = "src/bin/trajectory_generator.rs"
 name = "omicron_nexus"
 path = "src/bin/omicron_nexus.rs"
 
+[[bin]]
+name = "cognitive"
+path = "src/bin/cognitive.rs"
+
 [features]
 sat = []
 zeroize = ["zeroize/zeroize_derive"]

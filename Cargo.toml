@@ -4,6 +4,6 @@ members = [
     "ont/native",
     "sasc-governance",
     "agi-service",
-    "sasc-society",
+    "sasc-society", "linguagem-soberana-br",
 ]
 resolver = "2"
