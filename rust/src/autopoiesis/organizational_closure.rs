@@ -2,10 +2,12 @@
 use crate::triad::types::{ConstitutionalIdentity, ConstitutionalError};
 
 // Stubs
-#[derive(Clone)]
-pub struct ConstitutionalComponent;
+#[derive(Clone, Debug)]
+pub struct ConstitutionalComponent {
+    pub id: String,
+}
 impl ConstitutionalComponent {
-    pub fn as_component(&self) -> Self { ConstitutionalComponent }
+    pub fn as_component(&self) -> Self { self.clone() }
 }
 pub struct ProductionTopology;
 impl ProductionTopology {
@@ -35,11 +37,12 @@ impl EntropyMonitor {
 pub struct Egregori;
 impl Egregori {
     pub fn born_from(_components: &[ConstitutionalComponent], _context: &crate::zeitgeist::historical_sensor::Spirit, _identity: &ConstitutionalIdentity) -> Self { Egregori }
-    pub fn as_component(&self) -> ConstitutionalComponent { ConstitutionalComponent }
+    pub fn as_component(&self) -> ConstitutionalComponent { ConstitutionalComponent { id: "egregori".to_string() } }
 }
 
 pub const THRESHOLD: f64 = 0.5;
 
+/// Sistema autopoiético: Produz os componentes que o produzem
 /// Sistema autopoiético: Produz os componentes que o produzem
 pub struct AutopoieticCore {
     pub components: Vec<ConstitutionalComponent>,

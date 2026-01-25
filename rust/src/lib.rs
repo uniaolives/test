@@ -91,6 +91,8 @@ pub mod zeitgeist;
 pub mod triad;
 pub mod monitoring;
 pub mod tcd;
+pub mod dashboard;
+pub mod cases;
 
 #[cfg(test)]
 mod tests_security;
