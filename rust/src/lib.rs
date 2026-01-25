@@ -84,6 +84,13 @@ pub mod zk_system;
 pub mod tcd_zk_integration;
 pub mod stress_test_privacy_zk;
 pub mod activation;
+pub mod kernel;
+pub mod philosophy;
+pub mod autopoiesis;
+pub mod zeitgeist;
+pub mod triad;
+pub mod monitoring;
+pub mod tcd;
 
 #[cfg(test)]
 mod tests_security;
