@@ -63,6 +63,8 @@ pub mod human;
 pub mod eco_action;
 pub mod validation;
 pub mod ethics;
+pub mod dimensional_mapping;
+pub mod monitoramento_afetivo;
 pub mod transition;
 pub mod safety;
 pub mod principles;
