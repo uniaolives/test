@@ -58,6 +58,7 @@ impl SASCCathedral {
 pub mod decision_on_ghost_base;
 pub mod eco_action_safety;
 pub mod village_x_decision_journey_projection;
+pub mod rawls_quantum;
 
 #[cfg(test)]
 mod tests_eco_action;

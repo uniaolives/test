@@ -91,6 +91,13 @@ pub mod zeitgeist;
 pub mod triad;
 pub mod monitoring;
 pub mod tcd;
+pub mod dashboard;
+pub mod cases;
+pub mod neuroquantum;
+pub mod nqf;
+pub mod phronesis;
+pub mod federacao;
+pub mod monitoramento;
 
 #[cfg(test)]
 mod tests_security;
