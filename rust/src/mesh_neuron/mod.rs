@@ -1,4 +1,5 @@
-use crate::maat::flagellar_dynamics::{PropulsionMode, NodeId};
+pub use crate::maat::flagellar_dynamics::NodeId;
+use crate::maat::flagellar_dynamics::{PropulsionMode};
 use crate::maat::scenarios::network_congestion::{AttackVector, RoutingMode};
 
 pub struct MeshNeuron {

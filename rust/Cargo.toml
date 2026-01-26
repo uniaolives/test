@@ -73,6 +73,10 @@ path = "src/bin/maat_crystallizer.rs"
 name = "aletheia_scanner"
 path = "src/bin/aletheia_scanner.rs"
 
+[[bin]]
+name = "boundary_mapper"
+path = "src/bin/boundary_mapper.rs"
+
 [features]
 sat = []
 zeroize = ["zeroize/zeroize_derive"]

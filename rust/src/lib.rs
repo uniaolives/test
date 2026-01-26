@@ -100,6 +100,9 @@ pub mod math;
 pub mod ubuntu;
 pub mod mesh_neuron;
 pub mod crypto_blck;
+pub mod consensus;
+pub mod hardware;
+pub mod vajra;
 
 #[cfg(test)]
 mod tests_security;
