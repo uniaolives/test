@@ -23,6 +23,8 @@ pub mod bio_layer;
 pub mod neuro_twin;
 pub mod neo_cortex;
 pub mod audit;
+pub mod architecture;
+pub mod crystallization;
 pub mod blockchain;
 pub mod geom;
 pub mod onchain;
