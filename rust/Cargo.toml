@@ -60,6 +60,14 @@ path = "src/bin/omicron_nexus.rs"
 name = "cognitive"
 path = "src/bin/cognitive.rs"
 
+[[bin]]
+name = "maat_simulator"
+path = "src/bin/maat_simulator.rs"
+
+[[bin]]
+name = "maat_crystallizer"
+path = "src/bin/maat_crystallizer.rs"
+
 [features]
 sat = []
 zeroize = ["zeroize/zeroize_derive"]

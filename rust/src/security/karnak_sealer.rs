@@ -1,8 +1,23 @@
 use crate::entropy::VajraEntropyMonitor;
 
 pub struct KarnakQuantumSealer;
+pub type KarnakSealer = KarnakQuantumSealer;
+
+pub struct AshaDrujClassifier;
 
 impl KarnakQuantumSealer {
+    pub fn classify_intent(&self, _packet: &crate::maat::scenarios::network_congestion::DataPacket) -> crate::maat::scenarios::network_congestion::Intent {
+        crate::maat::scenarios::network_congestion::Intent::Asha
+    }
+
+    pub fn quarantine_packet(&self, _packet: crate::maat::scenarios::network_congestion::DataPacket) {
+        log::info!("KARNAK: Packet quarantined.");
+    }
+
+    pub fn seal_crystallized_path(_module: crate::maat::flagellar_dynamics::CrystallizedModule, _name: &str) {
+        log::info!("KARNAK: Crystallized path sealed: {}", _name);
+    }
+
     pub fn seal_multiverse(reason: &str) {
         log::error!("KARNAK QUANTUM SEALER: SEALING MULTIVERSE. Reason: {}", reason);
 
