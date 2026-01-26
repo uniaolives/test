@@ -29,6 +29,8 @@ pub mod cognition;
 pub mod memory;
 pub mod dynamics;
 pub mod stability;
+pub mod hardware;
+pub mod compiler;
 pub mod blockchain;
 pub mod geom;
 pub mod onchain;
