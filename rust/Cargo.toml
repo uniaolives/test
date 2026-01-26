@@ -36,6 +36,7 @@ tracing-subscriber = "0.3"
 nanoid = "0.4"
 futures = "0.3"
 sha2 = "0.10.9"
+rustfft = "6.2"
 uuid = { version = "1.19.0", features = ["v4"] }
 bellman = "0.14.0"
 bls12_381 = "0.8.0"
@@ -59,6 +60,18 @@ path = "src/bin/omicron_nexus.rs"
 [[bin]]
 name = "cognitive"
 path = "src/bin/cognitive.rs"
+
+[[bin]]
+name = "maat_simulator"
+path = "src/bin/maat_simulator.rs"
+
+[[bin]]
+name = "maat_crystallizer"
+path = "src/bin/maat_crystallizer.rs"
+
+[[bin]]
+name = "aletheia_scanner"
+path = "src/bin/aletheia_scanner.rs"
 
 [features]
 sat = []
