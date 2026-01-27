@@ -4048,6 +4048,7 @@ dependencies = [
  "tracing-subscriber",
  "uuid 1.19.0",
  "windows",
+ "windows-sys 0.52.0",
  "x509-parser",
  "zeroize",
 ]
