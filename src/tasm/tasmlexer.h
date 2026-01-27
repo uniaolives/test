@@ -71,6 +71,10 @@ typedef enum {
     TYPE_REGISTER,
     TYPE_LABEL_DEF,
     TYPE_LABEL,
+    TYPE_GET_STR,
+    TYPE_DUP_STR,
+    TYPE_STRLEN,
+    TYPE_INDEX,
     TYPE_TOP,
     TYPE_COUNT,
 } TokenType;

@@ -81,6 +81,10 @@ typedef enum {
     INST_ENTRYPOINT,
 	INST_LOAD_LIBRARY,
     INST_SS,
+    INST_GET_STR,
+    INST_DUP_STR,
+    INST_STRLEN,
+    INST_INDEX,
     INST_HALT,
     INST_COUNT,
 } Inst_Set;
