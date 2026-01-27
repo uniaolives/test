@@ -9,6 +9,8 @@ use sasc_governance::types::{VerificationContext};
 
 pub mod governance;
 pub mod sensors;
+pub mod biology;
+pub mod physics;
 pub mod cognitive_hunter;
 pub mod security;
 pub mod neo_brain;
