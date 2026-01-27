@@ -41,16 +41,18 @@ size_t get_register_index(ParseList *head){
     return result;
 }
 
-Inst *generate_instructions(ParseList *head, int *program_size, String_View str_stack[MAX_STACK_SIZE], size_t *entrypoint, bool *has_entrypoint){
+static size_t str_stack_size = 0;
+
+Inst *generate_instructions(ParseList *head, int *program_size, Str_Stack *str_stack, size_t *entrypoint, bool *has_entrypoint){
     Inst *program = malloc(sizeof(Inst) * length_of_list(head));
     Inst_Set insts[INST_COUNT + 1] = {    
         INST_NOP, INST_PUSH, INST_PUSH_STR, INST_MOV, INST_REF, INST_DEREF, 
         INST_ALLOC, INST_DEALLOC, INST_WRITE, INST_READ, INST_POP, INST_DUP, INST_INDUP, INST_SWAP, INST_INSWAP, 
-		INST_ADD, INST_SUB, INST_MUL, INST_DIV, INST_MOD, INST_ADD_F, INST_SUB_F, 
+		INST_ADD, INST_SUB, INST_MUL, INST_DIV, INST_MOD, INST_AND, INST_OR, INST_ADD_F, INST_SUB_F,
         INST_MUL_F, INST_DIV_F, INST_MOD_F, INST_CMPE, 
         INST_CMPNE, INST_CMPG, INST_CMPL, INST_CMPGE, INST_CMPLE, INST_ITOF, INST_FTOI, INST_ITOC, 
         INST_TOI, INST_TOF, INST_TOC, INST_TOVP, INST_CALL, INST_RET, 
-        INST_JMP, INST_ZJMP, INST_NZJMP, INST_PRINT, INST_NATIVE, INST_ENTRYPOINT, INST_SS,
+        INST_JMP, INST_ZJMP, INST_NZJMP, INST_PRINT, INST_NATIVE, INST_ENTRYPOINT, INST_LOAD_LIBRARY, INST_SS,
         INST_HALT, INST_COUNT
     };
 
@@ -82,7 +84,7 @@ Inst *generate_instructions(ParseList *head, int *program_size, String_View str_
         }
 
 
-        if(head->value.type == TYPE_PUSH){
+        if(head->value.type == TYPE_PUSH || head->value.type == TYPE_INSWAP || head->value.type == TYPE_INDUP){
             head = head->next;
             if(head->value.type == TYPE_INT){
                 instruction->value.as_int = atoi(head->value.text);
@@ -130,9 +132,12 @@ Inst *generate_instructions(ParseList *head, int *program_size, String_View str_
             instruction->value.as_int = str_stack_size;
             instruction->data_type = INT_TYPE;
             size_t str_s = strlen(head->value.text)+1;
-            str_stack[str_stack_size].len = str_s;
-            str_stack[str_stack_size].data = malloc(sizeof(char)*str_s);
-            strncpy(str_stack[str_stack_size++].data, head->value.text, str_s);
+            String_View sv;
+            sv.len = str_s;
+            sv.data = malloc(sizeof(char)*str_s);
+            strncpy((char*)sv.data, head->value.text, str_s);
+            DA_APPEND(str_stack, sv);
+            str_stack_size++;
         }
 
         push_program(program, program_size, *instruction);
@@ -168,12 +173,15 @@ int main(int argc, char *argv[]){
     Machine machine;
     size_t entrypoint = 0;
     bool has_entrypoint = false;
-    Inst *program = generate_instructions(&list, &program_size, machine.str_stack, &entrypoint, &has_entrypoint);
-    machine.instructions = program;
+    machine.str_stack.data = NULL;
+    machine.str_stack.count = 0;
+    machine.str_stack.capacity = 0;
+    Inst *program = generate_instructions(&list, &program_size, &machine.str_stack, &entrypoint, &has_entrypoint);
+    machine.instructions.data = program;
+    machine.instructions.count = program_size;
     machine.program_size = program_size;
     machine.entrypoint = entrypoint;
     machine.has_entrypoint = has_entrypoint;
-    machine.str_stack_size = str_stack_size;
     write_program_to_file(&machine, output_file);
     return 0;
 }
