@@ -16,6 +16,15 @@ pub mod cge_cheri {
     }
 
     #[derive(Debug, Clone, Copy)]
+    pub enum Rights {
+        READ, WRITE, EXECUTE
+    }
+    impl std::ops::BitOr for Rights {
+        type Output = Self;
+        fn bitor(self, _rhs: Self) -> Self::Output { self }
+    }
+
+    #[derive(Debug, Clone, Copy)]
     pub enum SealKey {
         TemporalAnchor, CryptoAnchor, EntropyAnchor, ConsensusAnchor, EmergencySeal,
         CICDWorkflow, CICDJobQueue, SacredGeometry, DivineLanguage, HermeticGeometry,
@@ -31,6 +40,14 @@ pub mod cge_cheri {
         _marker: PhantomData<T>,
     }
 
+    impl<T> Clone for Capability<T> {
+        fn clone(&self) -> Self { Capability { _marker: PhantomData } }
+    }
+
+    #[repr(align(128))]
+    struct MockBuffer([u8; 16384]);
+    static MOCK_DATA: MockBuffer = MockBuffer([0u8; 16384]);
+
     impl<T> Capability<T> {
         pub fn new(_val: T, _lower: u128, _upper: u128, _perms: Permission) -> Self {
             Capability { _marker: PhantomData }
@@ -40,12 +57,23 @@ pub mod cge_cheri {
         pub fn has_permission(&self, _perm: Permission) -> bool { true }
         pub fn revoke(&self) {}
         pub fn bytes(&self) -> [u8; 16] { [0u8; 16] }
+        pub fn id(&self) -> u32 { 0 }
+        pub fn new_mock_internal() -> Self {
+            Capability { _marker: PhantomData }
+        }
+    }
+
+    pub mod capability {
+        use super::*;
+        pub fn new<T>(_val: T, _rights: Rights) -> Result<Capability<T>, &'static str> {
+            Ok(Capability { _marker: PhantomData })
+        }
     }
 
     impl<T> std::ops::Deref for Capability<T> {
         type Target = T;
         fn deref(&self) -> &Self::Target {
-            unsafe { &*(0x1000 as *const T) } // DANGEROUS MOCK! But we only use it to call methods that don't use 'self' or are mocked.
+            unsafe { &*(MOCK_DATA.0.as_ptr() as *const T) }
         }
     }
 }
@@ -158,6 +186,26 @@ pub mod cge_love {
     impl ConstitutionalLoveInvariant {
         pub fn get_global_resonance() -> f32 { 0.95 }
     }
+}
+
+pub mod topology {
+    pub struct Torus17x17;
+    impl Torus17x17 {
+        pub fn distance(_a: super::cge_cheri::Capability<Coord289>, _b: Coord289) -> u8 { 0 }
+    }
+    #[derive(Clone, Copy, Debug, PartialEq, Default)]
+    pub struct Coord289(pub u32, pub u32);
+    impl Coord289 {
+        pub fn id(&self) -> u32 { self.0 | (self.1 << 8) }
+    }
+    pub type Q16_16 = u32;
+}
+
+pub mod constitution {
+    pub const INVARIANT_C1: u8 = 1;
+    pub const INVARIANT_C2: u8 = 2;
+    pub const INVARIANT_C8: u8 = 8;
+    pub const PHI_BOUNDS: (u32, u32) = (67352, 69348);
 }
 
 pub mod cge_neural {
@@ -331,6 +379,20 @@ pub struct SynapticLogEntry {
     pub plasticity_type: PlasticityType,
     pub log_hash: [u8; 32],
 }
+
+pub fn blake3_delta2(_data: &[u32]) -> [u8; 32] { [0; 32] }
+
+#[derive(Debug)]
+pub enum ConstitutionalError {
+    TorsionViolation,
+    TopologyViolation,
+    OmegaGate,
+    ByzantineFault,
+    AllocationFailed,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum Continent { America, Europa, Asia }
 
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq)]

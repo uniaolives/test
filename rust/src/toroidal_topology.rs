@@ -22,6 +22,7 @@ pub struct ToroidalConstitution {
 }
 
 #[repr(C)]
+#[derive(Default)]
 pub struct ToroidalMesh {
     pub ring_indices: [[u16; 17]; 17],
     pub distance_matrix: [[u8; 17]; 17],
@@ -31,8 +32,8 @@ pub struct ToroidalMesh {
 }
 
 #[repr(u8)]
-#[derive(Clone, Copy, Debug, PartialEq)]
-pub enum ModuleIndex { Love = 0, UBI = 1, Vajra = 2, Neural = 3, Paste = 4, Meta = 5 }
+#[derive(Clone, Copy, Debug, PartialEq, Default)]
+pub enum ModuleIndex { #[default] Love = 0, UBI = 1, Vajra = 2, Neural = 3, Paste = 4, Meta = 5 }
 
 #[derive(Debug, Clone, Copy)]
 pub enum TopologyError {
