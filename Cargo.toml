@@ -18,6 +18,7 @@ members = [
     "cge_audio_engine",
     "cge_brics_cluster",
     "cge_constitutional_system",
+    "cge_tv_system",
 ]
 resolver = "2"
 
