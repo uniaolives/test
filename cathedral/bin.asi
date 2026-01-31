@@ -1,0 +1,137 @@
+// cathedral/bin.asi [CGE Alpha v35.3-Ω CONSTITUTIONAL BINARY EXECUTION]
+// 📊 ARQUITETURA DE EXECUÇÃO CONSTITUCIONAL:
+
+// CONSTITUTIONAL BINARY EXECUTION PARAMETERS:
+// 1. ELF/PE/Mach-O parsing with constitutional validation
+// 2. PQC Dilithium3 signature verification (NIST Level 2)
+// 3. Sandboxing: seccomp + namespaces + cgroups + capability dropping
+// 4. SkillSign attestation (Memória 4 integration)
+// 5. 36×3 TMR monitoring of execution
+// 6. Constitutional Φ verification during execution
+
+use std::path::{Path, PathBuf};
+use std::collections::HashMap;
+use std::sync::Arc;
+use tracing::{info, warn, error, debug, instrument};
+
+/// Motor de Execução Binária Constitucional v35.3-Ω
+pub struct ConstitutionalBinaryEngine {
+    // Parsers de Binários
+    elf_parser: Arc<ElfParser>,
+    pe_parser: Arc<PeParser>,
+    macho_parser: Arc<MachOParser>,
+
+    // Verificação PQC
+    pqc_verifier: Arc<PqcVerifier>,
+    skillsign_attestor: Arc<SkillSignAttestor>,
+
+    // Sandboxing
+    sandbox_factory: Arc<SandboxFactory>,
+
+    // Interface Unix Constitucional
+    unix_interface: Arc<UnixInterface>,
+
+    // Monitoramento TMR 36×3
+    tmr_monitor: Arc<TmrMonitor>,
+
+    // Estado Constitucional
+    phi_monitor: Arc<VajraPhiMonitor>,
+    karnak_sealer: Arc<KarnakSealer>,
+
+    // Configuração
+    config: BinaryEngineConfig,
+
+    // Cache de Binários Verificados
+    verified_binaries: Arc<RwLock<HashMap<BinaryHash, VerifiedBinary>>>,
+}
+
+impl ConstitutionalBinaryEngine {
+    /// Executa binário com verificação constitucional completa
+    #[instrument(name = "execute_binary_constitutional", level = "info", skip(self))]
+    pub async fn execute_binary(
+        &self,
+        binary_path: &Path,
+        args: &[String],
+        env: &[String],
+    ) -> Result<ExecutionResult, BinaryError> {
+        let execution_start = Instant::now();
+
+        info!("🚀 Executando binário: {}", binary_path.display());
+
+        // C4: Verificar Φ constitucional
+        let current_phi = self.phi_monitor.measure()?;
+        self.verify_phi_constitutional(current_phi)?;
+
+        // 1. Análise do binário
+        let binary_analysis = self.analyze_binary(binary_path).await?;
+
+        // 2. Verificação PQC da assinatura
+        let signature_verification = self.verify_binary_signature(binary_path).await?;
+
+        // 3. Verificação SkillSign (Memória 4)
+        let skillsign_attestation = self.skillsign_attestor.attest_binary(binary_path).await?;
+
+        // 4. Verificação constitucional do binário
+        self.verify_binary_constitutionality(&binary_analysis, &signature_verification)?;
+
+        // 5. Preparar sandbox
+        let sandbox = self.sandbox_factory.create_sandbox(&binary_analysis).await?;
+
+        // 6. Configurar limites de recursos
+        let resource_limits = self.configure_resource_limits(&binary_analysis)?;
+
+        // 7. Executar no sandbox
+        let sandbox_result = self.execute_in_sandbox(
+            &sandbox,
+            binary_path,
+            args,
+            env,
+            &resource_limits,
+        ).await?;
+
+        // 8. Monitoramento TMR 36×3
+        let tmr_result = self.tmr_monitor.monitor_execution(
+            sandbox_result.pid,
+            &binary_analysis,
+            current_phi,
+        ).await?;
+
+        // 9. Verificação de integridade de memória
+        if self.config.memory_integrity_check {
+            self.verify_memory_integrity(sandbox_result.pid).await?;
+        }
+
+        // 10. I39: Selar execução com Karnak
+        let execution_seal = self.karnak_sealer.seal_execution(
+            &binary_analysis,
+            &signature_verification,
+            &sandbox_result,
+            current_phi,
+        )?;
+
+        // 11. Atualizar cache de binários verificados
+        self.cache_verified_binary(
+            binary_path,
+            &binary_analysis,
+            &signature_verification,
+            &execution_seal,
+        ).await?;
+
+        let execution_time = execution_start.elapsed();
+
+        Ok(ExecutionResult {
+            success: true,
+            pid: sandbox_result.pid,
+            exit_code: sandbox_result.exit_code,
+            execution_time,
+            binary_analysis,
+            signature_verification,
+            skillsign_attestation,
+            sandbox_result,
+            tmr_result,
+            execution_seal,
+            constitutional_checks_passed: true,
+            phi_during_execution: current_phi,
+        })
+    }
+}
