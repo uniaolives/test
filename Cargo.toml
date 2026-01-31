@@ -9,6 +9,8 @@ members = [
     "cge_alpha_unified",
     "cge_www_universal",
     "cge_atproto_federation",
+    "phi-calculus",
+    "cge_constitutional_renderer",
 ]
 resolver = "2"
 
