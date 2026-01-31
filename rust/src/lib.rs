@@ -103,6 +103,10 @@ pub mod maat;
 pub mod ubuntu;
 pub mod mesh_neuron;
 pub mod crypto_blck;
+pub mod agnostic_4k_streaming;
+pub mod starlink;
+pub mod agi_6g_mobile;
+pub mod mobile_smart_contracts;
 
 #[cfg(test)]
 mod tests_security;
