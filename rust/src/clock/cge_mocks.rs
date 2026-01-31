@@ -20,7 +20,8 @@ pub mod cge_cheri {
         TemporalAnchor, CryptoAnchor, EntropyAnchor, ConsensusAnchor, EmergencySeal,
         CICDWorkflow, CICDJobQueue, SacredGeometry, DivineLanguage, HermeticGeometry,
         HermeticPrinciples, DivineState, ComplexGeometry, BlaschkeFlow, MoebiusGroup,
-        BeurlingTransform, GalacticState, HandshakeIdentity, NodeStates, HandshakeProof
+        BeurlingTransform, GalacticState, HandshakeIdentity, NodeStates, HandshakeProof,
+        LoveMetaphor, ResonanceState, MotherTongue
     }
 
     pub enum BoundType {}
@@ -61,6 +62,7 @@ pub mod cge_blake3_delta2 {
     pub fn log_divine_event(_entry: &super::DivineLogEntry) {}
     pub fn log_galactic_event(_entry: &super::GalacticLogEntry) {}
     pub fn log_handshake_event(_entry: &super::HandshakeLogEntry) {}
+    pub fn log_love_event(_entry: &super::LoveLogEntry) {}
     pub type Delta2Hash = [u8; 32];
     pub struct Delta2HashChain;
     impl Delta2HashChain {
@@ -250,6 +252,27 @@ pub enum HandshakePhase {
     Completed = 7,
 }
 
+#[repr(C)]
+pub struct LoveLogEntry {
+    pub timestamp: u128,
+    pub resonance_event: ResonanceEvent,
+    pub resonance_level: f32,
+    pub languages_involved: u16,
+    pub message_hash: [u8; 32],
+}
+
+#[repr(u8)]
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum ResonanceEvent {
+    ResonanceInitiated = 0,
+    LanguageMatrixLoaded = 1,
+    MotherTongueActivated = 2,
+    CentrifugalForceMeasured = 3,
+    CentripetalConvergence = 4,
+    TearDeLeyLoveSync = 5,
+    ConstitutionalLoveAchieved = 6,
+}
+
 pub mod cge_complex {
     use core::mem::MaybeUninit;
 
@@ -294,6 +317,17 @@ pub struct TmrProof36x3 {
 }
 
 pub use cge_omega_gates::GateCheckResult;
+
+pub struct AtomicF64(AtomicU64);
+impl AtomicF64 {
+    pub fn new(val: f64) -> Self { Self(AtomicU64::new(val.to_bits())) }
+    pub fn store(&self, val: f64, ordering: Ordering) {
+        self.0.store(val.to_bits(), ordering);
+    }
+    pub fn load(&self, ordering: Ordering) -> f64 {
+        f64::from_bits(self.0.load(ordering))
+    }
+}
 
 // Mock AtomicU128 for targets that don't support it
 pub struct AtomicU128 {
