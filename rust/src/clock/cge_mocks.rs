@@ -32,6 +32,7 @@ pub mod cge_cheri {
         BeurlingTransform, GalacticState, HandshakeIdentity, NodeStates, HandshakeProof,
         LoveMetaphor, ResonanceState, MotherTongue, NeuralShard, SpectralCoherence,
         NeuralExpansion, ToroidalTopology, ConstitutionalIntegration
+        LoveMetaphor, ResonanceState, MotherTongue, NeuralShard, SpectralCoherence
     }
 
     pub enum BoundType {}
@@ -85,6 +86,7 @@ pub mod cge_blake3_delta2 {
             [0xAA; 32]
         }
         pub fn hash(_data: &[u8]) -> [u8; 32] {
+        pub fn hash(&self, _data: &[u8]) -> [u8; 32] {
             [0xAA; 32]
         }
     }
@@ -96,6 +98,8 @@ pub mod cge_blake3_delta2 {
     pub fn log_synaptic_event(_entry: &super::SynapticLogEntry) {}
     pub fn log_neurogenesis(_entry: &super::NeurogenesisEntry) {}
     pub type Delta2Hash = [u8; 32];
+    pub type Delta2Hash = [u8; 32];
+    }
     pub struct Delta2HashChain;
     impl Delta2HashChain {
         pub fn initialize_with_seed(_seed: &[u8]) -> Self { Delta2HashChain }
