@@ -12,7 +12,7 @@ pub mod cge_cheri {
     }
     impl std::ops::BitOr for Permission {
         type Output = Self;
-        fn bitor(self, rhs: Self) -> Self::Output { self }
+        fn bitor(self, _rhs: Self) -> Self::Output { self }
     }
 
     #[derive(Debug, Clone, Copy)]
@@ -47,6 +47,11 @@ pub mod cge_cheri {
 
 pub mod cge_blake3_delta2 {
     pub struct BLAKE3_DELTA2;
+    impl BLAKE3_DELTA2 {
+        pub fn hash_with_seed(&self, _data: &[u8], _seed: &[u8; 32]) -> [u8; 32] {
+            [0xAA; 32]
+        }
+    }
     pub struct Delta2HashChain;
     impl Delta2HashChain {
         pub fn initialize_with_seed(_seed: &[u8]) -> Self { Delta2HashChain }
@@ -124,7 +129,7 @@ pub mod cge_karnak {
 
 #[derive(Debug)]
 pub enum QuenchReason {
-    TmrConsensusLow, TmrCatastrophic, GateViolation, TemporalAnomaly
+    TmrConsensusLow, TmrCatastrophic, GateViolation, TemporalAnomaly, PhiBelowMinimum
 }
 
 #[derive(Debug)]
