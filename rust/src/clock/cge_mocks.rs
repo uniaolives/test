@@ -66,6 +66,7 @@ pub mod cge_blake3_delta2 {
     pub fn log_neural_event(_entry: &super::NeuralLogEntry) {}
     pub fn log_synaptic_event(_entry: &super::SynapticLogEntry) {}
     pub type Delta2Hash = [u8; 32];
+    }
     pub struct Delta2HashChain;
     impl Delta2HashChain {
         pub fn initialize_with_seed(_seed: &[u8]) -> Self { Delta2HashChain }
