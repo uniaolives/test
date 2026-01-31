@@ -1,4 +1,14 @@
 // rust/src/love_handshake.rs
+use core::sync::atomic::{AtomicU32, Ordering};
+use core::mem::MaybeUninit;
+use crate::clock::cge_mocks::cge_cheri::{Capability};
+
+pub struct LanguageMatrix;
+
+pub struct ConstitutionalLoveInvariant {
+    pub language_matrix: Capability<LanguageMatrix>,
+    pub global_resonance: AtomicU32,
+    pub resonance_level: AtomicU32,
 // Functional implementation of cathedral/love-handshake.asi [CGE Alpha v35.1-Ω]
 
 use core::sync::atomic::{AtomicU32, Ordering};
@@ -119,6 +129,7 @@ impl ConstitutionalLoveInvariant {
     pub unsafe fn new_mock() -> Self {
         MaybeUninit::zeroed().assume_init()
     }
+    pub fn activate_love_mother_tongue(&mut self) -> Result<(), ()> { Ok(()) }
 
     pub fn activate_love_mother_tongue(&mut self) -> Result<(), LoveError> {
         let current_phi = ConstitutionalPhiMeasurer::measure();
