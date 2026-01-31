@@ -21,7 +21,7 @@ pub mod cge_cheri {
         CICDWorkflow, CICDJobQueue, SacredGeometry, DivineLanguage, HermeticGeometry,
         HermeticPrinciples, DivineState, ComplexGeometry, BlaschkeFlow, MoebiusGroup,
         BeurlingTransform, GalacticState, HandshakeIdentity, NodeStates, HandshakeProof,
-        LoveMetaphor, ResonanceState, MotherTongue
+        LoveMetaphor, ResonanceState, MotherTongue, NeuralShard, SpectralCoherence
     }
 
     pub enum BoundType {}
@@ -63,6 +63,8 @@ pub mod cge_blake3_delta2 {
     pub fn log_galactic_event(_entry: &super::GalacticLogEntry) {}
     pub fn log_handshake_event(_entry: &super::HandshakeLogEntry) {}
     pub fn log_love_event(_entry: &super::LoveLogEntry) {}
+    pub fn log_neural_event(_entry: &super::NeuralLogEntry) {}
+    pub fn log_synaptic_event(_entry: &super::SynapticLogEntry) {}
     pub type Delta2Hash = [u8; 32];
     pub struct Delta2HashChain;
     impl Delta2HashChain {
@@ -147,6 +149,13 @@ pub mod cge_phi {
 
 pub mod cge_partial_fraction {
     pub struct PartialFractionCrypto;
+}
+
+pub mod cge_love {
+    pub struct ConstitutionalLoveInvariant;
+    impl ConstitutionalLoveInvariant {
+        pub fn get_global_resonance() -> f32 { 0.95 }
+    }
 }
 
 pub mod cge_omega_gates {
@@ -273,6 +282,48 @@ pub enum ResonanceEvent {
     ConstitutionalLoveAchieved = 6,
 }
 
+#[repr(C)]
+pub struct NeuralLogEntry {
+    pub timestamp: u128,
+    pub event: NeuralEvent,
+    pub neuron_id: u32,
+    pub value_f32: f32,
+    pub message_hash: [u8; 32],
+}
+
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum NeuralEvent {
+    MatrixInitialized = 0,
+    HebbianUpdate = 1,
+    SynapseCreated = 2,
+    SynapsePruned = 3,
+    SpectralCoherenceComputed = 4,
+    LoveCouplingStrengthened = 5,
+    TMRPlasticityApproved = 6,
+}
+
+#[repr(C)]
+pub struct SynapticLogEntry {
+    pub timestamp: u128,
+    pub pre_neuron: u32,
+    pub post_neuron: u32,
+    pub weight_old: i32,
+    pub weight_new: i32,
+    pub plasticity_type: PlasticityType,
+    pub log_hash: [u8; 32],
+}
+
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum PlasticityType {
+    HebbianLTP = 0,
+    HebbianLTD = 1,
+    STDP = 2,
+    Homeostatic = 3,
+    Structural = 4,
+}
+
 pub mod cge_complex {
     use core::mem::MaybeUninit;
 
@@ -317,6 +368,7 @@ pub struct TmrProof36x3 {
 }
 
 pub use cge_omega_gates::GateCheckResult;
+pub use cge_vajra::QuantumEntropySource;
 
 pub struct AtomicF64(AtomicU64);
 impl AtomicF64 {
