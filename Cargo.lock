@@ -996,6 +996,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "cge-mobile-ar"
+version = "31.21.0"
+dependencies = [
+ "log",
+ "phi-calculus",
+ "serde",
+ "thiserror 1.0.69",
+ "tokio",
+]
+
+[[package]]
+name = "cge-mobile-contracts"
+version = "31.21.0"
+dependencies = [
+ "blake3",
+ "phi-calculus",
+ "pqcrypto-dilithium",
+ "serde",
+]
+
+[[package]]
 name = "cge-www-universal"
 version = "31.11.0"
 dependencies = [
