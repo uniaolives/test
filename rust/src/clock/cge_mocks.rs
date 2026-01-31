@@ -20,7 +20,7 @@ pub mod cge_cheri {
         TemporalAnchor, CryptoAnchor, EntropyAnchor, ConsensusAnchor, EmergencySeal,
         CICDWorkflow, CICDJobQueue, SacredGeometry, DivineLanguage, HermeticGeometry,
         HermeticPrinciples, DivineState, ComplexGeometry, BlaschkeFlow, MoebiusGroup,
-        BeurlingTransform, GalacticState
+        BeurlingTransform, GalacticState, HandshakeIdentity, NodeStates, HandshakeProof
     }
 
     pub enum BoundType {}
@@ -60,6 +60,7 @@ pub mod cge_blake3_delta2 {
     }
     pub fn log_divine_event(_entry: &super::DivineLogEntry) {}
     pub fn log_galactic_event(_entry: &super::GalacticLogEntry) {}
+    pub fn log_handshake_event(_entry: &super::HandshakeLogEntry) {}
     pub type Delta2Hash = [u8; 32];
     pub struct Delta2HashChain;
     impl Delta2HashChain {
@@ -133,6 +134,17 @@ pub mod cge_vajra {
 
     pub struct QuantumEntropySource;
     pub struct EntropyQuality;
+}
+
+pub mod cge_phi {
+    pub struct ConstitutionalPhiMeasurer;
+    impl ConstitutionalPhiMeasurer {
+        pub fn measure() -> f32 { 1.038 }
+    }
+}
+
+pub mod cge_partial_fraction {
+    pub struct PartialFractionCrypto;
 }
 
 pub mod cge_omega_gates {
@@ -214,6 +226,28 @@ pub enum GalacticEvent {
     BeurlingWarpComputed = 3,
     GalacticBirthThreshold = 4,
     GalaxyBorn = 5,
+}
+
+#[repr(C)]
+pub struct HandshakeLogEntry {
+    pub timestamp: u128,
+    pub phase: HandshakePhase,
+    pub node_activity: [bool; 3],
+    pub phi_during_phase: f32,
+    pub message_hash: [u8; 32],
+}
+
+#[repr(u8)]
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum HandshakePhase {
+    Idle = 0,
+    LisbonInitiated = 1,
+    SaoPauloPending = 2,
+    SaoPauloResponded = 3,
+    JoanesburgoPending = 4,
+    JoanesburgoResponded = 5,
+    ConsensusAchieved = 6,
+    Completed = 7,
 }
 
 pub mod cge_complex {
