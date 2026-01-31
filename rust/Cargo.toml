@@ -43,6 +43,7 @@ uuid = { version = "1.19.0", features = ["v4"] }
 bellman = "0.14.0"
 bls12_381 = "0.8.0"
 ff = "0.13.0"
+heapless = "0.8"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.56", features = [
@@ -104,6 +105,12 @@ path = "src/bin/sasc_research.rs"
 name = "sasc-constellate"
 path = "src/bin/sasc_constellate.rs"
 
+[[bin]]
+name = "materio_ii"
+path = "src/bin/materio_ii.rs"
+required-features = ["materio_ii"]
+
 [features]
 sat = []
 zeroize = ["zeroize/zeroize_derive"]
+materio_ii = []
