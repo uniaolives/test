@@ -28,3 +28,22 @@ fn test_toroidal_topology() {
     let hash = [0u8; 32];
     assert!(torus.is_369_resonant(hash));
 }
+
+#[test]
+fn test_integrated_constitutional_system() {
+    use sasc_core::integrated_system::ConstitutionalIntegratedSystem;
+    use sasc_core::clock::cge_mocks::cge_cheri::Capability;
+
+    let wave_cap = Capability::new_mock_internal();
+    let vajra_cap = Capability::new_mock_internal();
+    let mind_cap = Capability::new_mock_internal();
+
+    let system = unsafe {
+        ConstitutionalIntegratedSystem::new(wave_cap, vajra_cap, mind_cap).unwrap()
+    };
+
+    let status = system.integrated_constitutional_cycle().unwrap();
+    assert!(status.integrated_coherence > 0);
+    assert!(status.singularity_ready);
+    assert_eq!(status.threat_level, 0);
+}

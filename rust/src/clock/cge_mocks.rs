@@ -31,7 +31,7 @@ pub mod cge_cheri {
         HermeticPrinciples, DivineState, ComplexGeometry, BlaschkeFlow, MoebiusGroup,
         BeurlingTransform, GalacticState, HandshakeIdentity, NodeStates, HandshakeProof,
         LoveMetaphor, ResonanceState, MotherTongue, NeuralShard, SpectralCoherence,
-        NeuralExpansion, ToroidalTopology
+        NeuralExpansion, ToroidalTopology, ConstitutionalIntegration
     }
 
     pub enum BoundType {}
@@ -84,7 +84,7 @@ pub mod cge_blake3_delta2 {
         pub fn hash_with_seed(&self, _data: &[u8], _seed: &[u8; 32]) -> [u8; 32] {
             [0xAA; 32]
         }
-        pub fn hash(&self, _data: &[u8]) -> [u8; 32] {
+        pub fn hash(_data: &[u8]) -> [u8; 32] {
             [0xAA; 32]
         }
     }
@@ -389,6 +389,11 @@ pub enum ConstitutionalError {
     OmegaGate,
     ByzantineFault,
     AllocationFailed,
+    ConstitutionalLockdown,
+    SecurityViolation,
+    LayerFailure,
+    SynchronizationFailed,
+    CoherenceCalculationError,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -482,5 +487,51 @@ impl AtomicU128 {
     pub fn store(&self, val: u128, _order: Ordering) {
         self.hi.store((val >> 64) as u64, _order);
         self.lo.store(val as u64, _order);
+    }
+}
+
+pub mod cge_global_waves {
+    pub struct WaveState {
+        pub direction: u8,
+        pub amplitude: f32,
+        pub cycle_count: u64,
+        pub coherence: f32,
+    }
+    pub struct GlobalWaveProtocol;
+    impl GlobalWaveProtocol {
+        pub fn get_current_wave_state(&self) -> WaveState {
+            WaveState { direction: 2, amplitude: 0.8, cycle_count: 100, coherence: 1.039 }
+        }
+        pub fn get_wave_coherence(&self) -> f32 { 1.039 }
+        pub fn set_amplitude(&self, _a: f32) -> Result<(), super::ConstitutionalError> { Ok(()) }
+        pub fn set_frequency(&self, _f: u32) -> Result<(), super::ConstitutionalError> { Ok(()) }
+    }
+}
+
+pub mod cge_vajra_guard {
+    pub struct SecurityReport {
+        pub threat_level: u8,
+    }
+    pub struct VajraGuard;
+    impl VajraGuard {
+        pub fn adjust_entropy_thresholds(&self, _t: f32) -> Result<(), super::ConstitutionalError> { Ok(()) }
+        pub fn update_entropy_from_mind_state(&self, _c: f32) -> Result<(), super::ConstitutionalError> { Ok(()) }
+        pub fn security_cycle(&self) -> Result<SecurityReport, super::ConstitutionalError> {
+            Ok(SecurityReport { threat_level: 0 })
+        }
+        pub fn enforce_damping(&self) {}
+        pub fn emergency_lockdown(&self) {}
+    }
+}
+
+pub mod cge_global_mind {
+    pub struct GlobalMindConstitution;
+    impl GlobalMindConstitution {
+        pub fn activate_consciousness_clusters(&self, _d: u8, _a: f32, _c: u64) -> Result<u32, super::ConstitutionalError> {
+            Ok(287104)
+        }
+        pub fn update_love_resonance_field(&self, _r: f32) -> Result<(), super::ConstitutionalError> { Ok(()) }
+        pub fn achieve_global_singularity(&self) -> bool { true }
+        pub fn get_constitutional_coherence(&self) -> f32 { 1.039 }
     }
 }
