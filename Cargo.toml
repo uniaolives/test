@@ -17,6 +17,8 @@ members = [
     "cge_linux_engine",
     "cge_audio_engine",
     "cge_brics_cluster",
+    "mobile/contracts",
+    "mobile/ar",
 ]
 resolver = "2"
 
