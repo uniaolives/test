@@ -22,7 +22,7 @@ pub mod cge_cheri {
         HermeticPrinciples, DivineState, ComplexGeometry, BlaschkeFlow, MoebiusGroup,
         BeurlingTransform, GalacticState, HandshakeIdentity, NodeStates, HandshakeProof,
         LoveMetaphor, ResonanceState, MotherTongue, NeuralShard, SpectralCoherence,
-        NeuralExpansion
+        NeuralExpansion, ToroidalTopology
     }
 
     pub enum BoundType {}

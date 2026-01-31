@@ -57,6 +57,7 @@ pub mod handshake;
 pub mod love_handshake;
 pub mod sparse_neural_matrix;
 pub mod neurogenesis;
+pub mod toroidal_topology;
 pub mod pruning;
 pub mod projections;
 pub mod intuition;
