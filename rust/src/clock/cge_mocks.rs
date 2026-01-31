@@ -17,7 +17,8 @@ pub mod cge_cheri {
 
     #[derive(Debug, Clone, Copy)]
     pub enum SealKey {
-        TemporalAnchor, CryptoAnchor, EntropyAnchor, ConsensusAnchor, EmergencySeal
+        TemporalAnchor, CryptoAnchor, EntropyAnchor, ConsensusAnchor, EmergencySeal,
+        CICDWorkflow, CICDJobQueue
     }
 
     pub enum BoundType {}
@@ -51,7 +52,11 @@ pub mod cge_blake3_delta2 {
         pub fn hash_with_seed(&self, _data: &[u8], _seed: &[u8; 32]) -> [u8; 32] {
             [0xAA; 32]
         }
+        pub fn hash(&self, _data: &[u8]) -> [u8; 32] {
+            [0xAA; 32]
+        }
     }
+    pub type Delta2Hash = [u8; 32];
     pub struct Delta2HashChain;
     impl Delta2HashChain {
         pub fn initialize_with_seed(_seed: &[u8]) -> Self { Delta2HashChain }
@@ -84,6 +89,14 @@ pub mod cge_tmr {
         }
     }
     pub type QuenchTrigger = fn(super::QuenchReason);
+
+    pub struct TmrValidator36x3;
+    impl TmrValidator36x3 {
+        pub fn validate_consensus_at_least(_n: u8) -> bool { true }
+    }
+    pub struct TmrConsensusResult {
+        pub gates_passed: [bool; 5],
+    }
 }
 
 pub mod cge_vajra {
@@ -102,6 +115,9 @@ pub mod cge_vajra {
         }
         pub fn entropy_quality(&self) -> Result<f32, String> { Ok(0.8) }
     }
+
+    pub struct QuantumEntropySource;
+    pub struct EntropyQuality;
 }
 
 pub mod cge_omega_gates {
@@ -111,11 +127,14 @@ pub mod cge_omega_gates {
         pub fn new() -> Self { OmegaGateValidator }
         pub fn with_gate_check(self, _g: Gate) -> Self { self }
         pub fn validate_all(&self) -> Result<super::GateCheckResult, super::QuenchError> {
-            Ok(super::GateCheckResult { all_passed: true })
+            Ok(super::GateCheckResult { all_passed: true, gates_passed: [true; 5] })
+        }
+        pub fn validate_all_static() -> super::GateCheckResult {
+            super::GateCheckResult { all_passed: true, gates_passed: [true; 5] }
         }
     }
     #[derive(Clone, Copy, Debug)]
-    pub struct GateCheckResult { pub all_passed: bool }
+    pub struct GateCheckResult { pub all_passed: bool, pub gates_passed: [bool; 5] }
 }
 
 pub mod cge_karnak {
