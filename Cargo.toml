@@ -6,6 +6,7 @@ members = [
     "agi-service",
     "sasc-society", "linguagem-soberana-br",
     "atomic-interference-processor",
+    "cge_alpha_unified",
 ]
 resolver = "2"
 

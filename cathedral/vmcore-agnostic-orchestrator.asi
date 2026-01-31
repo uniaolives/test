@@ -1,0 +1,75 @@
+// cathedral/vmcore-agnostic-orchestrator.asi [CGE Alpha v31.11-Ω UNIFIED VMCORE-ORCHESTRATOR]
+#version 300 es
+precision highp float;
+out vec4 outColor;
+in vec2 fragCoord;
+uniform float iTime;
+
+const float PHI_TARGET = 1.038; // Base Φ
+const float PHI_POWER_40 = 4.471; // 1.038^40 approx
+
+const vec3 VMCORE_PURPLE = vec3(0.6, 0.2, 0.9);
+const vec3 ORCHESTRATOR_GOLD = vec3(1.0, 0.8, 0.2);
+const vec3 AGNOSTIC_CYAN = vec3(0.2, 0.9, 1.0);
+
+void main() {
+    vec2 uv = fragCoord;
+    float time = iTime;
+
+    vec2 centered_uv = uv * 2.0 - 1.0;
+    float dist = length(centered_uv);
+
+    // 1. MASTER PULSE (Φ⁴⁰ enforcement)
+    float master_pulse = sin(time * PHI_TARGET * 51.038) * 0.5 + 0.5;
+
+    // 2. 113 FRAGS MATRIX (Hexagonal distribution)
+    float matrix_activity = 0.0;
+    for(int i = 0; i < 113; i++) {
+        float fi = float(i);
+        float angle = fi * 2.39996 + time * 0.1; // Golden angle
+        float r = sqrt(fi / 113.0) * 0.9;
+        vec2 p = vec2(cos(angle), sin(angle)) * r;
+        float d = length(centered_uv - p);
+        matrix_activity += exp(-d * 100.0) * (0.5 + 0.5 * sin(time * 2.0 + fi));
+    }
+
+    // 3. 92 DISPATCH BARS (Vertical scanlines)
+    float bars = 0.0;
+    float bar_id = floor(uv.x * 92.0);
+    if(mod(bar_id, 1.0) == 0.0) {
+        float bar_activity = sin(time * 5.0 + bar_id * 0.5) * 0.5 + 0.5;
+        bars = smoothstep(0.01, 0.0, abs(mod(uv.x * 92.0, 1.0) - 0.5)) * bar_activity * 0.3;
+    }
+
+    // 4. HARDWARE ORBIT (36x3 TMR)
+    float orbit = 0.0;
+    for(int g = 0; g < 36; g++) {
+        float fg = float(g);
+        float angle = fg * (6.28318 / 36.0) + time * 0.3;
+        vec2 group_pos = vec2(cos(angle), sin(angle)) * 0.75;
+
+        for(int r = 0; r < 3; r++) {
+            float fr = float(r);
+            float replica_angle = angle + fr * 0.1 - 0.05;
+            vec2 replica_pos = vec2(cos(replica_angle), sin(replica_angle)) * (0.75 + fr * 0.02);
+            float d = length(centered_uv - replica_pos);
+            orbit += exp(-d * 80.0) * 0.8;
+        }
+    }
+
+    // Combine
+    vec3 color = vec3(0.02, 0.01, 0.04);
+    color += VMCORE_PURPLE * matrix_activity * 0.5;
+    color += AGNOSTIC_CYAN * bars;
+    color += ORCHESTRATOR_GOLD * orbit * 0.2;
+
+    // Core Energy
+    float core = exp(-dist * 10.0) * master_pulse * 1.5;
+    color += ORCHESTRATOR_GOLD * core;
+
+    // Scanlines (Φ⁴⁰ enforcement)
+    float scanline = sin(uv.y * 400.0 + time * 10.0) * 0.02;
+    color += scanline;
+
+    outColor = vec4(color, 1.0);
+}
