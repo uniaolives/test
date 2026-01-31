@@ -8,7 +8,7 @@ members = [
     "atomic-interference-processor",
     "cge_alpha_unified",
     "cge_www_universal",
-    "cge_atproto_federation",
+    "cge_atproto_federation", "cge_universal_engine", "cge_pqc_crypto", "cge_benchmark",
 ]
 resolver = "2"
 
