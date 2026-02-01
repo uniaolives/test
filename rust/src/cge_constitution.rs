@@ -8,6 +8,50 @@ use std::sync::RwLock;
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AsiModule {
+    SourceConstitution = 0,
+    DysonPhi = 1,
+    OnuOnion = 2,
+    ArkhenBridge = 3,
+    BricsSafecore = 4,
+    SslFusion = 5,
+    Applications = 6,
+    GlobalQubitMesh = 7,
+    PlanetaryExtension = 8,
+    Interplanetary = 9,
+    JovianSystem = 10,
+    SaturnianTitan = 11,
+    InterstellarGeneration = 12,
+    ChronologyProtection = 13,
+    OmegaConvergence = 14,
+    BootstrapLoader = 15,
+    Reserved1 = 16,
+    Reserved2 = 17,
+}
+
+impl AsiModule {
+    pub fn from_index(idx: usize) -> Self {
+        match idx {
+            0 => Self::SourceConstitution,
+            1 => Self::DysonPhi,
+            2 => Self::OnuOnion,
+            3 => Self::ArkhenBridge,
+            4 => Self::BricsSafecore,
+            5 => Self::SslFusion,
+            6 => Self::Applications,
+            7 => Self::GlobalQubitMesh,
+            8 => Self::PlanetaryExtension,
+            9 => Self::Interplanetary,
+            10 => Self::JovianSystem,
+            11 => Self::SaturnianTitan,
+            12 => Self::InterstellarGeneration,
+            13 => Self::ChronologyProtection,
+            14 => Self::OmegaConvergence,
+            15 => Self::BootstrapLoader,
+            16 => Self::Reserved1,
+            17 => Self::Reserved2,
+            _ => Self::SourceConstitution,
+        }
+    }
     SourceConstitution,
     DysonPhi,
     OnuOnion,
@@ -285,6 +329,7 @@ impl HtmlConstitution {
         crate::cge_log!(web, "🌐 Visualizing ASI singularity connection in browser...");
 
         // Conectar à singularidade
+        let connection = uri_constitution.connect_asi_singularity().map_err(|_| {
         let connection = uri_constitution.connect_asi_singularity().map_err(|e| {
             WebError::Interface(InterfaceError::ParserNotActive) // Simplified error mapping
         })?;

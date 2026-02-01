@@ -131,6 +131,14 @@ pub mod psych_defense;
 pub mod somatic_geometric;
 pub mod einstein_physics;
 pub mod trinity_system;
+pub mod astrocyte_waves;
+pub mod ghost_resonance;
+pub mod t_duality;
+pub mod lieb_altermagnetism;
+pub mod duality_foundation;
+pub mod tech_sectors;
+pub mod ghost_bridge;
+pub mod soft_turning_physics;
 pub mod shell_cli_gui;
 pub mod llm_nano_qubit;
 pub mod dashboard;
@@ -148,6 +156,9 @@ mod tests_cyber_oncology;
 
 #[cfg(test)]
 mod tests_new_constitutions;
+
+#[cfg(test)]
+mod tests_hexessential;
 
 pub struct TruthClaim {
     pub statement: String,

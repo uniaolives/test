@@ -8,6 +8,7 @@ mod tests {
     use crate::psych_defense::*;
     use crate::trinity_system::*;
     use crate::somatic_geometric::*;
+    use crate::astrocyte_waves::*;
     use crate::cge_constitution::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
@@ -72,6 +73,39 @@ mod tests {
     fn test_trinity_unification() {
         let trinity = TrinityConstitutionalSystem::new().unwrap();
 
+        // Execute simulation
+        let result = trinity.execute_trinity_simulation().unwrap();
+        assert!(result.success);
+        assert_eq!(result.final_phi, 1.068);
+    }
+
+    #[test]
+    fn test_celestial_scaling() {
+        let quadrity = QuadrityConstitutionalSystem::new().unwrap();
+
+        // Initial state: 144 astrocytes
+        assert_eq!(quadrity.astrocyte_waves.node_count(), 144);
+
+        // Scale to 1,440 (10 clusters)
+        for i in 0..10 {
+            quadrity.astrocyte_waves.scale_to_heaven(i).unwrap();
+        }
+        assert_eq!(quadrity.astrocyte_waves.node_count(), 1440);
+
+        // Check scaling ratio logic
+        let ratio = quadrity.verify_scaling_law();
+        assert!(ratio > 4.6); // ln(144000/1440) = ln(100) ≈ 4.6
+
+        // Ensure simulation produces a result
+        quadrity.execute_quadrity_cycle(0).unwrap();
+
+        // Check permeability
+        let permeability = quadrity.einstein_simulation.measure_substrate_permeability();
+        assert!(permeability > 0.05); // 58.7 / 1057.8 ≈ 0.055
+
+        // Set celestial target
+        quadrity.phi_quadrity_monitor.set_celestial_target();
+        assert_eq!(quadrity.phi_quadrity_monitor.measure().unwrap(), 1.144);
         // Verify isomorphism
         let skin = NRESkinConstitution::new().unwrap();
         let surface = ConstitutionalBreatherSurface::new().unwrap();
