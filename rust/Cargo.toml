@@ -24,6 +24,7 @@ ring = "0.17"
 serde = { version = "1.0", features = ["derive"] }
 ciborium = "0.2"
 sasc-governance = { path = "../sasc-governance", features = ["cathedral", "eip712", "bio-extraction"] }
+phi-calculus = { path = "../phi-calculus" }
 zeroize = { version = "1.7", features = ["zeroize_derive"] }
 lazy_static = "1.4"
 serde_json = "1.0"
