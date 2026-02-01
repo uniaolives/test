@@ -127,6 +127,7 @@ pub mod qddr_memory;
 pub mod enciclopedia;
 pub mod arctan;
 pub mod crispr;
+pub mod psych_defense;
 pub mod shell_cli_gui;
 pub mod llm_nano_qubit;
 pub mod dashboard;
