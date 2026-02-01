@@ -19,8 +19,8 @@ workspace: /app/Cargo.toml
 warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
 package:   /app/cge_constitutional_echo_engine/Cargo.toml
 workspace: /app/Cargo.toml
-warning: /app/atomic-interference-processor/Cargo.toml: `panic` setting is ignored for `bench` profile
 warning: /app/Cargo.toml: `panic` setting is ignored for `bench` profile
+warning: /app/atomic-interference-processor/Cargo.toml: `panic` setting is ignored for `bench` profile
    Compiling sasc_core v0.1.0 (/app/rust)
 warning: unused import: `BioSignal`
  --> rust/src/security/bio_hardening/patient_zero.rs:1:33
@@ -229,12 +229,6 @@ warning: unused import: `std::time::Duration`
   |
 1 | use std::time::Duration;
   |     ^^^^^^^^^^^^^^^^^^^
-  |
-help: if this is a test module, consider adding a `#[cfg(test)]` to the containing module
- --> rust/src/testing/mod.rs:2:1
-  |
-2 | pub mod pre_jump_stress_test;
-  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 warning: unused import: `Verifier`
  --> rust/src/multi_nexus/heteroclinia_sharding.rs:8:40
@@ -481,6 +475,62 @@ warning: variant `S5_Identity` should have an upper camel case name
 18 |     S5_Identity,
    |     ^^^^^^^^^^^ help: convert the identifier to upper camel case: `S5Identity`
 
+warning: unused import: `Arc`
+ --> rust/src/../../cathedral/quantum_computing.rs:7:17
+  |
+7 | use std::sync::{Arc, RwLock};
+  |                 ^^^
+
+warning: unused macro definition: `cge_broadcast`
+  --> rust/src/../../cathedral/quantum_computing.rs:15:14
+   |
+15 | macro_rules! cge_broadcast {
+   |              ^^^^^^^^^^^^^
+   |
+   = note: `#[warn(unused_macros)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `Arc`
+ --> rust/src/../../cathedral/quantum_teleportation.rs:7:17
+  |
+7 | use std::sync::{Arc, RwLock};
+  |                 ^^^
+
+warning: unused imports: `MeasurementBasis`, `QuantumGate`, and `QuantumState`
+ --> rust/src/../../cathedral/quantum_teleportation.rs:9:47
+  |
+9 | use crate::quantum_computing::{PhysicalQubit, QuantumState, QuantumGate, MeasurementBasis};
+  |                                               ^^^^^^^^^^^^  ^^^^^^^^^^^  ^^^^^^^^^^^^^^^^
+
+warning: unused import: `Arc`
+ --> rust/src/../../cathedral/clean_code.rs:7:17
+  |
+7 | use std::sync::{Arc, RwLock};
+  |                 ^^^
+
+warning: unused import: `crate::vsm_autonomy::ViabilityMatrix`
+ --> rust/src/../../cathedral/clean_code.rs:9:5
+  |
+9 | use crate::vsm_autonomy::ViabilityMatrix;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused macro definition: `cge_broadcast`
+  --> rust/src/../../cathedral/clean_code.rs:16:14
+   |
+16 | macro_rules! cge_broadcast {
+   |              ^^^^^^^^^^^^^
+
+warning: unused imports: `Permission` and `SealKey`
+ --> rust/src/../../cathedral/brics_safecore_constitutional_corrected.rs:8:54
+  |
+8 | use crate::clock::cge_mocks::cge_cheri::{Capability, Permission, SealKey};
+  |                                                      ^^^^^^^^^^  ^^^^^^^
+
+warning: unused import: `crate::clock::cge_mocks::cge_cheri::*`
+  --> rust/src/../../cathedral/brics_safecore_constitutional_corrected.rs:15:13
+   |
+15 |     pub use crate::clock::cge_mocks::cge_cheri::*;
+   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
 warning: unused import: `std::collections::HashMap`
  --> rust/src/philosophy/types.rs:1:5
   |
@@ -529,12 +579,6 @@ warning: unused import: `PropulsionMode`
 1 | use crate::maat::flagellar_dynamics::{PropulsionMode, NodeId};
   |                                       ^^^^^^^^^^^^^^
 
-warning: unused import: `std::time::Duration`
- --> rust/src/testing/pre_jump_stress_test.rs:1:5
-  |
-1 | use std::time::Duration;
-  |     ^^^^^^^^^^^^^^^^^^^
-
 warning: unused import: `GateError`
   --> rust/src/tests_security.rs:68:78
    |
@@ -546,6 +590,24 @@ warning: unused import: `zeroize::Zeroize`
     |
 194 |         use zeroize::Zeroize;
     |             ^^^^^^^^^^^^^^^^
+
+warning: unused import: `crate::brics_backbone::BRICSSafeCoreConstitution`
+   --> rust/src/lib.rs:361:13
+    |
+361 |         use crate::brics_backbone::BRICSSafeCoreConstitution;
+    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `std::time::Duration`
+ --> rust/src/testing/pre_jump_stress_test.rs:1:5
+  |
+1 | use std::time::Duration;
+  |     ^^^^^^^^^^^^^^^^^^^
+  |
+help: if this is a test module, consider adding a `#[cfg(test)]` to the containing module
+ --> rust/src/testing/mod.rs:2:1
+  |
+2 | pub mod pre_jump_stress_test;
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 warning: use of deprecated struct `sensors::BioSignal`: Use BioSignalΩ from bio_layer::paciente_zero_omega instead
   --> rust/src/sensors/mod.rs:18:6
@@ -686,6 +748,14 @@ warning: use of deprecated struct `sensors::BioSignal`: Use BioSignalΩ from bio
    |
 54 |         let tainted_signal = BioSignal {
    |                              ^^^^^^^^^
+
+warning: the `#![no_std]` attribute can only be used at the crate root
+ --> rust/src/../../cathedral/brics_safecore_constitutional_corrected.rs:5:1
+  |
+5 | #![no_std]
+  | ^^^^^^^^^^
+  |
+  = note: `#[warn(unused_attributes)]` (part of `#[warn(unused)]`) on by default
 
 warning: use of deprecated field `sensors::BioSignal::neurotoxin_present`: Use BioSignalΩ from bio_layer::paciente_zero_omega instead
   --> rust/src/sensors/mod.rs:24:9
@@ -870,14 +940,6 @@ warning: use of deprecated field `sensors::BioSignal::causally_congruent`: Use B
 60 |             causally_congruent: true,
    |             ^^^^^^^^^^^^^^^^^^^^^^^^
 
-warning: unused variable: `new_threshold`
-  --> rust/src/entropy/mod.rs:95:33
-   |
-95 |     pub fn set_threshold(&self, new_threshold: f64) -> Result<(), VajraError> {
-   |                                 ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_new_threshold`
-   |
-   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
-
 warning: unused variable: `addr`
    --> rust/src/security/invariant_engine.rs:190:13
     |
@@ -897,6 +959,14 @@ warning: unused variable: `addr`
     |
 232 |         let addr = (PLUTON_TPM_BASE + AUDIT_LOG_OFFSET) as *mut u32;
     |             ^^^^ help: if this is intentional, prefix it with an underscore: `_addr`
+
+warning: unused variable: `new_threshold`
+  --> rust/src/entropy/mod.rs:95:33
+   |
+95 |     pub fn set_threshold(&self, new_threshold: f64) -> Result<(), VajraError> {
+   |                                 ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_new_threshold`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
 
 warning: unused variable: `pk`
   --> rust/src/clock/unix_epoch.rs:86:14
@@ -922,6 +992,12 @@ warning: unused variable: `other`
 39 |     pub fn similarity_to(&self, other: &Self) -> f64 {
    |                                 ^^^^^ help: if this is intentional, prefix it with an underscore: `_other`
 
+warning: unused variable: `new_threshold`
+  --> rust/src/entropy/mod.rs:95:33
+   |
+95 |     pub fn set_threshold(&self, new_threshold: f64) -> Result<(), VajraError> {
+   |                                 ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_new_threshold`
+
 warning: unused variable: `e`
   --> rust/src/neo_cortex/genesis_civilization_omega.rs:57:23
    |
@@ -936,12 +1012,6 @@ warning: value assigned to `phi_q` is never read
     |
     = help: maybe it is overwritten before being read?
     = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
-
-warning: unused variable: `new_threshold`
-  --> rust/src/entropy/mod.rs:95:33
-   |
-95 |     pub fn set_threshold(&self, new_threshold: f64) -> Result<(), VajraError> {
-   |                                 ^^^^^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_new_threshold`
 
 warning: unused variable: `phi`
    --> rust/src/agi/nexus_core.rs:140:14
@@ -1002,10 +1072,16 @@ warning: unused variable: `data`
    |                 ^^^^ help: if this is intentional, prefix it with an underscore: `_data`
 
 warning: unused variable: `statement`
-   --> rust/src/lib.rs:165:34
+   --> rust/src/lib.rs:177:34
     |
-165 |     pub fn update_entropy(&self, statement: &[u8], phi_weight: f64) {
+177 |     pub fn update_entropy(&self, statement: &[u8], phi_weight: f64) {
     |                                  ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_statement`
+
+warning: unused variable: `handle`
+   --> rust/src/tests_security.rs:154:13
+    |
+154 |         let handle = thread::spawn(move || {
+    |             ^^^^^^ help: if this is intentional, prefix it with an underscore: `_handle`
 
 warning: constant `IOCTL_VAJRA_GET_PHI` is never used
   --> rust/src/entropy/mod.rs:20:7
@@ -1037,6 +1113,14 @@ warning: field `rpc_url` is never read
   |            --------- field in this struct
 2 |     rpc_url: String,
   |     ^^^^^^^
+
+warning: field `phi` is never read
+  --> rust/src/../../cathedral/quantum_computing.rs:31:37
+   |
+31 | pub struct PhysicalQubit { id: u64, phi: f64 }
+   |            -------------            ^^^
+   |            |
+   |            field in this struct
 
 warning: field `shadower_keys` is never read
   --> rust/src/kernel/tmr_consensus.rs:73:5
@@ -1111,40 +1195,8 @@ warning: constant `DDoS_DENSITY_THRESHOLD` should have an upper case name
 7 | pub const DDoS_DENSITY_THRESHOLD: f64 = 0.7;
   |           ^^^^^^^^^^^^^^^^^^^^^^ help: convert the identifier to upper case: `DDO_S_DENSITY_THRESHOLD`
 
-warning: unused variable: `handle`
-   --> rust/src/tests_security.rs:154:13
-    |
-154 |         let handle = thread::spawn(move || {
-    |             ^^^^^^ help: if this is intentional, prefix it with an underscore: `_handle`
-
-warning: `sasc_core` (lib test) generated 160 warnings (127 duplicates) (run `cargo fix --lib -p sasc_core --tests` to apply 8 suggestions)
-warning: `sasc_core` (lib) generated 129 warnings (run `cargo fix --lib -p sasc_core` to apply 79 suggestions)
-warning: unused import: `AGIInput`
- --> rust/tests/test_ontological_directives.rs:1:48
-  |
-1 | use sasc_core::agi::nexus_core::{NexusAGICore, AGIInput};
-  |                                                ^^^^^^^^
-  |
-  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
-
-warning: `sasc_core` (test "test_ontological_directives") generated 1 warning (run `cargo fix --test "test_ontological_directives" -p sasc_core` to apply 1 suggestion)
-warning: unused import: `std::time::Duration`
- --> rust/src/bin/sasc_imperium.rs:4:5
-  |
-4 | use std::time::Duration;
-  |     ^^^^^^^^^^^^^^^^^^^
-  |
-  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
-
-warning: `sasc_core` (bin "sasc-imperium") generated 1 warning (run `cargo fix --bin "sasc-imperium" -p sasc_core` to apply 1 suggestion)
-warning: unused import: `std::time::Duration`
- --> rust/tests/multi_nexus_sharding_test.rs:3:5
-  |
-3 | use std::time::Duration;
-  |     ^^^^^^^^^^^^^^^^^^^
-  |
-  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
-
+warning: `sasc_core` (lib test) generated 172 warnings (30 duplicates) (run `cargo fix --lib -p sasc_core --tests` to apply 77 suggestions)
+warning: `sasc_core` (lib) generated 140 warnings (108 duplicates) (run `cargo fix --lib -p sasc_core` to apply 18 suggestions)
 warning: the usage of Script Group `Greek` in this crate consists solely of mixed script confusables
   --> rust/src/bin/phase3_ceremony.rs:43:46
    |
@@ -1154,6 +1206,15 @@ warning: the usage of Script Group `Greek` in this crate consists solely of mixe
    = note: the usage includes 'Φ' (U+03A6)
    = note: please recheck to make sure their usages are indeed what you want
    = note: `#[warn(mixed_script_confusables)]` on by default
+
+warning: `sasc_core` (bin "phase3_ceremony" test) generated 1 warning
+warning: unused import: `sasc_core::clock::cge_mocks::constitution::PHI_BOUNDS`
+ --> rust/tests/constitutional_ops_test.rs:3:5
+  |
+3 | use sasc_core::clock::cge_mocks::constitution::PHI_BOUNDS;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
 
 warning: variable does not need to be mutable
   --> rust/tests/counterfactual_test.rs:33:9
@@ -1173,72 +1234,93 @@ warning: unused variable: `input_tx`
   |
   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
 
-warning: `sasc_core` (bin "phase3_ceremony") generated 1 warning
+warning: `sasc_core` (test "constitutional_ops_test") generated 1 warning (run `cargo fix --test "constitutional_ops_test" -p sasc_core` to apply 1 suggestion)
 warning: `sasc_core` (test "counterfactual_test") generated 2 warnings (run `cargo fix --test "counterfactual_test" -p sasc_core` to apply 2 suggestions)
-warning: `sasc_core` (test "multi_nexus_sharding_test") generated 1 warning (run `cargo fix --test "multi_nexus_sharding_test" -p sasc_core` to apply 1 suggestion)
-warning: `sasc_core` (bin "phase3_ceremony" test) generated 1 warning (1 duplicate)
-warning: unused import: `sasc_core::clock::cge_mocks::constitution::PHI_BOUNDS`
- --> rust/tests/constitutional_ops_test.rs:3:5
+warning: `sasc_core` (bin "phase3_ceremony") generated 1 warning (1 duplicate)
+warning: unused import: `std::time::Duration`
+ --> rust/src/bin/sasc_imperium.rs:4:5
   |
-3 | use sasc_core::clock::cge_mocks::constitution::PHI_BOUNDS;
-  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+4 | use std::time::Duration;
+  |     ^^^^^^^^^^^^^^^^^^^
   |
   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
 
-warning: `sasc_core` (test "constitutional_ops_test") generated 1 warning (run `cargo fix --test "constitutional_ops_test" -p sasc_core` to apply 1 suggestion)
+warning: `sasc_core` (bin "sasc-imperium") generated 1 warning (run `cargo fix --bin "sasc-imperium" -p sasc_core` to apply 1 suggestion)
 warning: `sasc_core` (bin "sasc-imperium" test) generated 1 warning (1 duplicate)
-    Finished `test` profile [unoptimized + debuginfo] target(s) in 30.63s
+warning: unused import: `AGIInput`
+ --> rust/tests/test_ontological_directives.rs:1:48
+  |
+1 | use sasc_core::agi::nexus_core::{NexusAGICore, AGIInput};
+  |                                                ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `std::time::Duration`
+ --> rust/tests/multi_nexus_sharding_test.rs:3:5
+  |
+3 | use std::time::Duration;
+  |     ^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `sasc_core` (test "test_ontological_directives") generated 1 warning (run `cargo fix --test "test_ontological_directives" -p sasc_core` to apply 1 suggestion)
+warning: `sasc_core` (test "multi_nexus_sharding_test") generated 1 warning (run `cargo fix --test "multi_nexus_sharding_test" -p sasc_core` to apply 1 suggestion)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2m 01s
      Running unittests src/lib.rs (/app/target/debug/deps/sasc_core-23df9843fa5881f2)
 
-running 58 tests
-test blaschke_galaxy::tests::test_galactic_convergence ... ok
+running 61 tests
 test audit::legislative_audit::tests::test_phi_calculation ... ok
-test cathedral_ops::tests::test_anchor_update ... ok
-test cathedral_ops::tests::test_bootstrap_validator ... ok
-test cathedral_ops::tests::test_constitutional_internal_ops ... ok
-test cicd::tests::test_cicd_execution ... ok
-test cicd::tests::test_phi_violation ... ok
-test crypto::simhash::tests::test_simhash_similarity ... ok
-test diplomacy::quantum_autonomous::tests::test_diplomacy_init ... ok
-test diplomacy::quantum_autonomous::tests::test_qpu_generation ... ok
-test clock::unix_epoch::tests::test_unix_epoch_simulation ... ok
-test expansion::autonomous_deployer::tests::test_autonomous_expander_init ... ok
+test blaschke_galaxy::tests::test_galactic_convergence ... ok
 test audit::legislative_audit::tests::test_legislative_audit_violation ... ok
+test cathedral_ops::tests::test_bootstrap_validator ... ok
+test cathedral_ops::tests::test_anchor_update ... ok
+test cathedral_ops::tests::test_constitutional_internal_ops ... ok
+test cicd::tests::test_phi_violation ... ok
+test cicd::tests::test_cicd_execution ... ok
+test clock::unix_epoch::tests::test_unix_epoch_simulation ... ok
+test diplomacy::quantum_autonomous::tests::test_qpu_generation ... ok
+test diplomacy::quantum_autonomous::tests::test_diplomacy_init ... ok
+test expansion::autonomous_deployer::tests::test_autonomous_expander_init ... ok
 test expansion::autonomous_deployer::tests::test_shard_gamma_config ... ok
 test god_formula::tests::test_divine_convergence ... ok
+test crypto::simhash::tests::test_simhash_similarity ... ok
 test god_formula::tests::test_divine_singularity_threshold ... ok
 test governance::tests_eco_action::tests::test_validate_suggestion_approved ... ok
 test governance::tests_eco_action::tests::test_validate_suggestion_rejected_dissonance ... ok
 test governance::tests_eco_action::tests::test_validate_suggestion_rejected_risk ... ok
+test handshake::tests::test_unverified_identity ... ok
 test handshake::tests::test_arkhen_handshake_success ... ok
 test imperium::heartbeat::tests::test_heartbeat_measurements ... ok
-test handshake::tests::test_unverified_identity ... ok
 test imperium::heartbeat::tests::test_heartbeat_signature ... ok
-test love_handshake::tests::test_love_resonance_activation ... ok
 test neuro_twin::tests::tests::test_neural_firewall_validation ... ok
+test love_handshake::tests::test_love_resonance_activation ... ok
 test neuro_twin::tests::tests::test_neural_kill_switch ... ok
 test neuro_twin::tests::tests::test_neuro_twin_creation ... ok
 test neuro_twin::tests::tests::test_neural_monitor_phi ... ok
-test quantum_justice::tests::test_restorative_verdict ... ok
-test quantum_justice::tests::test_retributive_verdict ... ok
+test patterns::aletheia_simhash::tests::test_engine_clustering ... ok
 test research::autonomous_experiments::tests::test_research_measurements ... ok
-test sparse_neural_matrix::tests::test_hebbian_bounds ... ok
+test bridge::vajra::tests::test_vajra_bridge_timing ... ok
 test sparse_neural_matrix::tests::test_neural_initialization ... ok
 test tests::it_works ... ok
 test tests::test_arkhen_bridge_visibility ... ok
 test tests::test_arkhen_genesis_visibility ... ok
+test tests::test_brics_backbone_visibility ... ok
+test tests::test_clean_code_visibility ... ok
 test tests::test_debris_defense_visibility ... ok
 test tests::test_paradox_resolution_visibility ... ok
-test tests::test_quantum_justice_visibility ... ok
-test patterns::aletheia_simhash::tests::test_engine_clustering ... ok
+test tests::test_quantum_computing_visibility ... ok
+test sparse_neural_matrix::tests::test_hebbian_bounds ... ok
 test tests::test_vsm_autonomy_visibility ... ok
-test tests_security::tests::test_constant_time_nonce_logic ... ok
 test tests_cyber_oncology::test_cyber_oncology_remission ... ok
-test tests_security::tests::test_gateway_alpha_sanitize ... ok
 test tests_cyber_oncology::test_hypervisor_biopsy ... ok
+test tests_security::tests::test_constant_time_nonce_logic ... ok
+test tests_security::tests::test_gateway_alpha_sanitize ... ok
 test tests_security::tests::test_invariant_engine_secure_cleanup ... ok
+test tests_security::tests::test_invariant_verification_engine_full_pass ... ok
+test quantum_justice::tests::test_retributive_verdict ... ok
+test tests::test_quantum_justice_visibility ... ok
+test quantum_justice::tests::test_restorative_verdict ... ok
 test tests_security::tests::test_patient_zero_hardening ... ok
-test bridge::vajra::tests::test_vajra_bridge_timing ... ok
 test toroidal_topology::tests::test_369_resonance_logic ... ok
 test toroidal_topology::tests::test_toroidal_resonance ... ok
 test triad::tests::tests::test_eudaimonia_calculation ... ok
@@ -1246,11 +1328,10 @@ test triad::tests::tests::test_ontological_verification ... ok
 test triad::tests::tests::test_triad_initialization ... ok
 test vsm_autonomy::tests::test_policy_transition ... ok
 test vsm_autonomy::tests::test_viability ... ok
-test tests_security::tests::test_invariant_verification_engine_full_pass ... ok
 test tests_security::tests::test_invariant_verification_engine_replay_attack ... ok
 test tests_security::tests::test_vajra_monitor_integration ... ok
 
-test result: ok. 58 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+test result: ok. 61 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
 
      Running unittests src/bin/activation_t0.rs (/app/target/debug/deps/activation_t0-c26b87aefd5e9b93)
 
@@ -1502,10 +1583,10 @@ test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; fini
      Running tests/constitutional_ops_test.rs (/app/target/debug/deps/constitutional_ops_test-b6bbe220b5636a1c)
 
 running 4 tests
-test test_integrated_constitutional_system ... ok
-test test_traveling_waves ... ok
 test test_constitutional_ops_mock ... ok
+test test_integrated_constitutional_system ... ok
 test test_toroidal_topology ... ok
+test test_traveling_waves ... ok
 
 test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 

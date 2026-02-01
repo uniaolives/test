@@ -107,6 +107,18 @@ pub mod paradox_resolution;
 pub mod debris_defense;
 #[path = "../../cathedral/vsm_autonomy.rs"]
 pub mod vsm_autonomy;
+#[path = "../../cathedral/cge_constitution.rs"]
+pub mod cge_constitution;
+#[path = "../../cathedral/onu_onion.rs"]
+pub mod onu_onion;
+#[path = "../../cathedral/quantum_computing.rs"]
+pub mod quantum_computing;
+#[path = "../../cathedral/quantum_teleportation.rs"]
+pub mod quantum_teleportation;
+#[path = "../../cathedral/clean_code.rs"]
+pub mod clean_code;
+#[path = "../../cathedral/brics_safecore_constitutional_corrected.rs"]
+pub mod brics_backbone;
 pub mod geometric_interrogation;
 pub mod zk_vajra_circuit;
 pub mod zk_system;
@@ -328,5 +340,25 @@ mod tests {
         };
         assert!(matrix.is_viable());
         assert_eq!(matrix.transition_policy(SystemLevel::S5_Identity), "Status_Quo");
+    }
+
+    #[test]
+    fn test_quantum_computing_visibility() {
+        use crate::quantum_computing::QubitConstitution;
+        let q = QubitConstitution::new();
+        assert!(q.is_ok());
+    }
+
+    #[test]
+    fn test_clean_code_visibility() {
+        use crate::clean_code::CleanCodeConstitution;
+        let c = CleanCodeConstitution::new();
+        assert!(c.is_ok());
+    }
+
+    #[test]
+    fn test_brics_backbone_visibility() {
+        use crate::brics_backbone::BRICSSafeCoreConstitution;
+        // Just verify it's accessible
     }
 }
