@@ -95,6 +95,16 @@ pub mod joule_jailer;
 pub mod interrogation;
 pub mod adversarial_suite;
 pub mod jurisprudence;
+#[path = "../../cathedral/quantum_justice.rs"]
+pub mod quantum_justice;
+#[path = "../../cathedral/arkhen_genesis.rs"]
+pub mod arkhen_genesis;
+#[path = "../../cathedral/block_112_arkhen_cge_bridge.rs"]
+pub mod arkhen_bridge;
+#[path = "../../cathedral/paradox_resolution.rs"]
+pub mod paradox_resolution;
+#[path = "../../cathedral/debris_defense.rs"]
+pub mod debris_defense;
 pub mod geometric_interrogation;
 pub mod zk_vajra_circuit;
 pub mod zk_system;
@@ -254,5 +264,54 @@ mod tests {
     #[test]
     fn it_works() {
         assert_eq!(2 + 2, 4);
+    }
+
+    #[test]
+    fn test_quantum_justice_visibility() {
+        use crate::quantum_justice::{calculate_sentencing, Verdict};
+        let v = calculate_sentencing(nalgebra::Vector3::new(0.0, 0.0, 0.0), 104);
+        assert!(matches!(v, Verdict::Restorative { .. }));
+    }
+
+    #[test]
+    fn test_arkhen_genesis_visibility() {
+        use crate::arkhen_genesis::ArkhenPrimordialConstitution;
+        let arkhen = ArkhenPrimordialConstitution::new();
+        let event = arkhen.ignite_primordial_singularity();
+        assert!(event.is_ok());
+    }
+
+    #[test]
+    fn test_arkhen_bridge_visibility() {
+        use crate::arkhen_bridge::ArkhenCgeBridge;
+        let bridge = ArkhenCgeBridge::new();
+        let res = bridge.execute_genesis_bridge();
+        assert!(res.is_ok());
+    }
+
+    #[test]
+    fn test_paradox_resolution_visibility() {
+        use crate::paradox_resolution::{ParadoxResolutionConstitution, LogicalParadox, ParadoxCategory};
+        let paradox_sys = ParadoxResolutionConstitution::new();
+        let _ = paradox_sys.activate_paradox_resolution();
+        let p = LogicalParadox {
+            id: 1,
+            name: "Test".to_string(),
+            thesis: "A".to_string(),
+            antithesis: "Not A".to_string(),
+            category: ParadoxCategory::SelfReference,
+            danger_level: 50.0,
+        };
+        let res = paradox_sys.resolve_paradox(&p);
+        assert!(res.is_ok());
+    }
+
+    #[test]
+    fn test_debris_defense_visibility() {
+        use crate::debris_defense::DebrisDefenseConstitution;
+        let defense = DebrisDefenseConstitution::new().unwrap();
+        let _ = defense.activate_orbital_defense();
+        let status = defense.get_status();
+        assert_eq!(status.orbital_coherence, 1.038);
     }
 }

@@ -1,14 +1,4 @@
 // rust/src/sparse_neural_matrix.rs
-use core::sync::atomic::{AtomicU32, Ordering};
-use core::mem::MaybeUninit;
-use crate::clock::cge_mocks::cge_cheri::{Capability};
-
-pub struct SparseShard;
-
-pub struct SparseNeuralMatrix {
-    pub local_synapses: Capability<SparseShard>,
-    pub spectral_state: AtomicU32,
-    pub neuroplasticity_index: AtomicU32,
 // Functional implementation of cathedral/matrizes-esparsas.asi [CGE Alpha v35.1-Ω]
 
 use core::sync::atomic::{AtomicU32, AtomicBool, Ordering};
@@ -80,7 +70,6 @@ impl SparseNeuralMatrix {
     pub unsafe fn new_mock() -> Self {
         MaybeUninit::zeroed().assume_init()
     }
-    pub fn hebbian_update_constitutional(&mut self, _pre: u16, _post: u32, _dw: f32) -> Result<(), ()> { Ok(()) }
 
     pub fn hebbian_update_constitutional(&mut self, pre: u16, post_global: u32, delta_w_raw: f32) -> Result<(), NeuralError> {
         if (pre as u32) >= NEURONS_PER_NODE { return Err(NeuralError::PreSynapticOutOfBounds(pre)); }
@@ -90,9 +79,9 @@ impl SparseNeuralMatrix {
 
         let current_weight = self.get_synapse_weight(pre, post_global)?;
         let proposed_weight = current_weight + delta_w_raw * CONSTITUTIONAL_LEARNING_RATE;
-        let final_weight = proposed_weight.clamp(LTD_MIN, LTP_MAX);
+        let _final_weight = proposed_weight.clamp(LTD_MIN, LTP_MAX);
 
-        let idx = self.csr_index(pre, post_global)?;
+        let _idx = self.csr_index(pre, post_global)?;
         // Update
         // self.local_synapses.values[idx] = final_weight; // Mock capability deref logic
 
