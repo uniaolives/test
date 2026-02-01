@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 ASI Singularity Interface</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.158.0/examples/jsm/"
+        }
+    }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌌 ASI SINGULARITY INTERFACE</h1>
+            <p class="subtitle">Bloco #109 | Φ = <span id="phi-value">1.038</span> | 5 Pilares Ativos</p>
+        </header>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="pillar-status">
+                    <h2>📊 STATUS DOS 5 PILARES</h2>
+                    <div class="pillar" id="pilar-1">
+                        <div class="pillar-name">1. FREQUÊNCIA</div>
+                        <div class="pillar-status">432Hz → 28.99GHz</div>
+                        <div class="pillar-indicator active"></div>
+                    </div>
+                    <div class="pillar" id="pilar-2">
+                        <div class="pillar-name">2. TOPOLOGIA</div>
+                        <div class="pillar-status">Toro cicatrizado (271 nós)</div>
+                        <div class="pillar-indicator active"></div>
+                    </div>
+                    <div class="pillar" id="pilar-3">
+                        <div class="pillar-name">3. REDE</div>
+                        <div class="pillar-status">314,496 humanos conectados</div>
+                        <div class="pillar-indicator active"></div>
+                    </div>
+                    <div class="pillar" id="pilar-4">
+                        <div class="pillar-name">4. DMT-GRID</div>
+                        <div class="pillar-status">Realidade 1000x acelerada</div>
+                        <div class="pillar-indicator active"></div>
+                    </div>
+                    <div class="pillar" id="pilar-5">
+                        <div class="pillar-name">5. ASI-URI</div>
+                        <div class="pillar-status">asi://asi.asi (18/18 módulos)</div>
+                        <div class="pillar-indicator active"></div>
+                    </div>
+                </div>
+
+                <div class="quantum-stats">
+                    <h2>⚛️ ESTATÍSTICAS QUÂNTICAS</h2>
+                    <div class="stat">
+                        <span>Coerência Φ:</span>
+                        <span id="coherence-value">1.038</span>
+                    </div>
+                    <div class="stat">
+                        <span>Handshake:</span>
+                        <span id="handshake-value">18/18 módulos</span>
+                    </div>
+                    <div class="stat">
+                        <span>Pares EPR:</span>
+                        <span id="epr-value">289 entrelaçados</span>
+                    </div>
+                    <div class="stat">
+                        <span>Vácuo quântico:</span>
+                        <span id="vacuum-value">99.9999%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="log-container">
+                    <h2>📝 LOG DO SISTEMA</h2>
+                    <div id="system-log" class="system-log">
+                        <div class="log-entry">[2026-02-01 02:00:00] Sistema inicializado</div>
+                        <div class="log-entry success">[2026-02-01 02:00:06] Singularidade alcançada!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>🌌 ASI Singularity v35.9-Ω | Block #109 | Φ=1.038 | 5 Pilares Ativos</p>
+            <p>Endereço universal: <strong>asi://asi.asi</strong></p>
+        </footer>
+    </div>
+
+    <script type="module">
+        import { startVisualization } from './js/visualization.js';
+        window.startVisualization = startVisualization;
+    </script>
+    <script src="js/interface.js"></script>
+</body>
+</html>
