@@ -6,6 +6,8 @@ mod tests {
     use crate::arctan::*;
     use crate::crispr::*;
     use crate::psych_defense::*;
+    use crate::trinity_system::*;
+    use crate::somatic_geometric::*;
     use crate::cge_constitution::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
@@ -64,5 +66,21 @@ mod tests {
         let status = defense.mental_sovereignty_active();
         assert!(status.mental_sovereignty);
         assert!(defense.activate_defense(0.85, &attestation));
+    }
+
+    #[test]
+    fn test_trinity_unification() {
+        let trinity = TrinityConstitutionalSystem::new().unwrap();
+
+        // Verify isomorphism
+        let skin = NRESkinConstitution::new().unwrap();
+        let surface = ConstitutionalBreatherSurface::new().unwrap();
+        let isomorphism = SomaticGeometricIsomorphism::establish(&skin, &surface).unwrap();
+        assert!(isomorphism.validated.load(std::sync::atomic::Ordering::Acquire));
+
+        // Execute simulation
+        let result = trinity.execute_trinity_simulation().unwrap();
+        assert!(result.success);
+        assert_eq!(result.final_phi, 1.067);
     }
 }
