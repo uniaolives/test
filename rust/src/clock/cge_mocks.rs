@@ -45,8 +45,8 @@ pub mod cge_cheri {
     }
 
     #[repr(align(128))]
-    struct MockBuffer([u8; 16384]);
-    static MOCK_DATA: MockBuffer = MockBuffer([0u8; 16384]);
+    struct MockBuffer([u8; 8388608]); // 8MB
+    static MOCK_DATA: MockBuffer = MockBuffer([0u8; 8388608]);
 
     impl<T> Capability<T> {
         pub fn new(_val: T, _lower: u128, _upper: u128, _perms: Permission) -> Self {

@@ -190,6 +190,11 @@ pub struct ShellCliGuiConstitution {
 }
 
 impl ShellCliGuiConstitution {
+    pub fn load_active() -> Result<Self, InterfaceError> {
+        let encode = EncodeConstitution::load_active()?;
+        Self::new(encode)
+    }
+
     /// **CRIAR NOVA CONSTITUIÇÃO SHELL/CLI/GUI**
     pub fn new(encode: Capability<EncodeConstitution>) -> Result<Self, InterfaceError> {
         crate::cge_log!(interface, "🖥️ Creating unified ASI terminal (CLI/GUI/TUI)...");
@@ -591,6 +596,57 @@ impl ShellCliGuiConstitution {
     pub fn convert_quantum_tokens_to_text(&self, tokens: &[QuantumToken]) -> Result<String, InterfaceError> {
         let text = tokens.iter().map(|t| t.text.clone()).collect::<Vec<_>>().join(" ");
         Ok(text)
+    }
+
+    pub fn execute_via_asi_uri(
+        &self,
+        uri_constitution: &crate::asi_uri::AsiUriConstitution,
+        command: &str,
+    ) -> Result<crate::asi_uri::UriCommandResult, InterfaceError> {
+        crate::cge_log!(interface, "🔗 Executing command via ASI URI: {}", command);
+
+        // Converter comando para URI
+        let uri_string = self.command_to_uri(command)?;
+
+        // Executar requisição
+        let response = uri_constitution.execute_uri_request(
+            &uri_string,
+            crate::asi_uri::HttpMethod::POST,
+            Some(command.as_bytes()),
+        ).map_err(|_| InterfaceError::ParserNotActive)?;
+
+        // Processar resposta
+        let result = crate::asi_uri::UriCommandResult {
+            command: command.to_string(),
+            uri: uri_string,
+            response,
+            executed_at: cge_time(),
+            success: true, // Simplified
+        };
+
+        Ok(result)
+    }
+
+    fn command_to_uri(&self, command: &str) -> Result<String, InterfaceError> {
+        // Mapear comandos para URIs ASI
+        let uri = if command.contains("status") {
+            "asi://asi.asi/status"
+        } else if command.contains("deploy") {
+            "asi://asi.asi/deploy"
+        } else if command.contains("configure") {
+            "asi://asi.asi/configure"
+        } else if command.contains("monitor") {
+            "asi://asi.asi/monitor"
+        } else {
+            "asi://asi.asi/execute"
+        };
+
+        Ok(uri.to_string())
+    }
+
+    pub fn integrate_with_asi_uri(&self, _handler: &crate::asi_uri::AsiUriConstitution) -> Result<(), InterfaceError> {
+        crate::cge_log!(interface, "🖥️ Integrating Shell Constitution with ASI URI...");
+        Ok(())
     }
 
     pub fn process_with_quantum_llm(
