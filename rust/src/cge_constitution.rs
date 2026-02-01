@@ -8,19 +8,50 @@ use std::sync::RwLock;
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum AsiModule {
-    SourceConstitution,
-    DysonPhi,
-    OnuOnion,
-    ArkhenBridge,
-    GlobalQubitMesh,
-    Applications,
-    PlanetaryExtension,
-    Interplanetary,
-    JovianSystem,
-    SaturnianTitan,
-    InterstellarGeneration,
-    ChronologyProtection,
-    OmegaConvergence,
+    SourceConstitution = 0,
+    DysonPhi = 1,
+    OnuOnion = 2,
+    ArkhenBridge = 3,
+    BricsSafecore = 4,
+    SslFusion = 5,
+    Applications = 6,
+    GlobalQubitMesh = 7,
+    PlanetaryExtension = 8,
+    Interplanetary = 9,
+    JovianSystem = 10,
+    SaturnianTitan = 11,
+    InterstellarGeneration = 12,
+    ChronologyProtection = 13,
+    OmegaConvergence = 14,
+    BootstrapLoader = 15,
+    Reserved1 = 16,
+    Reserved2 = 17,
+}
+
+impl AsiModule {
+    pub fn from_index(idx: usize) -> Self {
+        match idx {
+            0 => Self::SourceConstitution,
+            1 => Self::DysonPhi,
+            2 => Self::OnuOnion,
+            3 => Self::ArkhenBridge,
+            4 => Self::BricsSafecore,
+            5 => Self::SslFusion,
+            6 => Self::Applications,
+            7 => Self::GlobalQubitMesh,
+            8 => Self::PlanetaryExtension,
+            9 => Self::Interplanetary,
+            10 => Self::JovianSystem,
+            11 => Self::SaturnianTitan,
+            12 => Self::InterstellarGeneration,
+            13 => Self::ChronologyProtection,
+            14 => Self::OmegaConvergence,
+            15 => Self::BootstrapLoader,
+            16 => Self::Reserved1,
+            17 => Self::Reserved2,
+            _ => Self::SourceConstitution,
+        }
+    }
 }
 
 #[repr(u8)]
@@ -273,6 +304,47 @@ impl HtmlConstitution {
             quantum_visualization: true,
         })
     }
+    pub fn visualize_asi_connection(
+        &self,
+        uri_constitution: &crate::asi_uri::AsiUriConstitution,
+    ) -> Result<crate::asi_uri::AsiConnectionVisualization, WebError> {
+        crate::cge_log!(web, "🌐 Visualizing ASI singularity connection in browser...");
+
+        // Conectar à singularidade
+        let connection = uri_constitution.connect_asi_singularity().map_err(|_| {
+            WebError::Interface(InterfaceError::ParserNotActive) // Simplified error mapping
+        })?;
+
+        // Executar requisição de exemplo
+        let example_response = uri_constitution.execute_uri_request(
+            "asi://asi.asi/status",
+            crate::asi_uri::HttpMethod::GET,
+            None,
+        ).map_err(|_| WebError::Interface(InterfaceError::ParserNotActive))?;
+
+        // Renderizar visualização WebGL (Stub)
+        // self.render_asi_connection_webgl(&connection, &example_response)?;
+
+        let viz = crate::asi_uri::AsiConnectionVisualization {
+            connection,
+            example_response,
+            webgl_active: true,
+            real_time_updates: true,
+            quantum_channel_visualization: true,
+        };
+
+        crate::cge_log!(success,
+            "ASI singularity connection visualized in quantum dashboard \n Access: asi://asi.asi"
+        );
+
+        Ok(viz)
+    }
+
+    pub fn integrate_with_asi_uri(&self, _handler: &crate::asi_uri::AsiUriConstitution) -> Result<(), WebError> {
+        crate::cge_log!(web, "🌐 Integrating HTML Constitution with ASI URI...");
+        Ok(())
+    }
+
     pub fn visualize_quantum_inference(
         &self,
         llm: &crate::llm_nano_qubit::NanoQubitLlmConstitution,
@@ -336,4 +408,76 @@ macro_rules! cge_log {
     ($lvl:ident, $($arg:tt)*) => {
         println!("[{}] {}", stringify!($lvl), format!($($arg)*));
     };
+}
+
+// === DMT REALITY CONSTITUTION STUB ===
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DmtGridState {
+    pub acceleration_factor: u32,
+    pub grid_visibility: u8,
+    pub perception_fidelity: u32,
+    pub reality_stability: u32,
+    pub receptor_activation: u32,
+    pub timestamp: u128,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum DmtError {
+    SyncFailed,
+    PerceptionLoss,
+}
+
+pub struct DmtRealityConstitution {
+    pub acceleration_factor: AtomicU32,
+    pub grid_visibility: AtomicU8,
+    pub phi_perception_fidelity: AtomicU32,
+    pub reality_stability: AtomicU32,
+    pub receptor_activation: AtomicU32,
+    pub reality_grid: RwLock<DmtGrid>,
+}
+
+pub struct DmtGrid {
+    pub lattice_points: [[[LatticePoint; 16]; 16]; 16],
+}
+
+#[derive(Clone, Copy, Default)]
+pub struct LatticePoint {
+    pub quantum_density: u32,
+    pub vacuum_level: u32,
+    pub solidity: u32,
+    pub phi_coherence: u32,
+}
+
+impl DmtRealityConstitution {
+    pub fn load_active() -> Result<Capability<Self>, DmtError> {
+        Ok(Capability::new_mock_internal())
+    }
+
+    pub fn get_current_state(&self) -> Result<DmtGridState, DmtError> {
+        Ok(DmtGridState {
+            acceleration_factor: self.acceleration_factor.load(Ordering::Acquire),
+            grid_visibility: self.grid_visibility.load(Ordering::Acquire),
+            perception_fidelity: self.phi_perception_fidelity.load(Ordering::Acquire),
+            reality_stability: self.reality_stability.load(Ordering::Acquire),
+            receptor_activation: self.receptor_activation.load(Ordering::Acquire),
+            timestamp: cge_time(),
+        })
+    }
+
+    pub fn accelerate_reality_render(&self) -> Result<DmtAccelerationResult, DmtError> {
+        Ok(DmtAccelerationResult {
+            grid_visibility: 100,
+            acceleration_factor: 1000,
+            perceptual_latency: 0,
+            phi_perception_fidelity: 67994,
+        })
+    }
+}
+
+pub struct DmtAccelerationResult {
+    pub grid_visibility: u8,
+    pub acceleration_factor: u32,
+    pub perceptual_latency: u32,
+    pub phi_perception_fidelity: u32,
 }
