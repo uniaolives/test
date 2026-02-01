@@ -122,6 +122,9 @@ pub mod cge_constitution;
 pub mod asi_uri;
 pub mod asi_protocol;
 pub mod atom_storm;
+pub mod fluid_gears;
+pub mod qddr_memory;
+pub mod enciclopedia;
 pub mod shell_cli_gui;
 pub mod llm_nano_qubit;
 pub mod dashboard;
@@ -136,6 +139,9 @@ mod tests_security;
 
 #[cfg(test)]
 mod tests_cyber_oncology;
+
+#[cfg(test)]
+mod tests_new_constitutions;
 
 pub struct TruthClaim {
     pub statement: String,
