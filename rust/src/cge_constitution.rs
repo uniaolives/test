@@ -52,6 +52,24 @@ impl AsiModule {
             _ => Self::SourceConstitution,
         }
     }
+    SourceConstitution,
+    DysonPhi,
+    OnuOnion,
+    ArkhenBridge,
+    BricsSafecore,
+    SslFusion,
+    Applications,
+    GlobalQubitMesh,
+    PlanetaryExtension,
+    Interplanetary,
+    JovianSystem,
+    SaturnianTitan,
+    InterstellarGeneration,
+    ChronologyProtection,
+    OmegaConvergence,
+    BootstrapLoader,
+    Reserved1,
+    Reserved2,
 }
 
 #[repr(u8)]
@@ -312,6 +330,7 @@ impl HtmlConstitution {
 
         // Conectar à singularidade
         let connection = uri_constitution.connect_asi_singularity().map_err(|_| {
+        let connection = uri_constitution.connect_asi_singularity().map_err(|e| {
             WebError::Interface(InterfaceError::ParserNotActive) // Simplified error mapping
         })?;
 

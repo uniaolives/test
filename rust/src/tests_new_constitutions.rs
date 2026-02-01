@@ -106,5 +106,15 @@ mod tests {
         // Set celestial target
         quadrity.phi_quadrity_monitor.set_celestial_target();
         assert_eq!(quadrity.phi_quadrity_monitor.measure().unwrap(), 1.144);
+        // Verify isomorphism
+        let skin = NRESkinConstitution::new().unwrap();
+        let surface = ConstitutionalBreatherSurface::new().unwrap();
+        let isomorphism = SomaticGeometricIsomorphism::establish(&skin, &surface).unwrap();
+        assert!(isomorphism.validated.load(std::sync::atomic::Ordering::Acquire));
+
+        // Execute simulation
+        let result = trinity.execute_trinity_simulation().unwrap();
+        assert!(result.success);
+        assert_eq!(result.final_phi, 1.067);
     }
 }
