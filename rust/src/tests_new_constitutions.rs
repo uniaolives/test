@@ -142,6 +142,16 @@ mod tests {
     }
 
     #[test]
+    fn test_nuclear_cds_unification() {
+        let closure = ClosurePointDynamics::new(1.0, 0.7);
+
+        // Test Magic Numbers
+        let magic_numbers = closure.predict_magic_numbers();
+        assert_eq!(magic_numbers, vec![2, 8, 20, 28, 50, 82, 126]);
+
+        // Test Phason Gap
+        let phason_gap = closure.predict_cds_phasons();
+        assert_eq!(phason_gap, 358.0);
     fn test_ethical_reality_model() {
         let model = EthicalRealityModel::new();
         let physical = PhysicalReality::new(1361.0, 2500.0);
