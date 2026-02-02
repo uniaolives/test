@@ -162,6 +162,7 @@ pub mod sun_senscience_agent;
 pub mod maihh_integration;
 pub mod sovereign_key_integration;
 pub mod microtubule_biology;
+pub mod ontological_engine;
 pub mod neuroscience_model;
 pub mod web4_asi_6g;
 pub mod tesseract_client;

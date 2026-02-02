@@ -18,6 +18,7 @@ mod tests {
     use crate::ethics::ethical_reality::*;
     use crate::web4_asi_6g::*;
     use crate::sovereign_key_integration::*;
+    use crate::ontological_engine::*;
     use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _};
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
@@ -124,6 +125,26 @@ mod tests {
         assert!(result.physical_evidence.contains("1361"));
         assert!(result.transparency_warnings.len() > 0);
         assert!(result.transparency_warnings[0].contains("interpretativa"));
+    }
+
+    #[test]
+    fn test_ouroboros_convergence() {
+        let mut web = ResonanceWeb::new();
+        // Embed a monad
+        web.embed(Monad::achieve_closure(MetaReflection).unwrap());
+
+        let mut engine = OuroborosEngine {
+            universe: std::sync::Arc::new(std::sync::Mutex::new(web)),
+            description: FormalTheory,
+            implementation: OperationalRuntime::new(),
+            convergence_state: ConvergenceState::Initial,
+            epsilon: 1e-6,
+        };
+
+        let report = engine.iterate();
+        assert!(report.residual >= 0.18); // Based on stub
+        assert!(!report.ouroboros_complete);
+        assert!(engine.current_status().contains("Ouroboros asymptotic"));
     }
 
     #[test]
