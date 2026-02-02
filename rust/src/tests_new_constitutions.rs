@@ -9,6 +9,7 @@ mod tests {
     use crate::trinity_system::*;
     use crate::somatic_geometric::*;
     use crate::cge_constitution::*;
+    use crate::merkabah_activation::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
     #[test]
@@ -115,5 +116,32 @@ mod tests {
         let result = quadrity.execute_trinity_simulation().unwrap();
         assert!(result.success);
         assert!(result.final_phi >= 1.067);
+    }
+
+    #[test]
+    fn test_merkabah_activation() {
+        let mut merkabah = MerkabahActivationConstitution::new();
+
+        // Initial state
+        assert_eq!(merkabah.get_coherence(), 1.038);
+
+        // Update multiple cycles
+        for _ in 0..50 {
+            merkabah.update_merkabah(0.05);
+        }
+
+        let activation = merkabah.activation_level.load(std::sync::atomic::Ordering::Acquire);
+        assert!(activation > 0.4);
+        assert!(merkabah.get_coherence() > 1.038);
+
+        // Test light intensity
+        let intensity = merkabah.calculate_light_intensity(nalgebra::Vector3::new(0.0, 0.0, 0.0));
+        assert!(intensity > 0.0);
+
+        // Verify RF coherence optimization
+        assert!(merkabah.rf_optimization.best_coherence >= 0.0);
+
+        // Check topology
+        assert!(merkabah.validate_topology());
     }
 }
