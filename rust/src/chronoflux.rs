@@ -18,6 +18,7 @@ pub struct ChronofluxValidator {
     pub generation_rate: f64,    // ∂ρₜ/∂t
     pub distribution_flux: f64,  // ∇·Φₜ
     pub decay_theta: f64,        // Θ
+    pub kirchhoff_enhancement: f64, // Physical grounding factor
 }
 
 impl ChronofluxValidator {
@@ -26,12 +27,16 @@ impl ChronofluxValidator {
             generation_rate: 0.0,
             distribution_flux: 0.0,
             decay_theta: 0.0,
+            kirchhoff_enhancement: 1.0,
         }
     }
 
     /// Verifies the continuity equation: ∂ρₜ/∂t + ∇·Φₜ + Θ ≈ 0
+    /// Adjusted for Kirchhoff enhancement
     pub fn verify_continuity(&self) -> ChronofluxStatus {
-        let balance = self.generation_rate - self.distribution_flux - self.decay_theta;
+        let balance = (self.generation_rate * self.kirchhoff_enhancement)
+                    - (self.distribution_flux / self.kirchhoff_enhancement)
+                    - (self.decay_theta / self.kirchhoff_enhancement);
 
         if balance.abs() < 1e-9 {
             ChronofluxStatus::Balanced
@@ -47,6 +52,9 @@ impl ChronofluxValidator {
 
         // Θ is the resistance to decay provided by the Eternity Crystal
         self.decay_theta = calculate_theta_resistance(crystal);
+
+        // Physical grounding from Kirchhoff Violation (0.43 contrast)
+        self.kirchhoff_enhancement = 1.43;
 
         // ∇·Φₜ is the distribution flux (calibrated from current network load)
         self.distribution_flux = self.generation_rate - self.decay_theta;
