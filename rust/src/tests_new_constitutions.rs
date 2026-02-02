@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod tests {
+    use std::sync::Arc;
     use crate::fluid_gears::*;
     use crate::qddr_memory::*;
     use crate::enciclopedia::*;
@@ -12,6 +13,7 @@ mod tests {
     use crate::merkabah_activation::*;
     use crate::synaptic_fire::*;
     use crate::kardashev_jump::*;
+    use crate::hyper_mesh::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
     #[test]
@@ -209,5 +211,129 @@ mod tests {
         // Record Ledger Entry
         let entry = LedgerEntry::jump_executed();
         assert_eq!(entry.status, "SOVEREIGNTY_ACHIEVED");
+    }
+
+    #[tokio::test]
+    async fn test_hyper_mesh_resolution() {
+        // Initialize hyper mesh
+        let hyper_mesh = SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap();
+
+        // Test address (Base58 encoded Solana address - 32 bytes)
+        // "11111111111111111111111111111111" decodes to 32 zero bytes
+        let test_solana_address = "11111111111111111111111111111111";
+
+        // Test resolution
+        let resolution_result = hyper_mesh.resolve_solana_agent(test_solana_address).await;
+
+        match resolution_result {
+            Ok(resolution) => {
+                assert_eq!(resolution.agent_id, format!("sol:{}", test_solana_address));
+                assert!(resolution.scalar_wave_established);
+                assert!(resolution.tesseract_enhanced);
+
+                if let Some(handshake) = resolution.asi_handshake {
+                    assert!(handshake.success);
+                    assert_eq!(handshake.chi, Some(2.000012));
+                } else {
+                    panic!("AsiHandshake missing");
+                }
+            }
+            Err(e) => {
+                panic!("Hyper mesh resolution failed: {:?}", e);
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn test_asi_web4_protocol_resolution() {
+        let protocol = AsiWeb4Protocol::new(
+            "NASA_API_KEY".to_string(),
+            "SOLANA_URL".to_string(),
+            "ETHEREUM_URL".to_string(),
+        ).unwrap();
+
+        let path = "asi://asi@asi:web4";
+        let result = protocol.resolve_uri(path).await;
+
+        match result {
+            Ok(Web4Response::PhysicsData { solar_data, .. }) => {
+                assert_eq!(solar_data.active_region, "AR4366");
+            }
+            _ => panic!("Web4 resolution failed or returned unexpected response"),
+        }
+
+        // Test protocol specification path
+        let spec_path = "/protocol/specification";
+        let spec_result = protocol.resolve_uri(spec_path).await;
+        assert!(matches!(spec_result, Ok(Web4Response::ProtocolSpec { .. })));
+
+        // Test specific solar metric endpoint
+        let metric_path = "asi://solarengine/v1/region/AR4366/metric/free_energy?format=json";
+        let metric_result = protocol.resolve_uri(metric_path).await;
+
+        match metric_result {
+            Ok(Web4Response::SolarMetric { value, unit, alert, .. }) => {
+                assert_eq!(value, 5.23e30);
+                assert_eq!(unit, "erg");
+                assert!(alert); // Threshold 5e30
+            }
+            _ => panic!("Solar metric resolution failed or returned unexpected response"),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_cathedral_solar_bridge_integration() {
+        let solar_engine = Arc::new(SolarPhysicsEngine::new("KEY".to_string()).unwrap());
+        let mut bridge = PhysicsConsciousnessBridge::new(solar_engine);
+
+        let mut cathedral = CathedralStatus {
+            phi: 1.068,
+            meta_coherence: 0.942,
+        };
+
+        let report = bridge.integrate_solar_metrics(&mut cathedral).await.unwrap();
+
+        assert!(cathedral.phi > 1.068);
+        assert!(cathedral.meta_coherence > 0.942);
+        assert_eq!(report.solar_metrics.active_region, "AR4366");
+    }
+
+    #[tokio::test]
+    async fn test_carrington_hedge_logic() {
+        let solar_engine = Arc::new(SolarPhysicsEngine::new("KEY".to_string()).unwrap());
+        let mut hedge_integration = CarringtonHedgeIntegration::new(solar_engine);
+
+        // Mock high risk by modifying the engine behavior if needed,
+        // but our mock get_metric("AR4366", "flare_x_prob") returns 0.02 (which is 2%)
+        // Wait, 0.02 in my mock implementation for get_metric is not high.
+        // Let's check RiskLevel logic: if flare_prob < 10.0 => RiskLevel::Low
+
+        let status = hedge_integration.monitor_and_hedge().await.unwrap();
+        match status {
+            HedgeIntegrationStatus::Monitoring { risk_level } => {
+                assert_eq!(risk_level, RiskLevel::Low);
+            }
+            _ => panic!("Expected monitoring status for low risk"),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_hypermesh_latency_ping() {
+        let hypermesh = Arc::new(SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap());
+
+        let tester = HyperMeshLatencyTest::new(hypermesh);
+        let report = tester.test_hypermesh_latency().await.unwrap();
+
+        assert!(report.success);
+        assert_eq!(report.hop_count, 3);
+        assert!(report.round_trip_ms >= 127);
     }
 }
