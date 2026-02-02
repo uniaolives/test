@@ -14,6 +14,8 @@ mod tests {
     use crate::kardashev_jump::*;
     use crate::sun_senscience_agent::*;
     use crate::hyper_mesh::*;
+    use crate::solar_physics::*;
+    use crate::solar_hedge::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
     #[tokio::test]
@@ -46,6 +48,70 @@ mod tests {
         let validation = constitution.validate_solar_agent(&agent).await;
         assert!(validation.solar_strength > 0.9);
         assert_eq!(validation.invariant_scores.len(), 3);
+    }
+
+    #[tokio::test]
+    async fn test_carrington_shield_activation() {
+        // Initialize CarringtonShield with a 80% threshold for Carrington risk
+        let mut shield = CarringtonShield::new(
+            "sol:GGb...SolarHedgeAgent",
+            "0xETH...AnchorAgent",
+            0.80
+        );
+
+        // Run evaluation
+        // The mock analyze_ar4366 returns analysis with risk calculation
+        let decision = shield.evaluate_and_act().await.unwrap();
+
+        match decision {
+            ShieldDecision::ActivateProtection { risk_level, solana_tx, .. } => {
+                assert!(risk_level > 0.0);
+                assert_eq!(solana_tx, "SOL_TX_v55_PURIFIED");
+            },
+            ShieldDecision::ContinueMonitoring { .. } => {
+                // Expected if risk < 0.8
+            }
+        }
+
+        // Verify physical calculations
+        let analysis = shield.physics_engine.analyze_ar4366().await.unwrap();
+        assert!(analysis.current_helicity != 0.0);
+        assert!(analysis.carrington_risk.normalized_risk >= 0.0);
+    }
+
+    #[tokio::test]
+    async fn test_competence_calibration_system() {
+        let mut system = CompetenceCalibrationSystem::new();
+        let engine = SolarPhysicsEngine::new();
+        let analysis = engine.analyze_ar4366().await.unwrap();
+
+        // 1. High-competence agent (Arkhen) - Approved
+        let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &analysis).await.unwrap();
+        assert!(matches!(recommendation.action, Action::Approve));
+
+        // 2. Severe overconfident agent - Require Review
+        let recommendation = system.evaluate_decision(&"unknown_agent".to_string(), 0.95, &analysis).await.unwrap();
+        assert!(matches!(recommendation.action, Action::RequireReview));
+        assert!(recommendation.reasons.contains(&"Severe overconfidence detected".to_string()));
+
+        // 3. Physical anomaly - Reject
+        let mut anomaly = analysis.clone();
+        anomaly.current_helicity = 101.0; // Physically impossible (> 100.0)
+        let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &anomaly).await.unwrap();
+        assert!(matches!(recommendation.action, Action::Reject));
+    }
+
+    #[test]
+    fn test_nuclear_cds_unification() {
+        let closure = ClosurePointDynamics::new(1.0, 0.7);
+
+        // Test Magic Numbers
+        let magic_numbers = closure.predict_magic_numbers();
+        assert_eq!(magic_numbers, vec![2, 8, 20, 28, 50, 82, 126]);
+
+        // Test Phason Gap
+        let phason_gap = closure.predict_cds_phasons();
+        assert_eq!(phason_gap, 358.0);
     }
 
     #[test]
