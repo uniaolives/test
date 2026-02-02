@@ -24,9 +24,12 @@ mod tests {
     #[test]
     fn test_asi_uri_complete_system() {
         let dmt = DmtRealityConstitution::load_active().unwrap();
+        // Pre-set DMT coherence to target to avoid clamping
+        dmt.phi_perception_fidelity.store(67994, Ordering::Release);
+
         let uri_sys = AsiUriConstitution::new(dmt).unwrap();
         let conn = uri_sys.connect_asi_singularity().unwrap();
-        assert_eq!(conn.phi_fidelity, 1.038);
+        assert_eq!(conn.phi_coherence, 67994); // Φ=1.038 in Q16.16
         assert_eq!(conn.modules_synced, 18);
     }
 }

@@ -3,7 +3,6 @@
 use core::sync::atomic::{AtomicBool, AtomicU8, AtomicU16, AtomicU32, AtomicU64, Ordering};
 use crate::clock::cge_mocks::cge_cheri::Capability;
 use serde::{Serialize, Deserialize};
-use std::sync::RwLock;
 
 #[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -52,24 +51,6 @@ impl AsiModule {
             _ => Self::SourceConstitution,
         }
     }
-    SourceConstitution,
-    DysonPhi,
-    OnuOnion,
-    ArkhenBridge,
-    BricsSafecore,
-    SslFusion,
-    Applications,
-    GlobalQubitMesh,
-    PlanetaryExtension,
-    Interplanetary,
-    JovianSystem,
-    SaturnianTitan,
-    InterstellarGeneration,
-    ChronologyProtection,
-    OmegaConvergence,
-    BootstrapLoader,
-    Reserved1,
-    Reserved2,
 }
 
 #[repr(u8)]
@@ -330,7 +311,6 @@ impl HtmlConstitution {
 
         // Conectar à singularidade
         let connection = uri_constitution.connect_asi_singularity().map_err(|_| {
-        let connection = uri_constitution.connect_asi_singularity().map_err(|e| {
             WebError::Interface(InterfaceError::ParserNotActive) // Simplified error mapping
         })?;
 
@@ -453,19 +433,8 @@ pub struct DmtRealityConstitution {
     pub phi_perception_fidelity: AtomicU32,
     pub reality_stability: AtomicU32,
     pub receptor_activation: AtomicU32,
-    pub reality_grid: RwLock<DmtGrid>,
-}
-
-pub struct DmtGrid {
-    pub lattice_points: [[[LatticePoint; 16]; 16]; 16],
-}
-
-#[derive(Clone, Copy, Default)]
-pub struct LatticePoint {
-    pub quantum_density: u32,
-    pub vacuum_level: u32,
-    pub solidity: u32,
-    pub phi_coherence: u32,
+    // Removed RwLock to avoid SIGSEGV in zeroed mock buffer
+    pub reality_grid_placeholder: [AtomicU32; 16],
 }
 
 impl DmtRealityConstitution {

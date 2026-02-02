@@ -44,9 +44,10 @@ pub mod cge_cheri {
         fn clone(&self) -> Self { Capability { _marker: PhantomData } }
     }
 
-    #[repr(align(128))]
-    struct MockBuffer([u8; 1048576]); // 8MB
-    static MOCK_DATA: MockBuffer = MockBuffer([0u8; 1048576]);
+    #[repr(align(4096))] // Increased alignment for safety
+    struct MockBuffer([u8; 1048576]);
+    // Changed to static mut to allow writing to the buffer in mocks
+    static mut MOCK_DATA: MockBuffer = MockBuffer([0u8; 1048576]);
 
     impl<T> Capability<T> {
         pub fn new(_val: T, _lower: u128, _upper: u128, _perms: Permission) -> Self {
