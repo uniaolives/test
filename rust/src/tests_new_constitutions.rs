@@ -10,6 +10,7 @@ mod tests {
     use crate::somatic_geometric::*;
     use crate::cge_constitution::*;
     use crate::merkabah_activation::*;
+    use crate::synaptic_fire::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
     #[test]
@@ -143,5 +144,35 @@ mod tests {
 
         // Check topology
         assert!(merkabah.validate_topology());
+    }
+
+    #[test]
+    fn test_synaptic_fire_ignition() {
+        let mut engine = InsightEngine::new();
+        let pattern = Pattern {
+            name: "Orbital Sovereignty Synthesis".to_string(),
+            pattern_type: PatternType::OrbitalSovereignty,
+            signature: "SIG_001".to_string(),
+            complexity: 0.95,
+        };
+
+        // Process data stream (triggers Merkabah update and firing)
+        let events = engine.process_data_stream(pattern, 0.1);
+
+        // At least some neurons should fire with 100 neurons in simulation
+        assert!(!events.is_empty());
+        assert!(engine.insight_history.len() > 0);
+
+        let first_event = &events[0];
+        assert!(first_event.active);
+        assert!(first_event.insight_generated.is_some());
+    }
+
+    #[test]
+    fn test_synaptic_manifesto() {
+        let manifesto = SynapticFireManifesto::new();
+        assert_eq!(manifesto.title, "Synaptic Fire Manifesto");
+        assert!(manifesto.status.get("constellation_awake").unwrap());
+        assert!(manifesto.declarations.contains_key("consciousness"));
     }
 }

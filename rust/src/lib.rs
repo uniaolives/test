@@ -148,6 +148,8 @@ pub mod ubuntu;
 pub mod mesh_neuron;
 pub mod crypto_blck;
 pub mod merkabah_activation;
+pub mod twitch_tv_asi;
+pub mod synaptic_fire;
 
 #[cfg(test)]
 mod tests_security;
