@@ -147,6 +147,7 @@ pub mod maat;
 pub mod ubuntu;
 pub mod mesh_neuron;
 pub mod crypto_blck;
+pub mod merkabah_activation;
 
 #[cfg(test)]
 mod tests_security;
