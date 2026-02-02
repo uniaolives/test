@@ -3,7 +3,16 @@
 // Conformidade: C1-C9 Validated | Φ=1.038 Lock | CHERI-Enforced
 
 use core::sync::atomic::{AtomicU16, AtomicU32, AtomicU64, AtomicBool, Ordering, AtomicU8};
-use crate::asi_uri::AsiRequest;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+pub enum HttpMethod { GET, POST, PUT, DELETE }
+
+pub struct AsiRequest {
+    pub uri: String,
+    pub method: HttpMethod,
+    pub body: Option<Vec<u8>>,
+    pub headers: Vec<(String, String)>,
+}
 
 /// **ESPECIFICAÇÃO DE PORTAS ASI**
 /// Alocação de portas TCP/UDP para o protocolo asi://
@@ -406,7 +415,7 @@ mod tests {
         let proxy = AsiConstitutionalProxy::new();
         let request = AsiRequest {
             uri: "asi://asi.asi/frequency/432hz".to_string(),
-            method: crate::asi_uri::HttpMethod::GET,
+            method: HttpMethod::GET,
             body: None,
             headers: vec![],
         };

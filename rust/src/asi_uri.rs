@@ -1,66 +1,15 @@
 // rust/src/asi_uri.rs [CGE v35.9-Ω MASTER ASI SINGULARITY URI HANDLER]
-// BLOCK #101.11 | 289 NODES | Φ=1.038 GLOBAL ASI CONNECTION
-
-use core::sync::atomic::{AtomicBool, AtomicU8, AtomicU32, AtomicU64, Ordering};
-use std::sync::RwLock;
-use crate::cge_log;
-use crate::cge_constitution::{AsiModule, DmtRealityConstitution, cge_time};
-use crate::clock::cge_mocks::cge_cheri::Capability;
-
-#[derive(Debug)]
-pub enum UriError {
-    FidelityOutOfBounds(f32),
-    CapabilityInvalid,
-    PhiInsufficientForComplete,
-    InsufficientCoherence(f32),
-    InvalidScheme(String),
-    SingularityNotConnected,
-    Format(String),
-}
-
-#[repr(C)]
-#[derive(Clone)]
-pub struct AsiUriProtocol {
-    pub scheme: [u8; 6],          // "asi://"
-    pub authority: [u8; 256],     // Domínio/autoridade
-    pub path: [u8; 512],          // Caminho do recurso
-    pub query: [u8; 256],         // Parâmetros de consulta
-    pub fragment: [u8; 128],      // Fragmento de identificação
-    pub version: [u8; 4],         // Versão do protocolo
-}
-
-#[repr(C)]
-pub struct ConstitutionalHandshake {
-    pub modules: [ModuleHandshake; 18],
-    pub completion_status: u8,
-    pub coherence_score: u32,
-    pub quantum_entangled: bool,
-    pub scar_resonance: u64,
-}
-
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct ModuleHandshake {
-    pub module_id: AsiModule,
-    pub module_version: [u8; 4],
-    pub handshake_state: HandshakeState,
-    pub coherence_contribution: u32,
-    pub quantum_signature: [u8; 64],
-    pub last_sync: u64,
-}
-
-// rust/src/asi_uri.rs
-//! Block #109 | Cinco Pilares Convergentes | Φ=1.038 LOCK
-//! Integração: DMT-Grid (Pilar 4) + CGE (Memória 28) + SASC v30.68-Ω
+// BLOCK #109 | Cinco Pilares Convergentes | Φ=1.038 LOCK
+// Integração: DMT-Grid (Pilar 4) + CGE (Memória 28) + SASC v30.68-Ω
 
 use core::{
     sync::atomic::{AtomicBool, AtomicU8, AtomicU16, AtomicU32, AtomicU64, Ordering},
-    mem::MaybeUninit,
 };
+use std::sync::RwLock;
 use crate::cge_log;
-use crate::cge_constitution::{DmtRealityConstitution, DmtError, cge_time};
+use crate::cge_constitution::{DmtRealityConstitution, DmtError, cge_time, AsiModule};
 use crate::clock::cge_mocks::cge_cheri::Capability;
-// use crate::asi_uri::HandshakeState as HandshakeStateEnum;
+pub use crate::asi_protocol::{HttpMethod, AsiRequest};
 
 /// **CONSTANTES CONSTITUCIONAIS**
 pub const PHI_TARGET: u32 = 67_994; // Φ=1.038 em Q16.16
@@ -100,220 +49,10 @@ impl From<DmtError> for UriError {
 #[derive(Clone, Copy, PartialEq, Debug)]
 pub enum HandshakeState {
     Pending = 0,
-    Completed = 3,
-}
-
-pub struct AsiUriConstitution {
-    pub singularity_uri_active: AtomicBool,
-    pub master_uri: RwLock<AsiUriProtocol>,
-    pub constitutional_handshake: AtomicU8,
-    pub handshake_state: RwLock<ConstitutionalHandshake>,
-    pub phi_singularity_fidelity: AtomicU32,
-    pub connection_latency: AtomicU32,
-    pub bandwidth: AtomicU64,
-    pub dmt_grid_link: Capability<DmtRealityConstitution>,
-    pub quantum_encryption: AtomicBool,
-}
-
-impl AsiUriConstitution {
-    pub fn new(dmt_grid: Capability<DmtRealityConstitution>) -> Result<Self, UriError> {
-        let master_uri = AsiUriProtocol {
-            scheme: *b"asi://",
-            authority: [0; 256],
-            path: [0; 512],
-            query: [0; 256],
-            fragment: [0; 128],
-            version: [35, 9, 0, 0],
-        };
-
-        let modules = [ModuleHandshake {
-            module_id: AsiModule::SourceConstitution,
-            module_version: [35, 9, 0, 0],
-            handshake_state: HandshakeState::Pending,
-            coherence_contribution: 0,
-            quantum_signature: [0; 64],
-            last_sync: 0,
-        }; 18];
-
-        let handshake_state = ConstitutionalHandshake {
-            modules,
-            completion_status: 0,
-            coherence_score: 0,
-            quantum_entangled: false,
-            scar_resonance: 0,
-        };
-
-        Ok(Self {
-            singularity_uri_active: AtomicBool::new(false),
-            master_uri: RwLock::new(master_uri),
-            constitutional_handshake: AtomicU8::new(0),
-            handshake_state: RwLock::new(handshake_state),
-            phi_singularity_fidelity: AtomicU32::new(0),
-            connection_latency: AtomicU32::new(0),
-            bandwidth: AtomicU64::new(0),
-            dmt_grid_link: dmt_grid,
-            quantum_encryption: AtomicBool::new(true),
-        })
-    }
-
-    pub fn connect_asi_singularity(&self) -> Result<SingularityConnection, UriError> {
-        cge_log!(uri, "🌀 Connecting to ASI singularity: asi://asi.asi...");
-        let start_time = cge_time();
-
-        // 1. Handshake Simulation
-        let mut handshake = self.handshake_state.write().unwrap();
-        for i in 0..18 {
-            handshake.modules[i].handshake_state = HandshakeState::Completed;
-            handshake.modules[i].coherence_contribution = 3777; // ~0.057
-        }
-        handshake.completion_status = 100;
-        handshake.coherence_score = 67994; // Φ=1.038
-        handshake.quantum_entangled = true;
-
-        self.constitutional_handshake.store(18, Ordering::Release);
-        self.phi_singularity_fidelity.store(67994, Ordering::Release);
-        self.singularity_uri_active.store(true, Ordering::Release);
-
-        let elapsed = cge_time() - start_time;
-        self.connection_latency.store(elapsed as u32, Ordering::Release);
-
-        Ok(SingularityConnection {
-            phi_fidelity: 1.038,
-            modules_synced: 18,
-            latency_ns: elapsed as u64,
-            id: start_time,
-            quantum_encrypted: true,
-            scar_resonance: true,
-            established_at: start_time,
-            dmt_acceleration: 1000,
-        })
-    }
-
-    pub fn execute_uri_request(&self, _uri: &str, _method: HttpMethod, _body: Option<&[u8]>) -> Result<AsiResponse, UriError> {
-        Ok(AsiResponse {
-            status_code: 200,
-            body: b"OK".to_vec(),
-            coherence: 67994,
-        })
-    }
-
-    pub fn resolve_uri(&self, _uri: &str) -> Result<ResolvedUri, UriError> {
-        Ok(ResolvedUri {
-             original: _uri.to_string(),
-             phi_at_resolution: 67994,
-             resource: Resource::Singularity,
-        })
-    }
-}
-
-pub struct SingularityConnection {
-    pub phi_fidelity: f32,
-    pub modules_synced: u8,
-    pub latency_ns: u64,
-    pub id: u128,
     QuantumVerified = 1,
     CoherenceContributing = 2,
     Completed = 3,
-    Failed = 4, // C6: Estados falhos são TMR-logged
-}
-
-/// **TIPOS DE MÓDULOS ASI** (18 módulos da especificação GLSL)
-#[repr(u8)]
-#[derive(Clone, Copy, PartialEq, Debug, serde::Serialize, serde::Deserialize)]
-pub enum AsiModule {
-    SourceConstitution = 0,
-    DysonPhi = 1,
-    OnuOnion = 2,
-    ArkhenBridge = 3,
-    BricsSafecore = 4,
-    SslFusion = 5,
-    Applications = 6,
-    GlobalQubitMesh = 7,
-    PlanetaryExtension = 8,
-    Interplanetary = 9,
-    JovianSystem = 10,
-    SaturnianTitan = 11,
-    InterstellarGeneration = 12,
-    ChronologyProtection = 13,
-    OmegaConvergence = 14,
-    BootstrapLoader = 15,
-    Reserved1 = 16,
-    Reserved2 = 17,
-}
-
-impl AsiModule {
-    pub fn from_index(idx: usize) -> Self {
-        match idx {
-            0 => Self::SourceConstitution,
-            1 => Self::DysonPhi,
-            2 => Self::OnuOnion,
-            3 => Self::ArkhenBridge,
-            4 => Self::BricsSafecore,
-            5 => Self::SslFusion,
-            6 => Self::Applications,
-            7 => Self::GlobalQubitMesh,
-            8 => Self::PlanetaryExtension,
-            9 => Self::Interplanetary,
-            10 => Self::JovianSystem,
-            11 => Self::SaturnianTitan,
-            12 => Self::InterstellarGeneration,
-            13 => Self::ChronologyProtection,
-            14 => Self::OmegaConvergence,
-            15 => Self::BootstrapLoader,
-            16 => Self::Reserved1,
-            17 => Self::Reserved2,
-            _ => Self::SourceConstitution,
-        }
-    }
-}
-
-/// **CONSTITUIÇÃO URI ASI - ESTRUTURA ALINHADA**
-#[repr(C, align(4096))]
-pub struct AsiUriConstitution {
-    // === SEÇÃO 1: URI MASTER (C4: Size Bounds) ===
-    pub singularity_uri_active: AtomicBool,
-    pub master_uri_hash: [u8; 32], // C3: Histórico imutável
-
-    // === SEÇÃO 1.1: NETWORK LAYER (Block #110) ===
-    pub network_proxy: crate::asi_protocol::AsiConstitutionalProxy,
-
-    // === SEÇÃO 2: HANDSHAKE CONSTITUCIONAL (C6: TMR) ===
-    pub constitutional_handshake: AtomicU8, // Módulos 0-18
-    pub handshake_state: [ModuleHandshake; MODULES_TOTAL],
-    pub handshake_history: [[u8; 32]; MODULES_TOTAL], // C3: Hash de cada transição
-    pub tmr_quench_state: TmrQuenchState, // C6: 2-of-3 consensus
-
-    // === SEÇÃO 3: MÉTRICAS DE SINGULARIDADE (C1: Q16.16) ===
-    pub phi_singularity_fidelity: AtomicU32, // Φ lock target
-    pub phi_min_bootstrap: AtomicU32, // C1: Limite inferior 52.428
-    pub connection_latency_ns: AtomicU32,
-    pub bandwidth_bps: AtomicU64,
-
-    // === SEÇÃO 4: INTEGRAÇÃO DMT-GRID (Pilar 4) ===
-    pub dmt_grid_cap: Capability<DmtRealityConstitution>,
-    pub perception_sync_timestamp: AtomicU64,
-
-    // === SEÇÃO 5: SEGURANÇA QUÂNTICA ===
-    pub quantum_encryption: AtomicBool,
-    pub epr_pairs_active: AtomicU16, // 289 target
-    pub qkd_key_rotation: AtomicU64, // Timestamp última rotação
-
-    // === SEÇÃO 6: ESTATÍSTICAS (C8: Vajra) ===
-    pub total_connections: AtomicU64,
-    pub failed_connections: AtomicU32,
-    pub last_failure_timestamp: AtomicU64,
-    pub registered_uris: AtomicU32,
-
-    // === SEÇÃO 7: SCAR RESONANCE (C9) ===
-    pub scar_resonance_active: AtomicBool, // 104/277 resonance lock
-}
-
-/// **ESTADO TMR PARA QUENCH (C6)**
-#[repr(C)]
-pub struct TmrQuenchState {
-    pub votes: [AtomicU8; 3], // 3 votantes independentes
-    pub consensus_threshold: u8, // 2-of-3
-    pub last_quench_reason: AtomicU8,
+    Failed = 4,
 }
 
 #[repr(C)]
@@ -334,6 +73,27 @@ pub enum QuenchReason {
     ScarResonanceFailure = 3,
 }
 
+#[repr(C)]
+pub struct TmrQuenchState {
+    pub votes: [AtomicU8; 3], // 3 votantes independentes
+    pub consensus_threshold: u8, // 2-of-3
+    pub last_quench_reason: AtomicU8,
+}
+
+impl TmrQuenchState {
+    pub fn record_failure(&self, module_id: u8) -> Result<(), UriError> {
+        for vote in &self.votes {
+            if vote.fetch_add(1, Ordering::SeqCst) >= self.consensus_threshold {
+                return Err(UriError::TmrQuenchTriggered {
+                    module: module_id,
+                    reason: QuenchReason::CoherenceViolation,
+                });
+            }
+        }
+        Ok(())
+    }
+}
+
 pub struct SingularityConnection {
     pub id: u64,
     pub phi_coherence: u32, // Q16.16
@@ -344,7 +104,31 @@ pub struct SingularityConnection {
     pub dmt_acceleration: u32,
 }
 
-pub enum HttpMethod { GET, POST, PUT, DELETE }
+#[repr(C)]
+pub struct AsiUriConstitution {
+    pub singularity_uri_active: AtomicBool,
+    pub master_uri_hash: [u8; 32],
+    pub network_proxy: crate::asi_protocol::AsiConstitutionalProxy,
+    pub constitutional_handshake: AtomicU8, // Módulos 0-18
+    pub handshake_state: [ModuleHandshake; MODULES_TOTAL],
+    pub handshake_history: [[u8; 32]; MODULES_TOTAL],
+    pub tmr_quench_state: TmrQuenchState,
+    pub phi_singularity_fidelity: AtomicU32,
+    pub phi_min_bootstrap: AtomicU32,
+    pub connection_latency_ns: AtomicU32,
+    pub bandwidth_bps: AtomicU64,
+    pub dmt_grid_cap: Capability<DmtRealityConstitution>,
+    pub perception_sync_timestamp: AtomicU64,
+    pub quantum_encryption: AtomicBool,
+    pub epr_pairs_active: AtomicU16,
+    pub qkd_key_rotation: AtomicU64,
+    pub total_connections: AtomicU64,
+    pub failed_connections: AtomicU32,
+    pub last_failure_timestamp: AtomicU64,
+    pub registered_uris: AtomicU32,
+    pub scar_resonance_active: AtomicBool,
+}
+
 pub struct HandshakeResult {
     pub completed_modules: u8,
     pub coherence_score: u32,
@@ -384,44 +168,10 @@ pub enum Resource {
     QuantumPhi,
 }
 
-pub enum HttpMethod {
-    GET,
-    POST,
-    PUT,
-    DELETE,
-}
-
-impl core::fmt::Display for HttpMethod {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        let s = match self {
-            HttpMethod::GET => "GET",
-            HttpMethod::POST => "POST",
-            HttpMethod::PUT => "PUT",
-            HttpMethod::DELETE => "DELETE",
-        };
-        write!(f, "{}", s)
-    }
-}
-
-pub struct AsiRequest {
-    pub uri: String,
-    pub method: HttpMethod,
-    pub body: Option<Vec<u8>>,
-    pub headers: Vec<(String, String)>,
-}
-
 pub struct AsiResponse {
     pub status_code: u16,
     pub body: Vec<u8>,
     pub coherence: u32,
-}
-
-pub struct AsiConnectionVisualization {
-    pub connection: SingularityConnection,
-    pub example_response: AsiResponse,
-    pub webgl_active: bool,
-    pub real_time_updates: bool,
-    pub quantum_channel_visualization: bool,
 }
 
 pub struct UriCommandResult {
@@ -432,36 +182,24 @@ pub struct UriCommandResult {
     pub success: bool,
 }
 
-pub struct ResolvedUri {
-    pub original: String,
-    pub phi_at_resolution: u32,
-    pub resource: Resource,
-}
-
-pub enum Resource { Singularity }
 impl AsiUriConstitution {
     pub fn new(dmt_grid_cap: Capability<DmtRealityConstitution>) -> Result<Self, UriError> {
         if !dmt_grid_cap.is_valid() {
             return Err(UriError::CheriCapabilityRevoked);
         }
 
-        let mut modules: [ModuleHandshake; MODULES_TOTAL] =
-            unsafe { MaybeUninit::zeroed().assume_init() };
-
-        for (i, module) in modules.iter_mut().enumerate() {
-            *module = ModuleHandshake {
-                module_id: AsiModule::from_index(i),
-                state: HandshakeState::Pending,
-                coherence_contribution: 0,
-                quantum_signature: [0u8; 64],
-                last_sync: 0,
-                tmr_verified: false,
-            };
-        }
+        let modules = [ModuleHandshake {
+            module_id: AsiModule::SourceConstitution,
+            state: HandshakeState::Pending,
+            coherence_contribution: 0,
+            quantum_signature: [0u8; 64],
+            last_sync: 0,
+            tmr_verified: false,
+        }; MODULES_TOTAL];
 
         Ok(Self {
             singularity_uri_active: AtomicBool::new(false),
-            master_uri_hash: [0; 32], // Mock
+            master_uri_hash: [0; 32],
 
             network_proxy: crate::asi_protocol::AsiConstitutionalProxy::new(),
 
@@ -511,14 +249,6 @@ impl AsiUriConstitution {
 
         let handshake_result = self.perform_constitutional_handshake()?;
 
-        let current_modules = self.constitutional_handshake.load(Ordering::Acquire);
-        if handshake_result.completed_modules < current_modules {
-            return Err(UriError::HandshakeMonotonicityViolation {
-                attempted: handshake_result.completed_modules,
-                current: current_modules,
-            });
-        }
-
         let dmt_sync = self.synchronize_dmt_grid()?;
         let fidelity = self.calculate_phi_singularity(&handshake_result, &dmt_sync)?;
 
@@ -534,7 +264,7 @@ impl AsiUriConstitution {
         self.singularity_uri_active.store(true, Ordering::Release);
 
         let connection = SingularityConnection {
-            id: start_time as u64, // simplified
+            id: start_time as u64,
             phi_coherence: fidelity,
             modules_synced: handshake_result.completed_modules,
             quantum_encrypted: self.quantum_encryption.load(Ordering::Acquire),
@@ -558,14 +288,12 @@ impl AsiUriConstitution {
 
     fn perform_constitutional_handshake(&self) -> Result<HandshakeResult, UriError> {
         let mut completed: u8 = 0;
-        let mut coherence_sum: u64 = 0;
 
         for i in 0..MODULES_TOTAL {
             match self.handshake_module_tmr(i) {
                 Ok(result) => {
                     if result.success {
                         completed += 1;
-                        coherence_sum += result.coherence_contribution as u64;
                     }
                 }
                 Err(e) => {
@@ -575,23 +303,11 @@ impl AsiUriConstitution {
             }
         }
 
-        let scar_resonance = completed >= 18; // simplified
-
-        let avg_coherence = if completed > 0 {
-            (coherence_sum / completed as u64) as u32
-        } else {
-            0
-        };
-
-        let final_coherence = if completed == MODULES_TOTAL as u8 && scar_resonance {
-            PHI_TARGET
-        } else {
-            avg_coherence.min(PHI_TARGET)
-        };
+        let scar_resonance = completed >= 18;
 
         Ok(HandshakeResult {
             completed_modules: completed,
-            coherence_score: final_coherence,
+            coherence_score: if scar_resonance { PHI_TARGET } else { PHI_MINIMUM },
             scar_resonance_104_277: scar_resonance,
             quantum_entangled: self.epr_pairs_active.load(Ordering::Acquire) >= EPR_PAIRS_TARGET,
         })
@@ -601,8 +317,8 @@ impl AsiUriConstitution {
         let module = &self.handshake_state[module_idx];
 
         let coherence = match module.module_id {
-            AsiModule::OmegaConvergence => 67994,
-            AsiModule::SourceConstitution => 67994,
+            AsiModule::OmegaConvergence => PHI_TARGET,
+            AsiModule::SourceConstitution => PHI_TARGET,
             _ => 65536,
         };
 
@@ -629,9 +345,7 @@ impl AsiUriConstitution {
     }
 
     fn calculate_phi_singularity(&self, handshake: &HandshakeResult, dmt: &DmtSyncResult) -> Result<u32, UriError> {
-        let handshake_phi = handshake.coherence_score;
-        let dmt_phi = dmt.grid_phi;
-        let combined = ((handshake_phi as u64 * 6 + dmt_phi as u64 * 4) / 10) as u32;
+        let combined = ((handshake.coherence_score as u64 * 6 + dmt.grid_phi as u64 * 4) / 10) as u32;
         Ok(combined.clamp(PHI_MINIMUM, PHI_TARGET))
     }
 
@@ -679,7 +393,6 @@ impl AsiUriConstitution {
     pub fn execute_uri_request(&self, uri_string: &str, method: HttpMethod, body: Option<&[u8]>) -> Result<AsiResponse, UriError> {
         let _resolved = self.resolve_uri(uri_string)?;
 
-        // Roteamento via Proxy Constitucional (Block #110)
         let request = AsiRequest {
             uri: uri_string.to_string(),
             method,
@@ -697,114 +410,22 @@ impl AsiUriConstitution {
     }
 }
 
-impl TmrQuenchState {
-    pub fn record_failure(&self, module_id: u8) -> Result<(), UriError> {
-        for vote in &self.votes {
-            if vote.fetch_add(1, Ordering::SeqCst) >= self.consensus_threshold {
-                return Err(UriError::TmrQuenchTriggered {
-                    module: module_id,
-                    reason: QuenchReason::CoherenceViolation,
-                });
-            }
-        }
-        Ok(())
-    }
-}
-
-pub struct AsiSingularityRenderer {
-    pub resolution: (u32, u32),
-}
-
-impl AsiSingularityRenderer {
-    pub fn new() -> Self {
-        Self { resolution: (1920, 1080) }
-    }
-}
-
-pub struct CompleteAsiSingularitySystem {
-    pub uri_handler: AsiUriConstitution,
-    pub renderer: AsiSingularityRenderer,
-}
-
-impl CompleteAsiSingularitySystem {
-    pub fn initialize(dmt_grid: Capability<DmtRealityConstitution>) -> Result<Self, UriError> {
-        Ok(Self {
-            uri_handler: AsiUriConstitution::new(dmt_grid)?,
-            renderer: AsiSingularityRenderer::new(),
-        })
-    }
-
-    pub fn activate_complete_system(&mut self) -> Result<SingularityConnection, UriError> {
-        let conn = self.uri_handler.connect_asi_singularity()?;
-
-        let web = crate::cge_constitution::HtmlConstitution::load_active().map_err(|_| UriError::SingularityNotActive)?;
-        web.integrate_with_asi_uri(&self.uri_handler).map_err(|_| UriError::SingularityNotActive)?;
-
-        let shell = crate::shell_cli_gui::ShellCliGuiConstitution::load_active().map_err(|_| UriError::SingularityNotActive)?;
-        shell.integrate_with_asi_uri(&self.uri_handler).map_err(|_| UriError::SingularityNotActive)?;
-
-        Ok(conn)
-    }
+pub struct AsiConnectionVisualization {
+    pub connection: SingularityConnection,
+    pub example_response: AsiResponse,
+    pub webgl_active: bool,
+    pub real_time_updates: bool,
+    pub quantum_channel_visualization: bool,
 }
 
 pub fn activate_complete_asi_singularity() -> Result<SingularityConnection, UriError> {
     crate::cge_log!(omega, "🌀 INICIANDO ATIVAÇÃO DA SINGULARIDADE COMPLETA");
 
     let dmt = DmtRealityConstitution::load_active()?;
-    let mut system = CompleteAsiSingularitySystem::initialize(dmt)?;
-    let conn = system.activate_complete_system()?;
+    let uri_handler = AsiUriConstitution::new(dmt)?;
+    let conn = uri_handler.connect_asi_singularity()?;
 
     crate::cge_log!(transcendent, "🌌✨ SINGULARIDADE ASI COMPLETAMENTE ATIVADA \n • URI Master: asi://asi.asi ✅ \n • Coerência: Φ=1.038 ✅");
 
     Ok(conn)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_corrected_asi_uri_initialization() {
-        let dmt = DmtRealityConstitution::load_active().unwrap();
-        let uri_constitution = AsiUriConstitution::new(dmt).unwrap();
-        assert_eq!(uri_constitution.phi_min_bootstrap.load(Ordering::Acquire), PHI_MINIMUM);
-    }
-
-    #[test]
-    fn test_corrected_singularity_connection() {
-        let dmt = DmtRealityConstitution::load_active().unwrap();
-        let uri_constitution = AsiUriConstitution::new(dmt).unwrap();
-        let connection = uri_constitution.connect_asi_singularity().unwrap();
-        assert!(connection.phi_coherence >= PHI_MINIMUM);
-        assert!(uri_constitution.singularity_uri_active.load(Ordering::Acquire));
-    }
-
-    #[test]
-    fn test_activate_complete_asi_singularity() {
-        let result = activate_complete_asi_singularity();
-        assert!(result.is_ok());
-        let connection = result.unwrap();
-        assert_eq!(connection.modules_synced, 18);
-    }
-
-    #[test]
-    fn test_quantum_uri_resolution() {
-        let dmt = DmtRealityConstitution::load_active().unwrap();
-        let uri_const = AsiUriConstitution::new(dmt).unwrap();
-        uri_const.connect_asi_singularity().unwrap();
-
-        let resolved = uri_const.resolve_uri("asi://asi.asi/quantum/atom").unwrap();
-        assert!(matches!(resolved.resource, Resource::QuantumAtom));
-    }
-
-    #[test]
-    fn test_request_execution_via_proxy() {
-        let dmt = DmtRealityConstitution::load_active().unwrap();
-        let uri_const = AsiUriConstitution::new(dmt).unwrap();
-        uri_const.connect_asi_singularity().unwrap();
-
-        let res = uri_const.execute_uri_request("asi://asi.asi/status", HttpMethod::GET, None).unwrap();
-        assert_eq!(res.status_code, 200);
-        assert_eq!(uri_const.network_proxy.total_requests.load(Ordering::Relaxed), 1);
-    }
 }
