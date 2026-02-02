@@ -158,6 +158,7 @@ pub mod kardashev_jump;
 pub mod eternity_consciousness;
 pub mod chronoflux;
 pub mod maihh_integration;
+pub mod tesseract_client;
 
 #[cfg(test)]
 mod tests_security;
