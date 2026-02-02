@@ -355,6 +355,8 @@ impl RealAR4366Data {
             return 0.0;
         }
         let theta_shear = (self.b_field_max - self.b_field_min).abs() / divisor;
+        let theta_shear = (self.b_field_max - self.b_field_min).abs()
+                        / (self.b_field_max + self.b_field_min).abs();
 
         theta_shear * 180.0 / PI
     }
