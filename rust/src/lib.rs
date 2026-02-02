@@ -164,6 +164,9 @@ pub mod microtubule_biology;
 pub mod neuroscience_model;
 pub mod tesseract_client;
 pub mod ethereum_agent_resolution;
+pub mod hyper_mesh;
+pub mod solar_physics;
+pub mod solar_hedge;
 
 #[cfg(test)]
 mod tests_security;

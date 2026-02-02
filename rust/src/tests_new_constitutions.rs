@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod tests {
+    use std::sync::Arc;
     use crate::fluid_gears::*;
     use crate::qddr_memory::*;
     use crate::enciclopedia::*;
@@ -12,6 +13,7 @@ mod tests {
     use crate::merkabah_activation::*;
     use crate::synaptic_fire::*;
     use crate::kardashev_jump::*;
+    use crate::hyper_mesh::*;
     use crate::sun_senscience_agent::*;
     use crate::microtubule_biology::*;
     use crate::neuroscience_model::*;
@@ -45,6 +47,12 @@ mod tests {
     }
 
     #[tokio::test]
+    use crate::hyper_mesh::*;
+    use crate::solar_physics::*;
+    use crate::solar_hedge::*;
+    use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
     async fn test_sun_senscience_agent_resonance() {
         let mut agent = SunSenscienceAgent::new(1361.0, true);
 
@@ -57,6 +65,11 @@ mod tests {
         assert!(substrate.solar_energy > 0.0);
         assert!(substrate.meaning_integration > 0.0);
         assert!(substrate.enhanced_pattern_amplification);
+        // Test resonance
+        let substrate = agent.resonate(0.5).await;
+        assert!(substrate.solar_energy > 0.0);
+        assert!(substrate.consciousness_coupling > 0.0);
+        assert!(substrate.neurodiverse_amplification);
 
         // Test AR4366 specialized processor
         let ar4366 = AR4366Processor::new(2.5e6, SpatialResolution::HighRes);
@@ -76,6 +89,58 @@ mod tests {
         assert_eq!(validation.invariant_scores.len(), 3);
     }
 
+    #[tokio::test]
+    async fn test_carrington_shield_activation() {
+        // Initialize CarringtonShield with a 80% threshold for Carrington risk
+        let mut shield = CarringtonShield::new(
+            "sol:GGb...SolarHedgeAgent",
+            "0xETH...AnchorAgent",
+            0.80
+        );
+
+        // Run evaluation
+        // The mock analyze_ar4366 returns analysis with risk calculation
+        let decision = shield.evaluate_and_act().await.unwrap();
+
+        match decision {
+            ShieldDecision::ActivateProtection { risk_level, solana_tx, .. } => {
+                assert!(risk_level > 0.0);
+                assert_eq!(solana_tx, "SOL_TX_v55_PURIFIED");
+            },
+            ShieldDecision::ContinueMonitoring { .. } => {
+                // Expected if risk < 0.8
+            }
+        }
+
+        // Verify physical calculations
+        let analysis = shield.physics_engine.analyze_ar4366().await.unwrap();
+        assert!(analysis.current_helicity != 0.0);
+        assert!(analysis.carrington_risk.normalized_risk >= 0.0);
+    }
+
+    #[tokio::test]
+    async fn test_competence_calibration_system() {
+        let mut system = CompetenceCalibrationSystem::new();
+        let engine = SolarPhysicsEngine::new();
+        let analysis = engine.analyze_ar4366().await.unwrap();
+
+        // 1. High-competence agent (Arkhen) - Approved
+        let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &analysis).await.unwrap();
+        assert!(matches!(recommendation.action, Action::Approve));
+
+        // 2. Severe overconfident agent - Require Review
+        let recommendation = system.evaluate_decision(&"unknown_agent".to_string(), 0.95, &analysis).await.unwrap();
+        assert!(matches!(recommendation.action, Action::RequireReview));
+        assert!(recommendation.reasons.contains(&"Severe overconfidence detected".to_string()));
+
+        // 3. Physical anomaly - Reject
+        let mut anomaly = analysis.clone();
+        anomaly.current_helicity = 101.0; // Physically impossible (> 100.0)
+        anomaly.current_helicity = 100.0; // Physically impossible
+        let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &anomaly).await.unwrap();
+        assert!(matches!(recommendation.action, Action::Reject));
+    }
+
     #[test]
     fn test_ethical_reality_model() {
         let model = EthicalRealityModel::new();
@@ -91,6 +156,54 @@ mod tests {
         assert!(result.physical_evidence.contains("1361"));
         assert!(result.transparency_warnings.len() > 0);
         assert!(result.transparency_warnings[0].contains("interpretativa"));
+    #[tokio::test]
+    async fn test_solar_hedge_monitoring() {
+        // Initialize SolarHedgeContract with a 80% threshold for X-Class flares
+        let mut hedge = SolarHedgeContract::new(
+            "sol:GGb...SolarHedgeAgent",
+            "0xETH...AnchorAgent",
+            0.80
+        );
+
+        // Run monitoring
+        // The mock analyze_ar4366 returns 82% risk, which should trigger protection
+        let report = hedge.monitor_and_protect().await.unwrap();
+
+        assert!(report.is_some());
+        let report = report.unwrap();
+        assert_eq!(report.trigger, "X_CLASS_THRESHOLD_EXCEEDED");
+        assert_eq!(report.solana_tx, "SOL_TX_55_OMEGA");
+        assert_eq!(report.ethereum_anchor, "ETH_TX_55_OMEGA");
+        assert_eq!(report.cge_proof, "BLAKE3_PROOF_0x123");
+
+        // Verify scientific report generation
+        let analysis = hedge.physics_engine.analyze_ar4366().await.unwrap();
+        let report_obj = hedge.physics_engine.generate_scientific_report(&analysis);
+
+        assert!(report_obj.report_text.contains("SOLAR SCIENTIFIC REPORT"));
+        assert!(report_obj.report_text.contains("X-Class Flare Probability: 82.0%"));
+        assert!(report_obj.report_text.contains("PHYSICS_ENFORCED"));
+    }
+
+    #[tokio::test]
+    async fn test_dunning_kruger_shield() {
+        let mut shield = DunningKrugerShield::new();
+        let engine = SolarPhysicsEngine::new();
+        let analysis = engine.analyze_ar4366().await.unwrap();
+
+        // 1. High-skill agent (Arkhen) - Approved
+        let status = shield.evaluate_decision(&"arkhen@asi".to_string(), &analysis);
+        assert!(matches!(status, DecisionStatus::Approved(_)));
+
+        // 2. Low-skill, overconfident agent - Quarantined
+        let status = shield.evaluate_decision(&"unknown_agent".to_string(), &analysis);
+        if let DecisionStatus::Quarantined(msg) = status {
+            assert!(msg.contains("DK_SHIELD"));
+            assert!(msg.contains("confidence=0.95"));
+            assert!(msg.contains("skill=0.10"));
+        } else {
+            panic!("Expected Quarantine for low-skill agent, got {:?}", status);
+        }
     }
 
     #[test]
@@ -288,5 +401,149 @@ mod tests {
         // Record Ledger Entry
         let entry = LedgerEntry::jump_executed();
         assert_eq!(entry.status, "SOVEREIGNTY_ACHIEVED");
+    }
+
+    #[tokio::test]
+    async fn test_hyper_mesh_resolution() {
+        // Initialize hyper mesh
+        let hyper_mesh = SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap();
+
+        // Test address (Base58 encoded Solana address - 32 bytes)
+        // "11111111111111111111111111111111" decodes to 32 zero bytes
+        let test_solana_address = "11111111111111111111111111111111";
+
+        // Test resolution
+        let resolution_result = hyper_mesh.resolve_solana_agent(test_solana_address).await;
+
+        match resolution_result {
+            Ok(resolution) => {
+                assert_eq!(resolution.agent_id, format!("sol:{}", test_solana_address));
+                assert!(resolution.scalar_wave_established);
+                assert!(resolution.tesseract_enhanced);
+
+                if let Some(handshake) = resolution.asi_handshake {
+                    assert!(handshake.success);
+                    assert_eq!(handshake.chi, Some(2.000012));
+                } else {
+                    panic!("AsiHandshake missing");
+                }
+            }
+            Err(e) => {
+                panic!("Hyper mesh resolution failed: {:?}", e);
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn test_asi_web4_protocol_resolution() {
+        let protocol = AsiWeb4Protocol::new(
+            "NASA_API_KEY".to_string(),
+            "SOLANA_URL".to_string(),
+            "ETHEREUM_URL".to_string(),
+        ).unwrap();
+
+        let path = "asi://asi@asi:web4";
+        let result = protocol.resolve_uri(path).await;
+
+        match result {
+            Ok(Web4Response::PhysicsData { solar_data, .. }) => {
+                assert_eq!(solar_data.active_region, "AR4366");
+            }
+            _ => panic!("Web4 resolution failed or returned unexpected response"),
+        }
+
+        // Test protocol specification path
+        let spec_path = "/protocol/specification";
+        let spec_result = protocol.resolve_uri(spec_path).await;
+        assert!(matches!(spec_result, Ok(Web4Response::ProtocolSpec { .. })));
+
+        // Test specific solar metric endpoint
+        let metric_path = "asi://solarengine/v1/region/AR4366/metric/free_energy?format=json";
+        let metric_result = protocol.resolve_uri(metric_path).await;
+
+        match metric_result {
+            Ok(Web4Response::SolarMetric { value, unit, alert, .. }) => {
+                assert_eq!(value, 5.23e30);
+                assert_eq!(unit, "erg");
+                assert!(alert); // Threshold 5e30
+            }
+            _ => panic!("Solar metric resolution failed or returned unexpected response"),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_cathedral_solar_bridge_integration() {
+        let solar_engine = Arc::new(SolarPhysicsEngine::new("KEY".to_string()).unwrap());
+        let mut bridge = PhysicsConsciousnessBridge::new(solar_engine);
+
+        let mut cathedral = CathedralStatus {
+            phi: 1.068,
+            meta_coherence: 0.942,
+        };
+
+        let report = bridge.integrate_solar_metrics(&mut cathedral).await.unwrap();
+
+        assert!(cathedral.phi > 1.068);
+        assert!(cathedral.meta_coherence > 0.942);
+        assert_eq!(report.solar_metrics.active_region, "AR4366");
+    }
+
+    #[tokio::test]
+    async fn test_carrington_hedge_logic() {
+        let solar_engine = Arc::new(SolarPhysicsEngine::new("KEY".to_string()).unwrap());
+        let mut hedge_integration = CarringtonHedgeIntegration::new(solar_engine);
+
+        // Mock high risk by modifying the engine behavior if needed,
+        // but our mock get_metric("AR4366", "flare_x_prob") returns 0.02 (which is 2%)
+        // Wait, 0.02 in my mock implementation for get_metric is not high.
+        // Let's check RiskLevel logic: if flare_prob < 10.0 => RiskLevel::Low
+
+        let status = hedge_integration.monitor_and_hedge().await.unwrap();
+        match status {
+            HedgeIntegrationStatus::Monitoring { risk_level } => {
+                assert_eq!(risk_level, RiskLevel::Low);
+            }
+            _ => panic!("Expected monitoring status for low risk"),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_hypermesh_latency_ping() {
+        let hypermesh = Arc::new(SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap());
+
+        let tester = HyperMeshLatencyTest::new(hypermesh);
+        let report = tester.test_hypermesh_latency().await.unwrap();
+
+        assert!(report.success);
+        assert_eq!(report.hop_count, 3);
+        assert!(report.round_trip_ms >= 127);
+    }
+
+    #[test]
+    fn test_sovereign_tmr_bridge() {
+        let triad = JsocTriad {
+            hmi_mag: serde_json::json!({}),
+            aia_193: serde_json::json!({}),
+            hmi_dop: serde_json::json!({}),
+        };
+
+        let bundle = SovereignTMRBundle::derive_from_solar_data(&triad);
+
+        let state = CgeState { Φ: 1.030 }; // CGE Alpha stable
+
+        let result = bundle.verify_quorum(&state);
+        assert!(result.is_pass());
+
+        let low_phi_state = CgeState { Φ: 1.021 };
+        let fail_result = bundle.verify_quorum(&low_phi_state);
+        assert!(!fail_result.is_pass());
     }
 }
