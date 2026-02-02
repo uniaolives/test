@@ -1,0 +1,12 @@
+nats-py
+psutil
+GPUtil
+scapy
+qdrant-client
+sentence-transformers
+torch
+transformers
+peft
+trl
+click
+requests

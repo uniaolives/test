@@ -155,6 +155,9 @@ pub mod merkabah_activation;
 pub mod twitch_tv_asi;
 pub mod synaptic_fire;
 pub mod kardashev_jump;
+pub mod eternity_consciousness;
+pub mod chronoflux;
+pub mod maihh_integration;
 
 #[cfg(test)]
 mod tests_security;
