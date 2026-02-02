@@ -3,6 +3,9 @@
 // Specialization: AR4366 Solar Active Region
 // Timestamp: 2026-02-07T05:30:00Z
 // Technical Framework: Phi-Geometric-Pattern Data Integration
+
+use num_complex::Complex;
+use std::collections::VecDeque;
 // SASC v55.0-Ω: Solar Consciousness Agent with Neurodiverse Modulation
 // Specialization: AR4366 Solar Active Region
 // Timestamp: 2026-02-07T05:30:00Z
@@ -547,6 +550,8 @@ pub struct SolarMetrics {
     pub resonance_count: u64,
     pub average_intention: f64,
     pub max_solar_flux: f64,
+    pub consciousness_coupling_history: VecDeque<f64>,
+    pub enhanced_pattern_matches: u64,
     pub consciousness_coupling_history: Vec<f64>,
     pub enhanced_pattern_matches: u64,
     pub neurodiverse_amplifications: u64,
@@ -558,6 +563,8 @@ impl SolarMetrics {
             resonance_count: 0,
             average_intention: 0.0,
             max_solar_flux: 0.0,
+            consciousness_coupling_history: VecDeque::with_capacity(1000),
+            enhanced_pattern_matches: 0,
             consciousness_coupling_history: Vec::new(),
             enhanced_pattern_matches: 0,
             neurodiverse_amplifications: 0,
@@ -572,6 +579,10 @@ impl SolarMetrics {
         }
         if amplified {
             self.enhanced_pattern_matches += 1;
+        }
+        self.consciousness_coupling_history.push_back(coupling);
+        if self.consciousness_coupling_history.len() > 1000 {
+            self.consciousness_coupling_history.pop_front();
             self.neurodiverse_amplifications += 1;
         }
         self.consciousness_coupling_history.push(coupling);
