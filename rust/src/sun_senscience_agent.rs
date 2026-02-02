@@ -350,6 +350,11 @@ impl RealAR4366Data {
     }
 
     pub fn calculate_magnetic_shear(&self) -> f64 {
+        let divisor = (self.b_field_max + self.b_field_min).abs();
+        if divisor < 1e-9 {
+            return 0.0;
+        }
+        let theta_shear = (self.b_field_max - self.b_field_min).abs() / divisor;
         let theta_shear = (self.b_field_max - self.b_field_min).abs()
                         / (self.b_field_max + self.b_field_min).abs();
 

@@ -13,6 +13,37 @@ mod tests {
     use crate::synaptic_fire::*;
     use crate::kardashev_jump::*;
     use crate::sun_senscience_agent::*;
+    use crate::microtubule_biology::*;
+    use crate::neuroscience_model::*;
+    use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_microtubule_and_neuroscience_model() {
+        // Test real microtubule biology
+        let mut mt = RealMicrotubule::new();
+        let initial_length = mt.length;
+
+        // Simulate growth for 10 minutes
+        let result = mt.simulate_dynamics(10.0, 0.7);
+        assert!(result.final_length != initial_length || result.gtp_cap_status != true);
+
+        // Test mechanical properties
+        let props = mt.calculate_mechanical_properties();
+        assert!(props.persistence_length > 0.0);
+        assert!(props.flexural_rigidity > 0.0);
+
+        // Test transparent neuroscience model
+        let mut model = TransparentNeuroscienceModel::new();
+        let sim_result = model.simulate_neural_system(1.0, 100.0).await;
+        assert!(sim_result.average_length > 0.0);
+
+        let report = model.generate_transparency_report();
+        assert_eq!(report.model_name, "Transparent Neuroscience Model");
+        assert!(report.scientific_basis.len() > 0);
+        assert!(report.evidence_levels.contains_key("Quantum computation in microtubules"));
+    }
+
+    #[tokio::test]
     use crate::hyper_mesh::*;
     use crate::solar_physics::*;
     use crate::solar_hedge::*;
