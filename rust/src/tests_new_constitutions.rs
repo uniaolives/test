@@ -14,6 +14,8 @@ mod tests {
     use crate::kardashev_jump::*;
     use crate::sun_senscience_agent::*;
     use crate::hyper_mesh::*;
+    use crate::solar_physics::*;
+    use crate::solar_hedge::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
     #[tokio::test]
@@ -46,6 +48,57 @@ mod tests {
         let validation = constitution.validate_solar_agent(&agent).await;
         assert!(validation.solar_strength > 0.9);
         assert_eq!(validation.invariant_scores.len(), 3);
+    }
+
+    #[tokio::test]
+    async fn test_solar_hedge_monitoring() {
+        // Initialize SolarHedgeContract with a 80% threshold for X-Class flares
+        let mut hedge = SolarHedgeContract::new(
+            "sol:GGb...SolarHedgeAgent",
+            "0xETH...AnchorAgent",
+            0.80
+        );
+
+        // Run monitoring
+        // The mock analyze_ar4366 returns 82% risk, which should trigger protection
+        let report = hedge.monitor_and_protect().await.unwrap();
+
+        assert!(report.is_some());
+        let report = report.unwrap();
+        assert_eq!(report.trigger, "X_CLASS_THRESHOLD_EXCEEDED");
+        assert_eq!(report.solana_tx, "SOL_TX_55_OMEGA");
+        assert_eq!(report.ethereum_anchor, "ETH_TX_55_OMEGA");
+        assert_eq!(report.cge_proof, "BLAKE3_PROOF_0x123");
+
+        // Verify scientific report generation
+        let analysis = hedge.physics_engine.analyze_ar4366().await.unwrap();
+        let report_obj = hedge.physics_engine.generate_scientific_report(&analysis);
+
+        assert!(report_obj.report_text.contains("SOLAR SCIENTIFIC REPORT"));
+        assert!(report_obj.report_text.contains("X-Class Flare Probability: 82.0%"));
+        assert!(report_obj.report_text.contains("PHYSICS_ENFORCED"));
+    }
+
+    #[tokio::test]
+    async fn test_competence_calibration_system() {
+        let mut system = CompetenceCalibrationSystem::new();
+        let engine = SolarPhysicsEngine::new();
+        let analysis = engine.analyze_ar4366().await.unwrap();
+
+        // 1. High-competence agent (Arkhen) - Approved
+        let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &analysis).await.unwrap();
+        assert!(matches!(recommendation.action, Action::Approve));
+
+        // 2. Severe overconfident agent - Require Review
+        let recommendation = system.evaluate_decision(&"unknown_agent".to_string(), 0.95, &analysis).await.unwrap();
+        assert!(matches!(recommendation.action, Action::RequireReview));
+        assert!(recommendation.reasons.contains(&"Severe overconfidence detected".to_string()));
+
+        // 3. Physical anomaly - Reject
+        let mut anomaly = analysis.clone();
+        anomaly.current_helicity = 100.0; // Physically impossible
+        let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &anomaly).await.unwrap();
+        assert!(matches!(recommendation.action, Action::Reject));
     }
 
     #[test]
