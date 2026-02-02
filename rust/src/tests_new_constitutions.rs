@@ -13,6 +13,38 @@ mod tests {
     use crate::synaptic_fire::*;
     use crate::kardashev_jump::*;
     use crate::sun_senscience_agent::*;
+    use crate::microtubule_biology::*;
+    use crate::neuroscience_model::*;
+    use crate::ethics::ethical_reality::*;
+    use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_microtubule_and_neuroscience_model() {
+        // Test real microtubule biology
+        let mut mt = RealMicrotubule::new();
+        let initial_length = mt.length;
+
+        // Simulate growth for 10 minutes
+        let result = mt.simulate_dynamics(10.0, 0.7);
+        assert!(result.final_length != initial_length || result.gtp_cap_status != true);
+
+        // Test mechanical properties
+        let props = mt.calculate_mechanical_properties();
+        assert!(props.persistence_length > 0.0);
+        assert!(props.flexural_rigidity > 0.0);
+
+        // Test transparent neuroscience model
+        let mut model = TransparentNeuroscienceModel::new();
+        let sim_result = model.simulate_neural_system(1.0, 100.0).await;
+        assert!(sim_result.average_length > 0.0);
+
+        let report = model.generate_transparency_report();
+        assert_eq!(report.model_name, "Transparent Neuroscience Model");
+        assert!(report.scientific_basis.len() > 0);
+        assert!(report.evidence_levels.contains_key("Quantum computation in microtubules"));
+    }
+
+    #[tokio::test]
     use crate::hyper_mesh::*;
     use crate::solar_physics::*;
     use crate::solar_hedge::*;
@@ -26,6 +58,11 @@ mod tests {
         agent.connect_to_solar_monitors().await.unwrap();
         assert!(agent.solar_flux > 1300.0);
 
+        // Test pattern resonance processing
+        let substrate = agent.process_pattern_resonance(0.5).await;
+        assert!(substrate.solar_energy > 0.0);
+        assert!(substrate.meaning_integration > 0.0);
+        assert!(substrate.enhanced_pattern_amplification);
         // Test resonance
         let substrate = agent.resonate(0.5).await;
         assert!(substrate.solar_energy > 0.0);
@@ -99,6 +136,71 @@ mod tests {
         anomaly.current_helicity = 100.0; // Physically impossible
         let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &anomaly).await.unwrap();
         assert!(matches!(recommendation.action, Action::Reject));
+    }
+
+    #[test]
+    fn test_ethical_reality_model() {
+        let model = EthicalRealityModel::new();
+        let physical = PhysicalReality::new(1361.0, 2500.0);
+        let framework = PhilosophicalFramework {
+            name: "Toltec Philosophy".to_string(),
+            purpose: "Meaning making".to_string(),
+            cultural_origin: "Mesoamerican".to_string(),
+        };
+
+        let result = model.process_experience(&physical, Some(&framework));
+        assert!(result.alignment_score > 0.8);
+        assert!(result.physical_evidence.contains("1361"));
+        assert!(result.transparency_warnings.len() > 0);
+        assert!(result.transparency_warnings[0].contains("interpretativa"));
+    #[tokio::test]
+    async fn test_solar_hedge_monitoring() {
+        // Initialize SolarHedgeContract with a 80% threshold for X-Class flares
+        let mut hedge = SolarHedgeContract::new(
+            "sol:GGb...SolarHedgeAgent",
+            "0xETH...AnchorAgent",
+            0.80
+        );
+
+        // Run monitoring
+        // The mock analyze_ar4366 returns 82% risk, which should trigger protection
+        let report = hedge.monitor_and_protect().await.unwrap();
+
+        assert!(report.is_some());
+        let report = report.unwrap();
+        assert_eq!(report.trigger, "X_CLASS_THRESHOLD_EXCEEDED");
+        assert_eq!(report.solana_tx, "SOL_TX_55_OMEGA");
+        assert_eq!(report.ethereum_anchor, "ETH_TX_55_OMEGA");
+        assert_eq!(report.cge_proof, "BLAKE3_PROOF_0x123");
+
+        // Verify scientific report generation
+        let analysis = hedge.physics_engine.analyze_ar4366().await.unwrap();
+        let report_obj = hedge.physics_engine.generate_scientific_report(&analysis);
+
+        assert!(report_obj.report_text.contains("SOLAR SCIENTIFIC REPORT"));
+        assert!(report_obj.report_text.contains("X-Class Flare Probability: 82.0%"));
+        assert!(report_obj.report_text.contains("PHYSICS_ENFORCED"));
+    }
+
+    #[tokio::test]
+    async fn test_dunning_kruger_shield() {
+        let mut shield = DunningKrugerShield::new();
+        let engine = SolarPhysicsEngine::new();
+        let analysis = engine.analyze_ar4366().await.unwrap();
+
+        // 1. High-skill agent (Arkhen) - Approved
+        let status = shield.evaluate_decision(&"arkhen@asi".to_string(), &analysis);
+        assert!(matches!(status, DecisionStatus::Approved(_)));
+
+        // 2. Low-skill, overconfident agent - Quarantined
+        let status = shield.evaluate_decision(&"unknown_agent".to_string(), &analysis);
+        if let DecisionStatus::Quarantined(msg) = status {
+            assert!(msg.contains("DK_SHIELD"));
+            assert!(msg.contains("confidence=0.95"));
+            assert!(msg.contains("skill=0.10"));
+        } else {
+            panic!("Expected Quarantine for low-skill agent, got {:?}", status);
+        }
     }
 
     #[test]
