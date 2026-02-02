@@ -160,6 +160,8 @@ pub mod chronoflux;
 pub mod quantum_substrate;
 pub mod sun_senscience_agent;
 pub mod maihh_integration;
+pub mod microtubule_biology;
+pub mod neuroscience_model;
 pub mod tesseract_client;
 pub mod ethereum_agent_resolution;
 pub mod hyper_mesh;
