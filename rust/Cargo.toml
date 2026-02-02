@@ -43,6 +43,7 @@ uuid = { version = "1.19.0", features = ["v4"] }
 bellman = "0.14.0"
 bls12_381 = "0.8.0"
 ff = "0.13.0"
+bs58 = "0.5.1"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.56", features = [
