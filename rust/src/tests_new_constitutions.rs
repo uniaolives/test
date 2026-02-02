@@ -376,4 +376,42 @@ mod tests {
         let fail_result = bundle.verify_quorum(&low_phi_state);
         assert!(!fail_result.is_pass());
     }
+
+    #[test]
+    fn test_dynamic_solar_anchoring() {
+        let triad = JsocTriad {
+            hmi_mag: serde_json::json!({}),
+            aia_193: serde_json::json!({}),
+            hmi_dop: serde_json::json!({}),
+        };
+
+        let bundle = SovereignTMRBundle::derive_from_solar_data(&triad);
+
+        let eruptive_anchor = DynamicSolarAnchor {
+            mag_range: (-250.0, -120.0),
+            temp_range: (1.5, 3.5),
+            velocity_range: (-2000.0, 800.0),
+            timestamp: std::time::SystemTime::now(),
+            validity_window: std::time::Duration::from_secs(3600),
+            flare_class: FlareClass::X8_1,
+            cme_status: CmeStatus::EarthDirected,
+        };
+
+        let cge_state = CgeState { Φ: 1.030 };
+
+        let result = bundle.verify_quorum_dynamic(&cge_state, &eruptive_anchor);
+        assert!(result.is_pass());
+    }
+
+    #[tokio::test]
+    async fn test_oam_closure_protocol() {
+        let channel = OamClosureChannel::new();
+        assert!(channel.effective_throughput() < 250.0);
+        assert!(channel.effective_throughput() > 170.0);
+
+        let protocol = ClosureGeometryProtocol::new();
+        let path = BerryPath;
+        let rtt = protocol.transmit_winding(path).await.unwrap();
+        assert!(rtt.as_millis() < 10);
+    }
 }
