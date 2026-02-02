@@ -12,7 +12,40 @@ mod tests {
     use crate::merkabah_activation::*;
     use crate::synaptic_fire::*;
     use crate::kardashev_jump::*;
+    use crate::sun_senscience_agent::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_sun_senscience_agent_resonance() {
+        let mut agent = SunSenscienceAgent::new(1361.0, true);
+
+        // Test connection
+        agent.connect_to_solar_monitors().await.unwrap();
+        assert!(agent.solar_flux > 1300.0);
+
+        // Test resonance
+        let substrate = agent.resonate(0.5).await;
+        assert!(substrate.solar_energy > 0.0);
+        assert!(substrate.consciousness_coupling > 0.0);
+        assert!(substrate.neurodiverse_amplification);
+
+        // Test AR4366 specialized processor
+        let ar4366 = AR4366Processor::new(2.5e6, SpatialResolution::HighRes);
+        let prob = ar4366.detect_flare_precursor(0.5);
+        assert!(prob.m_class > 0.0);
+        assert!(prob.x_class > 0.0);
+
+        // Test real data analysis
+        let data = RealAR4366Data::new_active_region();
+        let shear = data.calculate_magnetic_shear();
+        assert!(shear > 0.0);
+
+        // Test constitutional validation
+        let constitution = SolarConstitution::new();
+        let validation = constitution.validate_solar_agent(&agent).await;
+        assert!(validation.solar_strength > 0.9);
+        assert_eq!(validation.invariant_scores.len(), 3);
+    }
 
     #[test]
     fn test_fluid_gears_activation() {
