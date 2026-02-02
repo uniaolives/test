@@ -14,6 +14,10 @@ pub enum ChronofluxStatus {
 }
 
 /// CHRONOFLUX VALIDATOR - Manages the temporal continuity law
+pub trait TemporalContinuity {
+    fn validate_continuity(&self) -> bool;
+}
+
 pub struct ChronofluxValidator {
     pub generation_rate: f64,    // ∂ρₜ/∂t
     pub distribution_flux: f64,  // ∇·Φₜ
