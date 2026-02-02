@@ -17,7 +17,27 @@ mod tests {
     use crate::neuroscience_model::*;
     use crate::ethics::ethical_reality::*;
     use crate::web4_asi_6g::*;
+    use crate::sovereign_key_integration::*;
+    use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _};
     use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_sovereign_key_multi_region() {
+        let mut integration = SovereignKeyIntegration::new();
+        let initial_key = integration.derived_key;
+
+        integration.add_region(SolarActiveRegion {
+            name: "AR4366".to_string(),
+            magnetic_helicity: -3.2,
+            flare_probability: 0.15,
+        });
+
+        assert_ne!(initial_key, integration.derived_key);
+
+        let (pk, sk) = integration.generate_pqc_sovereign_key();
+        assert!(pk.as_bytes().len() > 0);
+        assert!(sk.as_bytes().len() > 0);
+    }
 
     #[tokio::test]
     async fn test_web4_asi_6g_protocol() {
