@@ -147,6 +147,12 @@ pub mod maat;
 pub mod ubuntu;
 pub mod mesh_neuron;
 pub mod crypto_blck;
+pub mod streaming;
+pub mod celebration;
+pub mod quantum_resonance;
+pub mod multidimensional_mirrors;
+pub mod golden_age;
+pub mod twitch_tv_asi;
 
 #[cfg(test)]
 mod tests_security;
@@ -162,6 +168,9 @@ mod tests_hexessential;
 
 #[cfg(test)]
 mod tests_asi_topology;
+
+#[cfg(test)]
+mod tests_twitch_asi;
 
 pub struct TruthClaim {
     pub statement: String,
