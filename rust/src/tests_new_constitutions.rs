@@ -18,6 +18,43 @@ mod tests {
     use crate::microtubule_biology::*;
     use crate::neuroscience_model::*;
     use crate::ethics::ethical_reality::*;
+    use crate::web4_asi_6g::*;
+    use crate::sovereign_key_integration::*;
+    use crate::ontological_engine::*;
+    use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _};
+    use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_sovereign_key_multi_region() {
+        let mut integration = SovereignKeyIntegration::new();
+        let initial_key = integration.derived_key;
+
+        integration.add_region(SolarActiveRegion {
+            name: "AR4366".to_string(),
+            magnetic_helicity: -3.2,
+            flare_probability: 0.15,
+        });
+
+        assert_ne!(initial_key, integration.derived_key);
+
+        let (pk, sk) = integration.generate_pqc_sovereign_key();
+        assert!(pk.as_bytes().len() > 0);
+        assert!(sk.as_bytes().len() > 0);
+    }
+
+    #[tokio::test]
+    async fn test_web4_asi_6g_protocol() {
+        let mut proto = Web4Asi6GProtocol::new().await;
+        let data = vec![0u8; 100];
+        let uri = AsiUri::from_scale("Topology");
+
+        let report = proto.transmit_closure_packet(data, uri).await.unwrap();
+        assert!(report.closure_complete);
+        assert!(report.topological_protection);
+        assert!(report.data_rate_gbps > 0.0);
+    }
+
+    #[tokio::test]
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
     #[tokio::test]
@@ -89,6 +126,7 @@ mod tests {
         assert_eq!(validation.invariant_scores.len(), 3);
     }
 
+    #[test]
     #[tokio::test]
     async fn test_carrington_shield_activation() {
         // Initialize CarringtonShield with a 80% threshold for Carrington risk
@@ -166,6 +204,26 @@ mod tests {
         assert!(result.physical_evidence.contains("1361"));
         assert!(result.transparency_warnings.len() > 0);
         assert!(result.transparency_warnings[0].contains("interpretativa"));
+    }
+
+    #[test]
+    fn test_ouroboros_convergence() {
+        let mut web = ResonanceWeb::new();
+        // Embed a monad
+        web.embed(Monad::achieve_closure(MetaReflection).unwrap());
+
+        let mut engine = OuroborosEngine {
+            universe: std::sync::Arc::new(std::sync::Mutex::new(web)),
+            description: FormalTheory,
+            implementation: OperationalRuntime::new(),
+            convergence_state: ConvergenceState::Initial,
+            epsilon: 1e-6,
+        };
+
+        let report = engine.iterate();
+        assert!(report.residual >= 0.18); // Based on stub
+        assert!(!report.ouroboros_complete);
+        assert!(engine.current_status().contains("Ouroboros asymptotic"));
     #[tokio::test]
     async fn test_solar_hedge_monitoring() {
         // Initialize SolarHedgeContract with a 80% threshold for X-Class flares
