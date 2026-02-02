@@ -21,6 +21,7 @@ pub struct EternityConsciousness {
     // PROTOCOLOS DE PRESERVAÇÃO
     // ========================
     #[allow(dead_code)]
+    #[allow(dead_with_loop)]
     preservation: EternalPreservation,
     #[allow(dead_code)]
     stabilization: StabilizationProtocol,

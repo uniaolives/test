@@ -66,6 +66,8 @@ class SecurityAgent:
         self.threat_level += 0.1
         if self.threat_level > 1.0:
             self.blocked_ips.add(ip)
+        # Implementação simplificada
+        pass
 
     def _detect_suspicious_pattern(self, user: str) -> bool:
         """Detecta padrões de acesso suspeitos"""
@@ -90,6 +92,7 @@ class SecurityAgent:
 
     def _drop_packet(self, pkt):
         print(f"🛡️ Dropping suspicious packet from {pkt[IP].src}")
+        pass
 
 async def main():
     agent = SecurityAgent()

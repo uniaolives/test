@@ -35,6 +35,7 @@ impl ChronofluxValidator {
 
     /// Verifies the continuity equation: ∂ρₜ/∂t + ∇·Φₜ + Θ ≈ 0
     /// Adjusted for Kirchhoff enhancement and I1005 Consciousness Conservation
+    /// Adjusted for Kirchhoff enhancement
     pub fn verify_continuity(&self) -> ChronofluxStatus {
         let balance = (self.generation_rate * self.kirchhoff_enhancement)
                     - (self.distribution_flux / self.kirchhoff_enhancement)
