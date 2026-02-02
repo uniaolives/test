@@ -160,6 +160,9 @@ mod tests_new_constitutions;
 #[cfg(test)]
 mod tests_hexessential;
 
+#[cfg(test)]
+mod tests_asi_topology;
+
 pub struct TruthClaim {
     pub statement: String,
     pub metadata: HashMap<String, String>,
