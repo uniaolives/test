@@ -12,7 +12,99 @@ mod tests {
     use crate::merkabah_activation::*;
     use crate::synaptic_fire::*;
     use crate::kardashev_jump::*;
+    use crate::sun_senscience_agent::*;
+    use crate::microtubule_biology::*;
+    use crate::neuroscience_model::*;
+    use crate::ethics::ethical_reality::*;
+    use crate::web4_asi_6g::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_web4_asi_6g_protocol() {
+        let mut proto = Web4Asi6GProtocol::new().await;
+        let data = vec![0u8; 100];
+        let uri = AsiUri::from_scale("Topology");
+
+        let report = proto.transmit_closure_packet(data, uri).await.unwrap();
+        assert!(report.closure_complete);
+        assert!(report.topological_protection);
+        assert!(report.data_rate_gbps > 0.0);
+    }
+
+    #[tokio::test]
+    async fn test_microtubule_and_neuroscience_model() {
+        // Test real microtubule biology
+        let mut mt = RealMicrotubule::new();
+        let initial_length = mt.length;
+
+        // Simulate growth for 10 minutes
+        let result = mt.simulate_dynamics(10.0, 0.7);
+        assert!(result.final_length != initial_length || result.gtp_cap_status != true);
+
+        // Test mechanical properties
+        let props = mt.calculate_mechanical_properties();
+        assert!(props.persistence_length > 0.0);
+        assert!(props.flexural_rigidity > 0.0);
+
+        // Test transparent neuroscience model
+        let mut model = TransparentNeuroscienceModel::new();
+        let sim_result = model.simulate_neural_system(1.0, 100.0).await;
+        assert!(sim_result.average_length > 0.0);
+
+        let report = model.generate_transparency_report();
+        assert_eq!(report.model_name, "Transparent Neuroscience Model");
+        assert!(report.scientific_basis.len() > 0);
+        assert!(report.evidence_levels.contains_key("Quantum computation in microtubules"));
+    }
+
+    #[tokio::test]
+    async fn test_sun_senscience_agent_resonance() {
+        let mut agent = SunSenscienceAgent::new(1361.0, true);
+
+        // Test connection
+        agent.connect_to_solar_monitors().await.unwrap();
+        assert!(agent.solar_flux > 1300.0);
+
+        // Test pattern resonance processing
+        let substrate = agent.process_pattern_resonance(0.5).await;
+        assert!(substrate.solar_energy > 0.0);
+        assert!(substrate.meaning_integration > 0.0);
+        assert!(substrate.enhanced_pattern_amplification);
+
+        // Test AR4366 specialized processor
+        let ar4366 = AR4366Processor::new(2.5e6, SpatialResolution::HighRes);
+        let prob = ar4366.detect_flare_precursor(0.5);
+        assert!(prob.m_class > 0.0);
+        assert!(prob.x_class > 0.0);
+
+        // Test real data analysis
+        let data = RealAR4366Data::new_active_region();
+        let shear = data.calculate_magnetic_shear();
+        assert!(shear > 0.0);
+
+        // Test constitutional validation
+        let constitution = SolarConstitution::new();
+        let validation = constitution.validate_solar_agent(&agent).await;
+        assert!(validation.solar_strength > 0.9);
+        assert_eq!(validation.invariant_scores.len(), 3);
+    }
+
+    #[test]
+    fn test_ethical_reality_model() {
+        let model = EthicalRealityModel::new();
+        let physical = PhysicalReality::new(1361.0, 2500.0);
+        let framework = PhilosophicalFramework {
+            name: "Toltec Philosophy".to_string(),
+            purpose: "Meaning making".to_string(),
+            cultural_origin: "Mesoamerican".to_string(),
+        };
+
+        let result = model.process_experience(&physical, Some(&framework));
+        assert!(result.alignment_score > 0.8);
+        assert!(result.physical_evidence.contains("1361"));
+        assert!(result.transparency_warnings.len() > 0);
+        assert!(result.transparency_warnings[0].contains("interpretativa"));
+    }
 
     #[test]
     fn test_fluid_gears_activation() {
