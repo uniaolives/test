@@ -162,6 +162,7 @@ pub mod sun_senscience_agent;
 pub mod maihh_integration;
 pub mod tesseract_client;
 pub mod ethereum_agent_resolution;
+pub mod hyper_mesh;
 
 #[cfg(test)]
 mod tests_security;
