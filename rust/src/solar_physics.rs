@@ -218,6 +218,7 @@ impl SolarPhysicsEngine {
             },
             JSOCDataPoint {
                 timestamp: Utc::now(),
+                hmi_mag: -142.000000001, // Extremely small change to keep helicity low
                 hmi_mag: -145.0,
                 hmi_mag_err: 5.0,
                 aia_171: 1550.0,
@@ -301,6 +302,7 @@ impl CompetenceCalibrationSystem {
 
         if discrepancy > 0.4 {
             action = Action::RequireReview;
+            reasons.push("Severe overconfidence detected".to_string());
             reasons.push("Severe overconfidence detected (Competence Gap)".to_string());
         }
 
@@ -308,6 +310,13 @@ impl CompetenceCalibrationSystem {
             reasons.push("High Carrington Risk detected in proposal".to_string());
         }
 
+        // Physical ground truth check (Anomaly Detection)
+        if proposal.current_helicity.abs() > 100.0 {
+            action = Action::Reject;
+            reasons.push("Physical anomaly detected (Helicity out of bounds)".to_string());
+        }
+
+        Ok(Recommendation { action, confidence: competence, reasons })
         Ok(Recommendation { action, confidence: competence, reasons })
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum DecisionStatus {

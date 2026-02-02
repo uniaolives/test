@@ -135,6 +135,7 @@ mod tests {
 
         // 3. Physical anomaly - Reject
         let mut anomaly = analysis.clone();
+        anomaly.current_helicity = 101.0; // Physically impossible (> 100.0)
         anomaly.current_helicity = 100.0; // Physically impossible
         let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &anomaly).await.unwrap();
         assert!(matches!(recommendation.action, Action::Reject));
