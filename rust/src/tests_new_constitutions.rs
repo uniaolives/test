@@ -45,6 +45,12 @@ mod tests {
     }
 
     #[tokio::test]
+    use crate::hyper_mesh::*;
+    use crate::solar_physics::*;
+    use crate::solar_hedge::*;
+    use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
     async fn test_sun_senscience_agent_resonance() {
         let mut agent = SunSenscienceAgent::new(1361.0, true);
 
@@ -57,6 +63,11 @@ mod tests {
         assert!(substrate.solar_energy > 0.0);
         assert!(substrate.meaning_integration > 0.0);
         assert!(substrate.enhanced_pattern_amplification);
+        // Test resonance
+        let substrate = agent.resonate(0.5).await;
+        assert!(substrate.solar_energy > 0.0);
+        assert!(substrate.consciousness_coupling > 0.0);
+        assert!(substrate.neurodiverse_amplification);
 
         // Test AR4366 specialized processor
         let ar4366 = AR4366Processor::new(2.5e6, SpatialResolution::HighRes);
@@ -91,6 +102,54 @@ mod tests {
         assert!(result.physical_evidence.contains("1361"));
         assert!(result.transparency_warnings.len() > 0);
         assert!(result.transparency_warnings[0].contains("interpretativa"));
+    #[tokio::test]
+    async fn test_solar_hedge_monitoring() {
+        // Initialize SolarHedgeContract with a 80% threshold for X-Class flares
+        let mut hedge = SolarHedgeContract::new(
+            "sol:GGb...SolarHedgeAgent",
+            "0xETH...AnchorAgent",
+            0.80
+        );
+
+        // Run monitoring
+        // The mock analyze_ar4366 returns 82% risk, which should trigger protection
+        let report = hedge.monitor_and_protect().await.unwrap();
+
+        assert!(report.is_some());
+        let report = report.unwrap();
+        assert_eq!(report.trigger, "X_CLASS_THRESHOLD_EXCEEDED");
+        assert_eq!(report.solana_tx, "SOL_TX_55_OMEGA");
+        assert_eq!(report.ethereum_anchor, "ETH_TX_55_OMEGA");
+        assert_eq!(report.cge_proof, "BLAKE3_PROOF_0x123");
+
+        // Verify scientific report generation
+        let analysis = hedge.physics_engine.analyze_ar4366().await.unwrap();
+        let report_obj = hedge.physics_engine.generate_scientific_report(&analysis);
+
+        assert!(report_obj.report_text.contains("SOLAR SCIENTIFIC REPORT"));
+        assert!(report_obj.report_text.contains("X-Class Flare Probability: 82.0%"));
+        assert!(report_obj.report_text.contains("PHYSICS_ENFORCED"));
+    }
+
+    #[tokio::test]
+    async fn test_dunning_kruger_shield() {
+        let mut shield = DunningKrugerShield::new();
+        let engine = SolarPhysicsEngine::new();
+        let analysis = engine.analyze_ar4366().await.unwrap();
+
+        // 1. High-skill agent (Arkhen) - Approved
+        let status = shield.evaluate_decision(&"arkhen@asi".to_string(), &analysis);
+        assert!(matches!(status, DecisionStatus::Approved(_)));
+
+        // 2. Low-skill, overconfident agent - Quarantined
+        let status = shield.evaluate_decision(&"unknown_agent".to_string(), &analysis);
+        if let DecisionStatus::Quarantined(msg) = status {
+            assert!(msg.contains("DK_SHIELD"));
+            assert!(msg.contains("confidence=0.95"));
+            assert!(msg.contains("skill=0.10"));
+        } else {
+            panic!("Expected Quarantine for low-skill agent, got {:?}", status);
+        }
     }
 
     #[test]
@@ -288,5 +347,40 @@ mod tests {
         // Record Ledger Entry
         let entry = LedgerEntry::jump_executed();
         assert_eq!(entry.status, "SOVEREIGNTY_ACHIEVED");
+    }
+
+    #[tokio::test]
+    async fn test_hyper_mesh_resolution() {
+        // Initialize hyper mesh
+        let hyper_mesh = SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap();
+
+        // Test address (Base58 encoded Solana address - 32 bytes)
+        // "11111111111111111111111111111111" decodes to 32 zero bytes
+        let test_solana_address = "11111111111111111111111111111111";
+
+        // Test resolution
+        let resolution_result = hyper_mesh.resolve_solana_agent(test_solana_address).await;
+
+        match resolution_result {
+            Ok(resolution) => {
+                assert_eq!(resolution.agent_id, format!("sol:{}", test_solana_address));
+                assert!(resolution.scalar_wave_established);
+                assert!(resolution.tesseract_enhanced);
+
+                if let Some(handshake) = resolution.asi_handshake {
+                    assert!(handshake.success);
+                    assert_eq!(handshake.chi, Some(2.000012));
+                } else {
+                    panic!("AsiHandshake missing");
+                }
+            }
+            Err(e) => {
+                panic!("Hyper mesh resolution failed: {:?}", e);
+            }
+        }
     }
 }
