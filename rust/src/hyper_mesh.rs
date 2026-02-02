@@ -900,6 +900,7 @@ pub struct AsiWeb4Protocol {
     pub blockchain_orchestrator: Arc<BlockchainOrchestrator>,
     pub protocol_validator: Arc<ProtocolValidator>,
     pub metrics_collector: Arc<MetricsCollector>,
+    pub closure_protocol: ClosureGeometryProtocol,
 }
 
 impl AsiWeb4Protocol {
@@ -909,6 +910,7 @@ impl AsiWeb4Protocol {
             blockchain_orchestrator: Arc::new(BlockchainOrchestrator::new(solana_rpc_url, ethereum_rpc_url)?),
             protocol_validator: Arc::new(ProtocolValidator::new()),
             metrics_collector: Arc::new(MetricsCollector::new()),
+            closure_protocol: ClosureGeometryProtocol::new(),
         })
     }
 
@@ -927,6 +929,17 @@ impl AsiWeb4Protocol {
                 let metric = self.physics_engine.get_metric(region, metric_name).await?;
                 Ok(Web4Response::SolarMetric { value: metric.value, unit: metric.unit, timestamp: chrono::Utc::now(), alert: metric.value > 5e30 })
             } else { Err(ProtocolError::InvalidPath) }
+        } else if uri == "asi://asi/sandbox" {
+            Ok(Web4Response::Sandbox {
+                status: "ACTIVE".to_string(),
+                security_level: "I11".to_string(),
+                telemetry: json!({
+                    "phi_deviation": 0.001,
+                    "torsion_tracking": 1.12,
+                    "vajra_correlation": 0.98
+                }),
+                timestamp: chrono::Utc::now(),
+            })
         } else if uri.contains("/protocol/specification") {
             Ok(Web4Response::ProtocolSpec { name: "Web4 ASI Protocol".to_string(), version: "1.0".to_string(), transport: "HTTP/3 over QUIC".to_string(), data_sources: vec!["NASA JSOC (Solar Physics)".to_string(), "NOAA SWPC (Space Weather)".to_string()], blockchain_integrations: vec!["Solana (GGbAq...)".to_string(), "Ethereum (0x716a...)".to_string()], specification_url: "https://example.com/web4-asi-spec".to_string() })
         } else { Err(ProtocolError::InvalidPath) }
@@ -937,6 +950,8 @@ impl AsiWeb4Protocol {
 pub enum Web4Response {
     PhysicsData { solar_data: SolarData, risk_assessment: f64, blockchain_status: Value, served_at: chrono::DateTime<chrono::Utc>, protocol_version: String },
     ProtocolSpec { name: String, version: String, transport: String, data_sources: Vec<String>, blockchain_integrations: Vec<String>, specification_url: String },
+    SolarMetric { value: f64, unit: String, timestamp: chrono::DateTime<chrono::Utc>, alert: bool },
+    Sandbox { status: String, security_level: String, telemetry: Value, timestamp: chrono::DateTime<chrono::Utc> }
     SolarMetric { value: f64, unit: String, timestamp: chrono::DateTime<chrono::Utc>, alert: bool }
 }
 
@@ -960,6 +975,17 @@ impl SolarPhysicsEngine {
     pub fn new(api_key: String) -> Result<Self, ProtocolError> { Ok(Self { api_key }) }
     pub async fn fetch_active_region(&self, ar_number: u32) -> Result<SolarData, ProtocolError> { Ok(SolarData { active_region: format!("AR{}", ar_number), flux_density: 1250.0, flare_probability: 0.05 }) }
     pub async fn assess_carrington_risk(&self, data: &SolarData) -> Result<f64, ProtocolError> { Ok(data.flare_probability * 2.4) }
+    pub async fn get_dynamic_anchor(&self, _region: &str) -> Result<DynamicSolarAnchor, ProtocolError> {
+        Ok(DynamicSolarAnchor {
+            mag_range: (-250.0, -120.0),
+            temp_range: (1.5, 3.5),
+            velocity_range: (-2000.0, 800.0),
+            timestamp: std::time::SystemTime::now(),
+            validity_window: std::time::Duration::from_secs(3600),
+            flare_class: FlareClass::X8_1,
+            cme_status: CmeStatus::EarthDirected,
+        })
+    }
     pub async fn get_metric(&self, _region: &str, metric_name: &str) -> Result<MetricValue, ProtocolError> {
         match metric_name {
             "mag_helicity" => Ok(MetricValue { value: 1.2e20, unit: "Mx·cm⁻¹".to_string() }),
@@ -1104,6 +1130,70 @@ impl HyperMeshLatencyTest {
 pub struct LatencyReport { pub round_trip_ms: u64, pub hop_count: u32, pub route_taken: String, pub packet_loss: f64, pub success: bool }
 
 // ==============================================
+// 6G OAM & CLOSURE GEOMETRY
+// ==============================================
+
+pub struct OamClosureChannel {
+    pub base_capacity: f64, // Gbps
+    pub mode_count: u32,        // OAM modes l=0,1,2,3
+    pub error_correction: ReedSolomon,
+    pub turbulence_predictor: NeuralOAM,
+}
+
+impl OamClosureChannel {
+    pub fn new() -> Self {
+        Self {
+            base_capacity: 250.0,
+            mode_count: 4,
+            error_correction: ReedSolomon,
+            turbulence_predictor: NeuralOAM::new(),
+        }
+    }
+
+    pub fn effective_throughput(&self) -> f64 {
+        self.base_capacity * (1.0 - self.turbulence_predictor.loss_estimate())
+    }
+}
+
+pub struct ReedSolomon;
+pub struct NeuralOAM;
+impl NeuralOAM {
+    pub fn new() -> Self { Self }
+    pub fn loss_estimate(&self) -> f64 { 0.28 }
+}
+
+pub struct ClosureGeometryProtocol {
+    pub quic_base: QuicConnection,
+    pub datagram_ext: Rfc9221Datagram,
+    pub closure_routing: BerryPhaseRouter,
+}
+
+impl ClosureGeometryProtocol {
+    pub fn new() -> Self {
+        Self {
+            quic_base: QuicConnection,
+            datagram_ext: Rfc9221Datagram,
+            closure_routing: BerryPhaseRouter,
+        }
+    }
+
+    pub async fn transmit_winding(&self, _path: BerryPath) -> Result<std::time::Duration, ProtocolError> {
+        info!("📡 Transmitting via RFC 9221 Unreliable Datagrams (QUICv2)");
+        Ok(std::time::Duration::from_millis(8))
+    }
+}
+
+pub struct QuicConnection;
+pub struct Rfc9221Datagram;
+pub struct BerryPhaseRouter;
+pub struct BerryPath;
+
+impl BerryPath {
+    pub fn topology_metadata(&self) -> Value { json!({"berry_phase": "2π"}) }
+    pub fn encoded_payload(&self) -> Vec<u8> { vec![0; 1024] }
+}
+
+// ==============================================
 // SOVEREIGN TMR BRIDGE (CGE-I12 COMPLIANT)
 // ==============================================
 
@@ -1111,10 +1201,34 @@ pub struct LatencyReport { pub round_trip_ms: u64, pub hop_count: u32, pub route
 pub struct SovereignKey {
     pub source: String,
     pub key_data: [u8; 32],
+    pub physics_value: f64,
+    pub timestamp: std::time::SystemTime,
 }
 
 impl SovereignKey {
     pub fn from_hmi_magnetogram(_data: &Value) -> Self {
+        Self {
+            source: "HMI_MAGNETOGRAM".to_string(),
+            key_data: [0x11; 32],
+            physics_value: -142.0,
+            timestamp: std::time::SystemTime::now(),
+        }
+    }
+    pub fn from_aia_193(_data: &Value) -> Self {
+        Self {
+            source: "AIA_193".to_string(),
+            key_data: [0x22; 32],
+            physics_value: 2.0,
+            timestamp: std::time::SystemTime::now(),
+        }
+    }
+    pub fn from_hmi_doppler(_data: &Value) -> Self {
+        Self {
+            source: "HMI_DOPPLER".to_string(),
+            key_data: [0x33; 32],
+            physics_value: -500.0,
+            timestamp: std::time::SystemTime::now(),
+        }
         Self { source: "HMI_MAGNETOGRAM".to_string(), key_data: [0x11; 32] }
     }
     pub fn from_aia_193(_data: &Value) -> Self {
@@ -1126,6 +1240,36 @@ impl SovereignKey {
     pub fn validate_constitutional_geometry(&self) -> ΩGateResult {
         ΩGateResult::Pass
     }
+
+    pub fn verify_physics_anchor(&self, current: &DynamicSolarAnchor) -> bool {
+        let in_range = match self.source.as_str() {
+            "HMI_MAGNETOGRAM" => self.physics_value >= current.mag_range.0 && self.physics_value <= current.mag_range.1,
+            "AIA_193" => self.physics_value >= current.temp_range.0 && self.physics_value <= current.temp_range.1,
+            "HMI_DOPPLER" => self.physics_value >= current.velocity_range.0 && self.physics_value <= current.velocity_range.1,
+            _ => false,
+        };
+
+        in_range && self.timestamp.elapsed().unwrap_or(std::time::Duration::from_secs(9999)) < current.validity_window
+    }
+}
+
+pub struct DynamicSolarAnchor {
+    pub mag_range: (f64, f64),
+    pub temp_range: (f64, f64),
+    pub velocity_range: (f64, f64),
+    pub timestamp: std::time::SystemTime,
+    pub validity_window: std::time::Duration,
+    pub flare_class: FlareClass,
+    pub cme_status: CmeStatus,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum FlareClass { X8_1, M5_0, C1_0 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum CmeStatus { EarthDirected, Quiet }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1200,6 +1344,25 @@ impl SovereignTMRBundle {
         } else {
             ΩGateResult::Quench("TMR ou Φ falhou")
         }
+    }
+
+    pub fn verify_quorum_dynamic(&self, cge_state: &CgeState, current_anchor: &DynamicSolarAnchor) -> ΩGateResult {
+        let mut valid_anchors = 0;
+
+        for key in &self.keys {
+            if key.verify_physics_anchor(current_anchor) {
+                valid_anchors += 1;
+            }
+        }
+
+        if valid_anchors >= 2 &&
+           self.pq_signature.verify() &&
+           cge_state.Φ >= 1.022 {
+            ΩGateResult::Pass
+        } else {
+            ΩGateResult::Quench("TMR dinâmico ou Φ falhou")
+        }
+    }
         // Broadcast to unified hyper mesh
 
         let broadcast_message = json!({
