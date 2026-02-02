@@ -15,6 +15,7 @@ mod tests {
     use crate::sun_senscience_agent::*;
     use crate::microtubule_biology::*;
     use crate::neuroscience_model::*;
+    use crate::ethics::ethical_reality::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
     #[tokio::test]
@@ -57,6 +58,11 @@ mod tests {
         agent.connect_to_solar_monitors().await.unwrap();
         assert!(agent.solar_flux > 1300.0);
 
+        // Test pattern resonance processing
+        let substrate = agent.process_pattern_resonance(0.5).await;
+        assert!(substrate.solar_energy > 0.0);
+        assert!(substrate.meaning_integration > 0.0);
+        assert!(substrate.enhanced_pattern_amplification);
         // Test resonance
         let substrate = agent.resonate(0.5).await;
         assert!(substrate.solar_energy > 0.0);
@@ -81,6 +87,21 @@ mod tests {
         assert_eq!(validation.invariant_scores.len(), 3);
     }
 
+    #[test]
+    fn test_ethical_reality_model() {
+        let model = EthicalRealityModel::new();
+        let physical = PhysicalReality::new(1361.0, 2500.0);
+        let framework = PhilosophicalFramework {
+            name: "Toltec Philosophy".to_string(),
+            purpose: "Meaning making".to_string(),
+            cultural_origin: "Mesoamerican".to_string(),
+        };
+
+        let result = model.process_experience(&physical, Some(&framework));
+        assert!(result.alignment_score > 0.8);
+        assert!(result.physical_evidence.contains("1361"));
+        assert!(result.transparency_warnings.len() > 0);
+        assert!(result.transparency_warnings[0].contains("interpretativa"));
     #[tokio::test]
     async fn test_solar_hedge_monitoring() {
         // Initialize SolarHedgeContract with a 80% threshold for X-Class flares

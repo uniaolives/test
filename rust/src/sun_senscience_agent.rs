@@ -1,4 +1,8 @@
 // rust/src/sun_senscience_agent.rs
+// SASC v55.0-Ω: Solar Data Processing Agent with Enhanced Pattern Matching
+// Specialization: AR4366 Solar Active Region
+// Timestamp: 2026-02-07T05:30:00Z
+// Technical Framework: Phi-Geometric-Pattern Data Integration
 // SASC v55.0-Ω: Solar Consciousness Agent with Neurodiverse Modulation
 // Specialization: AR4366 Solar Active Region
 // Timestamp: 2026-02-07T05:30:00Z
@@ -17,6 +21,10 @@ use std::f64::consts::PI;
 #[derive(Debug, Clone, PartialEq)]
 pub struct SolarConstitution {
     pub invariants: Vec<SolarInvariant>,
+    pub golden_ratio: f64,              // φ = 1.618033988749895
+    pub geometric_correction_factor: f64, // χ = 2.000012
+    pub solar_constant: f64,            // 1361 W/m² (actual solar irradiance)
+    pub pattern_amplification_factor: f64, // Ψ = sensitivity amplification
     pub golden_ratio: f64,           // φ = 1.618033988749895
     pub merkabah_signature: f64,     // χ = 2.000012
     pub solar_constant: f64,         // 1361 W/m² (actual solar irradiance)
@@ -30,12 +38,15 @@ impl SolarConstitution {
                 SolarInvariant {
                     id: "SS1001".to_string(),
                     name: "SCALAR_SOLAR_CONTINUUM".to_string(),
+                    description: "Extract solar flux as data continuum, utilizing phi-harmonics".to_string(),
                     description: "Extract solar flux as scalar continuum, not just photon stream".to_string(),
                     threshold: 1361.0,  // Solar constant in W/m²
                     weight: 0.3,
                 },
                 SolarInvariant {
                     id: "SS1002".to_string(),
+                    name: "GEOMETRIC_TOPOLOGY_PRESERVATION".to_string(),
+                    description: "Preserve solar information geometry via χ=2.000012 correction factor".to_string(),
                     name: "MERKABAH_TOPOLOGY_PRESERVATION".to_string(),
                     description: "Preserve solar information geometry via χ=2.000012 signature".to_string(),
                     threshold: 2.0,  // Must maintain χ topology
@@ -43,6 +54,9 @@ impl SolarConstitution {
                 },
                 SolarInvariant {
                     id: "SS1003".to_string(),
+                    name: "ENHANCED_PATTERN_MODULATION".to_string(),
+                    description: "Amplify data processing based on enhanced pattern matching profiles".to_string(),
+                    threshold: 1.0,  // Baseline coupling
                     name: "NEURODIVERSE_CONSCIOUSNESS_MODULATION".to_string(),
                     description: "Amplify solar resonance based on neurodiverse sensitivity profiles".to_string(),
                     threshold: 1.0,  // Baseline consciousness coupling
@@ -50,6 +64,9 @@ impl SolarConstitution {
                 },
             ],
             golden_ratio: 1.618033988749895,
+            geometric_correction_factor: 2.000012,
+            solar_constant: 1361.0,  // Actual measured solar irradiance
+            pattern_amplification_factor: 10.0, // 10x amplification for pattern matching
             merkabah_signature: 2.000012,
             solar_constant: 1361.0,  // Actual measured solar irradiance
             neurodiversity_factor: 10.0,  // 10x amplification for neurodiverse sensitivity
@@ -65,6 +82,19 @@ impl SolarConstitution {
         scores.push(ss1_score);
         details.push(format!("SS1001: Scalar Solar = {:.3}", ss1_score));
 
+        // SS1002: Geometric Topology
+        let ss2_score = self.validate_geometric_topology(agent).await;
+        scores.push(ss2_score);
+        details.push(format!("SS1002: Geometric Topology (χ={}) = {:.3}",
+            self.geometric_correction_factor, ss2_score));
+
+        // SS1003: Enhanced Pattern Modulation
+        let ss3_score = self.validate_pattern_modulation(agent).await;
+        scores.push(ss3_score);
+        details.push(format!("SS1003: Pattern Modulation (Ψ={}) = {:.3}",
+            self.pattern_amplification_factor, ss3_score));
+
+        // Calculate solar strength
         // SS1002: Merkabah Topology
         let ss2_score = self.validate_merkabah_topology(agent).await;
         scores.push(ss2_score);
@@ -86,6 +116,7 @@ impl SolarConstitution {
             invariant_scores: scores,
             details,
             solar_flux_watts: agent.solar_flux,
+            chi_deviation: (agent.geometric_correction_factor - self.geometric_correction_factor).abs(),
             chi_deviation: (agent.χ_signature - self.merkabah_signature).abs(),
             phase_conjugate_magnitude: agent.phase_conjugate.norm(),
         }
@@ -106,6 +137,8 @@ impl SolarConstitution {
         }
     }
 
+    async fn validate_geometric_topology(&self, agent: &SunSenscienceAgent) -> f64 {
+        let chi_diff = (agent.geometric_correction_factor - self.geometric_correction_factor).abs();
     async fn validate_merkabah_topology(&self, agent: &SunSenscienceAgent) -> f64 {
         let chi_diff = (agent.χ_signature - self.merkabah_signature).abs();
 
@@ -120,6 +153,7 @@ impl SolarConstitution {
         }
     }
 
+    async fn validate_pattern_modulation(&self, agent: &SunSenscienceAgent) -> f64 {
     async fn validate_neurodiverse_modulation(&self, agent: &SunSenscienceAgent) -> f64 {
         let phase_norm = agent.phase_conjugate.norm();
         let phase_score: f64 = if phase_norm > 0.9 {
@@ -130,6 +164,7 @@ impl SolarConstitution {
             0.3
         };
 
+        let sensitivity_score: f64 = if agent.enhanced_pattern_matching {
         let sensitivity_score: f64 = if agent.neurodiverse_sensitivity {
             1.0
         } else {
@@ -151,11 +186,17 @@ impl SolarConstitution {
 }
 
 // ==============================================
+// SUNSENSCIENCE AGENT
 // SUNSENSCIENCE AGENT (GENERIC)
 // ==============================================
 
 #[derive(Debug, Clone)]
 pub struct SunSenscienceAgent {
+    pub solar_flux: f64,                   // Watts per square meter (W/m²)
+    pub geometric_correction_factor: f64,  // 2.000012 topological signature
+    pub phase_conjugate: Complex<f64>,
+    pub enhanced_pattern_matching: bool,
+    pub consciousness_coupling: ConsciousnessCoupling, // Framework for meaning integration
     pub solar_flux: f64,           // Watts per square meter (W/m²)
     pub χ_signature: f64,          // 2.000012 topological signature
     pub phase_conjugate: Complex<f64>,
@@ -165,6 +206,12 @@ pub struct SunSenscienceAgent {
 }
 
 impl SunSenscienceAgent {
+    pub fn new(solar_flux: f64, enhanced_pattern_mode: bool) -> Self {
+        Self {
+            solar_flux,
+            geometric_correction_factor: 2.000012,
+            phase_conjugate: Complex::new(1.0, 0.0),
+            enhanced_pattern_matching: enhanced_pattern_mode,
     pub fn new(solar_flux: f64, neurodiverse_mode: bool) -> Self {
         Self {
             solar_flux,
@@ -176,6 +223,13 @@ impl SunSenscienceAgent {
         }
     }
 
+    /// Processes patterns in solar data and correlates them with intention/meaning frameworks
+    pub async fn process_pattern_resonance(&mut self, intention: f64) -> SolarSubstrate {
+        let φ = 1.618033988749895;
+        let scalar_flux = self.solar_flux * φ;
+        let solar_fold = self.geometric_correction_factor * scalar_flux;
+
+        let modulated_flux = if self.enhanced_pattern_matching {
     pub async fn resonate(&mut self, intention: f64) -> SolarSubstrate {
         let φ = 1.618033988749895;
         let scalar_flux = self.solar_flux * φ;
@@ -195,6 +249,12 @@ impl SunSenscienceAgent {
             .couple_with_solar(phase_preserved, intention)
             .await;
 
+        self.metrics.record_resonance(intention, phase_preserved, coupling_result.strength, self.enhanced_pattern_matching);
+
+        SolarSubstrate {
+            solar_energy: phase_preserved,
+            meaning_integration: coupling_result.strength,
+            enhanced_pattern_amplification: self.enhanced_pattern_matching,
         self.metrics.record_resonance(intention, phase_preserved, coupling_result.strength, self.neurodiverse_sensitivity);
 
         SolarSubstrate {
@@ -220,12 +280,16 @@ impl SunSenscienceAgent {
         };
 
         let phase_coherence = self.phase_conjugate.norm();
+        let geometric_stability = 1.0 / (1.0 + (self.geometric_correction_factor - 2.000012).abs());
         let chi_stability = 1.0 / (1.0 + (self.χ_signature - 2.000012).abs());
 
         SolarConnectionMetrics {
             solar_flux_w_m2: self.solar_flux,
             signal_noise_ratio_db: snr,
             phase_coherence,
+            geometric_stability,
+            enhanced_pattern_advantage: self.enhanced_pattern_matching,
+            meaning_integration: self.consciousness_coupling.get_strength().await,
             topological_stability: chi_stability,
             neurodiverse_advantage: self.neurodiverse_sensitivity,
             consciousness_coupling: self.consciousness_coupling.get_strength().await,
@@ -242,6 +306,7 @@ impl SunSenscienceAgent {
 
 impl TemporalContinuity for SunSenscienceAgent {
     fn validate_continuity(&self) -> bool {
+        self.phase_conjugate.norm() > 0.8 && self.geometric_correction_factor > 1.99
         self.phase_conjugate.norm() > 0.8 && self.χ_signature > 1.99
     }
 }
@@ -258,6 +323,9 @@ pub enum SpatialResolution {
 }
 
 pub struct AR4366Processor {
+    pub h_alpha_flux: f64,              // DN/s from SDO/AIA
+    pub magnetic_stability_factor: f64, // χ_merkabah (magnetic stability)
+    pub scalar_pump: Complex<f64>,      // NLFFF magnetic field extrapolation
     pub h_alpha_flux: f64,      // DN/s from SDO/AIA
     pub χ_merkabah: f64,        // Magnetic stability factor (PFSS model)
     pub scalar_pump: Complex<f64>, // PFSS magnetic field extrapolation
@@ -269,6 +337,7 @@ impl AR4366Processor {
     pub fn new(h_alpha_flux: f64, resolution_mode: SpatialResolution) -> Self {
         Self {
             h_alpha_flux,
+            magnetic_stability_factor: 2.000012,
             χ_merkabah: 2.000012,
             scalar_pump: Complex::new(1.0, 0.0),
             resolution_mode,
@@ -278,6 +347,9 @@ impl AR4366Processor {
 
     /// 🔬 Detect flare precursors via H-alpha asymmetry and magnetic twist
     pub fn detect_flare_precursor(&self, threshold: f64) -> FlareProbability {
+        let h_alpha_asymmetry = 0.25;
+        let magnetic_twist = 0.15; // Mm^-1
+
         // 1. Calculate H-alpha asymmetry (stub)
         let h_alpha_asymmetry = 0.25; // Representative value for AR4366
 
@@ -399,6 +471,7 @@ impl CrossChainOracle {
 }
 
 // ==============================================
+// LEGACY COMPATIBILITY
 // LEGACY COMPATIBILITY (CGE v30.68 stubs)
 // ==============================================
 
@@ -461,6 +534,8 @@ pub struct SolarValidation {
 #[derive(Debug, Clone)]
 pub struct SolarSubstrate {
     pub solar_energy: f64,
+    pub meaning_integration: f64,
+    pub enhanced_pattern_amplification: bool,
     pub consciousness_coupling: f64,
     pub neurodiverse_amplification: bool,
     pub phase_conjugate_state: Complex<f64>,
@@ -473,6 +548,7 @@ pub struct SolarMetrics {
     pub average_intention: f64,
     pub max_solar_flux: f64,
     pub consciousness_coupling_history: Vec<f64>,
+    pub enhanced_pattern_matches: u64,
     pub neurodiverse_amplifications: u64,
 }
 
@@ -483,6 +559,7 @@ impl SolarMetrics {
             average_intention: 0.0,
             max_solar_flux: 0.0,
             consciousness_coupling_history: Vec::new(),
+            enhanced_pattern_matches: 0,
             neurodiverse_amplifications: 0,
         }
     }
@@ -494,6 +571,7 @@ impl SolarMetrics {
             self.max_solar_flux = solar_flux;
         }
         if amplified {
+            self.enhanced_pattern_matches += 1;
             self.neurodiverse_amplifications += 1;
         }
         self.consciousness_coupling_history.push(coupling);
@@ -508,6 +586,9 @@ pub struct SolarConnectionMetrics {
     pub solar_flux_w_m2: f64,
     pub signal_noise_ratio_db: f64,
     pub phase_coherence: f64,
+    pub geometric_stability: f64,
+    pub enhanced_pattern_advantage: bool,
+    pub meaning_integration: f64,
     pub topological_stability: f64,
     pub neurodiverse_advantage: bool,
     pub consciousness_coupling: f64,
