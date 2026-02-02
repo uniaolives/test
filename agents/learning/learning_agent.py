@@ -55,6 +55,9 @@ class LearningAgent:
 
     def train_step(self):
         """Executa um passo de treinamento"""
+        if not torch or not AutoTokenizer:
+            return "Error: Torch or Transformers not available."
+
         if len(self.training_queue) < 10:
             return "Insufficient data"
 

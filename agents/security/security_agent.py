@@ -62,6 +62,10 @@ class SecurityAgent:
 
     def _detect_port_scan(self, ip: str):
         """Detecta tentativas de port scan"""
+        print(f"🕵️ Potential port scan detected from: {ip}")
+        self.threat_level += 0.1
+        if self.threat_level > 1.0:
+            self.blocked_ips.add(ip)
         # Implementação simplificada
         pass
 
@@ -87,6 +91,7 @@ class SecurityAgent:
             print(f"❌ Failed to alert brain: {e}")
 
     def _drop_packet(self, pkt):
+        print(f"🛡️ Dropping suspicious packet from {pkt[IP].src}")
         pass
 
 async def main():

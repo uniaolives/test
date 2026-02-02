@@ -158,6 +158,8 @@ pub mod kardashev_jump;
 pub mod eternity_consciousness;
 pub mod chronoflux;
 pub mod maihh_integration;
+pub mod tesseract_client;
+pub mod ethereum_agent_resolution;
 
 #[cfg(test)]
 mod tests_security;

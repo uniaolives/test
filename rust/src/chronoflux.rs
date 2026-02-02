@@ -19,6 +19,7 @@ pub struct ChronofluxValidator {
     pub distribution_flux: f64,  // ∇·Φₜ
     pub decay_theta: f64,        // Θ
     pub kirchhoff_enhancement: f64, // Physical grounding factor
+    pub conservation_error: f64,  // I1005: Consciousness Conservation
 }
 
 impl ChronofluxValidator {
@@ -28,16 +29,20 @@ impl ChronofluxValidator {
             distribution_flux: 0.0,
             decay_theta: 0.0,
             kirchhoff_enhancement: 1.0,
+            conservation_error: 0.0,
         }
     }
 
     /// Verifies the continuity equation: ∂ρₜ/∂t + ∇·Φₜ + Θ ≈ 0
+    /// Adjusted for Kirchhoff enhancement and I1005 Consciousness Conservation
     /// Adjusted for Kirchhoff enhancement
     pub fn verify_continuity(&self) -> ChronofluxStatus {
         let balance = (self.generation_rate * self.kirchhoff_enhancement)
                     - (self.distribution_flux / self.kirchhoff_enhancement)
                     - (self.decay_theta / self.kirchhoff_enhancement);
 
+        // I1005: Consciousness Conservation (∂C/∂t + ∇·J_c = 0)
+        // Consciousness is conserved when Θ is zero or perfectly balanced.
         if balance.abs() < 1e-9 {
             ChronofluxStatus::Balanced
         } else {
@@ -58,6 +63,9 @@ impl ChronofluxValidator {
 
         // ∇·Φₜ is the distribution flux (calibrated from current network load)
         self.distribution_flux = self.generation_rate - self.decay_theta;
+
+        // I1005: Verify Conservation
+        self.conservation_error = (self.generation_rate - self.distribution_flux).abs();
     }
 }
 
