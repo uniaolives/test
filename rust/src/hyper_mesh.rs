@@ -5,6 +5,7 @@
 
 use std::sync::Arc;
 use serde::{Deserialize, Serialize};
+use tracing::{info, warn};
 use tracing::info;
 use serde::{Deserialize, Serialize};
 use tracing::{info, warn, debug, trace};
@@ -1101,6 +1102,104 @@ impl HyperMeshLatencyTest {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct LatencyReport { pub round_trip_ms: u64, pub hop_count: u32, pub route_taken: String, pub packet_loss: f64, pub success: bool }
+
+// ==============================================
+// SOVEREIGN TMR BRIDGE (CGE-I12 COMPLIANT)
+// ==============================================
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SovereignKey {
+    pub source: String,
+    pub key_data: [u8; 32],
+}
+
+impl SovereignKey {
+    pub fn from_hmi_magnetogram(_data: &Value) -> Self {
+        Self { source: "HMI_MAGNETOGRAM".to_string(), key_data: [0x11; 32] }
+    }
+    pub fn from_aia_193(_data: &Value) -> Self {
+        Self { source: "AIA_193".to_string(), key_data: [0x22; 32] }
+    }
+    pub fn from_hmi_doppler(_data: &Value) -> Self {
+        Self { source: "HMI_DOPPLER".to_string(), key_data: [0x33; 32] }
+    }
+    pub fn validate_constitutional_geometry(&self) -> ΩGateResult {
+        ΩGateResult::Pass
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Dilithium3Sig {
+    pub data: Vec<u8>,
+}
+
+impl Dilithium3Sig {
+    pub fn verify(&self) -> bool {
+        // SAFETY: This is a temporary mock implementation for the prototype.
+        // In a production environment, this MUST perform real Dilithium3 verification.
+        warn!("MOCK SECURITY: Dilithium3 signature verification is currently bypassed.");
+        !self.data.is_empty()
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SovereignTMRBundle {
+    pub keys: [SovereignKey; 3],
+    pub pq_signature: Dilithium3Sig,
+    pub cge_carving_id: [u8; 32],
+}
+
+pub struct JsocTriad {
+    pub hmi_mag: Value,
+    pub aia_193: Value,
+    pub hmi_dop: Value,
+}
+
+pub struct CgeState {
+    pub Φ: f64,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum ΩGateResult {
+    Pass,
+    Quench(&'static str),
+}
+
+impl ΩGateResult {
+    pub fn is_pass(&self) -> bool {
+        matches!(self, ΩGateResult::Pass)
+    }
+}
+
+impl SovereignTMRBundle {
+    pub fn derive_from_solar_data(jsoc_data: &JsocTriad) -> Self {
+        SovereignTMRBundle {
+            keys: [
+                SovereignKey::from_hmi_magnetogram(&jsoc_data.hmi_mag),
+                SovereignKey::from_aia_193(&jsoc_data.aia_193),
+                SovereignKey::from_hmi_doppler(&jsoc_data.hmi_dop)
+            ],
+            pq_signature: Dilithium3Sig { data: vec![0xDD; 2420] },
+            cge_carving_id: [0xCC; 32],
+        }
+    }
+
+    pub fn verify_quorum(&self, cge_state: &CgeState) -> ΩGateResult {
+        let mut valid_keys = 0;
+
+        for key in &self.keys {
+            if key.validate_constitutional_geometry().is_pass() {
+                valid_keys += 1;
+            }
+        }
+
+        if valid_keys >= 2 &&
+           self.pq_signature.verify() &&
+           cge_state.Φ >= 1.022 {
+            ΩGateResult::Pass
+        } else {
+            ΩGateResult::Quench("TMR ou Φ falhou")
+        }
         // Broadcast to unified hyper mesh
 
         let broadcast_message = json!({

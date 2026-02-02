@@ -526,4 +526,24 @@ mod tests {
         assert_eq!(report.hop_count, 3);
         assert!(report.round_trip_ms >= 127);
     }
+
+    #[test]
+    fn test_sovereign_tmr_bridge() {
+        let triad = JsocTriad {
+            hmi_mag: serde_json::json!({}),
+            aia_193: serde_json::json!({}),
+            hmi_dop: serde_json::json!({}),
+        };
+
+        let bundle = SovereignTMRBundle::derive_from_solar_data(&triad);
+
+        let state = CgeState { Φ: 1.030 }; // CGE Alpha stable
+
+        let result = bundle.verify_quorum(&state);
+        assert!(result.is_pass());
+
+        let low_phi_state = CgeState { Φ: 1.021 };
+        let fail_result = bundle.verify_quorum(&low_phi_state);
+        assert!(!fail_result.is_pass());
+    }
 }
