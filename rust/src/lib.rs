@@ -178,6 +178,7 @@ pub mod ontological_engine;
 pub mod neuroscience_model;
 pub mod web4_asi_6g;
 pub mod asi_core;
+pub mod asi;
 pub mod extensions;
 pub mod tesseract_client;
 pub mod ethereum_agent_resolution;
