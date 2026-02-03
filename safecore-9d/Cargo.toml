@@ -39,6 +39,10 @@ rustfft = "6.1"
 num-complex = "0.4"
 warp = "0.3"
 futures-util = "0.3"
+ndarray = "0.15"
+petgraph = "0.6"
+rayon = "1.8"
+rand_distr = "0.4"
 
 # Constitucionais
 # lattice = { git = "https://github.com/rust-lattice/lattice" }

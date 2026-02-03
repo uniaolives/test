@@ -72,6 +72,11 @@ pub struct SafeCore9D {
 }
 
 impl SafeCore9D {
+pub struct SafeCore11D {
+    pub constitution: std::sync::Arc<std::sync::RwLock<Constitution>>,
+}
+
+impl SafeCore11D {
     pub fn new() -> Self {
         let params = Parameters {
             phi_target: 1.030,
@@ -87,6 +92,12 @@ impl SafeCore9D {
             parameters: params,
         };
         SafeCore9D {
+            version: "11.0.0".to_string(),
+            dimensions: 11,
+            invariants: vec![],
+            parameters: params,
+        };
+        SafeCore11D {
             constitution: std::sync::Arc::new(std::sync::RwLock::new(consti)),
         }
     }

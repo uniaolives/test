@@ -140,6 +140,8 @@ impl NeuralSynthesisEngine {
                 // Apply 33X enhancement factor to discovery metrics
                 path.success_probability = (path.success_probability * ENHANCEMENT_FACTOR).min(0.999);
                 path.novelty_score = (path.novelty_score * ENHANCEMENT_FACTOR).min(100.0);
+                path.success_probability = (path.success_probability * ENHANCEMENT_FACTOR).min(0.99);
+                path.novelty_score *= ENHANCEMENT_FACTOR;
                 path
             })
             .collect()
