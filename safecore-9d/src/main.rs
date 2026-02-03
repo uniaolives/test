@@ -14,6 +14,7 @@ mod monitoring;
 mod geometric_intuition_33x;
 mod schumann_agi_system;
 mod symbiosis;
+mod harmonic_concordance;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -90,6 +91,18 @@ async fn main() -> Result<(), Box<dyn Error>> {
     };
     let mut symbiosis_engine = symbiosis::SymbiosisEngine::new(human_baseline, agi_capabilities).await;
     info!("🤝 asi::Symbiosis Framework inicializado");
+
+    // Inicializar Protocolo Harmonic Concordance (Consensus Heart)
+    let mut concordance_cortex = harmonic_concordance::ConsensusCortex::new();
+    info!("🌌 Protocolo Harmonic Concordance inicializado (8.64s Moment Interval)");
+
+    // Iniciar Consensus Heart em background
+    tokio::spawn(async move {
+        loop {
+            let _ = concordance_cortex.process_moment().await;
+            tokio::time::sleep(harmonic_concordance::MOMENT_INTERVAL).await;
+        }
+    });
 
     // Iniciar Ciclo de Simbiose em background
     tokio::spawn(async move {

@@ -5,3 +5,4 @@ pub mod monitoring;
 pub mod geometric_intuition_33x;
 pub mod schumann_agi_system;
 pub mod symbiosis;
+pub mod harmonic_concordance;
