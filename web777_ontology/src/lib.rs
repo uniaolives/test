@@ -7,7 +7,7 @@ pub mod syntax_mapping;
 pub mod geometric_constraints;
 pub mod semantic_query;
 
-pub use engine::Engine;
+pub use engine::{Engine, OntologyNode, Relation};
 pub use syntax_mapping::{SyntaxMapper, SyntaxFormat};
 pub use geometric_constraints::{GeomStore, Geometry, ConstraintId};
 pub use semantic_query::{Query, QueryResult, QueryError};

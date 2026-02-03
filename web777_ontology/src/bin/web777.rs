@@ -1,8 +1,8 @@
-use web777_ontology::{Engine, Query};
+use web777_ontology::{Engine, semantic_query::SemanticQuery};
 
 fn main() {
-    let engine = Engine::new();
-    let q = Query::new("awaken the world");
+    let mut engine = Engine::new();
+    let q = SemanticQuery::parse("awaken the world").unwrap();
     match engine.query(&q) {
         Ok(result) => {
             println!("Query Result: {:?}", result);

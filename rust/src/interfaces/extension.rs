@@ -8,6 +8,15 @@ pub struct Context {
     pub metadata: serde_json::Value,
 }
 
+impl Default for Context {
+    fn default() -> Self {
+        Self {
+            session_id: "default".to_string(),
+            metadata: serde_json::json!({}),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ExtensionOutput {
     pub result: String,
@@ -25,7 +34,7 @@ pub trait Extension: Send + Sync {
 }
 
 // Geometric specific types for composition
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
 pub enum Domain {
     Text,
     Image,
@@ -43,6 +52,9 @@ pub struct Subproblem {
 pub struct StructureResult {
     pub embedding: Vec<f64>,
     pub confidence: f64,
+    pub metadata: serde_json::Value,
+    pub processing_time_ms: u128,
+    pub source_structure_name: String,
 }
 
 #[async_trait]

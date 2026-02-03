@@ -13,8 +13,9 @@ pub enum Geometry {
     Circle { center: Vector3<f64>, radius: f64 },
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Serialize, Deserialize)]
 pub struct GeomStore {
+    #[serde(skip)]
     constraints: HashMap<NodeIndex, Vec<(ConstraintId, Geometry)>>,
     next_id: u64,
 }
@@ -35,8 +36,8 @@ impl GeomStore {
     }
 
     pub fn get_all(&self, node: NodeIndex) -> Option<Vec<(ConstraintId, &Geometry)>> {
-        self.constraints.get(&node).map(|v| {
-            v.iter().map(|(id, g)| (*id, g)).collect()
+        self.constraints.get(&node).map(|v: &Vec<(ConstraintId, Geometry)>| {
+            v.iter().map(|(id, g)| (*id, g)).collect::<Vec<(ConstraintId, &Geometry)>>()
         })
     }
 }

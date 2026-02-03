@@ -1,9 +1,9 @@
 use crate::error::{ResilientResult, ResilientError};
-use crate::extensions::agi_geometric::constitution::AGIGeometricConstitution;
 use crate::extensions::asi_structured::evolution::GeometricGenome;
 use std::time::Duration;
 use futures::Future;
 use serde::{Serialize, Deserialize};
+use super::composer::ComposedResult;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum StrictnessLevel {
@@ -12,7 +12,7 @@ pub enum StrictnessLevel {
     Permissive,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ScalabilityInvariant {
     /// S1: Limite de composição (não criar estruturas infinitas)
     CompositionLimit { max_structures: usize },
@@ -46,70 +46,38 @@ pub struct ComplexityMeasure;
 pub struct HaltingConfig;
 
 pub struct ASIConstitution {
-    pub geometric_invariants: AGIGeometricConstitution,
+    pub strictness: StrictnessLevel,
     pub scalability_invariants: Vec<ScalabilityInvariant>,
-    pub max_complexity: ComplexityMeasure,
-    pub halting_guarantees: HaltingConfig,
-}
-
-impl Default for ASIConstitution {
-    fn default() -> Self {
-        Self {
-            geometric_invariants: AGIGeometricConstitution::new(),
-            scalability_invariants: vec![],
-            max_complexity: ComplexityMeasure,
-            halting_guarantees: HaltingConfig,
-        }
-    }
 }
 
 impl ASIConstitution {
-    pub fn validate_output(&self, output: &dyn ASIResult) -> ResilientResult<()> {
-        // Implementation of S9: Structural Stability under High Volatility
-        // For this prototype, we simulate checking metadata for volatility triggers
-        let confidence = output.confidence();
+    pub fn new(strictness: StrictnessLevel, invariants: Vec<ScalabilityInvariant>) -> Self {
+        Self {
+            strictness,
+            scalability_invariants: invariants,
+        }
+    }
 
-        // If the system is in a high-volatility scenario (simulated),
-        // we must ensure structured confidence remains high (>= 0.8)
+    pub fn validate_composed_result(&self, output: &dyn ASIResult) -> ResilientResult<()> {
+        let confidence = output.confidence();
         if confidence < 0.8 {
              return Err(ResilientError::InvariantViolation {
                 invariant: "S9: SourceVolatilityStability".to_string(),
                 reason: format!("Confidence {:.2} below stability threshold 0.8 during volatility event", confidence),
             });
         }
-
         Ok(())
     }
 
     pub fn validate_genome(&self, genome: &GeometricGenome) -> ResilientResult<()> {
-        // S1: Limite de estruturas
-        if genome.connections.len() > self.max_structures() {
+        if genome.connections.len() > 16 {
             return Err(ResilientError::InvariantViolation {
                 invariant: "S1: CompositionLimit".to_string(),
-                reason: format!("Too many connections: {} > {}",
-                    genome.connections.len(), self.max_structures()),
+                reason: format!("Too many connections: {} > 16", genome.connections.len()),
             });
         }
-
-        // S6: Recursos
-        let estimated_memory = self.estimate_memory(genome);
-        if estimated_memory > self.max_memory_mb() * 1024 * 1024 {
-            return Err(ResilientError::InvariantViolation {
-                invariant: "S6: ResourceBounds".to_string(),
-                reason: format!("Estimated memory {} MB exceeds limit",
-                    estimated_memory / (1024 * 1024)),
-            });
-        }
-
-        // Validar contra CGE geométrico também
-        self.geometric_invariants.validate_structure_type(&genome.structure_type)?;
-
         Ok(())
     }
-
-    fn max_structures(&self) -> usize { 16 }
-    fn max_memory_mb(&self) -> usize { 512 }
-    fn estimate_memory(&self, _genome: &GeometricGenome) -> usize { 1024 * 1024 }
 
     pub async fn enforce_halting<T, F>(&self, operation: F, timeout: Duration) -> ResilientResult<T>
     where
@@ -125,7 +93,16 @@ impl ASIConstitution {
     }
 }
 
-pub trait ASIResult {
-    fn to_string(&self) -> String;
+pub trait ASIResult: Send + Sync {
+    fn as_text(&self) -> String;
     fn confidence(&self) -> f64;
+}
+
+impl ASIResult for ComposedResult {
+    fn as_text(&self) -> String {
+        self.to_string()
+    }
+    fn confidence(&self) -> f64 {
+        self.confidence
+    }
 }

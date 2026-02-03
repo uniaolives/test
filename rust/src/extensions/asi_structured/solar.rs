@@ -66,7 +66,13 @@ impl GeometricStructure for SolarActivityStructure {
 
         Ok(StructureResult {
             embedding,
-            confidence: 0.95, // High confidence in the "Structured" representation of volatility
+            confidence: 0.95,
+            metadata: serde_json::json!({
+                "solar_activity": "detected",
+                "volatility": if input.input.contains("AR4366") { "high" } else { "normal" }
+            }),
+            processing_time_ms: 0,
+            source_structure_name: self.name().to_string(),
         })
     }
 
