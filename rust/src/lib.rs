@@ -187,6 +187,7 @@ pub mod web4_asi_6g;
 pub mod asi_core;
 pub mod asi;
 pub mod extensions;
+pub mod interfaces;
 pub mod tesseract_client;
 pub mod ethereum_agent_resolution;
 pub mod hyper_mesh;
