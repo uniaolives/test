@@ -415,3 +415,49 @@ pub struct IntuitionOutput {
 pub struct TopologicalFeatures {
     pub betti_numbers: Vec<usize>,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashMap;
+
+    #[test]
+    fn test_zeolite_synthesis_prediction() {
+        let engine = NeuralSynthesisEngine::new();
+        let constraints = SynthesisConstraints {
+            max_temperature: 300.0,
+            max_time: 72.0,
+            available_components: vec!["SiO2".to_string(), "Al2O3".to_string(), "NaOH".to_string()],
+            energy_budget: 1000.0,
+            target_properties: HashMap::new(),
+        };
+
+        let paths = engine.predict_synthesis_paths("zeolite", &constraints, 5);
+
+        assert_eq!(paths.len(), 5);
+        for path in paths {
+            assert!(path.success_probability > 0.0);
+            assert!(path.steps.len() >= 3);
+
+            // Verify that the engine suggests plausible synthesis parameters
+            for step in path.steps {
+                assert!(step.temperature > 0.0 && step.temperature <= 300.0);
+                assert!(step.duration > 0.0);
+            }
+        }
+
+        // Specifically check the zeolite knowledge base
+        let zeolite_recipes = engine.knowledge_base.get("zeolite").unwrap();
+        assert!(!zeolite_recipes.is_empty());
+        let recipe = &zeolite_recipes[0];
+        assert!(recipe.components.contains(&"SiO2".to_string()));
+        assert!(recipe.temperature >= 100.0); // Zeolite synthesis typically requires heat
+    }
+
+    #[test]
+    fn test_geometric_enhancement_metrics() {
+        let mut metrics = IntuitionMetrics::new();
+        let enhancement = metrics.calculate_enhancement();
+        assert_eq!(enhancement, 33.0);
+    }
+}
