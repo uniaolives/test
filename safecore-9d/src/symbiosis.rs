@@ -7,6 +7,12 @@ use std::time::{SystemTime, Duration};
 use serde::{Serialize, Deserialize};
 use tokio::sync::{Mutex, RwLock};
 use ndarray::{Array, Array1, Array2};
+#[cfg(feature = "petgraph")]
+use petgraph::{Graph, Directed};
+#[cfg(feature = "ring")]
+use ring::signature::{Ed25519KeyPair, Signature};
+#[cfg(feature = "blake3")]
+use blake3::Hasher;
 // use petgraph::{Graph, Directed}; // Currently unused in core logic but available
 // use ring::signature::{Ed25519KeyPair, Signature};
 // use blake3::Hasher;

@@ -67,6 +67,11 @@ impl Constitution {
     }
 }
 
+pub struct SafeCore9D {
+    pub constitution: std::sync::Arc<std::sync::RwLock<Constitution>>,
+}
+
+impl SafeCore9D {
 pub struct SafeCore11D {
     pub constitution: std::sync::Arc<std::sync::RwLock<Constitution>>,
 }
@@ -81,6 +86,12 @@ impl SafeCore11D {
             evolutionary_pace: "deliberate".to_string(),
         };
         let consti = Constitution {
+            version: "9.0.0".to_string(),
+            dimensions: 9,
+            invariants: vec![],
+            parameters: params,
+        };
+        SafeCore9D {
             version: "11.0.0".to_string(),
             dimensions: 11,
             invariants: vec![],

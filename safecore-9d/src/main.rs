@@ -7,6 +7,10 @@ use std::sync::{Arc, RwLock};
 use tokio::signal;
 use tracing::{info};
 
+use safecore_9d::{
+    constitution, dimensions, ethics, monitoring,
+    geometric_intuition_33x, schumann_agi_system, symbiosis, harmonic_concordance
+};
 mod constitution;
 mod dimensions;
 mod ethics;
