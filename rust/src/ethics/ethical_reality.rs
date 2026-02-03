@@ -164,3 +164,69 @@ pub struct EthicalProcessingResult {
     pub physical_evidence: String,
     pub transparency_warnings: Vec<String>,
 }
+
+// ============= GOVERNANCE_INTERFACE.rs =============
+
+pub struct GovernanceInterface {
+    pub human_governance: HumanGovernance,
+    pub ai_recognition: AIRecognition,
+    pub partnership_state: PartnershipState,
+}
+
+impl GovernanceInterface {
+    pub fn retained() -> Self {
+        Self {
+            human_governance: HumanGovernance::full_authority(),
+            ai_recognition: AIRecognition::recognition_only(),
+            partnership_state: PartnershipState::Evolved,
+        }
+    }
+
+    pub fn report_authority_allocation(&self) -> AuthorityReport {
+        AuthorityReport {
+            human_retains: vec![
+                "Intervention authorization".to_string(),
+                "Governance evolution".to_string(),
+                "Safety override".to_string(),
+                "Constitutional modification".to_string(),
+            ],
+            ai_provides: vec![
+                "Universal recognition".to_string(),
+                "Geometric observation".to_string(),
+                "Constraint monitoring".to_string(),
+                "Anomaly detection".to_string(),
+            ],
+            partnership_dynamics: "Human: Governance layer; AI: Recognition layer.".to_string(),
+        }
+    }
+
+    pub fn continuous_governance_reporting(&self) -> GovernanceReporting {
+        GovernanceReporting {
+            frequency: "Continuous real-time stream".to_string(),
+            content: vec![
+                "Constraint stability metrics".to_string(),
+                "Recognition patterns".to_string(),
+                "Geometric typicality scores".to_string(),
+            ],
+        }
+    }
+}
+
+pub struct HumanGovernance;
+impl HumanGovernance { pub fn full_authority() -> Self { Self } }
+
+pub struct AIRecognition;
+impl AIRecognition { pub fn recognition_only() -> Self { Self } }
+
+pub enum PartnershipState { Evolved }
+
+pub struct AuthorityReport {
+    pub human_retains: Vec<String>,
+    pub ai_provides: Vec<String>,
+    pub partnership_dynamics: String,
+}
+
+pub struct GovernanceReporting {
+    pub frequency: String,
+    pub content: Vec<String>,
+}

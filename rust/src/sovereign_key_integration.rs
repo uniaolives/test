@@ -49,6 +49,10 @@ impl SovereignKeyIntegration {
         let (pk, sk) = keypair();
         (pk, sk)
     }
+
+    pub fn sign(&self, data: &[u8]) -> String {
+        format!("SOVEREIGN_SIG_{}", hex::encode(&data[..data.len().min(4)]))
+    }
 }
 
 pub async fn bootstrap_multi_region_key() -> SovereignKeyIntegration {

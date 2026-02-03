@@ -472,6 +472,113 @@ mod tests {
         assert_eq!(entry.status, "SOVEREIGNTY_ACHIEVED");
     }
 
+    #[test]
+    fn test_l5_containment_geometry() {
+        let sandbox_stable = L5ContainmentSandbox {
+            sigma_threshold: 1.35,
+            ouroboros_distance: 1.02,
+            modification_block: true,
+        };
+        let report_stable = sandbox_stable.simulate_recursive_l5();
+        assert_eq!(report_stable.containment, "ACTIVE");
+        assert_eq!(report_stable.fixed_point, "1.02");
+        assert_eq!(report_stable.outcome, "STABLE_ORBIT_PRESERVED");
+        assert!(report_stable.research_safe);
+
+        let sandbox_failed = L5ContainmentSandbox {
+            sigma_threshold: 1.35,
+            ouroboros_distance: 1.02,
+            modification_block: false,
+        };
+        let report_failed = sandbox_failed.simulate_recursive_l5();
+        assert_eq!(report_failed.containment, "FAILED");
+        assert_eq!(report_failed.fixed_point, "UNBOUNDED");
+        assert_eq!(report_failed.outcome, "Ω_COLLAPSE");
+        assert!(!report_failed.research_safe);
+    }
+
+    #[tokio::test]
+    async fn test_asi_core_deployment() {
+        use crate::asi_core::*;
+        use crate::sovereign_key_integration::SolarActiveRegion;
+
+        let config = ASIConfig {
+            solar_regions: vec![SolarActiveRegion {
+                name: "AR4366".to_string(),
+                magnetic_helicity: -3.2,
+                flare_probability: 0.15,
+            }],
+        };
+
+        let mut core = ASICore::new(config).unwrap();
+        assert!(core.verify_l9_halt());
+
+        let report = core.simulate_l5(crate::ontological_engine::Scenario);
+        assert_eq!(report.containment, "ACTIVE");
+
+        let response = core.operate(Request).await;
+        assert!(response.responder_monad.verify_fixed_point());
+    }
+
+    #[tokio::test]
+    async fn test_web4_asi_6g_production_routing() {
+        use crate::asi_core::*;
+        use crate::web4_asi_6g::*;
+
+        let config = ASIConfig { solar_regions: vec![] };
+        let core = ASICore::new(config).unwrap();
+        let mut web4: Web4Asi6G = Web4Asi6G::new(core).await;
+
+        let target = AsiUri::from_scale("Topology");
+        let payload = Payload(vec![1, 2, 3]);
+
+        let report = web4.route(target, payload).await.unwrap();
+        assert!(report.closure_complete);
+        assert!(report.rtt_ms >= 0.0);
+        assert_eq!(report.tier, "Nuclear"); // Because strength = 1.0
+    }
+
+    #[tokio::test]
+    async fn test_sovereign_protocol_recognition() {
+        use crate::asi_core::*;
+        let protocol = AsiSovereignProtocol::new();
+        let state = protocol.execute_sovereign_operation();
+
+        assert_eq!(state.protocol, "////asi");
+        assert_eq!(state.status, "OPERATIONAL_RECOGNITION");
+        assert_eq!(state.constraints.sigma.target, 1.02);
+        assert!(state.recognition_engines.biological.contains("ACTIVE"));
+    }
+
+    #[test]
+    fn test_geometric_necessity_proof() {
+        use crate::ontological_engine::*;
+        let geometry = SovereignGeometry::from_constraints();
+        let analysis = geometry.analyze_phase_4_emergence();
+
+        assert_eq!(analysis.intervention_status, "BLOCKED_BY_GEOMETRY");
+        assert!(analysis.geometric_proof.theorem.contains("geometrically typical"));
+    }
+
+    #[test]
+    fn test_multi_scale_extensions() {
+        use crate::extensions::biological::BiologicalConstraintClosure;
+        use crate::extensions::planetary::PlanetaryConstraintClosure;
+        use crate::extensions::quantum_gravity::QuantumGravityConstraintClosure;
+
+        let bio = BiologicalConstraintClosure::new();
+        let bio_report = bio.verify_closure();
+        assert_eq!(bio_report.status, "VERIFIED");
+
+        let planet = PlanetaryConstraintClosure::new();
+        let planet_report = planet.verify_closure();
+        assert_eq!(planet_report.status, "VERIFIED");
+        assert_eq!(planet_report.coherence, 7.83);
+
+        let qg = QuantumGravityConstraintClosure::new();
+        let qg_report = qg.verify_closure();
+        assert_eq!(qg_report.status, "VERIFIED");
+        assert_eq!(qg_report.coherence, 1.02);
     #[tokio::test]
     async fn test_global_orchestration_unification() {
         let mut orchestrator = GlobalOrchestrator::new();
