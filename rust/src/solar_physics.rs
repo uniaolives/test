@@ -57,6 +57,8 @@ pub struct Coordinates {
 pub struct JSOCMetadata {
     pub instrument: String,
     pub cadence: f64,
+    pub instrument: String,      // "HMI" or "AIA"
+    pub cadence: f64,            // Seconds between observations
 }
 
 /// 📐 Solar Magnetic Field Data (Bx, By, Bz)
@@ -95,6 +97,7 @@ pub struct CarringtonRisk {
 }
 
 /// 🔭 Solar Analysis
+/// 🔭 Solar Analysis: CGE-Compliant Data Structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SolarAnalysis {
     pub timestamp: DateTime<Utc>,
@@ -132,5 +135,85 @@ impl SolarPhysicsEngine {
 }
 
 pub struct ScientificReport {
+    pub fn calculate_helicity(&self, data: &[JSOCDataPoint]) -> f64 {
+        if data.len() < 2 { return 0.0; }
+        0.4366 // Mocked value
+    }
+
+    pub fn estimate_flare_probability(&self, _helicity: f64, _complexity: f64) -> FlareProbability {
+        FlareProbability {
+            x_class: 0.05,
+            m_class: 0.2,
+            c_class: 0.5,
+            confidence: 0.8,
+        }
+    }
+
+    pub fn assess_carrington_risk(&self, flare_prob: &FlareProbability) -> CarringtonRisk {
+        CarringtonRisk {
+            normalized_risk: 0.1,
+            absolute_x_class: flare_prob.x_class,
+            time_adjustment: 1.0,
+            confidence_interval: (0.05, 0.15),
+        }
+    }
+
+    pub async fn analyze_ar4366(&self) -> Result<SolarAnalysis, Box<dyn Error>> {
+        let flare_prob = self.estimate_flare_probability(0.4366, 0.8);
+        Ok(SolarAnalysis {
+            timestamp: Utc::now(),
+            current_helicity: 0.4366,
+            flare_probability: flare_prob.clone(),
+            magnetic_field: SolarMagneticField { bx: 0.0, by: 0.0, bz: 0.0, longitude: 0.0, latitude: 0.0 },
+            helioseismic_data: HelioseismicData { velocity_ms: 0.0, depth_km: 0.0 },
+            carrington_risk: self.assess_carrington_risk(&flare_prob),
+        })
+    }
+}
+
+// ==============================================
+// COMPETENCE CALIBRATION SYSTEM
+// ==============================================
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CompetenceProfile {
+    pub agent_id: AgentId,
+    pub dimensions: Vec<CompetenceDimension>,
+    pub score: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct CompetenceDimension {
+    pub name: String,
+    pub score: f64,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum Action { Approve, RequireReview, Reject }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Recommendation {
+    pub action: Action,
+    pub confidence: f64,
+    pub reasons: Vec<String>,
+}
+
+pub struct CompetenceCalibrationSystem {
+    pub physics_engine: SolarPhysicsEngine,
+    pub competence_profiles: HashMap<AgentId, CompetenceProfile>,
+}
+
+impl CompetenceCalibrationSystem {
+    pub fn new() -> Self {
+        Self {
+            physics_engine: SolarPhysicsEngine::new(),
+            competence_profiles: HashMap::new(),
+        }
+    }
+}
+
+pub struct ScientificReport {
+    pub timestamp: DateTime<Utc>,
+    pub sources: Vec<String>,
     pub report_text: String,
 }
