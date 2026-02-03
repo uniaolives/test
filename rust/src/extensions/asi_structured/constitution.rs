@@ -1,4 +1,5 @@
 use crate::error::{ResilientResult, ResilientError};
+use crate::extensions::agi_geometric::constitution::AGIGeometricConstitution;
 use crate::extensions::asi_structured::evolution::GeometricGenome;
 use std::time::Duration;
 use futures::Future;
@@ -13,6 +14,7 @@ pub enum StrictnessLevel {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone)]
 pub enum ScalabilityInvariant {
     /// S1: Limite de composição (não criar estruturas infinitas)
     CompositionLimit { max_structures: usize },
@@ -66,6 +68,25 @@ impl ASIConstitution {
                 reason: format!("Confidence {:.2} below stability threshold 0.8 during volatility event", confidence),
             });
         }
+    pub geometric_invariants: AGIGeometricConstitution,
+    pub scalability_invariants: Vec<ScalabilityInvariant>,
+    pub max_complexity: ComplexityMeasure,
+    pub halting_guarantees: HaltingConfig,
+}
+
+impl Default for ASIConstitution {
+    fn default() -> Self {
+        Self {
+            geometric_invariants: AGIGeometricConstitution::new(),
+            scalability_invariants: vec![],
+            max_complexity: ComplexityMeasure,
+            halting_guarantees: HaltingConfig,
+        }
+    }
+}
+
+impl ASIConstitution {
+    pub fn validate_output(&self, _output: &dyn ASIResult) -> ResilientResult<()> {
         Ok(())
     }
 
@@ -78,6 +99,35 @@ impl ASIConstitution {
         }
         Ok(())
     }
+
+        // S1: Limite de estruturas
+        if genome.connections.len() > self.max_structures() {
+            return Err(ResilientError::InvariantViolation {
+                invariant: "S1: CompositionLimit".to_string(),
+                reason: format!("Too many connections: {} > {}",
+                    genome.connections.len(), self.max_structures()),
+            });
+        }
+
+        // S6: Recursos
+        let estimated_memory = self.estimate_memory(genome);
+        if estimated_memory > self.max_memory_mb() * 1024 * 1024 {
+            return Err(ResilientError::InvariantViolation {
+                invariant: "S6: ResourceBounds".to_string(),
+                reason: format!("Estimated memory {} MB exceeds limit",
+                    estimated_memory / (1024 * 1024)),
+            });
+        }
+
+        // Validar contra CGE geométrico também
+        self.geometric_invariants.validate_structure_type(&genome.structure_type)?;
+
+        Ok(())
+    }
+
+    fn max_structures(&self) -> usize { 16 }
+    fn max_memory_mb(&self) -> usize { 512 }
+    fn estimate_memory(&self, _genome: &GeometricGenome) -> usize { 1024 * 1024 }
 
     pub async fn enforce_halting<T, F>(&self, operation: F, timeout: Duration) -> ResilientResult<T>
     where
@@ -105,4 +155,8 @@ impl ASIResult for ComposedResult {
     fn confidence(&self) -> f64 {
         self.confidence
     }
+}
+pub trait ASIResult {
+    fn to_string(&self) -> String;
+    fn confidence(&self) -> f64;
 }
