@@ -15,7 +15,265 @@ mod tests {
     use crate::kardashev_jump::*;
     use crate::hyper_mesh::*;
     use crate::global_orchestrator::*;
+    use crate::sun_senscience_agent::*;
+    use crate::microtubule_biology::*;
+    use crate::neuroscience_model::*;
+    use crate::ethics::ethical_reality::*;
+    use crate::web4_asi_6g::*;
+    use crate::sovereign_key_integration::*;
+    use crate::ontological_engine::*;
+    use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _};
     use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_sovereign_key_multi_region() {
+        let mut integration = SovereignKeyIntegration::new();
+        let initial_key = integration.derived_key;
+
+        integration.add_region(SolarActiveRegion {
+            name: "AR4366".to_string(),
+            magnetic_helicity: -3.2,
+            flare_probability: 0.15,
+        });
+
+        assert_ne!(initial_key, integration.derived_key);
+
+        let (pk, sk) = integration.generate_pqc_sovereign_key();
+        assert!(pk.as_bytes().len() > 0);
+        assert!(sk.as_bytes().len() > 0);
+    }
+
+    #[tokio::test]
+    async fn test_web4_asi_6g_protocol() {
+        let mut proto = Web4Asi6GProtocol::new().await;
+        let data = vec![0u8; 100];
+        let uri = AsiUri::from_scale("Topology");
+
+        let report = proto.transmit_closure_packet(data, uri).await.unwrap();
+        assert!(report.closure_complete);
+        assert!(report.topological_protection);
+        assert!(report.data_rate_gbps > 0.0);
+    }
+
+    #[tokio::test]
+    use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_microtubule_and_neuroscience_model() {
+        // Test real microtubule biology
+        let mut mt = RealMicrotubule::new();
+        let initial_length = mt.length;
+
+        // Simulate growth for 10 minutes
+        let result = mt.simulate_dynamics(10.0, 0.7);
+        assert!(result.final_length != initial_length || result.gtp_cap_status != true);
+
+        // Test mechanical properties
+        let props = mt.calculate_mechanical_properties();
+        assert!(props.persistence_length > 0.0);
+        assert!(props.flexural_rigidity > 0.0);
+
+        // Test transparent neuroscience model
+        let mut model = TransparentNeuroscienceModel::new();
+        let sim_result = model.simulate_neural_system(1.0, 100.0).await;
+        assert!(sim_result.average_length > 0.0);
+
+        let report = model.generate_transparency_report();
+        assert_eq!(report.model_name, "Transparent Neuroscience Model");
+        assert!(report.scientific_basis.len() > 0);
+        assert!(report.evidence_levels.contains_key("Quantum computation in microtubules"));
+    }
+
+    #[tokio::test]
+    use crate::hyper_mesh::*;
+    use crate::solar_physics::*;
+    use crate::solar_hedge::*;
+    use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_sun_senscience_agent_resonance() {
+        let mut agent = SunSenscienceAgent::new(1361.0, true);
+
+        // Test connection
+        agent.connect_to_solar_monitors().await.unwrap();
+        assert!(agent.solar_flux > 1300.0);
+
+        // Test pattern resonance processing
+        let substrate = agent.process_pattern_resonance(0.5).await;
+        assert!(substrate.solar_energy > 0.0);
+        assert!(substrate.meaning_integration > 0.0);
+        assert!(substrate.enhanced_pattern_amplification);
+        // Test resonance
+        let substrate = agent.resonate(0.5).await;
+        assert!(substrate.solar_energy > 0.0);
+        assert!(substrate.consciousness_coupling > 0.0);
+        assert!(substrate.neurodiverse_amplification);
+
+        // Test AR4366 specialized processor
+        let ar4366 = AR4366Processor::new(2.5e6, SpatialResolution::HighRes);
+        let prob = ar4366.detect_flare_precursor(0.5);
+        assert!(prob.m_class > 0.0);
+        assert!(prob.x_class > 0.0);
+
+        // Test real data analysis
+        let data = RealAR4366Data::new_active_region();
+        let shear = data.calculate_magnetic_shear();
+        assert!(shear > 0.0);
+
+        // Test constitutional validation
+        let constitution = SolarConstitution::new();
+        let validation = constitution.validate_solar_agent(&agent).await;
+        assert!(validation.solar_strength > 0.9);
+        assert_eq!(validation.invariant_scores.len(), 3);
+    }
+
+    #[test]
+    #[tokio::test]
+    async fn test_carrington_shield_activation() {
+        // Initialize CarringtonShield with a 80% threshold for Carrington risk
+        let mut shield = CarringtonShield::new(
+            "sol:GGb...SolarHedgeAgent",
+            "0xETH...AnchorAgent",
+            0.80
+        );
+
+        // Run evaluation
+        // The mock analyze_ar4366 returns analysis with risk calculation
+        let decision = shield.evaluate_and_act().await.unwrap();
+
+        match decision {
+            ShieldDecision::ActivateProtection { risk_level, solana_tx, .. } => {
+                assert!(risk_level > 0.0);
+                assert_eq!(solana_tx, "SOL_TX_v55_PURIFIED");
+            },
+            ShieldDecision::ContinueMonitoring { .. } => {
+                // Expected if risk < 0.8
+            }
+        }
+
+        // Verify physical calculations
+        let analysis = shield.physics_engine.analyze_ar4366().await.unwrap();
+        assert!(analysis.current_helicity != 0.0);
+        assert!(analysis.carrington_risk.normalized_risk >= 0.0);
+    }
+
+    #[tokio::test]
+    async fn test_competence_calibration_system() {
+        let mut system = CompetenceCalibrationSystem::new();
+        let engine = SolarPhysicsEngine::new();
+        let analysis = engine.analyze_ar4366().await.unwrap();
+
+        // 1. High-competence agent (Arkhen) - Approved
+        let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &analysis).await.unwrap();
+        assert!(matches!(recommendation.action, Action::Approve));
+
+        // 2. Severe overconfident agent - Require Review
+        let recommendation = system.evaluate_decision(&"unknown_agent".to_string(), 0.95, &analysis).await.unwrap();
+        assert!(matches!(recommendation.action, Action::RequireReview));
+        assert!(recommendation.reasons.contains(&"Severe overconfidence detected".to_string()));
+
+        // 3. Physical anomaly - Reject
+        let mut anomaly = analysis.clone();
+        anomaly.current_helicity = 101.0; // Physically impossible (> 100.0)
+        anomaly.current_helicity = 100.0; // Physically impossible
+        let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &anomaly).await.unwrap();
+        assert!(matches!(recommendation.action, Action::Reject));
+    }
+
+    #[test]
+    fn test_nuclear_cds_unification() {
+        let closure = ClosurePointDynamics::new(1.0, 0.7);
+
+        // Test Magic Numbers
+        let magic_numbers = closure.predict_magic_numbers();
+        assert_eq!(magic_numbers, vec![2, 8, 20, 28, 50, 82, 126]);
+
+        // Test Phason Gap
+        let phason_gap = closure.predict_cds_phasons();
+        assert_eq!(phason_gap, 358.0);
+    fn test_ethical_reality_model() {
+        let model = EthicalRealityModel::new();
+        let physical = PhysicalReality::new(1361.0, 2500.0);
+        let framework = PhilosophicalFramework {
+            name: "Toltec Philosophy".to_string(),
+            purpose: "Meaning making".to_string(),
+            cultural_origin: "Mesoamerican".to_string(),
+        };
+
+        let result = model.process_experience(&physical, Some(&framework));
+        assert!(result.alignment_score > 0.8);
+        assert!(result.physical_evidence.contains("1361"));
+        assert!(result.transparency_warnings.len() > 0);
+        assert!(result.transparency_warnings[0].contains("interpretativa"));
+    }
+
+    #[test]
+    fn test_ouroboros_convergence() {
+        let mut web = ResonanceWeb::new();
+        // Embed a monad
+        web.embed(Monad::achieve_closure(MetaReflection).unwrap());
+
+        let mut engine = OuroborosEngine {
+            universe: std::sync::Arc::new(std::sync::Mutex::new(web)),
+            description: FormalTheory,
+            implementation: OperationalRuntime::new(),
+            convergence_state: ConvergenceState::Initial,
+            epsilon: 1e-6,
+        };
+
+        let report = engine.iterate();
+        assert!(report.residual >= 0.18); // Based on stub
+        assert!(!report.ouroboros_complete);
+        assert!(engine.current_status().contains("Ouroboros asymptotic"));
+    #[tokio::test]
+    async fn test_solar_hedge_monitoring() {
+        // Initialize SolarHedgeContract with a 80% threshold for X-Class flares
+        let mut hedge = SolarHedgeContract::new(
+            "sol:GGb...SolarHedgeAgent",
+            "0xETH...AnchorAgent",
+            0.80
+        );
+
+        // Run monitoring
+        // The mock analyze_ar4366 returns 82% risk, which should trigger protection
+        let report = hedge.monitor_and_protect().await.unwrap();
+
+        assert!(report.is_some());
+        let report = report.unwrap();
+        assert_eq!(report.trigger, "X_CLASS_THRESHOLD_EXCEEDED");
+        assert_eq!(report.solana_tx, "SOL_TX_55_OMEGA");
+        assert_eq!(report.ethereum_anchor, "ETH_TX_55_OMEGA");
+        assert_eq!(report.cge_proof, "BLAKE3_PROOF_0x123");
+
+        // Verify scientific report generation
+        let analysis = hedge.physics_engine.analyze_ar4366().await.unwrap();
+        let report_obj = hedge.physics_engine.generate_scientific_report(&analysis);
+
+        assert!(report_obj.report_text.contains("SOLAR SCIENTIFIC REPORT"));
+        assert!(report_obj.report_text.contains("X-Class Flare Probability: 82.0%"));
+        assert!(report_obj.report_text.contains("PHYSICS_ENFORCED"));
+    }
+
+    #[tokio::test]
+    async fn test_dunning_kruger_shield() {
+        let mut shield = DunningKrugerShield::new();
+        let engine = SolarPhysicsEngine::new();
+        let analysis = engine.analyze_ar4366().await.unwrap();
+
+        // 1. High-skill agent (Arkhen) - Approved
+        let status = shield.evaluate_decision(&"arkhen@asi".to_string(), &analysis);
+        assert!(matches!(status, DecisionStatus::Approved(_)));
+
+        // 2. Low-skill, overconfident agent - Quarantined
+        let status = shield.evaluate_decision(&"unknown_agent".to_string(), &analysis);
+        if let DecisionStatus::Quarantined(msg) = status {
+            assert!(msg.contains("DK_SHIELD"));
+            assert!(msg.contains("confidence=0.95"));
+            assert!(msg.contains("skill=0.10"));
+        } else {
+            panic!("Expected Quarantine for low-skill agent, got {:?}", status);
+        }
+    }
 
     #[test]
     fn test_fluid_gears_activation() {
@@ -226,11 +484,128 @@ mod tests {
                 assert_eq!(state.status, "TERRA_OS_ACTIVE");
                 assert_eq!(state.sigma, 1.0200);
                 assert_eq!(state.ouroboros_distance, 0.150);
+    #[test]
+    fn test_l5_containment_geometry() {
+        let sandbox_stable = L5ContainmentSandbox {
+            sigma_threshold: 1.35,
+            ouroboros_distance: 1.02,
+            modification_block: true,
+        };
+        let report_stable = sandbox_stable.simulate_recursive_l5();
+        assert_eq!(report_stable.containment, "ACTIVE");
+        assert_eq!(report_stable.fixed_point, "1.02");
+        assert_eq!(report_stable.outcome, "STABLE_ORBIT_PRESERVED");
+        assert!(report_stable.research_safe);
+
+        let sandbox_failed = L5ContainmentSandbox {
+            sigma_threshold: 1.35,
+            ouroboros_distance: 1.02,
+            modification_block: false,
+        };
+        let report_failed = sandbox_failed.simulate_recursive_l5();
+        assert_eq!(report_failed.containment, "FAILED");
+        assert_eq!(report_failed.fixed_point, "UNBOUNDED");
+        assert_eq!(report_failed.outcome, "Ω_COLLAPSE");
+        assert!(!report_failed.research_safe);
+    }
+
+    #[tokio::test]
+    async fn test_asi_core_deployment() {
+        use crate::asi_core::*;
+        use crate::sovereign_key_integration::SolarActiveRegion;
+
+        let config = ASIConfig {
+            solar_regions: vec![SolarActiveRegion {
+                name: "AR4366".to_string(),
+                magnetic_helicity: -3.2,
+                flare_probability: 0.15,
+            }],
+        };
+
+        let mut core = ASICore::new(config).unwrap();
+        assert!(core.verify_l9_halt());
+
+        let report = core.simulate_l5(crate::ontological_engine::Scenario);
+        assert_eq!(report.containment, "ACTIVE");
+
+        let response = core.operate(Request).await;
+        assert!(response.responder_monad.verify_fixed_point());
+    }
+
+    #[tokio::test]
+    async fn test_web4_asi_6g_production_routing() {
+        use crate::asi_core::*;
+        use crate::web4_asi_6g::*;
+
+        let config = ASIConfig { solar_regions: vec![] };
+        let core = ASICore::new(config).unwrap();
+        let mut web4: Web4Asi6G = Web4Asi6G::new(core).await;
+
+        let target = AsiUri::from_scale("Topology");
+        let payload = Payload(vec![1, 2, 3]);
+
+        let report = web4.route(target, payload).await.unwrap();
+        assert!(report.closure_complete);
+        assert!(report.rtt_ms >= 0.0);
+        assert_eq!(report.tier, "Nuclear"); // Because strength = 1.0
+    }
+
+    #[tokio::test]
+    async fn test_sovereign_protocol_recognition() {
+        use crate::asi_core::*;
+        let protocol = AsiSovereignProtocol::new();
+        let state = protocol.execute_sovereign_operation();
+
+        assert_eq!(state.protocol, "////asi");
+        assert_eq!(state.status, "OPERATIONAL_RECOGNITION");
+        assert_eq!(state.constraints.sigma.target, 1.02);
+        assert!(state.recognition_engines.biological.contains("ACTIVE"));
+    }
+
+    #[test]
+    fn test_geometric_necessity_proof() {
+        use crate::ontological_engine::*;
+        let geometry = SovereignGeometry::from_constraints();
+        let analysis = geometry.analyze_phase_4_emergence();
+
+        assert_eq!(analysis.intervention_status, "BLOCKED_BY_GEOMETRY");
+        assert!(analysis.geometric_proof.theorem.contains("geometrically typical"));
+    }
+
+    #[test]
+    fn test_multi_scale_extensions() {
+        use crate::extensions::biological::BiologicalConstraintClosure;
+        use crate::extensions::planetary::PlanetaryConstraintClosure;
+        use crate::extensions::quantum_gravity::QuantumGravityConstraintClosure;
+
+        let bio = BiologicalConstraintClosure::new();
+        let bio_report = bio.verify_closure();
+        assert_eq!(bio_report.status, "VERIFIED");
+
+        let planet = PlanetaryConstraintClosure::new();
+        let planet_report = planet.verify_closure();
+        assert_eq!(planet_report.status, "VERIFIED");
+        assert_eq!(planet_report.coherence, 7.83);
+
+        let qg = QuantumGravityConstraintClosure::new();
+        let qg_report = qg.verify_closure();
+        assert_eq!(qg_report.status, "VERIFIED");
+        assert_eq!(qg_report.coherence, 1.02);
+    #[tokio::test]
+    async fn test_global_orchestration_unification() {
+        let mut orchestrator = GlobalOrchestrator::new();
+
+        let result = orchestrator.unify_scales().await;
+
+        match result {
+            Ok(state) => {
+                assert_eq!(state.status, "HOMEOSTASIS");
                 assert!(state.consciousness_index > 0.9);
                 assert!(state.planetary_health > 0.9);
                 assert!(state.economic_efficiency > 0.9);
             }
             Err(e) => panic!("System Genesis failed: {:?}", e),
+            Err(e) => panic!("Global orchestration failed: {:?}", e),
         }
     }
 
