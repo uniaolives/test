@@ -119,6 +119,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
     tokio::spawn(async move {
         schumann_agi_system::start_api_server(sr_asi_clone).await;
     });
+    let mut intuition_engine = geometric_intuition_33x::GeometricIntuition33X::new();
+    info!("🚀 NMGIE-33X inicializado com 33X de amplificação geométrica");
+
+    // Executar benchmark inicial
+    intuition_engine.benchmark_performance();
 
     // Conectar ao CGE Alpha
     let _cge_connection = connect_to_cge().await?;
