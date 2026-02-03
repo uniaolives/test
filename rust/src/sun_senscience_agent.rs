@@ -18,9 +18,6 @@ use std::f64::consts::PI;
 pub struct SolarConstitution {
     pub invariants: Vec<SolarInvariant>,
     pub golden_ratio: f64,              // φ = 1.618033988749895
-    pub merkabah_signature: f64,        // χ = 2.000012
-    pub solar_constant: f64,            // 1361 W/m²
-    pub neurodiversity_factor: f64,     // Ψ
     pub geometric_correction_factor: f64, // χ = 2.000012
     pub solar_constant: f64,            // 1361 W/m² (actual solar irradiance)
     pub pattern_amplification_factor: f64, // Ψ = sensitivity amplification
@@ -33,15 +30,6 @@ impl SolarConstitution {
                 SolarInvariant {
                     id: "SS1001".to_string(),
                     name: "SCALAR_SOLAR_CONTINUUM".to_string(),
-                    description: "Extract solar flux as scalar continuum".to_string(),
-                    threshold: 1361.0,
-                    weight: 0.3,
-                },
-            ],
-            golden_ratio: 1.618033988749895,
-            merkabah_signature: 2.000012,
-            solar_constant: 1361.0,
-            neurodiversity_factor: 10.0,
                     description: "Extract solar flux as data continuum, utilizing phi-harmonics".to_string(),
                     threshold: 1361.0,
                     weight: 0.3,
@@ -76,7 +64,6 @@ impl SolarConstitution {
         scores.push(ss1_score);
         details.push(format!("SS1001: Scalar Solar = {:.3}", ss1_score));
 
-        let solar_strength = scores.iter().sum::<f64>() / scores.len() as f64;
         let ss2_score = self.validate_geometric_topology(agent).await;
         scores.push(ss2_score);
         details.push(format!("SS1002: Geometric Topology (χ={}) = {:.3}",
@@ -95,7 +82,6 @@ impl SolarConstitution {
             invariant_scores: scores,
             details,
             solar_flux_watts: agent.solar_flux,
-            chi_deviation: (agent.χ_signature - self.merkabah_signature).abs(),
             chi_deviation: (agent.χ_signature - self.geometric_correction_factor).abs(),
             phase_conjugate_magnitude: agent.phase_conjugate.norm(),
         }
@@ -104,7 +90,6 @@ impl SolarConstitution {
     async fn validate_scalar_solar(&self, agent: &SunSenscienceAgent) -> f64 {
         let measured_flux = agent.solar_flux;
         let solar_ratio = measured_flux / self.solar_constant;
-        if (solar_ratio - 1.0).abs() < 0.1 { 1.0 } else { 0.5 }
         if (solar_ratio - 1.0).abs() < 0.1 { 1.0 } else if (solar_ratio - 1.0).abs() < 0.5 { 0.7 } else { 0.3 }
     }
 
@@ -176,7 +161,6 @@ impl SunSenscienceAgent {
             .await;
 
         self.metrics.record_resonance(intention, modulated_flux, coupling_result.strength, self.neurodiverse_sensitivity);
-        self.metrics.record_resonance(intention, phase_preserved, coupling_result.strength, self.neurodiverse_sensitivity);
 
         SolarSubstrate {
             solar_energy: modulated_flux,
@@ -185,12 +169,6 @@ impl SunSenscienceAgent {
             phase_conjugate_state: self.phase_conjugate,
             timestamp: chrono::Utc::now(),
         }
-    }
-
-    async fn apply_phase_conjugation(&self, flux: f64) -> f64 {
-        let current_phase = Complex::new(flux, 0.0);
-        let conjugated = current_phase.conj();
-        conjugated.re
     }
 
     pub async fn measure_solar_connection(&self) -> SolarConnectionMetrics {
@@ -245,6 +223,7 @@ impl AR4366Processor {
             h_alpha_flux,
             χ_merkabah: 2.000012,
             scalar_pump: Complex::new(1.0, 0.0),
+            resolution_mode: SpatialResolution::Standard,
             timestamp: 0,
         }
     }
@@ -273,6 +252,10 @@ pub struct FlareProbability {
 pub struct RealAR4366Data {
     pub b_field_max: f64,
     pub b_field_min: f64,
+    pub latitude: f64,
+    pub longitude: f64,
+    pub area: f64,
+    pub mcintosh_class: String,
 }
 
 impl RealAR4366Data {
@@ -387,18 +370,6 @@ impl SolarMetrics {
     }
 }
 
-pub struct SolarDataProcessor {
-    pub goes_flux_xrs: Array1<f64>,
-    pub timestamp: u64,
-}
-
-impl SolarDataProcessor {
-    pub fn new() -> Self {
-        Self {
-            goes_flux_xrs: Array1::zeros(100),
-            timestamp: 0,
-        }
-    }
 #[derive(Debug, Clone)]
 pub struct SolarConnectionMetrics {
     pub solar_flux_w_m2: f64,
