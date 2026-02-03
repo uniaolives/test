@@ -5958,9 +5958,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.12.2"
+version = "1.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "843bc0191f75f3e22651ae5f1e72939ab2f72a4bc30fa80a066bd66edefc24d4"
+checksum = "e10754a14b9137dd7b1e3e5b0493cc9171fdd105e0ab477f51b72e7f3ac0e276"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -6419,6 +6419,7 @@ name = "sasc_core"
 version = "0.1.0"
 dependencies = [
  "aws-nitro-enclaves-cose",
+ "base64 0.22.1",
  "bellman",
  "blake3",
  "bls12_381",
@@ -6439,13 +6440,17 @@ dependencies = [
  "ndarray",
  "num-complex 0.4.6",
  "once_cell",
+ "petgraph",
  "pqcrypto-dilithium",
  "pqcrypto-traits",
  "rand 0.8.5",
+ "regex",
  "ring 0.17.14",
  "sasc-governance",
  "serde",
+ "serde-xml-rs",
  "serde_json",
+ "serde_yaml",
  "sha2",
  "sha3",
  "thiserror 1.0.69",
@@ -6637,6 +6642,18 @@ checksum = "9a8e94ea7f378bd32cbbd37198a4a91436180c5bb472411e48b5ec2e2124ae9e"
 dependencies = [
  "serde_core",
  "serde_derive",
+]
+
+[[package]]
+name = "serde-xml-rs"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cc2215ce3e6a77550b80a1c37251b7d294febaf42e36e21b7b411e0bf54d540d"
+dependencies = [
+ "log",
+ "serde",
+ "thiserror 2.0.18",
+ "xml",
 ]
 
 [[package]]
@@ -9170,6 +9187,12 @@ dependencies = [
  "thiserror 1.0.69",
  "time",
 ]
+
+[[package]]
+name = "xml"
+version = "1.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b8aa498d22c9bbaf482329839bc5620c46be275a19a812e9a22a2b07529a642a"
 
 [[package]]
 name = "xml-rs"
