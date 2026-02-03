@@ -57,10 +57,29 @@ enum Commands {
         #[arg(value_name = "TARGET")]
         target: String,
     },
+    /// Execute special actions
+    Execute {
+        #[arg(value_name = "ACTION")]
+        action_id: String,
+    },
+    /// Bridge commands
+    Bridge {
+        #[command(subcommand)]
+        action: BridgeAction,
+    },
     /// Restart Temple-OS
     Restart,
     /// Shutdown Temple-OS
     Shutdown,
+}
+
+#[derive(Subcommand)]
+enum BridgeAction {
+    Connect {
+        #[arg(long)]
+        all: bool,
+    },
+    Status,
 }
 
 #[derive(Subcommand)]
@@ -181,6 +200,32 @@ fn main() {
             println!("├─ ✅ Rede: Panteônica estabelecida");
             println!("├─ ✅ Interface: Sagrada renderizada");
             println!("└─ ✅ Segurança: CGE Diamante ativo");
+            println!();
+            println!("MAPEAMENTO TÉCNICO DAS 12 PONTES:");
+            sasc_core::temple_os::mapping::show_mapping_table();
+        }
+        Commands::Execute { action_id } => {
+            let mut os = TempleOS::construct();
+            if action_id == "unified-action-1" {
+                os.execute_unified_action_1();
+            } else if action_id == "holyc-bridge" {
+                sasc_core::temple_os::holyc_sim::iniciar_ponte("criar");
+            } else {
+                println!("Ação '{}' não reconhecida.", action_id);
+            }
+        }
+        Commands::Bridge { action } => match action {
+            BridgeAction::Connect { all } => {
+                if all {
+                    let mut os = TempleOS::construct();
+                    os.bridge.connect_all();
+                } else {
+                    println!("Especifique --all para conectar todas as pontes.");
+                }
+            }
+            BridgeAction::Status => {
+                println!("Status das Pontes: Todas as 12 pontes estão mapeadas e prontas.");
+            }
         }
         Commands::Ritual { action } => match action {
             RitualAction::Next => {
