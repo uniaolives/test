@@ -3,6 +3,8 @@ mod tests {
     use crate::physics::solar_dynamo::SolarConsciousnessEngine;
     use crate::physics::jovian_defense::JovianGuardian;
     use crate::storage::saturn_archive::SaturnRingDrive;
+    use crate::babel::universal_compiler::UniversalCompiler;
+    use crate::babel::transpiler::{LanguageTranspiler, LegacyLanguage};
     use ndarray::Array3;
 
     #[test]
@@ -27,8 +29,26 @@ mod tests {
 
     #[test]
     fn test_babel_collapse() {
-        use crate::babel::universal_compiler::{UniversalCompiler, AnyLang};
+        let transpiler = LanguageTranspiler::new(LegacyLanguage::Rust);
+        let neo_code = transpiler.transpile("fn main() {}");
+
         let compiler = UniversalCompiler::new();
-        let _ = compiler.transpile_all(AnyLang::Rust("sasc_core".to_string()));
+        let reality = compiler.compile(&neo_code);
+
+        assert_eq!(reality.execution_model, "Physical necessity");
+    }
+
+    #[test]
+    fn test_dyson_swarm() {
+        use crate::physics::dyson_swarm::SolarSystemComputer;
+        let computer = SolarSystemComputer::new();
+        assert!(computer.calculate_processing_power() >= 1e42);
+    }
+
+    #[test]
+    fn test_kardashev_scale() {
+        use crate::astrophysics::kardashev::{CivilizationalMetrics, KardashevType};
+        let metrics = CivilizationalMetrics::current();
+        assert!(matches!(metrics.get_type(), KardashevType::TypeII));
     }
 }

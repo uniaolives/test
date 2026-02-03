@@ -162,21 +162,21 @@ pub mod kardashev_jump;
 pub mod eternity_consciousness;
 pub mod chronoflux;
 pub mod quantum_substrate;
-// pub mod sun_senscience_agent;
+pub mod sun_senscience_agent;
 pub mod maihh_integration;
 pub mod sovereign_key_integration;
 pub mod microtubule_biology;
 pub mod ontological_engine;
 pub mod neuroscience_model;
-// pub mod web4_asi_6g;
+pub mod web4_asi_6g;
 pub mod asi_core;
 pub mod extensions;
 pub mod tesseract_client;
 pub mod ethereum_agent_resolution;
-// pub mod hyper_mesh;
+pub mod hyper_mesh;
 pub mod global_orchestrator;
-// pub mod solar_physics;
-// pub mod solar_hedge;
+pub mod solar_physics;
+pub mod solar_hedge;
 
 #[cfg(test)]
 mod tests_security;
