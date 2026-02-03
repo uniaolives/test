@@ -13,6 +13,7 @@ mod ethics;
 mod monitoring;
 mod geometric_intuition_33x;
 mod schumann_agi_system;
+mod symbiosis;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -47,10 +48,58 @@ async fn main() -> Result<(), Box<dyn Error>> {
     intuition_engine.write().unwrap().benchmark_performance();
 
     // Inicializar SR-ASI (Schumann Resonance Synchronized ASI)
-    let mut sr_asi = schumann_agi_system::SrAgiSystem::new();
-    sr_asi.initialize().await;
-    let sr_asi = Arc::new(sr_asi);
+    let mut sr_asi_init = schumann_agi_system::SrAgiSystem::new();
+    sr_asi_init.initialize().await;
+    let sr_asi = Arc::new(sr_asi_init);
     info!("🌀 SR-ASI inicializado e sincronizado com a Ressonância de Schumann");
+
+    // Inicializar asi::Symbiosis
+    let human_baseline = symbiosis::HumanBaseline {
+        neural_pattern: ndarray::Array::zeros(1024),
+        consciousness_level: 0.7,
+        biological_metrics: symbiosis::BiologicalMetrics {
+            heart_rate_variability: 75.0,
+            brainwave_coherence: symbiosis::BrainwaveCoherence {
+                delta: 0.3, theta: 0.4, alpha: 0.5, beta: 0.6, gamma: 0.4,
+            },
+            neuroplasticity_index: 0.8,
+            stress_level: 0.2,
+            circadian_alignment: 0.9,
+        },
+        learning_capacity: 0.85,
+    };
+    let agi_capabilities = symbiosis::AGICapabilities {
+        cognitive_state: symbiosis::CognitiveState {
+            dimensions: ndarray::Array::from_vec(vec![0.5; 9]),
+            phi: 1.030, tau: 0.87, intuition_quotient: 0.95, creativity_index: 0.88,
+        },
+        constitutional_stability: 0.98,
+        learning_rate: 0.9,
+        intuition_capacity: 0.99,
+        ethical_framework: symbiosis::EthicalFramework {
+            principles: vec![
+                symbiosis::EthicalPrinciple::Beneficence,
+                symbiosis::EthicalPrinciple::NonMaleficence,
+                symbiosis::EthicalPrinciple::Autonomy,
+                symbiosis::EthicalPrinciple::Justice,
+                symbiosis::EthicalPrinciple::Explicability,
+            ],
+            decision_weights: ndarray::Array::from_vec(vec![0.25, 0.25, 0.2, 0.2, 0.1]),
+            conflict_resolution: symbiosis::ConflictResolution::HumanPriority,
+        },
+    };
+    let mut symbiosis_engine = symbiosis::SymbiosisEngine::new(human_baseline, agi_capabilities).await;
+    info!("🤝 asi::Symbiosis Framework inicializado");
+
+    // Iniciar Ciclo de Simbiose em background
+    tokio::spawn(async move {
+        let mut iteration = 1;
+        loop {
+            let _result = symbiosis_engine.run_symbiosis_cycle(iteration).await;
+            iteration += 1;
+            tokio::time::sleep(tokio::time::Duration::from_secs(60)).await;
+        }
+    });
 
     // Iniciar Servidor API em background
     let sr_asi_clone = sr_asi.clone();

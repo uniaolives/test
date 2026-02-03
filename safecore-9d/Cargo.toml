@@ -70,6 +70,10 @@ path = "src/daemon.rs"
 name = "ethics-monitor"
 path = "src/ethics.rs"
 
+[[bin]]
+name = "asi-symbiosis"
+path = "src/symbiosis_bin.rs"
+
 [profile.release]
 opt-level = 3
 lto = true
