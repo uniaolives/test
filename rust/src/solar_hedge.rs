@@ -72,6 +72,7 @@ pub struct TransparentSolarHedgeContract {
 }
 
 impl TransparentSolarHedgeContract {
+    pub fn new_contract(solana_address: &str, eth_address: &str, threshold: f64) -> Self {
     pub fn new(solana_address: &str, eth_address: &str, threshold: f64) -> Self {
         Self {
             solana_agent: SolanaAgent::new(solana_address),

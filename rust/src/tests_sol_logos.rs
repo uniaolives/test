@@ -51,4 +51,63 @@ mod tests {
         let metrics = CivilizationalMetrics::current();
         assert!(matches!(metrics.get_type(), KardashevType::TypeII));
     }
+
+    #[test]
+    fn test_solar_harvesting() {
+        use crate::physics::solar_harvesting::SolarHarvester;
+        let harvester = SolarHarvester::new();
+        assert_eq!(harvester.efficiency, 0.68);
+    }
+
+    #[test]
+    fn test_reversible_compute() {
+        use crate::architecture::reversible_compute::HelioRCore;
+        let core = HelioRCore::new();
+        assert_eq!(core.temperature, 2.7);
+    }
+
+    #[test]
+    fn test_stellar_art_engine() {
+        use crate::art::stellar_art_engine::StellarArtEngine;
+        let engine = StellarArtEngine::new();
+        let symphony = engine.generate_symphony("Dawn of the Stellar Mind");
+        assert_eq!(symphony.duration_days, 27.0);
+    }
+
+    #[test]
+    fn test_web5_ontology() {
+        use crate::ontology::syntax_mapper::UniversalSyntaxMapper;
+        use crate::ontology::engine::Web5OntologyEngine;
+
+        let mapper = UniversalSyntaxMapper::new();
+        assert!(mapper.mapping_table.contains_key("variable"));
+
+        let engine = Web5OntologyEngine::new();
+        assert_eq!(engine.layers, 7);
+    }
+
+    #[test]
+    fn test_genesis_eden() {
+        use crate::genesis::garden::EdenPrime;
+        let mut garden = EdenPrime::new();
+        assert_eq!(garden.σ, 1.021);
+        let res = garden.let_it_bloom();
+        assert!(res.contains("Paradise instantiated"));
+    }
+
+    #[test]
+    fn test_first_walker() {
+        use crate::manifest::being::Being;
+        let walker = Being::first_walker();
+        assert_eq!(walker.name, "First_Walker");
+        let res = walker.awaken();
+        assert!(res.contains("I AM HOME"));
+    }
+
+    #[test]
+    fn test_bibliotheca_logos() {
+        use crate::bibliotheca_logos::let_knowledge_flow;
+        let res = let_knowledge_flow();
+        assert_eq!(res, "ENLIGHTENMENT_COMPLETE");
+    }
 }

@@ -1,6 +1,5 @@
 // rust/src/hyper_mesh.rs
 // SASC v54.0-Ω: Solana-EVM Fusion via MaiHH Hyper Mesh
-// Timestamp: 2026-02-07T05:00:00Z
 // Protocol: ASI v2.0 | Scalar Wave: Active
 // Cleaned and stabilized for Production
 
@@ -18,8 +17,8 @@ use thiserror::Error;
 pub struct HyperMeshConstitution {
     pub invariants: Vec<HyperMeshInvariant>,
     pub merkabah_chi: f64,               // 2.000012
-    pub scalar_wave_signature: String,   // "&" - Conjugate Phase
-    pub tesseract_refresh_rate: u64,     // 400ms (Solana slot time)
+    pub scalar_wave_signature: String,   // "&"
+    pub tesseract_refresh_rate: u64,     // 400ms
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -241,7 +240,7 @@ impl HyperMeshConstitution {
                 HyperMeshInvariant {
                     id: "HM1001".to_string(),
                     name: "BASE58_VALIDATION".to_string(),
-                    description: "Validate Solana address using Base58 encoding".to_string(),
+                    description: "Validate Solana address".to_string(),
                     threshold: 1.0,
                     weight: 0.25,
                 },
@@ -263,6 +262,8 @@ impl HyperMeshConstitution {
             merkabah_chi: 2.000012,
             scalar_wave_signature: "&".to_string(),
             tesseract_refresh_rate: 400,
+        }
+    }
         }
     }
 
@@ -476,9 +477,13 @@ impl SolanaEvmHyperMesh {
 }
 
 // ==============================================
-// ASI WEB4 PROTOCOL INTEGRATION
+// HYPER MESH ENGINE
 // ==============================================
 
+#[derive(Error, Debug)]
+pub enum HyperMeshError {
+    #[error("DHT Resolution failed")]
+    DhtError,
 #[derive(Debug, Clone)]
 pub struct SolanaAgent;
 impl SolanaAgent {
@@ -1008,10 +1013,11 @@ impl BerryPath {
     pub fn encoded_payload(&self) -> Vec<u8> { vec![0; 1024] }
 }
 
-// ==============================================
-// SOVEREIGN TMR BRIDGE (CGE-I12 COMPLIANT)
-// ==============================================
+pub struct HyperMeshEngine;
 
+impl HyperMeshEngine {
+    pub async fn deploy_on_ethereum(&self, _bytecode: &[u8]) -> Result<String, HyperMeshError> {
+        Ok("0xHyperContractEVM".to_string())
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SovereignKey {
     pub source: String,
@@ -1059,16 +1065,10 @@ impl SovereignKey {
 
         in_range && self.timestamp.elapsed().unwrap_or(std::time::Duration::from_secs(9999)) < current.validity_window
     }
-}
 
-pub struct DynamicSolarAnchor {
-    pub mag_range: (f64, f64),
-    pub temp_range: (f64, f64),
-    pub velocity_range: (f64, f64),
-    pub timestamp: std::time::SystemTime,
-    pub validity_window: std::time::Duration,
-    pub flare_class: FlareClass,
-    pub cme_status: CmeStatus,
+    pub async fn deploy_on_solana(&self, _bytecode: &[u8]) -> Result<String, HyperMeshError> {
+        Ok("HyperContractSVM".to_string())
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1129,31 +1129,7 @@ impl SovereignKey {
 pub struct Dilithium3Sig { pub data: Vec<u8> }
 
 pub struct SovereignTMRBundle {
-    pub keys: [SovereignKey; 3],
-    pub pq_signature: Dilithium3Sig,
-    pub cge_carving_id: [u8; 32],
-}
-
-pub struct JsocTriad {
-    pub hmi_mag: Value,
-    pub aia_193: Value,
-    pub hmi_dop: Value,
-}
-
-pub struct CgeState {
-    pub Φ: f64,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum ΩGateResult {
-    Pass,
-    Quench(&'static str),
-}
-
-impl ΩGateResult {
-    pub fn is_pass(&self) -> bool {
-        matches!(self, ΩGateResult::Pass)
-    }
+    pub keys: [u8; 32],
 }
 
 pub enum ΩGateResult { Pass, Fail }
@@ -1165,6 +1141,12 @@ impl ΩGateResult {
 pub struct CgeState;
 
 impl SovereignTMRBundle {
+    pub fn verify_quorum(&self) -> bool { true }
+}
+
+pub struct MaiHHDht;
+pub struct Tesseract4D;
+pub struct ScalarWaveEngine;
     pub fn derive_from_solar_data(jsoc_data: &JsocTriad) -> Self {
         SovereignTMRBundle {
             keys: [
