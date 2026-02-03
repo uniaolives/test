@@ -253,6 +253,7 @@ pub struct MaintenanceReport {
     pub psi_position: PsiCoordinates,
 }
 
+#[derive(Debug, Clone)]
 pub struct SuperMonad {
     pub constituent_count: usize,
     pub emergent_coherence: f64,

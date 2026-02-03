@@ -9,6 +9,11 @@ use sasc_governance::types::{VerificationContext};
 
 pub mod governance;
 pub mod constants;
+pub mod quantum_simulation;
+pub mod bio_sequence;
+pub mod logos_agi_asi_extension;
+pub mod cge_core;
+pub mod sasc_protocol;
 pub mod astrophysics;
 pub mod storage;
 pub mod network;
