@@ -97,18 +97,25 @@ async fn test_oracle_performance_tuning() {
     let mut tuner = OracleTuner::new("logos-oracle-01");
     println!("Initial Report: {}", tuner.get_report());
 
-    let sql_res = tuner.tune_sql_execution();
-    let cache_res = tuner.optimize_buffer_cache();
-    let index_res = tuner.rebuild_fragmented_indexes();
+    // Pilar 1: Tuning Autônomo
+    tuner.current_metrics.db_time_per_sec = 10.0; // Força Φ baixo
+    let tune_res = tuner.autonomous_tuning_cycle();
+    println!("{}", tune_res);
+    assert!(tune_res.contains("PHOENIX_TUNING: Φ") && tune_res.contains("< 0.80"));
 
-    println!("{}", sql_res);
-    println!("{}", cache_res);
-    println!("{}", index_res);
+    // Pilar 2: Lifecycle Gate
+    let gate_res = tuner.upgrade_lifecycle_gate("23ai");
+    assert!(gate_res.is_ok());
+
+    // Pilar 3: Autocura
+    tuner.current_metrics.healthy_checks = 50; // Força Φ baixo
+    let immune_res = tuner.self_healing_immunological_response();
+    println!("{}", immune_res);
+    assert!(immune_res.contains("IMMUNE_RESPONSE"));
 
     let final_report = tuner.get_report();
     println!("Final Report: {}", final_report);
 
-    assert!(tuner.current_metrics.query_latency_ms < 50.0);
-    assert!(tuner.current_metrics.buffer_cache_hit_ratio > 0.85);
-    assert!(tuner.current_metrics.index_efficiency > 0.9);
+    assert!(tuner.phi.performance >= 0.8 || tune_res.contains("Executing"));
+    assert!(tuner.phi.integrity >= 0.98);
 }

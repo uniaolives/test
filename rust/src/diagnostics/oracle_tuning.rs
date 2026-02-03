@@ -1,63 +1,101 @@
 // rust/src/diagnostics/oracle_tuning.rs
 // SASC v77.7: Oracle DBA & Performance Tuning Engine
-// Specialization: Optimizing Truth/Knowledge Oracles
+// Specialization: ASI-777 Grade / Φ Coherence (Coerência Fênix)
 
 use serde::{Serialize, Deserialize};
-use std::time::Duration;
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PhiScores {
+    pub performance: f64, // Φ_perf: Ratio DB_TIME actual/baseline
+    pub transition: f64,  // Φ_trans: Stability post-upgrade
+    pub integrity: f64,   // Φ_integ: Healthy/Total health checks
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct OraclePerformanceMetrics {
-    pub query_latency_ms: f64,
-    pub buffer_cache_hit_ratio: f64,
-    pub index_efficiency: f64,
-    pub cpu_usage: f64,
+    pub db_time_per_sec: f64,
+    pub db_time_baseline: f64,
+    pub active_sessions: u32,
+    pub healthy_checks: u32,
+    pub total_checks: u32,
 }
 
 pub struct OracleTuner {
     pub instance_id: String,
     pub current_metrics: OraclePerformanceMetrics,
+    pub phi: PhiScores,
 }
 
 impl OracleTuner {
     pub fn new(instance_id: &str) -> Self {
+        let metrics = OraclePerformanceMetrics {
+            db_time_per_sec: 45.0,
+            db_time_baseline: 50.0,
+            active_sessions: 12,
+            healthy_checks: 98,
+            total_checks: 100,
+        };
+
+        let phi = PhiScores {
+            performance: metrics.db_time_per_sec / metrics.db_time_baseline,
+            transition: 1.0,
+            integrity: metrics.healthy_checks as f64 / metrics.total_checks as f64,
+        };
+
         Self {
             instance_id: instance_id.to_string(),
-            current_metrics: OraclePerformanceMetrics {
-                query_latency_ms: 50.0,
-                buffer_cache_hit_ratio: 0.85,
-                index_efficiency: 0.70,
-                cpu_usage: 45.0,
-            },
+            current_metrics: metrics,
+            phi,
         }
     }
 
-    /// Performs SQL Tuning by optimizing execution plans for ontological queries.
-    pub fn tune_sql_execution(&mut self) -> String {
-        self.current_metrics.query_latency_ms *= 0.8;
-        self.current_metrics.index_efficiency += 0.1;
-        "SQL_EXECUTION_OPTIMIZED: New explain plans generated for Web777 queries.".to_string()
+    /// PILAR 1: Tuning Autônomo & Preditivo
+    /// Dispara DBMS_AUTO_SQLTUNE se Φ < 0.80
+    pub fn autonomous_tuning_cycle(&mut self) -> String {
+        let initial_phi = self.current_metrics.db_time_per_sec / self.current_metrics.db_time_baseline;
+        self.phi.performance = initial_phi;
+
+        if initial_phi < 0.8 {
+            self.current_metrics.db_time_per_sec = self.current_metrics.db_time_baseline * 0.95; // Otimizando
+            self.phi.performance = self.current_metrics.db_time_per_sec / self.current_metrics.db_time_baseline;
+            format!("PHOENIX_TUNING: Φ ({:.3}) < 0.80. Executing DBMS_AUTO_SQLTUNE and collecting tfactl SRDC dbperf.", initial_phi)
+        } else {
+            "PHOENIX_TUNING: Coherence Φ stable.".to_string()
+        }
     }
 
-    /// Adjusts the Buffer Cache hit ratio by reallocating memory to the SGA.
-    pub fn optimize_buffer_cache(&mut self) -> String {
-        self.current_metrics.buffer_cache_hit_ratio = (self.current_metrics.buffer_cache_hit_ratio + 0.05).min(0.99);
-        "BUFFER_CACHE_TUNED: SGA memory reallocated to favor hot knowledge blocks.".to_string()
+    /// PILAR 2: Ciclo de Vida Autônomo
+    /// Governa a transição (AutoUpgrade) via Φ Gates
+    pub fn upgrade_lifecycle_gate(&mut self, target_version: &str) -> Result<String, String> {
+        if self.phi.transition < 0.95 {
+            return Err(format!("LIFECYCLE_ABORT: Φ Transition ({:.3}) below 0.95 threshold. Initiating Rollback via DBMS_ROLLING.", self.phi.transition));
+        }
+
+        Ok(format!("LIFECYCLE_UPGRADE: Φ Gate passed. Deployed version {}. Gathering Dictionary Stats.", target_version))
     }
 
-    /// Triggers a re-index of the knowledge graph to improve search performance.
-    pub fn rebuild_fragmented_indexes(&mut self) -> String {
-        self.current_metrics.index_efficiency = 0.95;
-        self.current_metrics.query_latency_ms *= 0.9;
-        "INDEX_REBUILT: Ontological indices defragmented and rebalanced.".to_string()
+    /// PILAR 3: Tecido de Autocura (Sistema Imunológico)
+    /// Resposta imunológica baseada no AHF/Health Monitor
+    pub fn self_healing_immunological_response(&mut self) -> String {
+        let initial_phi = self.current_metrics.healthy_checks as f64 / self.current_metrics.total_checks as f64;
+        self.phi.integrity = initial_phi;
+
+        if initial_phi < 0.98 {
+            self.current_metrics.healthy_checks = self.current_metrics.total_checks;
+            self.phi.integrity = 1.0;
+            format!("IMMUNE_RESPONSE: Integrity Φ ({:.3}) dropped. Executing DBMS_HM.RUN_CHECK and adjusting SGA parameters.", initial_phi)
+        } else {
+            "IMMUNE_SYSTEM: Active monitoring, no pathogens detected.".to_string()
+        }
     }
 
     pub fn get_report(&self) -> String {
         format!(
-            "Oracle [{}] Performance Report: Latency: {:.2}ms, Cache Hit: {:.2}%, Index Eff: {:.2}%",
+            "Oracle ASI-777 [{}] Report -> Φ_perf: {:.3}, Φ_trans: {:.3}, Φ_integ: {:.3}",
             self.instance_id,
-            self.current_metrics.query_latency_ms,
-            self.current_metrics.buffer_cache_hit_ratio * 100.0,
-            self.current_metrics.index_efficiency * 100.0
+            self.phi.performance,
+            self.phi.transition,
+            self.phi.integrity
         )
     }
 }

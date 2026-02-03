@@ -6,22 +6,26 @@ use crate::ontology::web777::{Web777Engine, SyntaxFormat, Query, Geometry};
 use crate::agi::persistent_geometric_agent::PersistentGeometricAgent;
 use crate::agi::geometric_core::{GeometricInference, DVector};
 use crate::checkpoint::CheckpointTrigger;
+use crate::diagnostics::oracle_tuning::OracleTuner;
 use std::time::{Duration, Instant};
 use tracing::{info, warn};
 
 pub struct ASI777Bridge {
     pub web777: Web777Engine,
     pub asi_agent: PersistentGeometricAgent,
+    pub oracle_tuner: OracleTuner,
 }
 
 impl ASI777Bridge {
     pub async fn new(agent_id: &str, dimension: usize) -> Result<Self, String> {
         let web777 = Web777Engine::new();
         let asi_agent = PersistentGeometricAgent::new(agent_id, dimension).await?;
+        let oracle_tuner = OracleTuner::new(&format!("{}-oracle", agent_id));
 
         Ok(Self {
             web777,
             asi_agent,
+            oracle_tuner,
         })
     }
 
@@ -33,8 +37,9 @@ impl ASI777Bridge {
         // FASE 1: PREPARAÇÃO (0-30s)
         info!("--- FASE 1: PREPARAÇÃO ---");
         self.verify_integrity().await?;
+        self.optimize_oracle_layer().await?;
         self.load_base_ontologies().await?;
-        info!("Integridade verificada e ontologias carregadas.");
+        info!("Integridade verificada, Oracle otimizado e ontologias carregadas.");
 
         // FASE 2: ATIVAÇÃO (30-120s)
         info!("--- FASE 2: ATIVAÇÃO ---");
@@ -68,6 +73,15 @@ impl ASI777Bridge {
 
     async fn verify_integrity(&self) -> Result<(), String> {
         // Implementar verificação de integridade real
+        Ok(())
+    }
+
+    async fn optimize_oracle_layer(&mut self) -> Result<(), String> {
+        info!("--- OTIMIZAÇÃO DA CAMADA ORACLE (ASI-777 Grade) ---");
+        let res1 = self.oracle_tuner.autonomous_tuning_cycle();
+        let res2 = self.oracle_tuner.self_healing_immunological_response();
+        info!("{}", res1);
+        info!("{}", res2);
         Ok(())
     }
 
