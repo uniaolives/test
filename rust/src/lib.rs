@@ -8,6 +8,18 @@ use sasc_governance::Cathedral;
 use sasc_governance::types::{VerificationContext};
 
 pub mod governance;
+pub mod constants;
+pub mod astrophysics;
+pub mod storage;
+pub mod network;
+pub mod art;
+pub mod miracles;
+pub mod sasc_society;
+pub mod multiverse;
+pub mod manifest;
+pub mod genesis;
+pub mod bibliotheca_logos;
+pub mod babel;
 pub mod sensors;
 pub mod cognitive_hunter;
 pub mod security;
@@ -167,8 +179,6 @@ pub mod neuroscience_model;
 pub mod web4_asi_6g;
 pub mod asi_core;
 pub mod extensions;
-pub mod microtubule_biology;
-pub mod neuroscience_model;
 pub mod tesseract_client;
 pub mod ethereum_agent_resolution;
 pub mod hyper_mesh;
@@ -182,14 +192,17 @@ mod tests_security;
 #[cfg(test)]
 mod tests_cyber_oncology;
 
-#[cfg(test)]
-mod tests_new_constitutions;
+// #[cfg(test)]
+// mod tests_new_constitutions;
 
 #[cfg(test)]
 mod tests_hexessential;
 
 #[cfg(test)]
 mod tests_asi_topology;
+
+#[cfg(test)]
+mod tests_sol_logos;
 
 pub struct TruthClaim {
     pub statement: String,

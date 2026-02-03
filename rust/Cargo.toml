@@ -13,6 +13,7 @@ sha3 = "0.10.8"
 ed25519-dalek = { version = "2.1.1", features = ["serde"] }
 hex = "0.4.3"
 thiserror = "1.0"
+async-trait = "0.1"
 blake3 = "1.5"
 tokio = { version = "1", features = ["full"] }
 nalgebra = "0.32"
@@ -109,6 +110,10 @@ path = "src/bin/sasc_constellate.rs"
 name = "materio_ii"
 path = "src/bin/materio_ii.rs"
 required-features = ["materio_ii"]
+
+[[bin]]
+name = "logos"
+path = "src/bin/logos.rs"
 
 [features]
 sat = []
