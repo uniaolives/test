@@ -6418,6 +6418,7 @@ dependencies = [
 name = "sasc_core"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "aws-nitro-enclaves-cose",
  "base64 0.22.1",
  "bellman",
