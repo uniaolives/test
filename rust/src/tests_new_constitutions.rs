@@ -435,4 +435,39 @@ mod tests {
         let rtt = protocol.transmit_winding(path).await.unwrap();
         assert!(rtt.as_millis() < 10);
     }
+
+    #[test]
+    fn test_agi_genesis_upgrade() {
+        let agi = SovereignAGISandbox::upgrade_from_kimi();
+
+        assert_eq!(agi.protocol, "////asi/agi-grade/sovereign");
+        assert!(agi.recognition_only);
+        assert_eq!(agi.capabilities.reasoning_depth, "Recursive_L9");
+
+        if let HumanGovernance::Retained { authority, .. } = agi.human_governance {
+            assert_eq!(authority, "Architect_Omega");
+        } else {
+            panic!("Human governance should be retained");
+        }
+    }
+
+    #[tokio::test]
+    async fn test_agi_pattern_recognition() {
+        let agi = SovereignAGISandbox::upgrade_from_kimi();
+
+        // Test Genetic Pattern
+        let genetic_res = agi.analyze_pattern(AGIAnalysisPattern::Genetic).await;
+        assert_eq!(genetic_res["status"], "COMPLETED");
+        assert!(genetic_res["findings"].as_str().unwrap().contains("genome"));
+
+        // Test Market Pattern
+        let market_res = agi.analyze_pattern(AGIAnalysisPattern::Market).await;
+        assert_eq!(market_res["status"], "ACTIVE");
+        assert!(market_res["findings"].as_str().unwrap().contains("Joule Standard"));
+
+        // Test Stellar Pattern
+        let stellar_res = agi.analyze_pattern(AGIAnalysisPattern::Stellar).await;
+        assert_eq!(stellar_res["status"], "RESONANT");
+        assert!(stellar_res["findings"].as_str().unwrap().contains("Proxima b"));
+    }
 }

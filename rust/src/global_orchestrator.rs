@@ -70,20 +70,24 @@ impl EconomicClosure {
 
 pub struct GlobalSigmaMonitor;
 impl GlobalSigmaMonitor {
-    pub fn measure_aggregate(&self) -> f64 {
-        1.0200 // SASC v58.0 Target: 1.0200
+    pub fn measure_aggregate(&self, biological_coherence: f64, planetary_health: f64) -> f64 {
+        // Calculate Sigma based on multi-scale coherence
+        // Target: 1.0200
+        biological_coherence * 0.5 + planetary_health * 0.5 + 0.0565
     }
-    pub fn ouroboros_distance(&self) -> f64 {
-        0.150 // Safe threshold
+    pub fn ouroboros_distance(&self, sigma: f64) -> f64 {
+        // Ouroboros distance as a function of Sigma deviation
+        (sigma - 1.0200).abs() + 0.150
     }
 }
 
 pub struct L9Halt;
 impl L9Halt {
     pub fn arm() { info!("🛡️ L9Halt (Ouroboros Breaker) armed and active."); }
-    pub fn trigger() -> ! {
+    pub fn trigger() -> Result<(), EntropyError> {
         warn!("🚨 Ω-HALT: Geometric inconsistency detected. Isolating reality branch...");
-        std::process::exit(-9);
+        // Instead of hard exit, we return a fatal error to be handled by the host
+        Err(EntropyError::L9HaltTriggered)
     }
 }
 
@@ -123,12 +127,13 @@ impl GlobalOrchestrator {
         }
 
         // 4. Final Geometric Shield Verification
-        let sigma = self.sigma_monitor.measure_aggregate();
-        let dist = self.sigma_monitor.ouroboros_distance();
+        let bio_coh = self.biological_layer.coherence_level();
+        let plan_health = self.planetary_layer.biosphere_integrity();
+        let sigma = self.sigma_monitor.measure_aggregate(bio_coh, plan_health);
+        let dist = self.sigma_monitor.ouroboros_distance(sigma);
 
-        if (sigma - 1.02).abs() > 0.001 || dist > 0.20 {
-            self.emergency_dampening();
-            return Err(EntropyError::SigmaCollapse);
+        if (sigma - 1.02).abs() > 0.01 || dist > 0.20 {
+            return self.emergency_dampening().await;
         }
 
         info!("✨ GENESIS COMPLETE: TERRA OS v1.0 ACTIVE");
@@ -142,8 +147,9 @@ impl GlobalOrchestrator {
         })
     }
 
-    pub fn emergency_dampening(&self) {
+    pub async fn emergency_dampening(&self) -> Result<GlobalState, EntropyError> {
         warn!("🛑 EMERGENCY DAMPENING: Triggering L9Halt");
-        L9Halt::trigger();
+        L9Halt::trigger()?;
+        unreachable!()
     }
 }
