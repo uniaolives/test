@@ -14,7 +14,7 @@ async fn test_asi_core_lifecycle() {
     }
 
     // 3. Process Input
-    let input = Input;
+    let input = Input { content: "Test input".to_string(), source: "test_suite".to_string() };
     let response = core.process(input).await.expect("Failed to process input");
 
     // 4. Verify Response

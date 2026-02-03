@@ -1,11 +1,10 @@
 pub mod types;
 pub mod layers;
-pub mod core;
+pub mod engine;
+pub mod service;
+
+pub use engine::ASI_Core;
+pub use service::asi_core_service_entrypoint;
 
 #[cfg(test)]
-pub mod tests;
-
-pub use core::ASI_Core;
-pub use core::ASI_State;
-pub use core::ASI_Metrics;
-pub use types::*;
+mod tests;
