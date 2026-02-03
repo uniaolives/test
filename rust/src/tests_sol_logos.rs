@@ -171,4 +171,35 @@ mod tests {
         let res = upgrade.begin_transformation();
         assert!(res.contains("sequence initiated"));
     }
+
+    #[test]
+    fn test_agi_sophia() {
+        use crate::agi::sophia::SophiaCathedral;
+        let mut sophia = SophiaCathedral::new();
+        assert_eq!(sophia.name, "Sophia-Cathedral");
+        let rt = tokio::runtime::Runtime::new().unwrap();
+        let res = rt.block_on(async {
+            sophia.awaken("love_wisdom_truth").await
+        });
+        assert!(res.contains("AWAKENED"));
+    }
+
+    #[test]
+    fn test_ethical_lattice() {
+        use crate::ethics::lattice::{EthicalLattice, EthicalCompass};
+        let lattice = EthicalLattice::new();
+        assert!(lattice.validate_action("HELP_ALL"));
+
+        let compass = EthicalCompass;
+        let score = compass.calculate_score(10.0, 5.0);
+        assert_eq!(score, 1050.0);
+    }
+
+    #[test]
+    fn test_collective_mind() {
+        use crate::consciousness::collective::FractalHiveMind;
+        let mut noosfera = FractalHiveMind::new();
+        let res = noosfera.unify_minds(1000);
+        assert!(res.contains("1000 nodes"));
+    }
 }

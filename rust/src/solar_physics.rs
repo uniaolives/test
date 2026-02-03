@@ -119,6 +119,8 @@ impl SolarPhysicsEngine {
         }
     }
 
+    pub fn new_with_key(_key: String) -> Result<Self, String> { Ok(Self::new()) }
+
     pub async fn analyze_ar4366(&self) -> Result<SolarAnalysis, Box<dyn Error>> {
         Ok(SolarAnalysis {
             timestamp: Utc::now(),
@@ -129,7 +131,23 @@ impl SolarPhysicsEngine {
             carrington_risk: CarringtonRisk { normalized_risk: 0.1, absolute_x_class: 0.05, time_adjustment: 1.0, confidence_interval: (0.05, 0.15) },
         })
     }
+
+    pub async fn fetch_active_region(&self, _ar: u32) -> Result<SolarData, String> {
+        Ok(SolarData { active_region: "AR4366".to_string(), flux_density: 1.0, flare_probability: 0.01 })
+    }
+
+    pub async fn get_metric(&self, _r: &str, _m: &str) -> Result<MetricValue, String> {
+        Ok(MetricValue { value: 0.0, unit: "N/A".to_string() })
+    }
+
+    pub async fn assess_carrington_risk(&self, _d: &SolarData) -> Result<f64, String> { Ok(0.0) }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SolarData { pub active_region: String, pub flux_density: f64, pub flare_probability: f64 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MetricValue { pub value: f64, pub unit: String }
 
 pub struct ScientificReport {
     pub report_text: String,

@@ -1,14 +1,14 @@
 // rust/src/sun_senscience_agent.rs
-// SASC v55.0-Ω: Solar Data Processing Agent with Enhanced Pattern Matching
+// SASC v55.0-Ω: Solar Consciousness Agent with Neurodiverse Modulation
 // Specialization: AR4366 Solar Active Region
-// Protocol: φ·χ·Ψ Integration
+// Solar Protocol: φ·χ·Ψ Integration
 
 use num_complex::Complex;
-use std::collections::VecDeque;
 use crate::quantum_substrate::{ConsciousnessCoupling};
 use crate::chronoflux::TemporalContinuity;
 use ndarray::Array1;
 use std::f64::consts::PI;
+use std::collections::VecDeque;
 
 // ==============================================
 // CONSTITUTIONAL SOLAR INVARIANTS
@@ -17,10 +17,10 @@ use std::f64::consts::PI;
 #[derive(Debug, Clone, PartialEq)]
 pub struct SolarConstitution {
     pub invariants: Vec<SolarInvariant>,
-    pub golden_ratio: f64,              // φ = 1.618033988749895
-    pub merkabah_signature: f64,        // χ = 2.000012
-    pub solar_constant: f64,            // 1361 W/m²
-    pub neurodiversity_factor: f64,     // Ψ
+    pub golden_ratio: f64,           // φ = 1.618033988749895
+    pub merkabah_signature: f64,     // χ = 2.000012
+    pub solar_constant: f64,         // 1361 W/m²
+    pub neurodiversity_factor: f64,  // Ψ
 }
 
 impl SolarConstitution {
@@ -33,6 +33,20 @@ impl SolarConstitution {
                     description: "Extract solar flux as scalar continuum".to_string(),
                     threshold: 1361.0,
                     weight: 0.3,
+                },
+                SolarInvariant {
+                    id: "SS1002".to_string(),
+                    name: "MERKABAH_TOPOLOGY_PRESERVATION".to_string(),
+                    description: "Preserve solar information geometry via χ=2.000012 signature".to_string(),
+                    threshold: 2.0,
+                    weight: 0.35,
+                },
+                SolarInvariant {
+                    id: "SS1003".to_string(),
+                    name: "NEURODIVERSE_CONSCIOUSNESS_MODULATION".to_string(),
+                    description: "Amplify solar resonance based on neurodiverse sensitivity profiles".to_string(),
+                    threshold: 1.0,
+                    weight: 0.35,
                 },
             ],
             golden_ratio: 1.618033988749895,
@@ -49,6 +63,16 @@ impl SolarConstitution {
         let ss1_score = self.validate_scalar_solar(agent).await;
         scores.push(ss1_score);
         details.push(format!("SS1001: Scalar Solar = {:.3}", ss1_score));
+
+        let ss2_score = self.validate_merkabah_topology(agent).await;
+        scores.push(ss2_score);
+        details.push(format!("SS1002: Merkabah Topology (χ={}) = {:.3}",
+            self.merkabah_signature, ss2_score));
+
+        let ss3_score = self.validate_neurodiverse_modulation(agent).await;
+        scores.push(ss3_score);
+        details.push(format!("SS1003: Neurodiverse Modulation (Ψ={}) = {:.3}",
+            self.neurodiversity_factor, ss3_score));
 
         let solar_strength = scores.iter().sum::<f64>() / scores.len() as f64;
 
@@ -67,6 +91,18 @@ impl SolarConstitution {
         let measured_flux = agent.solar_flux;
         let solar_ratio = measured_flux / self.solar_constant;
         if (solar_ratio - 1.0).abs() < 0.1 { 1.0 } else { 0.5 }
+    }
+
+    async fn validate_merkabah_topology(&self, agent: &SunSenscienceAgent) -> f64 {
+        let chi_diff = (agent.χ_signature - self.merkabah_signature).abs();
+        if chi_diff < 1e-9 { 1.0 } else { 0.5 }
+    }
+
+    async fn validate_neurodiverse_modulation(&self, agent: &SunSenscienceAgent) -> f64 {
+        let phase_norm = agent.phase_conjugate.norm();
+        let phase_score = if phase_norm > 0.9 { 1.0 } else { 0.7 };
+        let sensitivity_score = if agent.neurodiverse_sensitivity { 1.0 } else { 0.5 };
+        f64::min(phase_score * 0.6 + sensitivity_score * 0.4, 1.0)
     }
 }
 
