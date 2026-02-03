@@ -2,7 +2,7 @@
 // SASC v55.1-PHYSICS_ONLY: Solar Hedge Contract - Carrington Shield
 // Parametric Insurance against Solar Storms (CME/Flare)
 
-use crate::solar_physics::{SolarPhysicsEngine, SolarAnalysis};
+use crate::solar_physics::{SolarPhysicsEngine};
 use tracing::info;
 use chrono::{DateTime, Utc};
 
@@ -72,7 +72,6 @@ pub struct TransparentSolarHedgeContract {
 }
 
 impl TransparentSolarHedgeContract {
-    pub fn new_contract(solana_address: &str, eth_address: &str, threshold: f64) -> Self {
     pub fn new(solana_address: &str, eth_address: &str, threshold: f64) -> Self {
         Self {
             solana_agent: SolanaAgent::new(solana_address),

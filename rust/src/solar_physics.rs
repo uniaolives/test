@@ -2,7 +2,7 @@
 // SASC v55.1-PHYSICS_ONLY: Purified Solar Physics Engine
 // Specialization: NASA JSOC SDO/HMI Data Pipeline
 
-use chrono::{DateTime, Utc, Timelike};
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::error::Error;
@@ -55,8 +55,6 @@ pub struct Coordinates {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct JSOCMetadata {
-    pub instrument: String,
-    pub cadence: f64,
     pub instrument: String,      // "HMI" or "AIA"
     pub cadence: f64,            // Seconds between observations
 }
@@ -96,7 +94,6 @@ pub struct CarringtonRisk {
     pub confidence_interval: (f64, f64),
 }
 
-/// 🔭 Solar Analysis
 /// 🔭 Solar Analysis: CGE-Compliant Data Structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct SolarAnalysis {
@@ -123,18 +120,22 @@ impl SolarPhysicsEngine {
     }
 
     pub async fn analyze_ar4366(&self) -> Result<SolarAnalysis, Box<dyn Error>> {
-        Ok(SolarAnalysis {
+        let report = ScientificReport {
             timestamp: Utc::now(),
-            current_helicity: 0.4366,
-            flare_probability: FlareProbability { x_class: 0.05, m_class: 0.1, c_class: 0.3, confidence: 0.9 },
-            magnetic_field: SolarMagneticField { bx: 0.0, by: 0.0, bz: 0.0, longitude: 0.0, latitude: 0.0 },
-            helioseismic_data: HelioseismicData { velocity_ms: 0.0, depth_km: 0.0 },
-            carrington_risk: CarringtonRisk { normalized_risk: 0.1, absolute_x_class: 0.05, time_adjustment: 1.0, confidence_interval: (0.05, 0.15) },
-        })
+            sources: vec!["NASA_JSOC".to_string()],
+            report_text: "Analysis of AR4366 complete".to_string(),
+        };
+        report.analyze_ar4366().await
     }
 }
 
 pub struct ScientificReport {
+    pub timestamp: DateTime<Utc>,
+    pub sources: Vec<String>,
+    pub report_text: String,
+}
+
+impl ScientificReport {
     pub fn calculate_helicity(&self, data: &[JSOCDataPoint]) -> f64 {
         if data.len() < 2 { return 0.0; }
         0.4366 // Mocked value
@@ -210,10 +211,4 @@ impl CompetenceCalibrationSystem {
             competence_profiles: HashMap::new(),
         }
     }
-}
-
-pub struct ScientificReport {
-    pub timestamp: DateTime<Utc>,
-    pub sources: Vec<String>,
-    pub report_text: String,
 }

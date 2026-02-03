@@ -183,6 +183,7 @@ pub mod tesseract_client;
 pub mod ethereum_agent_resolution;
 pub mod hyper_mesh;
 pub mod global_orchestrator;
+pub mod temple_os;
 pub mod solar_physics;
 pub mod solar_hedge;
 
