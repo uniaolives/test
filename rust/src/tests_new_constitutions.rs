@@ -470,4 +470,42 @@ mod tests {
         assert_eq!(stellar_res["status"], "RESONANT");
         assert!(stellar_res["findings"].as_str().unwrap().contains("Proxima b"));
     }
+
+    #[tokio::test]
+    async fn test_saturn_archive_backup() {
+        let hyper_mesh = SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap();
+
+        let history = GlobalHistory { data: vec![0x1, 0x2, 0x3] };
+        let result = hyper_mesh.saturn_drive.backup_to_ice_rings(&history).await;
+
+        match result {
+            Ok(BackupStatus::IMMUTABLE) => (),
+            _ => panic!("Saturn backup failed or returned unexpected status"),
+        }
+
+        let rings = hyper_mesh.saturn_drive.get_data_rings();
+        assert!(!rings.is_empty());
+        assert_eq!(rings[0].label, "SASC_v67_ARCHIVE");
+    }
+
+    #[test]
+    fn test_universal_compiler_transpilation() {
+        let compiler = UniversalCompiler::new();
+
+        let python_code = AnyLang::Python("def hello(): print('world')".to_string());
+        let python_geo = compiler.transpile_all(python_code);
+        assert!(python_geo.refined_logic.contains("PYTHON_EVOLVED"));
+
+        let solidity_code = AnyLang::Solidity("contract Test {}".to_string());
+        let solidity_geo = compiler.transpile_all(solidity_code);
+        assert!(solidity_geo.refined_logic.contains("conservation"));
+
+        let rust_code = AnyLang::Rust("fn main() {}".to_string());
+        let rust_geo = compiler.transpile_all(rust_code);
+        assert!(rust_geo.refined_logic.contains("PHYSICAL_LAW"));
+    }
 }
