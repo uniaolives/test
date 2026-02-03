@@ -4,6 +4,7 @@ use crate::extensions::asi_structured::evolution::GeometricGenome;
 use std::time::Duration;
 use futures::Future;
 use serde::{Serialize, Deserialize};
+use super::composer::ComposedResult;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum StrictnessLevel {
@@ -12,6 +13,7 @@ pub enum StrictnessLevel {
     Permissive,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
 #[derive(Debug, Clone)]
 pub enum ScalabilityInvariant {
     /// S1: Limite de composição (não criar estruturas infinitas)
@@ -37,12 +39,35 @@ pub enum ScalabilityInvariant {
 
     /// S8: Recuperabilidade (pode recuperar de qualquer estado válido)
     Recoverability { checkpoint_frequency: u32 },
+
+    /// S9: Estabilidade sob Alta Volatilidade da Fonte
+    SourceVolatilityStability { max_allowed_volatility: f64 },
 }
 
 pub struct ComplexityMeasure;
 pub struct HaltingConfig;
 
 pub struct ASIConstitution {
+    pub strictness: StrictnessLevel,
+    pub scalability_invariants: Vec<ScalabilityInvariant>,
+}
+
+impl ASIConstitution {
+    pub fn new(strictness: StrictnessLevel, invariants: Vec<ScalabilityInvariant>) -> Self {
+        Self {
+            strictness,
+            scalability_invariants: invariants,
+        }
+    }
+
+    pub fn validate_composed_result(&self, output: &dyn ASIResult) -> ResilientResult<()> {
+        let confidence = output.confidence();
+        if confidence < 0.8 {
+             return Err(ResilientError::InvariantViolation {
+                invariant: "S9: SourceVolatilityStability".to_string(),
+                reason: format!("Confidence {:.2} below stability threshold 0.8 during volatility event", confidence),
+            });
+        }
     pub geometric_invariants: AGIGeometricConstitution,
     pub scalability_invariants: Vec<ScalabilityInvariant>,
     pub max_complexity: ComplexityMeasure,
@@ -66,6 +91,15 @@ impl ASIConstitution {
     }
 
     pub fn validate_genome(&self, genome: &GeometricGenome) -> ResilientResult<()> {
+        if genome.connections.len() > 16 {
+            return Err(ResilientError::InvariantViolation {
+                invariant: "S1: CompositionLimit".to_string(),
+                reason: format!("Too many connections: {} > 16", genome.connections.len()),
+            });
+        }
+        Ok(())
+    }
+
         // S1: Limite de estruturas
         if genome.connections.len() > self.max_structures() {
             return Err(ResilientError::InvariantViolation {
@@ -109,6 +143,19 @@ impl ASIConstitution {
     }
 }
 
+pub trait ASIResult: Send + Sync {
+    fn as_text(&self) -> String;
+    fn confidence(&self) -> f64;
+}
+
+impl ASIResult for ComposedResult {
+    fn as_text(&self) -> String {
+        self.to_string()
+    }
+    fn confidence(&self) -> f64 {
+        self.confidence
+    }
+}
 pub trait ASIResult {
     fn to_string(&self) -> String;
     fn confidence(&self) -> f64;

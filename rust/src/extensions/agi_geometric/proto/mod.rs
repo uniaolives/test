@@ -40,6 +40,9 @@ impl GeometricStructure for ProtoGeometricImpl {
         Ok(StructureResult {
             embedding: vec![0.1; 128],
             confidence: 0.9,
+            metadata: serde_json::json!({}),
+            processing_time_ms: 0,
+            source_structure_name: GeometricStructure::name(self).to_string(),
         })
     }
     fn can_handle(&self, _input: &Subproblem) -> f64 {

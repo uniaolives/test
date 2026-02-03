@@ -16,7 +16,7 @@ hex = "0.4.3"
 thiserror = "1.0"
 blake3 = "1.5"
 tokio = { version = "1", features = ["full"] }
-nalgebra = "0.32"
+nalgebra = { version = "0.32", features = ["serde-serialize"] }
 ndarray = "0.15"
 num-complex = "0.4"
 aws-nitro-enclaves-cose = "0.5.2"
@@ -47,6 +47,7 @@ ff = "0.13.0"
 bs58 = "0.5.1"
 regex = "1.12.3"
 base64 = "0.22.1"
+web777_ontology = { path = "../web777_ontology" }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.56", features = [
