@@ -7,14 +7,10 @@ use std::sync::{Arc, RwLock};
 use tokio::signal;
 use tracing::{info};
 
-mod constitution;
-mod dimensions;
-mod ethics;
-mod monitoring;
-mod geometric_intuition_33x;
-mod schumann_agi_system;
-mod symbiosis;
-mod harmonic_concordance;
+use safecore_9d::{
+    constitution, dimensions, ethics, monitoring,
+    geometric_intuition_33x, schumann_agi_system, symbiosis, harmonic_concordance
+};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
