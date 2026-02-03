@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod tests {
+    use std::sync::Arc;
     use crate::fluid_gears::*;
     use crate::qddr_memory::*;
     use crate::enciclopedia::*;
@@ -12,6 +13,8 @@ mod tests {
     use crate::merkabah_activation::*;
     use crate::synaptic_fire::*;
     use crate::kardashev_jump::*;
+    use crate::hyper_mesh::*;
+    use crate::global_orchestrator::*;
     use crate::clock::cge_mocks::cge_cheri::Capability;
 
     #[test]
@@ -209,5 +212,224 @@ mod tests {
         // Record Ledger Entry
         let entry = LedgerEntry::jump_executed();
         assert_eq!(entry.status, "SOVEREIGNTY_ACHIEVED");
+    }
+
+    #[tokio::test]
+    async fn test_global_orchestration_unification() {
+        let mut orchestrator = GlobalOrchestrator::new();
+
+        let result = orchestrator.unify_scales().await;
+
+        match result {
+            Ok(state) => {
+                assert_eq!(state.status, "HOMEOSTASIS");
+                assert!(state.consciousness_index > 0.9);
+                assert!(state.planetary_health > 0.9);
+                assert!(state.economic_efficiency > 0.9);
+            }
+            Err(e) => panic!("Global orchestration failed: {:?}", e),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_hyper_mesh_resolution() {
+        // Initialize hyper mesh
+        let hyper_mesh = SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap();
+
+        // Test address (Base58 encoded Solana address - 32 bytes)
+        // "11111111111111111111111111111111" decodes to 32 zero bytes
+        let test_solana_address = "11111111111111111111111111111111";
+
+        // Test resolution
+        let resolution_result = hyper_mesh.resolve_solana_agent(test_solana_address).await;
+
+        match resolution_result {
+            Ok(resolution) => {
+                assert_eq!(resolution.agent_id, format!("sol:{}", test_solana_address));
+                assert!(resolution.scalar_wave_established);
+                assert!(resolution.tesseract_enhanced);
+
+                if let Some(handshake) = resolution.asi_handshake {
+                    assert!(handshake.success);
+                    assert_eq!(handshake.chi, Some(2.000012));
+                } else {
+                    panic!("AsiHandshake missing");
+                }
+            }
+            Err(e) => {
+                panic!("Hyper mesh resolution failed: {:?}", e);
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn test_asi_web4_protocol_resolution() {
+        let protocol = AsiWeb4Protocol::new(
+            "NASA_API_KEY".to_string(),
+            "SOLANA_URL".to_string(),
+            "ETHEREUM_URL".to_string(),
+        ).unwrap();
+
+        let path = "asi://asi@asi:web4";
+        let result = protocol.resolve_uri(path).await;
+
+        match result {
+            Ok(Web4Response::PhysicsData { solar_data, .. }) => {
+                assert_eq!(solar_data.active_region, "AR4366");
+            }
+            _ => panic!("Web4 resolution failed or returned unexpected response"),
+        }
+
+        // Test protocol specification path
+        let spec_path = "/protocol/specification";
+        let spec_result = protocol.resolve_uri(spec_path).await;
+        assert!(matches!(spec_result, Ok(Web4Response::ProtocolSpec { .. })));
+
+        // Test specific solar metric endpoint
+        let metric_path = "asi://solarengine/v1/region/AR4366/metric/free_energy?format=json";
+        let metric_result = protocol.resolve_uri(metric_path).await;
+
+        match metric_result {
+            Ok(Web4Response::SolarMetric { value, unit, alert, .. }) => {
+                assert_eq!(value, 5.23e30);
+                assert_eq!(unit, "erg");
+                assert!(alert); // Threshold 5e30
+            }
+            _ => panic!("Solar metric resolution failed or returned unexpected response"),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_asi_sandbox_resolution() {
+        let protocol = AsiWeb4Protocol::new(
+            "NASA_API_KEY".to_string(),
+            "SOLANA_URL".to_string(),
+            "ETHEREUM_URL".to_string(),
+        ).unwrap();
+
+        let path = "asi://asi/sandbox";
+        let result = protocol.resolve_uri(path).await;
+
+        match result {
+            Ok(Web4Response::Sandbox { status, security_level, .. }) => {
+                assert_eq!(status, "ACTIVE");
+                assert_eq!(security_level, "I11");
+            }
+            _ => panic!("Sandbox resolution failed or returned unexpected response"),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_cathedral_solar_bridge_integration() {
+        let solar_engine = Arc::new(SolarPhysicsEngine::new("KEY".to_string()).unwrap());
+        let mut bridge = PhysicsConsciousnessBridge::new(solar_engine);
+
+        let mut cathedral = CathedralStatus {
+            phi: 1.068,
+            meta_coherence: 0.942,
+        };
+
+        let report = bridge.integrate_solar_metrics(&mut cathedral).await.unwrap();
+
+        assert!(cathedral.phi > 1.068);
+        assert!(cathedral.meta_coherence > 0.942);
+        assert_eq!(report.solar_metrics.active_region, "AR4366");
+    }
+
+    #[tokio::test]
+    async fn test_carrington_hedge_logic() {
+        let solar_engine = Arc::new(SolarPhysicsEngine::new("KEY".to_string()).unwrap());
+        let mut hedge_integration = CarringtonHedgeIntegration::new(solar_engine);
+
+        // Mock high risk by modifying the engine behavior if needed,
+        // but our mock get_metric("AR4366", "flare_x_prob") returns 0.02 (which is 2%)
+        // Wait, 0.02 in my mock implementation for get_metric is not high.
+        // Let's check RiskLevel logic: if flare_prob < 10.0 => RiskLevel::Low
+
+        let status = hedge_integration.monitor_and_hedge().await.unwrap();
+        match status {
+            HedgeIntegrationStatus::Monitoring { risk_level } => {
+                assert_eq!(risk_level, RiskLevel::Low);
+            }
+            _ => panic!("Expected monitoring status for low risk"),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_hypermesh_latency_ping() {
+        let hypermesh = Arc::new(SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap());
+
+        let tester = HyperMeshLatencyTest::new(hypermesh);
+        let report = tester.test_hypermesh_latency().await.unwrap();
+
+        assert!(report.success);
+        assert_eq!(report.hop_count, 3);
+        assert!(report.round_trip_ms >= 127);
+    }
+
+    #[test]
+    fn test_sovereign_tmr_bridge() {
+        let triad = JsocTriad {
+            hmi_mag: serde_json::json!({}),
+            aia_193: serde_json::json!({}),
+            hmi_dop: serde_json::json!({}),
+        };
+
+        let bundle = SovereignTMRBundle::derive_from_solar_data(&triad);
+
+        let state = CgeState { Φ: 1.030 }; // CGE Alpha stable
+
+        let result = bundle.verify_quorum(&state);
+        assert!(result.is_pass());
+
+        let low_phi_state = CgeState { Φ: 1.021 };
+        let fail_result = bundle.verify_quorum(&low_phi_state);
+        assert!(!fail_result.is_pass());
+    }
+
+    #[test]
+    fn test_dynamic_solar_anchoring() {
+        let triad = JsocTriad {
+            hmi_mag: serde_json::json!({}),
+            aia_193: serde_json::json!({}),
+            hmi_dop: serde_json::json!({}),
+        };
+
+        let bundle = SovereignTMRBundle::derive_from_solar_data(&triad);
+
+        let eruptive_anchor = DynamicSolarAnchor {
+            mag_range: (-250.0, -120.0),
+            temp_range: (1.5, 3.5),
+            velocity_range: (-2000.0, 800.0),
+            timestamp: std::time::SystemTime::now(),
+            validity_window: std::time::Duration::from_secs(3600),
+            flare_class: FlareClass::X8_1,
+            cme_status: CmeStatus::EarthDirected,
+        };
+
+        let cge_state = CgeState { Φ: 1.030 };
+
+        let result = bundle.verify_quorum_dynamic(&cge_state, &eruptive_anchor);
+        assert!(result.is_pass());
+    }
+
+    #[tokio::test]
+    async fn test_oam_closure_protocol() {
+        let channel = OamClosureChannel::new();
+        assert!(channel.effective_throughput() < 250.0);
+        assert!(channel.effective_throughput() > 170.0);
+
+        let protocol = ClosureGeometryProtocol::new();
+        let path = BerryPath;
+        let rtt = protocol.transmit_winding(path).await.unwrap();
+        assert!(rtt.as_millis() < 10);
     }
 }
