@@ -14,6 +14,7 @@ mod tests {
     use crate::synaptic_fire::*;
     use crate::kardashev_jump::*;
     use crate::hyper_mesh::*;
+    use crate::global_orchestrator::*;
     use crate::sun_senscience_agent::*;
     use crate::microtubule_biology::*;
     use crate::neuroscience_model::*;
@@ -469,6 +470,23 @@ mod tests {
         // Record Ledger Entry
         let entry = LedgerEntry::jump_executed();
         assert_eq!(entry.status, "SOVEREIGNTY_ACHIEVED");
+    }
+
+    #[tokio::test]
+    async fn test_global_orchestration_unification() {
+        let mut orchestrator = GlobalOrchestrator::new();
+
+        let result = orchestrator.unify_scales().await;
+
+        match result {
+            Ok(state) => {
+                assert_eq!(state.status, "HOMEOSTASIS");
+                assert!(state.consciousness_index > 0.9);
+                assert!(state.planetary_health > 0.9);
+                assert!(state.economic_efficiency > 0.9);
+            }
+            Err(e) => panic!("Global orchestration failed: {:?}", e),
+        }
     }
 
     #[tokio::test]
