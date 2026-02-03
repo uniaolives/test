@@ -29,6 +29,16 @@ crossbeam = "0.8"
 dashmap = "5.5"
 num_cpus = "1.16"
 sysinfo = "0.29"
+ndarray = { version = "0.15", features = ["serde"] }
+petgraph = "0.6"
+rayon = "1.8"
+rand_distr = "0.4"
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+numpy = { version = "0.20", optional = true }
+rustfft = "6.1"
+num-complex = "0.4"
+warp = "0.3"
+futures-util = "0.3"
 ndarray = "0.15"
 petgraph = "0.6"
 rayon = "1.8"
@@ -50,6 +60,7 @@ sasc-v16 = ["ring", "aes-gcm"]
 quantum-resistant = ["blake3", "xmss"]
 ai-assist = ["tch", "candle-core"]
 xmss = []
+python-bindings = ["pyo3", "numpy"]
 
 [[bin]]
 name = "safecore-9d"
@@ -62,6 +73,10 @@ path = "src/daemon.rs"
 [[bin]]
 name = "ethics-monitor"
 path = "src/ethics.rs"
+
+[[bin]]
+name = "asi-symbiosis"
+path = "src/symbiosis_bin.rs"
 
 [profile.release]
 opt-level = 3

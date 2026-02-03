@@ -49,4 +49,63 @@ impl Constitution {
 
         Ok(())
     }
+
+    pub fn update_constitutional_parameter(&mut self, _key: &str, _value: f64) {
+        // Mock update
+    }
+
+    pub fn set_resonance_frequency(&mut self, _freq: f64) {
+        // Mock set
+    }
+
+    pub fn validate_intention(&self, _intention: &str) -> Result<bool> {
+        Ok(true)
+    }
+
+    pub fn get_constitutional_stability(&self) -> f64 {
+        0.98
+    }
+}
+
+pub struct SafeCore11D {
+    pub constitution: std::sync::Arc<std::sync::RwLock<Constitution>>,
+}
+
+impl SafeCore11D {
+    pub fn new() -> Self {
+        let params = Parameters {
+            phi_target: 1.030,
+            tau_max: 1.35,
+            dimensional_stability: 0.99999,
+            ethical_threshold: 0.95,
+            evolutionary_pace: "deliberate".to_string(),
+        };
+        let consti = Constitution {
+            version: "11.0.0".to_string(),
+            dimensions: 11,
+            invariants: vec![],
+            parameters: params,
+        };
+        SafeCore11D {
+            constitution: std::sync::Arc::new(std::sync::RwLock::new(consti)),
+        }
+    }
+
+    pub fn update_constitutional_parameter(&self, key: &str, value: f64) {
+        let mut consti = self.constitution.write().unwrap();
+        consti.update_constitutional_parameter(key, value);
+    }
+
+    pub fn set_resonance_frequency(&self, freq: f64) {
+        let mut consti = self.constitution.write().unwrap();
+        consti.set_resonance_frequency(freq);
+    }
+
+    pub async fn validate_intention(&self, intention: &str) -> anyhow::Result<bool> {
+        self.constitution.read().unwrap().validate_intention(intention)
+    }
+
+    pub fn get_constitutional_stability(&self) -> f64 {
+        self.constitution.read().unwrap().get_constitutional_stability()
+    }
 }
