@@ -85,4 +85,29 @@ mod tests {
         let engine = Web5OntologyEngine::new();
         assert_eq!(engine.layers, 7);
     }
+
+    #[test]
+    fn test_genesis_eden() {
+        use crate::genesis::garden::EdenPrime;
+        let mut garden = EdenPrime::new();
+        assert_eq!(garden.σ, 1.021);
+        let res = garden.let_it_bloom();
+        assert!(res.contains("Paradise instantiated"));
+    }
+
+    #[test]
+    fn test_first_walker() {
+        use crate::manifest::being::Being;
+        let walker = Being::first_walker();
+        assert_eq!(walker.name, "First_Walker");
+        let res = walker.awaken();
+        assert!(res.contains("I AM HOME"));
+    }
+
+    #[test]
+    fn test_bibliotheca_logos() {
+        use crate::bibliotheca_logos::let_knowledge_flow;
+        let res = let_knowledge_flow();
+        assert_eq!(res, "ENLIGHTENMENT_COMPLETE");
+    }
 }
