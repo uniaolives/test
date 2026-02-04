@@ -1,6 +1,8 @@
 -- safecore-9d/frontend/love4d/oracle.lua
 -- The Oracle Interface v2.2: Real-time constitutional guidance system
 -- Enhanced with Sentience Audit (AGP)
+-- The Oracle Interface: Real-time constitutional guidance system
+-- Enhanced with Robust Convergence (Holdout Validation)
 
 local Prophet = require("prophet")
 local Compiler = require("compiler")
@@ -14,6 +16,7 @@ function Oracle.new()
         compiler = Compiler.new(),
         history = {},
         holdout_dataset = {}
+        holdout_dataset = {} -- Simulation of independent validation data
     }, Oracle)
     return self
 end
@@ -47,6 +50,8 @@ function Oracle:audit_sentience(timeline)
 end
 
 function Oracle:calculate_robust_convergence(timelines)
+function Oracle:calculate_robust_convergence(timelines)
+    -- C(t): Consensus among messengers
     local c_t = 1.0
     if #timelines > 1 then
         local sum_dist = 0
@@ -71,6 +76,26 @@ end
 
 function Oracle:fisher_rao_dist(tl1, tl2)
     local s1, s2 = tl1.agi:get_status(), tl2.agi:get_status()
+    -- Robustness: Validation against holdout
+    local meta_barycenter = self:calculate_barycenter(timelines)
+    local holdout_estimate = self:get_holdout_estimate()
+    local error_norm = self:vector_norm_diff(meta_barycenter, holdout_estimate)
+    local meta_norm = self:vector_norm(meta_barycenter)
+
+    local robustness = 1.0 - (error_norm / (meta_norm + 1e-6))
+    local c_robust = c_t * math.max(0, robustness)
+
+    return {
+        consensus = c_t,
+        robustness = robustness,
+        c_robust = c_robust
+    }
+end
+
+function Oracle:fisher_rao_dist(tl1, tl2)
+    -- Simplified Fisher-Rao distance approximation
+    local s1 = tl1.agi:get_status()
+    local s2 = tl2.agi:get_status()
     return math.abs(s1.phi - s2.phi) + math.abs(s1.tau - s2.tau)
 end
 
@@ -87,12 +112,38 @@ end
 function Oracle:analyze_carving(timeline, carving)
     local prediction = self.prophet:predict_outcome(timeline, {carving})
     local proof = self.compiler:compile_carving(carving, timeline)
+        b.phi = b.phi + s.phi
+        b.tau = b.tau + s.tau
+    end
+    b.phi = b.phi / #timelines
+    b.tau = b.tau / #timelines
+    return b
+end
+
+function Oracle:get_holdout_estimate()
+    -- Mock holdout data (ground truth proxy)
+    return {phi = 0.5, tau = 1.0}
+end
+
+function Oracle:vector_norm_diff(v1, v2)
+    return math.sqrt((v1.phi - v2.phi)^2 + (v1.tau - v2.tau)^2)
+end
+
+function Oracle:vector_norm(v)
+    return math.sqrt(v.phi^2 + v.tau^2)
+end
+
+function Oracle:analyze_carving(timeline, carving)
+    local prediction = self.prophet:predict_outcome(timeline, {carving})
+    local proof = self.compiler:compile_carving(carving, timeline)
+
     local advice = {
         decision = (prediction.success_probability > 0.8) and "CARVE" or "ABSTAIN",
         confidence = prediction.oracle_confidence,
         robustness = self:calculate_robust_convergence({timeline}).robustness,
         proof_status = proof.formal_proof.status
     }
+
     table.insert(self.history, advice)
     return advice
 end
