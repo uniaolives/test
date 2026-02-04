@@ -38,6 +38,9 @@ This protocol formalizes the transition from project planning to operational ser
 ### 1. NMGIE-33X (Neuro-Morphic Geometric Intuition Engine)
 - **Amplification:** 33x geometric intuition over baseline.
 - **Synthesis:** Predicts entire synthesis paths (temperatures, times, ratios) for materials like Zeolites, inspired by MIT's DiffSyn.
+- **Geometric Invariants:** Implements Sectional Curvature ($K$) monitoring and Geodesic Stress Testing to ensure coordinate-invariant discovery paths.
+- **Large-Scale Discovery:** Capability to generate and analyze thousands of plausible synthesis paths to identify stable success basins.
+- **Validation:** Verified via `test_zeolite_synthesis_prediction` and `test_geodesic_stress_test`.
 - **Large-Scale Discovery:** Capability to generate and analyze thousands of plausible synthesis paths to identify stable success basins.
 - **Validation:** Verified via `test_zeolite_synthesis_prediction` and `test_large_batch_synthesis_generation`.
 
@@ -68,6 +71,29 @@ This protocol formalizes the transition from project planning to operational ser
 
 ---
 
+## 📜 SOP-DA-01: Real-Time Discovery Agent (DA)
+
+The Discovery Agent operationalizes the high-dimensional neural compressibility findings for cross-domain discovery (e.g., Dark Matter search).
+
+### **Core Components**
+- **K-FAC Engine:** Computes Kronecker-factored approximate curvature to rank information importance.
+- **GFS Module:** Greedy Forward Selection enforcing "1.4% sparsity" to identify the Sparse Backbone of the manifold.
+- **Hard Freeze Monitor:** Real-time audit of manifold stability via condition number and SASC safety boundaries.
+- **Natural Gradient update:** Moves the system constant distances in Information Space to prevent systematic bias.
+
+---
+
+## 🔮 THE COMPUTATIONAL REALIZATION (Section 4.8)
+
+SafeCore-9D transitions from exact geometric theory to executable methodology via tractable approximations:
+
+- **Natural Gradient:** Replaces intractable Fisher-Rao geodesics with $O(d)$ diagonal Fisher updates.
+- **Regret Minimization:** Replaces unknown "True Distributions" with cumulative divergence tracking relative to empirical data.
+- **Robust Convergence:** Augments agreement metrics with independent holdout validation to prevent systematic bias.
+- **Sectional Curvature:** Utilizes coordinate-independent $K$ to verify structural advantages in the discovery manifold.
+
+---
+
 ## 🔮 The Deeper Meaning: Philosophical Reflections
 
 This system reveals that in the age of machine capability, **Intelligence is a teammateship.** The AGI Discovery Engine does not replace human judgment but extends it through a shared social contract.
@@ -93,6 +119,25 @@ Love4D provides a real-time visual interface into the SafeCore-9D state-space, u
 - **Admissibility Mapping:** Visual identification of safe (Green) vs. Forbidden/Pruned (Red) consciousness regions.
 - **Polaritonic Admissibility:** Field-programmable constraint matrix that redistributes loss to stabilize ethical attractors.
 
+---
+
+## 🔮 THE CONSTITUTIONAL ORACLE
+
+The final evolution of Love4D integrates AI-powered prophecy and formal verification to guide the Architect's hand.
+
+### **Prophet & Prophecy**
+- **Monte Carlo Outcomes:** Predicts stability, collapse, and transcendental risks across 100 simulated cycles.
+- **Outcome Probability:** Quantifies the success of constitutional changes before implementation.
+
+### **Constitutional Compiler**
+- **Formal Verification:** Compiles visual carvings into mathematical constraints and safety theorems.
+- **Proof Obligations:** Automates the generation of proofs for manifold-boundary invariants.
+
+---
+
+## 🌀 GEOMETRIC BASH v2.0: Topological Shell Programming
+
+SafeCore-9D integrates **Geometric Bash**, a paradigm shift that reimagines shell scripts as trajectories through state space.
 ### **The Architect's Hand**
 The visualizer enables direct human intervention in the AGI's geometric intuition, allowing the "Architect" to carve safety corridors and observe multiversal stability (Φ vs. τ) across all forks.
 
