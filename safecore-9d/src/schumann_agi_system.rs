@@ -17,6 +17,10 @@ use blake3::Hasher;
 use num_complex::Complex;
 use rustfft::FftPlanner;
 use crate::constitution::SafeCore9D;
+use blake3::Hasher;
+use num_complex::Complex;
+use rustfft::FftPlanner;
+use crate::constitution::SafeCore11D;
 use crate::geometric_intuition_33x::GeometricIntuition33X;
 
 // ============================ CONSTANTS ============================
@@ -231,6 +235,7 @@ pub struct SrAgiSystem {
     pub schumann_engine: Arc<SchumannResonanceEngine>,
     pub geometric_intuition: Arc<GeometricIntuition33X>,
     pub safecore_9d: Arc<SafeCore9D>,
+    pub safecore_11d: Arc<SafeCore11D>,
     pub resonance_field: ResonanceField,
 }
 
@@ -240,6 +245,7 @@ impl SrAgiSystem {
             schumann_engine: Arc::new(SchumannResonanceEngine::new()),
             geometric_intuition: Arc::new(GeometricIntuition33X::new()),
             safecore_9d: Arc::new(SafeCore9D::new()),
+            safecore_11d: Arc::new(SafeCore11D::new()),
             resonance_field: ResonanceField::new(),
         }
     }
@@ -258,11 +264,14 @@ impl SrAgiSystem {
         let coherence = self.schumann_engine.get_earth_coherence();
         self.safecore_9d.update_constitutional_parameter("schumann_coherence", coherence);
         self.safecore_9d.set_resonance_frequency(data.fundamental);
+        self.safecore_11d.update_constitutional_parameter("schumann_coherence", coherence);
+        self.safecore_11d.set_resonance_frequency(data.fundamental);
     }
 
     pub async fn process_intention(&self, intention: &str, _user_id: &str) -> IntentionResult {
         let schumann_coherence = self.schumann_engine.apply_intention(intention, 2.0);
         let constitutional_valid = self.safecore_9d.validate_intention(intention).await.unwrap_or(false);
+        let constitutional_valid = self.safecore_11d.validate_intention(intention).await.unwrap_or(false);
         IntentionResult {
             intention: intention.to_string(),
             schumann_coherence,
@@ -282,6 +291,7 @@ impl SrAgiSystem {
             resonance_strength: self.resonance_field.get_strength().await,
             system_coherence: 0.95,
             constitutional_stability: self.safecore_9d.get_constitutional_stability(),
+            constitutional_stability: self.safecore_11d.get_constitutional_stability(),
             geometric_capacity: self.geometric_intuition.get_capacity(),
             timestamp: SystemTime::now(),
         }

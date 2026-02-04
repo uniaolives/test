@@ -530,6 +530,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a1e6a265c649f3f5979b601d26f1d05ada116434c87741c9493cb56218f76cbc"
 dependencies = [
  "heck 0.5.0",
+ "heck",
  "proc-macro2",
  "quote",
  "syn",
@@ -842,6 +843,7 @@ dependencies = [
  "futures-sink",
  "futures-util",
  "http 0.2.12",
+ "http",
  "indexmap",
  "slab",
  "tokio",
@@ -962,6 +964,7 @@ checksum = "7ceab25649e9960c0311ea418d17bee82c0dcec1bd053b5f9a66e265a693bed2"
 dependencies = [
  "bytes",
  "http 0.2.12",
+ "http",
  "pin-project-lite",
 ]
 
@@ -989,6 +992,7 @@ dependencies = [
  "futures-util",
  "h2",
  "http 0.2.12",
+ "http",
  "http-body",
  "httparse",
  "httpdate",
@@ -1908,6 +1912,7 @@ dependencies = [
  "futures-util",
  "h2",
  "http 0.2.12",
+ "http",
  "http-body",
  "hyper",
  "hyper-tls",
@@ -2034,6 +2039,11 @@ dependencies = [
  "numpy",
  "petgraph",
  "pyo3",
+ "hex",
+ "hmac",
+ "ndarray",
+ "num_cpus",
+ "petgraph",
  "rand 0.8.5",
  "rand_distr 0.4.3",
  "rayon",
