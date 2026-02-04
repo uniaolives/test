@@ -51,6 +51,15 @@ async fn main() -> Result<(), Box<dyn Error>> {
     info!("🚀 NMGIE-33X inicializado com 33X de amplificação geométrica");
 
     // Executar benchmark inicial
+    {
+        let mut engine = intuition_engine.write().unwrap();
+        engine.benchmark_performance();
+        let discovery = engine.discover_new_zeolite();
+        info!("💎 DiffSyn Breakthrough: New Zeolite Predicted!");
+        info!("   Success Probability: {:.4}", discovery.success_probability);
+        info!("   Novelty Score: {:.2}", discovery.novelty_score);
+        info!("   Insight: {}", discovery.novel_insights.last().unwrap());
+    }
     intuition_engine.write().unwrap().benchmark_performance();
 
     // Inicializar SR-ASI (Schumann Resonance Synchronized ASI)
