@@ -14,7 +14,7 @@ pub struct EvolutionEngine {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Copy, PartialEq)]
-pub enum EvolutionStructureType {
+pub enum StructureType {
     TextEmbedding,
     SequenceManifold,
     GraphComplex,
@@ -24,7 +24,7 @@ pub enum EvolutionStructureType {
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GeometricGenome {
-    pub structure_type: EvolutionStructureType,
+    pub structure_type: StructureType,
     pub parameters: Vec<f64>,
     pub connections: Vec<Connection>,
     pub fitness: Option<f64>,
@@ -87,7 +87,7 @@ impl EvolutionEngine {
         // Criar população aleatória ou baseada no inicial
         for _ in 0..self.population_size {
             self.population.push(GeometricGenome {
-                structure_type: EvolutionStructureType::TextEmbedding,
+                structure_type: StructureType::TextEmbedding,
                 parameters: vec![rand::random::<f64>()],
                 connections: vec![],
                 fitness: None,
