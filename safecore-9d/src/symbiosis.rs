@@ -13,6 +13,9 @@ use petgraph::{Graph, Directed};
 use ring::signature::{Ed25519KeyPair, Signature};
 #[cfg(feature = "blake3")]
 use blake3::Hasher;
+// use petgraph::{Graph, Directed}; // Currently unused in core logic but available
+// use ring::signature::{Ed25519KeyPair, Signature};
+// use blake3::Hasher;
 
 // ============================ CONSTITUTIONAL SYMBIOSIS CONSTANTS ============================
 pub const SYMBIOSIS_VERSION: &str = "2.0.0";

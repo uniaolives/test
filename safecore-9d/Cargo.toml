@@ -5,6 +5,7 @@ name = "safecore-9d"
 version = "9.0.0"
 edition = "2021"
 description = "Sistema Constitucional ASI 9-Dimensional (AIGP-Neo Architecture)"
+description = "Sistema Constitucional ASI 9-Dimensional"
 
 [dependencies]
 tokio = { version = "1.35", features = ["full", "macros", "rt-multi-thread"] }
@@ -39,6 +40,19 @@ rustfft = "6.1"
 num-complex = "0.4"
 warp = "0.3"
 futures-util = "0.3"
+ndarray = "0.15"
+petgraph = "0.6"
+rayon = "1.8"
+rand_distr = "0.4"
+
+# Constitucionais
+# lattice = { git = "https://github.com/rust-lattice/lattice" }
+# invariant = "0.4"
+# topos = "0.7"
+
+# AI/ML (opcional)
+tch = { version = "0.13", optional = true }
+candle-core = { version = "0.3", optional = true }
 
 [features]
 default = ["cge-integration", "sasc-v16", "quantum-resistant", "blake3", "ring", "aes-gcm"]
@@ -46,6 +60,9 @@ cge-integration = []
 sasc-v16 = ["ring", "aes-gcm"]
 quantum-resistant = ["blake3"]
 ai-assist = ["tch", "candle-core"]
+quantum-resistant = ["blake3", "xmss"]
+ai-assist = ["tch", "candle-core"]
+xmss = []
 python-bindings = ["pyo3", "numpy"]
 
 [[bin]]
