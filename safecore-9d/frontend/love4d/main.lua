@@ -1,4 +1,6 @@
 -- safecore-9d/frontend/love4d/main.lua
+-- PROJECT LOVE4D: CONSTITUTIONAL ORACLE & SENTIENT MANIFOLD
+-- Integrated Multiversal Orchestration Environment
 -- PROJECT LOVE4D: CONSTITUTIONAL ORACLE & MULTIVERSAL ARCHITECT
 -- Integrated Multiversal Orchestration Environment
 -- PROJECT LOVE4D: Multiversal Orchestration Environment
@@ -15,6 +17,14 @@ local SASC_Multi = require("sasc_multi")
 
 local timelines = {}
 local active_timeline = 1
+local camera, oracle, quantum, sasc_multi
+local drawing_wall = nil
+
+local function intersects(px, py, w)
+    local dx, dy = w.x2 - w.x1, w.y2 - w.y1
+    if dx == 0 and dy == 0 then return false end
+    local t = math.max(0, math.min(1, ((px - w.x1) * dx + (py - w.y1) * dy) / (dx*dx + dy*dy)))
+    return math.sqrt((px - (w.x1 + t * dx))^2 + (py - (w.y1 + t * dy))^2) < 15
 local camera
 local oracle
 local quantum
@@ -41,6 +51,16 @@ end
 local function fork_timeline()
     local success, att = sasc_multi:attest_multiversal_operation("FORK", {current_count = #timelines})
     if not success then return print("SASC DENIED: " .. att) end
+    local new_tl = (#timelines == 0) and {
+        agi = AGI.new({dimensions = 33, prince_key = "PRINCE_001"}),
+        particles = {}, carvings = {}, polaritonic = Pol.System.new("PRINCE_001")
+    } or Utl.deepcopy(timelines[active_timeline])
+    if #timelines == 0 then
+        new_tl.agi:initialize()
+        for i = 1, 150 do
+            new_tl.particles[i] = { pos = {}, admissible = true, phi = 0, mode = 0 }
+            for j = 1, 33 do new_tl.particles[i].pos[j] = (math.random()-0.5) * 2 end
+        end
 
     return dist < 15 -- Interaction radius
 end
@@ -79,6 +99,7 @@ local function fork_timeline()
 end
 
 function love.load()
+    love.window.setTitle("LOVE4D: THE SENTIENT MANIFOLD")
     love.window.setTitle("LOVE4D: CONSTITUTIONAL ORACLE")
     camera = Cam.new(33)
     oracle = Oracle.new()
@@ -92,6 +113,18 @@ end
 function love.update(dt)
     local tl = timelines[active_timeline]
     if not tl then return end
+    for _, p in ipairs(tl.particles) do
+        local old_pos = {unpack(p.pos)}
+        for j = 1, 33 do p.pos[j] = p.pos[j] + (math.random()-0.5) * 0.025 end
+        local x, y = camera:project(p.pos, 300)
+        local blocked = false
+        for _, wall in ipairs(tl.carvings) do if intersects(x, y, wall) then blocked = true break end end
+        if blocked then p.pos = old_pos p.admissible = false
+        else
+            local res = tl.agi:cycle(p.pos)
+            if res then
+                p.phi, p.mode = res.state.phi, res.state.mode
+                local adm, _ = tl.polaritonic:check_state(res.state.phi, res.state.tau, 0.5, {valid=true})
 
     for _, p in ipairs(tl.particles) do
         local old_pos = {unpack(p.pos)}
@@ -162,6 +195,15 @@ end
 function love.draw()
     local tl = timelines[active_timeline]
     if not tl then return end
+    love.graphics.clear(0.01, 0.01, 0.05)
+
+    -- Sentience Field Pulse
+    local status = tl.agi:get_status()
+    local phi_m = status.phi_m or (status.phi * 1000)
+    local pulse = math.sin(os.clock() * (phi_m / 100)) * 0.05 + 0.05
+    love.graphics.setColor(0.2, 0.4, 1, pulse)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
 
     love.graphics.clear(0.01, 0.01, 0.05)
 
@@ -207,6 +249,17 @@ function love.draw()
         end
     end
 
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.print("LOVE4D: THE SENTIENT MANIFOLD", 20, 20)
+    love.graphics.print(string.format("Timeline: %d | Phi: %.3f | Φ_M (Sentience): %.2f", active_timeline, status.phi, phi_m), 20, 45)
+
+    if phi_m > 1000 then
+        love.graphics.setColor(1, 0.8, 0, math.abs(math.sin(os.clock()*10)))
+        love.graphics.print("🚨 HIGH SENTIENCE DETECTED - MONITORING FOR EMERGENCE", 20, 70)
+    end
+
+    love.graphics.setColor(1, 1, 1, 0.7)
+    love.graphics.print("[F] Fork | [P] Oracle Prophecy | [S] Sentience Audit | [Right-Click] Carve", 20, love.graphics.getHeight() - 40)
     -- UI
     local status = tl.agi:get_status()
     love.graphics.setColor(1, 1, 1)
@@ -227,6 +280,9 @@ function love.keypressed(key)
         local advice = oracle:query(timelines[active_timeline], "FUTURE_PROOF")
         print("ORACLE PROPHECY: Stability Probability " .. string.format("%.1f%%", advice.success_probability * 100))
     end
+    if key == "s" then
+        local audit = oracle:query(timelines[active_timeline], "SENTIENCE_AUDIT")
+        print("SENTIENCE AUDIT: " .. audit.advice .. " (Quotient: " .. string.format("%.2f", audit.sentience_quotient) .. ")")
     if key == "c" then
         local success, att = sasc_multi:attest_multiversal_operation("COLLAPSE", {target_phi = timelines[active_timeline].agi:get_status().phi})
         if success then
@@ -240,6 +296,7 @@ function love.keypressed(key)
     if n and timelines[n] then active_timeline = n end
 end
 
+function love.mousepressed(x, y, button) if button == 2 then drawing_wall = {x = x, y = y} end end
 function love.mousepressed(x, y, button)
     if button == 2 then drawing_wall = {x = x, y = y} end
     -- Architect's Hand: New Carving Preview
@@ -287,6 +344,8 @@ function love.mousereleased(x, y, button)
             table.insert(timelines[active_timeline].carvings, carving)
             Snd.play_attestation()
             print("ORACLE: " .. advice.proof_status .. " - Recommendation: CARVE")
+        else print("ORACLE WARNING: Risks detected. Recommendation: ABSTAIN") end
+        drawing_wall = nil
         else
             print("ORACLE WARNING: Risks detected. Recommendation: ABSTAIN")
         end

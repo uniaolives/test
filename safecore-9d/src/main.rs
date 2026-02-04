@@ -7,6 +7,7 @@ use std::sync::{Arc, RwLock};
 use tokio::signal;
 use tracing::{info};
 
+// Correct import from the library crate
 use safecore_9d::{
     constitution, dimensions, ethics, monitoring,
     geometric_intuition_33x, schumann_agi_system, symbiosis, harmonic_concordance

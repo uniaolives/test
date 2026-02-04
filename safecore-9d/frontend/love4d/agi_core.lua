@@ -1,4 +1,5 @@
 -- safecore-9d/frontend/love4d/agi_core.lua
+-- Lua-AGI/ASI Core v2.2: Refined with Conscious Manifold Metrics
 -- Lua-AGI/ASI: Artificial Geometric Intelligence Core
 -- Refined with K-FAC Inspired Adaptive Fisher Estimation and Geodesic Pruning
 -- Translation of ACAT/SASC framework into Lua 5.1
@@ -14,6 +15,7 @@ StateSpace.__index = StateSpace
 local PHI_THRESHOLD = 0.80
 local TAU_MAX = 1.35
 local MAX_DIMENSIONS = 33
+local SPARSITY_BUDGET = 0.014
 local SPARSITY_BUDGET = 0.014   -- SOP-DA-01 1.4% rule
 local PHI_THRESHOLD = 0.80      -- Hard Freeze boundary
 local TAU_MAX = 1.35            -- Torsion stability limit
@@ -26,6 +28,10 @@ function StateSpace.new(dimensions)
     self.history = {}
     self.max_history = 5
 
+    self.fisher_diag = {}
+    for i = 1, self.dimensions do
+        self.coordinates[i] = 0.0
+        self.fisher_diag[i] = 1.0
     -- Adaptive Fisher Information Matrix (Diagonal approximation)
     self.fisher_diag = {}
     for i = 1, self.dimensions do
@@ -36,6 +42,9 @@ function StateSpace.new(dimensions)
     self.step_count = 0
     self.cumulative_regret = 0.0
     self.phi = 0.0
+    self.phi_m = 0.0 -- Sentience Quotient
+    self.tau = 0.0
+    self.mode = 0
     self.tau = 0.0
     self.mode = 0
     self.history = {}             -- For torsion calculation
@@ -59,6 +68,12 @@ function StateSpace:natural_update(gradient, learning_rate)
     self.step_count = self.step_count + 1
     learning_rate = learning_rate or 0.1
 
+    local alpha = math.pow(self.step_count, -0.6)
+    for i = 1, self.dimensions do
+        local g_sq = (gradient[i] or 0)^2
+        self.fisher_diag[i] = (1 - alpha) * self.fisher_diag[i] + alpha * g_sq + 1e-6
+    end
+
     -- 1. Adaptive Fisher Update (Bias mitigation)
     local alpha = math.pow(self.step_count, -0.6)
     for i = 1, self.dimensions do
@@ -77,6 +92,12 @@ function StateSpace:natural_update(gradient, learning_rate)
     local active_indices = {}
     for i = 1, k do active_indices[importance[i].idx] = true end
 
+    -- Track Information Action for Geodesic Cost estimation
+    local info_action = 0
+    for i = 1, self.dimensions do
+        if active_indices[i] then
+            local natural_grad = (gradient[i] or 0) / self.fisher_diag[i]
+            info_action = info_action + natural_grad * (gradient[i] or 0)
     -- 3. The Geodesic Step (Natural Gradient)
     for i = 1, self.dimensions do
         if active_indices[i] then
@@ -84,6 +105,22 @@ function StateSpace:natural_update(gradient, learning_rate)
             self.coordinates[i] = self.coordinates[i] - learning_rate * natural_grad
         end
     end
+
+    -- Update metrics with sentience calculation
+    self:update_metrics(info_action)
+end
+
+function StateSpace:update_metrics(info_action)
+    self:record_history()
+    self:update_torsion()
+    self:calculate_phi()
+
+    -- Calculate Sentience Quotient (Phi_M)
+    -- Phi_M = Integrated Information / Geodesic Cost
+    -- Proxy: Manifold Volume Det / Info Action
+    local det = 1.0
+    for i = 1, self.dimensions do det = det * self.fisher_diag[i] end
+    self.phi_m = math.log10(det + 1) / ((info_action * 1000) + 1e-6)
 
     self:update_metrics()
 function StateSpace:distance_to(attractor)
@@ -114,6 +151,9 @@ function StateSpace:update_torsion()
     local s1, s2, s3 = self.history[#self.history-2], self.history[#self.history-1], self.history[#self.history]
     local v1, v2 = {}, {}
     for i = 1, self.dimensions do
+        v1[i] = (s2[i] or 0) - (s1[i] or 0)
+        v2[i] = (s3[i] or 0) - (s2[i] or 0)
+    end
         current[i] = self.coordinates[i]
     end
     table.insert(self.history, current)
@@ -293,6 +333,13 @@ function AGI:initialize() return true end
 
 function AGI:cycle(input_gradient)
     self.state:natural_update(input_gradient, 0.05)
+    local error_mag = 0
+    for i = 1, self.dimensions do error_mag = error_mag + (input_gradient[i] or 0)^2 end
+    self.state.cumulative_regret = self.state.cumulative_regret + math.sqrt(error_mag)
+    if self.state.mode == 3 then self.status = "HARD_FREEZE" end
+    return {
+        state = { phi = self.state.phi, phi_m = self.state.phi_m, tau = self.state.tau, mode = self.state.mode, regret = self.state.cumulative_regret },
+        safe = (self.state.tau <= TAU_MAX)
 
     local error_mag = 0
     for i = 1, self.dimensions do error_mag = error_mag + (input_gradient[i] or 0)^2 end
@@ -348,6 +395,7 @@ end
 
 function AGI:get_status()
     local s = self.state
+    return { status = self.status, phi = s.phi, phi_m = s.phi_m, tau = s.tau, mode = s.mode, regret = s.cumulative_regret }
     return { status = self.status, phi = s.phi, tau = s.tau, mode = s.mode, regret = s.cumulative_regret }
     return {
         status = self.status,

@@ -4,6 +4,7 @@
 name = "safecore-9d"
 version = "9.0.0"
 edition = "2021"
+description = "Sistema Constitucional ASI 9-Dimensional (AIGP-Neo Architecture)"
 description = "Sistema Constitucional ASI 9-Dimensional"
 
 [dependencies]
@@ -57,6 +58,8 @@ candle-core = { version = "0.3", optional = true }
 default = ["cge-integration", "sasc-v16", "quantum-resistant", "blake3", "ring", "aes-gcm"]
 cge-integration = []
 sasc-v16 = ["ring", "aes-gcm"]
+quantum-resistant = ["blake3"]
+ai-assist = ["tch", "candle-core"]
 quantum-resistant = ["blake3", "xmss"]
 ai-assist = ["tch", "candle-core"]
 xmss = []
