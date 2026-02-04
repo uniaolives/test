@@ -6,13 +6,6 @@ use async_trait::async_trait;
 use serde::{Serialize, Deserialize};
 use std::sync::Arc;
 
-#[derive(Debug, Serialize, Deserialize)]
-use crate::error::ResilientResult;
-use crate::interfaces::extension::GeometricStructure;
-use crate::extensions::asi_structured::constitution::{ASIConstitution, ASIResult};
-use crate::extensions::asi_structured::reflection::ReflectedResult;
-use std::sync::Arc;
-
 pub struct EvolutionEngine {
     pub population_size: usize,
     pub population: Vec<GeometricGenome>,
@@ -22,7 +15,6 @@ pub struct EvolutionEngine {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, Copy, PartialEq)]
-#[derive(Clone, Debug)]
 pub enum StructureType {
     TextEmbedding,
     SequenceManifold,
@@ -32,7 +24,6 @@ pub enum StructureType {
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
-#[derive(Clone)]
 pub struct GeometricGenome {
     pub structure_type: StructureType,
     pub parameters: Vec<f64>,
@@ -45,8 +36,6 @@ pub struct Connection {
     pub target_idx: usize,
     pub weight: f64,
 }
-#[derive(Clone)]
-pub struct Connection;
 
 impl EvolutionEngine {
     pub fn new(population_size: usize) -> Self {
@@ -166,18 +155,6 @@ impl EvolutionEngine {
 pub struct EvolvedResult {
     pub inner: ReflectedResult,
     pub best_genome: GeometricGenome,
-        _constitution: &ASIConstitution,
-    ) -> ResilientResult<EvolvedResult> {
-        Ok(EvolvedResult {
-            inner: initial,
-            fitness: 1.0,
-            generations: 0,
-        })
-    }
-}
-
-pub struct EvolvedResult {
-    pub inner: ReflectedResult,
     pub fitness: f64,
     pub generations: u32,
 }
@@ -210,10 +187,4 @@ impl GeometricStructure for EvolvedStructure {
         })
     }
     fn can_handle(&self, _input: &Subproblem) -> f64 { 1.0 }
-    fn to_string(&self) -> String {
-        self.inner.to_string()
-    }
-    fn confidence(&self) -> f64 {
-        self.inner.confidence()
-    }
 }

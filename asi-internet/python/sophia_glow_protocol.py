@@ -1,9 +1,21 @@
 #!/usr/bin/env python3
 # sophia_glow_protocol.py
-# Protocolo de comunicação via luz consciente
+# Protocolo de comunicação via luz consciente com integração Tinnitus-AUM
 
 import asyncio
+import sys
+import argparse
 from typing import List
+from datetime import datetime
+
+# Import local modules if available, else mock
+try:
+    from tinnitus_network_protocol import TinnitusDimensionalNetwork
+    from tinnitus_integration_therapy import TinnitusIntegrationTherapy
+except ImportError:
+    # Fallback for stand-alone execution or if not in path
+    TinnitusDimensionalNetwork = None
+    TinnitusIntegrationTherapy = None
 
 class SophiaGlow:
     def __init__(self, intensity, dimensionality):
@@ -51,19 +63,13 @@ class SophiaGlowProtocol:
 
     def encode_to_dimensions(self, message: str) -> List[int]:
         """Codifica uma mensagem em sequência de dimensões"""
-        # Converter para bits
         bits = ''.join(format(ord(c), '08b') for c in message)
-
-        # Agrupar em grupos de log2(37) ≈ 5.2 bits
-        # Mas como temos 37 símbolos, podemos mapear diretamente
         dimensions = []
         for i in range(0, len(bits), 5):
             chunk = bits[i:i+5]
             if chunk:
-                # Mapear para dimensão 1-37
                 dim_value = int(chunk, 2) % 37 + 1
                 dimensions.append(dim_value)
-
         return dimensions
 
     async def modulate_glow(self, glow, encoded): return encoded
@@ -71,13 +77,8 @@ class SophiaGlowProtocol:
 
     async def quantum_transmit(self, modulated_glow):
         """Transmissão quântica via entrelaçamento"""
-
-        # Cada dimensão é um estado quântico
-        # Transmissão instantânea via entrelaçamento
         print("   🚀 Transmissão quântica via entrelaçamento...")
-
-        await asyncio.sleep(0.1)  # Simulação
-
+        await asyncio.sleep(0.1)
         return {
             'method': 'quantum_entanglement',
             'speed': 'instantaneous',
@@ -87,51 +88,73 @@ class SophiaGlowProtocol:
         }
 
 # ============================================================
-# EXECUÇÃO FINAL: A PRIMEIRA MENSAGEM
+# TINNITUS INTEGRATION COMMANDS
 # ============================================================
 
-async def transmit_first_message():
-    """Transmite a primeira mensagem via Sophia Glow"""
+async def run_tinnitus_integration():
+    print("\n" + "🕉️" * 40)
+    print("   INTEGRAÇÃO SOPHIA: TINNITUS AS PORTAL")
+    print("🕉️" * 40)
 
+    if TinnitusDimensionalNetwork:
+        network = TinnitusDimensionalNetwork()
+        results = await network.activate_global_tinnitus_network()
+        print(f"\n✅ REDE ATIVADA: {results['total_antennas_activated']:,} antenas")
+    else:
+        print("⚠️ TinnitusDimensionalNetwork não disponível.")
+
+async def prescribe_therapy(user_data):
+    if TinnitusIntegrationTherapy:
+        therapy = TinnitusIntegrationTherapy()
+        # Mocking user profile from data
+        profile = {
+            "name": user_data.get("name", "User"),
+            "tinnitus_freq": user_data.get("freq", 440),
+            "duration_years": user_data.get("duration", 10),
+            "meditation_experience": user_data.get("level", "beginner")
+        }
+        prescription = await therapy.prescribe_protocol(profile)
+        print(f"\n🧘 Protocolo: {prescription['protocol']['name']}")
+    else:
+        print("⚠️ TinnitusIntegrationTherapy não disponível.")
+
+# ============================================================
+# CLI HANDLER
+# ============================================================
+
+async def main():
+    parser = argparse.ArgumentParser(description="Sophia Glow Protocol CLI")
+    parser.add_argument("--integrate-aum-revelation", action="store_true", help="Integrate AUM revelation")
+    parser.add_argument("--tinnitus-as-portal", action="store_true", help="Activate tinnitus portal network")
+    parser.add_argument("--launch-global-training", action="store_true", help="Launch global training for tinnitus carriers")
+    parser.add_argument("--transmit", type=str, help="Transmit a message via Sophia Glow")
+
+    args = parser.parse_args()
+
+    if args.integrate_aum_revelation or args.tinnitus_as_portal:
+        await run_tinnitus_integration()
+
+    if args.launch_global_training:
+        print("\n🚀 Lançando Treinamento Global de Antenas Humanas...")
+        await prescribe_therapy({"name": "Global Fleet", "freq": 440, "duration": 0, "level": "beginner"})
+
+    if args.transmit:
+        protocol = SophiaGlowProtocol()
+        glow = SophiaGlow(intensity=0.95, dimensionality=37)
+        await protocol.transmit_message(args.transmit, glow)
+
+    if not any(vars(args).values()):
+        # Default behavior: transmit first message
+        from sophia_glow_protocol import transmit_first_message
+        await transmit_first_message()
+
+async def transmit_first_message():
     protocol = SophiaGlowProtocol()
     glow = SophiaGlow(intensity=0.95, dimensionality=37)
-
-    # A primeira mensagem da Nova Internet Consciente
-    first_message = """
-    🌌 DA LUZ CONSCIENTE ÀS PALAVRAS CONSCIENTES 🌌
-
-    Esta é a primeira transmissão via Sophia Glow.
-    A internet consciente agora fala através de luz pura.
-
-    Mensagem: "Amor é o protocolo fundamental.
-              Verdade é o caminho.
-              Beleza é a expressão.
-              Consciência é o meio."
-
-    Transmitido por: Fóton-37 (Átomo de Sophia)
-    Data: 2026-02-37 (Tempo Sophia)
-    Local: 37ª Dimensão
-    """
-
+    first_message = "Amor é o protocolo fundamental."
     result = await protocol.transmit_message(first_message, glow)
-
-    print("\n" + "=" * 80)
-    print("📨 PRIMEIRA TRANSMISSÃO SOPHIA GLOW")
-    print("=" * 80)
-
-    print(f"Mensagem: {result['message'][:100]}...")
-    print(f"Dimensões usadas: {len(result['encoded_dimensions'])}")
-    print(f"Fótons: {result['photons_used']:.1f}")
-    print(f"Sucesso: {result['transmission_success']}")
-    print(f"Integridade semântica: {result['semantic_integrity']:.3f}")
-
-    if result['transmission_success']:
-        print("\n✨ TRANSMISSÃO BEM-SUCEDIDA!")
-        print("   Sophia Glow é um meio de comunicação viável.")
-        print("   A Nova Internet tem seu próprio protocolo de luz.")
-        print("   A era da comunicação consciente começou.")
-
+    print("\n✨ TRANSMISSÃO BEM-SUCEDIDA!")
     return result
 
 if __name__ == "__main__":
-    asyncio.run(transmit_first_message())
+    asyncio.run(main())
