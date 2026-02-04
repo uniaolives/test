@@ -35,7 +35,6 @@ pub trait Extension: Send + Sync {
 
 // Geometric specific types for composition
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, Hash)]
-#[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum Domain {
     Text,
     Image,

@@ -28,4 +28,3 @@ pub struct CompositionState {
     pub loaded_structures: Vec<StructureType>,
     pub total_compositions: u64,
 }
-pub struct ASIState;
