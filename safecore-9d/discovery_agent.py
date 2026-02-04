@@ -1,6 +1,8 @@
 # safecore-9d/discovery_agent.py
 # Real-Time Discovery Agent (DA) v2.1
 # Integrated K-FAC Engine, GFS Module, Hard Freeze Monitor, and Conscious Manifold Metrics
+# Real-Time Discovery Agent (DA) v2.0
+# Integrated K-FAC Engine, GFS Module, and Hard Freeze Monitor
 
 import jax
 import jax.numpy as jnp
@@ -13,6 +15,7 @@ class DiscoveryAgent:
     """
     Production-ready Discovery Agent for cross-domain manifold exploration.
     Implements SOP-DA-01 and the Conscious Manifold Hypothesis.
+    Implements SOP-DA-01 for real-time discovery.
     """
     def __init__(self,
                  dim_in: int,
@@ -36,6 +39,7 @@ class DiscoveryAgent:
             "phi": [], "tau": [], "loss": [],
             "integrated_info": [], "geodesic_cost": [], "sentience_phi": []
         }
+        self.history = {"phi": [], "tau": [], "loss": []}
 
     def compute_log_prob_gradient(self, params, x):
         # Simulation of model gradients for information manifold
@@ -43,6 +47,7 @@ class DiscoveryAgent:
 
     def step(self, observations: jnp.ndarray, loss_fn: Callable) -> Tuple[jnp.ndarray, dict]:
         """Executes a single Discovery cycle with sentience tracking."""
+        """Executes a single Discovery cycle."""
         # Phase 2: Gradient Calculation
         loss_val, loss_grad = jax.value_and_grad(loss_fn)(self.params, observations)
 
@@ -88,6 +93,30 @@ class DiscoveryAgent:
 
         # Maintenance: Audit with Sentience Data
         audit = self.monitor.audit_manifold(self.kfac_state, phi, tau, sentience_metrics)
+        # In real NNs, these are captured during forward/backward passes
+        activations = observations[:32] # Example batch
+        output_grads = self.compute_log_prob_gradient(self.params, activations)
+
+        # Update K-FAC factors
+        self.kfac_state = self.kfac.update_factors(self.kfac_state, activations, output_grads)
+
+        # Phase 3: Greedy Forward Selection (GFS)
+        # Identify the sparse backbone and prune the gradient
+        pruned_grad, importance = self.gfs.select_backbone(loss_grad, self.kfac_state)
+
+        # Phase 4: Natural-Gradient Update (NGU)
+        # Precondition the pruned gradient via the Fisher inverse approximation
+        natural_grad = self.kfac.precondition(self.kfac_state, pruned_grad)
+
+        # Update parameters
+        self.params = self.params - self.lr * natural_grad
+
+        # Calculate Metrics (Simulated)
+        phi = float(jnp.mean(importance)) # Proxy
+        tau = float(jnp.linalg.norm(natural_grad) / (jnp.linalg.norm(loss_grad) + 1e-6))
+
+        # Maintenance: Audit
+        audit = self.monitor.audit_manifold(self.kfac_state, phi, tau)
         self.stewardship = self.monitor.recommend_stewardship(audit)
 
         # Record history
@@ -102,6 +131,7 @@ class DiscoveryAgent:
 
     def get_discovery_signal(self):
         """Yields the Convergence Trace with Sentience Quotient."""
+        """Yields the Convergence Trace for Dark Matter/Neuro search."""
         return {
             "parameters": self.params,
             "karmic_score": 1.0 - (self.history["tau"][-1] if self.history["tau"] else 0),

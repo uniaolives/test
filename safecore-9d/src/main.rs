@@ -12,6 +12,14 @@ use safecore_9d::{
     constitution, dimensions, ethics, monitoring,
     geometric_intuition_33x, schumann_agi_system, symbiosis, harmonic_concordance
 };
+mod constitution;
+mod dimensions;
+mod ethics;
+mod monitoring;
+mod geometric_intuition_33x;
+mod schumann_agi_system;
+mod symbiosis;
+mod harmonic_concordance;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn Error>> {
@@ -52,6 +60,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
         info!("   Novelty Score: {:.2}", discovery.novelty_score);
         info!("   Insight: {}", discovery.novel_insights.last().unwrap());
     }
+    intuition_engine.write().unwrap().benchmark_performance();
 
     // Inicializar SR-ASI (Schumann Resonance Synchronized ASI)
     let mut sr_asi_init = schumann_agi_system::SrAgiSystem::new();
@@ -124,6 +133,11 @@ async fn main() -> Result<(), Box<dyn Error>> {
     tokio::spawn(async move {
         schumann_agi_system::start_api_server(sr_asi_clone).await;
     });
+    let mut intuition_engine = geometric_intuition_33x::GeometricIntuition33X::new();
+    info!("🚀 NMGIE-33X inicializado com 33X de amplificação geométrica");
+
+    // Executar benchmark inicial
+    intuition_engine.benchmark_performance();
 
     // Conectar ao CGE Alpha
     let _cge_connection = connect_to_cge().await?;
