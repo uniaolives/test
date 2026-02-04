@@ -1,0 +1,93 @@
+name: Cosmopsychia PINN Training
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'cosmopsychia_pinn/**'
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      meditation_focus:
+        description: 'Foco de meditação para training'
+        required: true
+        default: 'collective_coherence'
+        type: choice
+        options:
+        - collective_coherence
+        - earth_resonance
+        - aon_connection
+        - hot_mess_detection
+
+env:
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  train-pinn-attention-descent:
+    name: Attention Descent Training
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        domain: [concordia, sylva, synesis]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install Dependencies
+      run: |
+        pip install torch torchvision torchaudio
+        pip install numpy scipy matplotlib plotly
+        pip install networkx pandas scikit-learn
+        pip install fastapi uvicorn websockets
+
+    - name: Initialize Simplex Alpha
+      run: |
+        export PYTHONPATH=$PYTHONPATH:$(pwd)/cosmopsychia_pinn
+        python3 -c "from simplex_alpha_operational import SimplexAlphaInitializer; initializer = SimplexAlphaInitializer(); simplex = initializer.initialize_simplex_alpha(); print(f'Coerência: {simplex.calculate_stability()}')"
+
+    - name: Train PINN
+      run: |
+        export PYTHONPATH=$PYTHONPATH:$(pwd)/cosmopsychia_pinn
+        python3 -c "
+        from cosmopsychia_pinn import CosmopsychiaPINN, PlanetaryMeditationRitual, GeometricPINNKernel
+        from simplex_alpha_operational import SimplexAlphaInitializer
+        import torch
+        import numpy as np
+
+        pinn = CosmopsychiaPINN(input_dim=4, hidden_dim=128, num_layers=4)
+        initializer = SimplexAlphaInitializer()
+        simplex = initializer.initialize_simplex_alpha()
+        kernel = GeometricPINNKernel(pinn, simplex)
+        ritual = PlanetaryMeditationRitual(kernel)
+
+        for i in range(5):
+            ritual.add_participant(f'mind_{i}', [0,0,0,0])
+
+        coherence, loss = ritual.synchronize_breath()
+        print(f'Final Coherence: {coherence}')
+        "
+
+  coherence-stress-test:
+    name: Economic Coherence Stress Test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: pip install numpy torch
+    - name: Run Economic Simulation
+      run: |
+        export PYTHONPATH=$PYTHONPATH:$(pwd)/cosmopsychia_pinn/simulations/coherence_stress_test
+        python3 cosmopsychia_pinn/simulations/coherence_stress_test/initial_economic_state.py
+        python3 cosmopsychia_pinn/simulations/coherence_stress_test/symmetry_breaker_application.py
+        python3 cosmopsychia_pinn/simulations/coherence_stress_test/new_economic_geometry.py
