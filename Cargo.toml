@@ -19,6 +19,7 @@ members = [
     "cge_brics_cluster",
     "mobile/contracts",
     "mobile/ar",
+    "web777_ontology", "aigmi", "safecore-9d", "harmonia",
     "web777_ontology", "aigmi", "safecore-9d",
 ]
 resolver = "2"

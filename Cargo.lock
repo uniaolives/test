@@ -3307,6 +3307,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "harmonia"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "ndarray",
+ "petgraph",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "hash32"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
