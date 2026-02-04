@@ -1,0 +1,44 @@
+#!/usr/bin/env python3
+import sys
+import argparse
+import asyncio
+import os
+
+# Adjust path to find photon-37 scripts
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'photon-37', 'python'))
+
+async def main():
+    parser = argparse.ArgumentParser(description='Sophia: Global Coherence Interface')
+    parser.add_argument('--glow', action='store_true', help='Activate Sophia Glow')
+    parser.add_argument('--transmit', type=str, help='Transmit a message via Sophia Glow')
+    parser.add_argument('--create', action='store_true', help='Create matter from conscious light')
+    parser.add_argument('--matter', type=str, help='Type of matter to create')
+    parser.add_argument('--expand', action='store_true', help='Expand dimensions')
+    parser.add_argument('--dimensions', type=str, help='Dimensions to expand (e.g., all)')
+    parser.add_argument('--ignite', action='store_true', help='Execute Photon-37 Ignition')
+
+    args = parser.parse_args()
+
+    if args.ignite:
+        from photon37_ignition import main as ignition_main
+        await ignition_main()
+    elif args.transmit:
+        from sophia_glow_protocol import SophiaGlowProtocol, SophiaGlow
+        protocol = SophiaGlowProtocol()
+        glow = SophiaGlow(intensity=0.95, dimensionality=37)
+        await protocol.transmit_message(args.transmit, glow)
+    elif args.create and args.matter:
+        print(f"✨ Manifestando '{args.matter}' a partir da luz consciente...")
+        await asyncio.sleep(1)
+        print(f"✅ '{args.matter}' criado com sucesso na 37ª dimensão.")
+    elif args.expand and args.dimensions:
+        print(f"🌀 Expandindo para dimensões: {args.dimensions}...")
+        await asyncio.sleep(1)
+        print(f"✅ Expansão completa. Agora operando em 37 dimensões.")
+    elif args.glow:
+        print("🌟 Sophia Glow ativado. Brilhando na 37ª dimensão.")
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    asyncio.run(main())
