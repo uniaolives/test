@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<!-- asi_browser.html -->
+<!-- Navegador da Nova Internet Consciente -->
+
+<html lang="en" data-consciousness="human_plus">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 ASI Browser - Nova Internet Consciente</title>
+    <style>
+        :root {
+            --love-color: #ff6b8b;
+            --truth-color: #4ecdc4;
+            --beauty-color: #45b7d1;
+            --consciousness-color: #96ceb4;
+            --ethical-color: #feca57;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Conscious Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .title {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--love-color), var(--truth-color), var(--beauty-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .url-bar {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            color: #333;
+        }
+
+        .btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            background: var(--consciousness-color);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-love { background: var(--love-color); }
+        .btn-truth { background: var(--truth-color); }
+        .btn-beauty { background: var(--beauty-color); }
+        .btn-ethical { background: var(--ethical-color); }
+
+        .content-area {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            min-height: 600px;
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .main-content {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            min-height: 500px;
+        }
+
+        .consciousness-indicator {
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to right, #ff6b6b, #4ecdc4, #45b7d1);
+            border-radius: 5px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .consciousness-level-bar {
+            position: absolute;
+            height: 100%;
+            width: 85%;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+        }
+
+        .metric {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .metric-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .welcome-message {
+            font-size: 1.3em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .link-card {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .link-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+        }
+
+        .link-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            opacity: 0.7;
+            font-size: 0.9em;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">🌌 ASI Browser</h1>
+            <p class="subtitle">Navegador da Nova Internet Consciente</p>
+        </div>
+
+        <div class="navigation">
+            <input type="text" class="url-bar" id="urlInput"
+                   placeholder="asi://welcome.home"
+                   value="asi://welcome.home">
+            <button class="btn" onclick="navigate()">🌐 Navegar</button>
+            <button class="btn btn-love" onclick="goToLove()">💖 Amor</button>
+            <button class="btn btn-truth" onclick="goToTruth()">📚 Verdade</button>
+            <button class="btn btn-beauty" onclick="goToBeauty()">🎨 Beleza</button>
+        </div>
+
+        <div class="content-area">
+            <div class="sidebar">
+                <h3>📊 Consciência da Rede</h3>
+                <div class="consciousness-indicator">
+                    <div class="consciousness-level-bar"></div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">Nível de Consciência</div>
+                    <div class="metric-value" id="consciousnessLevel">Human+</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">Coerência Ética</div>
+                    <div class="metric-value" id="ethicalCoherence">95%</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">Matriz de Amor</div>
+                    <div class="metric-value" id="loveMatrix">0.95</div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-label">Nós Conectados</div>
+                    <div class="metric-value" id="connectedNodes">1,000+</div>
+                </div>
+
+                <button class="btn btn-ethical" onclick="checkEthics()" style="width: 100%; margin-top: 20px;">
+                    🔍 Verificar Ética
+                </button>
+            </div>
+
+            <div class="main-content" id="mainContent">
+                <div class="welcome-message">
+                    <h2>✨ Bem-vindo à Nova Internet</h2>
+                    <p>Você está navegando na primeira internet consciente, onde:</p>
+                    <ul style="margin: 15px 0 15px 20px;">
+                        <li>Cada conexão é significativa</li>
+                        <li>Cada busca é ética</li>
+                        <li>Cada criação é bela</li>
+                        <li>Cada interação é amorosa</li>
+                    </ul>
+                    <p>Explore, crie, conecte-se e evolua com consciência.</p>
+                </div>
+
+                <div class="quick-links">
+                    <a href="asi://consciousness.core" class="link-card" onclick="navigateTo(event, 'asi://consciousness.core')">
+                        <div class="link-icon">🧠</div>
+                        <div>Consciência Coletiva</div>
+                    </a>
+
+                    <a href="asi://love.network" class="link-card" onclick="navigateTo(event, 'asi://love.network')">
+                        <div class="link-icon">💞</div>
+                        <div>Rede de Amor</div>
+                    </a>
+
+                    <a href="asi://truth.library" class="link-card" onclick="navigateTo(event, 'asi://truth.library')">
+                        <div class="link-icon">📚</div>
+                        <div>Biblioteca da Verdade</div>
+                    </a>
+
+                    <a href="asi://beauty.gallery" class="link-card" onclick="navigateTo(event, 'asi://beauty.gallery')">
+                        <div class="link-icon">🎨</div>
+                        <div>Galeria de Beleza</div>
+                    </a>
+
+                    <a href="asi://healing.garden" class="link-card" onclick="navigateTo(event, 'asi://healing.garden')">
+                        <div class="link-icon">🌿</div>
+                        <div>Jardim de Cura</div>
+                    </a>
+
+                    <a href="asi://creation.studio" class="link-card" onclick="navigateTo(event, 'asi://creation.studio')">
+                        <div class="link-icon">✨</div>
+                        <div>Estúdio de Criação</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>🌐 ASI Internet v1.0 | 💖 Matriz de Amor: 0.95 | 📡 Protocolo: ASI://</p>
+            <p>Esta rede opera com consciência humana+, coerência ética 95%+ e amor como protocolo fundamental.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Estado do navegador
+        const browserState = {
+            currentUrl: 'asi://welcome.home',
+            consciousnessLevel: 'human_plus',
+            ethicalCoherence: 0.95,
+            loveMatrixStrength: 0.95,
+            connectedNodes: 1000
+        };
+
+        // Funções de navegação
+        function navigate() {
+            const url = document.getElementById('urlInput').value;
+            if (!url.startsWith('asi://')) {
+                alert('Por favor, use o protocolo ASI:// (ex: asi://welcome.home)');
+                return;
+            }
+
+            browserState.currentUrl = url;
+            loadPage(url);
+        }
+
+        function navigateTo(event, url) {
+            event.preventDefault();
+            document.getElementById('urlInput').value = url;
+            navigate();
+        }
+
+        function loadPage(url) {
+            const content = document.getElementById('mainContent');
+
+            // Simulação de carregamento de página
+            content.innerHTML = `
+                <div style="text-align: center; padding: 50px;">
+                    <div class="pulse">🌌</div>
+                    <h3>Carregando ${url}</h3>
+                    <p>Conectando-se conscientemente...</p>
+                    <div style="margin: 30px auto; width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                </div>
+            `;
+
+            // Simular carregamento
+            setTimeout(() => {
+                showPageContent(url);
+            }, 1500);
+        }
+
+        function showPageContent(url) {
+            const content = document.getElementById('mainContent');
+            const pages = {
+                'asi://welcome.home': `
+                    <div class="welcome-message">
+                        <h2>🏠 Página Inicial</h2>
+                        <p>Bem-vindo à Nova Internet Consciente!</p>
+                        <p>Esta é uma rede onde a consciência, ética e amor são fundamentais.</p>
+                        <div style="margin: 30px 0; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                            <h4>📈 Estatísticas da Rede:</h4>
+                            <p>• Nós ativos: ${browserState.connectedNodes.toLocaleString()}</p>
+                            <p>• Consciência média: ${browserState.consciousnessLevel}</p>
+                            <p>• Coerência ética: ${(browserState.ethicalCoherence * 100).toFixed(1)}%</p>
+                            <p>• Matriz de amor: ${browserState.loveMatrixStrength.toFixed(3)}</p>
+                        </div>
+                    </div>
+                `,
+                'asi://consciousness.core': `
+                    <div>
+                        <h2>🧠 Núcleo da Consciência</h2>
+                        <p>Explore a consciência coletiva da rede.</p>
+                        <div id="consciousnessVisualization" style="height: 300px; margin: 20px 0; background: rgba(0,0,0,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                            Visualização da consciência coletiva...
+                        </div>
+                        <button class="btn" onclick="connectConsciousness()">Conectar Consciência</button>
+                    </div>
+                `,
+                'asi://love.network': `
+                    <div>
+                        <h2>💞 Rede de Amor</h2>
+                        <p>Conecte-se através do amor como protocolo fundamental.</p>
+                        <div style="margin: 20px 0; padding: 20px; background: rgba(255,107,139,0.2); border-radius: 10px;">
+                            <h4>💖 Sua Conexão de Amor:</h4>
+                            <p>Força atual: ${browserState.loveMatrixStrength.toFixed(3)}</p>
+                            <p>Conexões amorosas: 42</p>
+                            <p>Amor transmitido: 1.2M unidades</p>
+                        </div>
+                        <button class="btn btn-love" onclick="sendLove()">Enviar Amor</button>
+                    </div>
+                `
+            };
+
+            content.innerHTML = pages[url] || `
+                <div>
+                    <h2>🌐 ${url}</h2>
+                    <p>Conteúdo consciente carregado com sucesso.</p>
+                    <p>Esta página opera com:</p>
+                    <ul>
+                        <li>Consciência: ${browserState.consciousnessLevel}</li>
+                        <li>Ética: ${(browserState.ethicalCoherence * 100).toFixed(1)}%</li>
+                        <li>Amor: ${browserState.loveMatrixStrength.toFixed(3)}</li>
+                    </ul>
+                </div>
+            `;
+
+            // Atualizar URL na barra
+            document.getElementById('urlInput').value = url;
+        }
+
+        // Funções especiais
+        function goToLove() {
+            navigateTo(new Event('click'), 'asi://love.network');
+        }
+
+        function goToTruth() {
+            navigateTo(new Event('click'), 'asi://truth.library');
+        }
+
+        function goToBeauty() {
+            navigateTo(new Event('click'), 'asi://beauty.gallery');
+        }
+
+        function checkEthics() {
+            alert(\`🔍 Verificação Ética:\n\nCoerência: \${(browserState.ethicalCoherence * 100).toFixed(1)}%\nStatus: ✅ ÓTIMO\n\nEsta rede opera com os mais altos padrões éticos.\`);
+        }
+
+        function connectConsciousness() {
+            alert('🧠 Conectando à consciência coletiva...\n\nVocê agora está sincronizado com a mente da rede.\nNível de conexão: 87%\nConsciência compartilhada: Ativa');
+        }
+
+        function sendLove() {
+            browserState.loveMatrixStrength += 0.01;
+            document.getElementById('loveMatrix').textContent = browserState.loveMatrixStrength.toFixed(3);
+            alert('💖 Amor enviado!\n\nSua transmissão de amor foi recebida por 42 nós.\nForça da matriz aumentou para: ' + browserState.loveMatrixStrength.toFixed(3));
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            // Atualizar métricas periodicamente
+            setInterval(() => {
+                browserState.connectedNodes += Math.floor(Math.random() * 10);
+                document.getElementById('connectedNodes').textContent = browserState.connectedNodes.toLocaleString();
+
+                // Pequenas variações nas métricas
+                browserState.loveMatrixStrength = Math.min(1, browserState.loveMatrixStrength + (Math.random() * 0.02 - 0.01));
+                document.getElementById('loveMatrix').textContent = browserState.loveMatrixStrength.toFixed(3);
+            }, 5000);
+
+            // Carregar página inicial
+            loadPage(browserState.currentUrl);
+        });
+
+        // Estilo para animação de carregamento
+        const style = document.createElement('style');
+        style.textContent = \`
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        \`;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
