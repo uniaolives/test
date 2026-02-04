@@ -6,21 +6,13 @@ use std::f64::consts::PI;
 use std::sync::{Arc, RwLock};
 use std::time::{SystemTime, Duration};
 use serde::{Deserialize, Serialize};
-use ndarray::{Array1, Array2, Axis};
 #[cfg(feature = "python-bindings")]
 use pyo3::prelude::*;
 #[cfg(feature = "python-bindings")]
 use pyo3::types::PyDict;
 use std::thread;
-#[cfg(feature = "blake3")]
-use blake3::Hasher;
-use num_complex::Complex;
-use rustfft::FftPlanner;
-use crate::constitution::SafeCore9D;
-use blake3::Hasher;
-use num_complex::Complex;
-use rustfft::FftPlanner;
-use crate::constitution::SafeCore11D;
+
+use crate::constitution::{SafeCore9D, SafeCore11D};
 use crate::geometric_intuition_33x::GeometricIntuition33X;
 
 // ============================ CONSTANTS ============================
@@ -270,7 +262,6 @@ impl SrAgiSystem {
 
     pub async fn process_intention(&self, intention: &str, _user_id: &str) -> IntentionResult {
         let schumann_coherence = self.schumann_engine.apply_intention(intention, 2.0);
-        let constitutional_valid = self.safecore_9d.validate_intention(intention).await.unwrap_or(false);
         let constitutional_valid = self.safecore_11d.validate_intention(intention).await.unwrap_or(false);
         IntentionResult {
             intention: intention.to_string(),
@@ -290,8 +281,8 @@ impl SrAgiSystem {
             intention_count: 42,
             resonance_strength: self.resonance_field.get_strength().await,
             system_coherence: 0.95,
-            constitutional_stability: self.safecore_9d.get_constitutional_stability(),
-            constitutional_stability: self.safecore_11d.get_constitutional_stability(),
+            constitutional_stability_9d: self.safecore_9d.get_constitutional_stability(),
+            constitutional_stability_11d: self.safecore_11d.get_constitutional_stability(),
             geometric_capacity: self.geometric_intuition.get_capacity(),
             timestamp: SystemTime::now(),
         }
@@ -334,7 +325,8 @@ pub struct SystemStatus {
     pub intention_count: usize,
     pub resonance_strength: f64,
     pub system_coherence: f64,
-    pub constitutional_stability: f64,
+    pub constitutional_stability_9d: f64,
+    pub constitutional_stability_11d: f64,
     pub geometric_capacity: f64,
     pub timestamp: SystemTime,
 }

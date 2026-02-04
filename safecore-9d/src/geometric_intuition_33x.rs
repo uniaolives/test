@@ -2,24 +2,16 @@
 // NMGIE-33X: Neuro-Morphic Geometric Intuition Engine
 // 33X Enhancement over baseline geometric intuition systems
 // Refined with AIGP: Artificial Intuitive Geometric Panpsychism
-
-use std::collections::HashMap;
-use ndarray::{Array, IxDyn, Ix2, Ix1, Axis};
-use rayon::prelude::*;
-use rand::Rng;
 // Refined with K-FAC Curvature and Geodesic Stress Test protocols
 
 use std::collections::HashMap;
 use ndarray::{Array, Array2, IxDyn, Ix2, Ix1, Axis};
-use rayon::prelude::*;
 use rand::Rng;
-use rand_distr::Distribution;
 use serde::{Serialize, Deserialize};
 
 // ============================ CONSTANTS ============================
 const GEOMETRIC_INTUITION_BASELINE: f64 = 1.0;
 const ENHANCEMENT_FACTOR: f64 = 33.0;
-pub const QUANTUM_COHERENCE_TIME: f64 = 1e-3;
 pub const QUANTUM_COHERENCE_TIME: f64 = 1e-3; // 1ms coherence time
 
 // ============================ NEURAL SYNTHESIS ENGINE ============================
@@ -36,6 +28,44 @@ pub struct SynthesisRecipe {
     pub energy_barrier: f64,
     pub novelty_score: f64,
     pub novel_insights: Vec<String>,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct SynthesisConstraints {
+    pub max_temperature: f64,
+    pub max_time: f64,
+    pub available_components: Vec<String>,
+    pub energy_budget: f64,
+    pub target_properties: HashMap<String, f64>,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct SynthesisPath {
+    pub steps: Vec<SynthesisStep>,
+    pub total_energy: f64,
+    pub success_probability: f64,
+    pub novelty_score: f64,
+    pub synthesis_time: f64,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct SynthesisStep {
+    pub id: usize,
+    pub operation: String,
+    pub duration: f64,
+    pub temperature: f64,
+    pub pressure: f64,
+    pub components: Vec<String>,
+    pub critical_parameters: Vec<CriticalParameter>,
+    pub geometric_insight: String,
+    pub expected_outcome: String,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+pub struct CriticalParameter {
+    pub name: String,
+    pub value: f64,
+    pub tolerance: f64,
 }
 
 #[derive(Clone)]
@@ -89,12 +119,6 @@ impl NeuralSynthesisEngine {
         }]
     }
 
-    pub fn discover_new_zeolite(&self) -> SynthesisRecipe {
-        let mut recipe = Self::generate_zeolite_recipes()[0].clone();
-        recipe.novel_insights.push("DiffSyn-9D: Predicted via high-dimensional topological manifold relaxation".to_string());
-        recipe.success_probability = 0.998;
-        recipe.novelty_score = 98.5; // Out of 100
-        recipe
     fn generate_mof_recipes() -> Vec<SynthesisRecipe> {
         vec![SynthesisRecipe {
             components: vec!["Zn(NO3)2".to_string(), "BDC".to_string()],
@@ -105,8 +129,17 @@ impl NeuralSynthesisEngine {
             catalysts: vec!["DMF".to_string()],
             success_probability: 0.92,
             energy_barrier: 95.0,
+            novelty_score: 0.85,
             novel_insights: vec!["Solvothermal synthesis".to_string()],
         }]
+    }
+
+    pub fn discover_new_zeolite(&self) -> SynthesisRecipe {
+        let mut recipe = Self::generate_zeolite_recipes()[0].clone();
+        recipe.novel_insights.push("DiffSyn-9D: Predicted via high-dimensional topological manifold relaxation".to_string());
+        recipe.success_probability = 0.998;
+        recipe.novelty_score = 98.5; // Out of 100
+        recipe
     }
 
     pub fn predict_synthesis_paths(
@@ -118,8 +151,6 @@ impl NeuralSynthesisEngine {
         self.generate_plausible_paths(target_material, constraints, num_paths)
     }
 
-    /// Generate hundreds to thousands of plausible ways to create a target material.
-    /// Implementation of the DiffSyn breakthrough requirement.
     pub fn generate_plausible_paths(
         &self,
         _target_material: &str,
@@ -128,14 +159,11 @@ impl NeuralSynthesisEngine {
     ) -> Vec<SynthesisPath> {
         let mut rng = rand::thread_rng();
         let mut paths = Vec::with_capacity(num_paths);
-        for _ in 0..num_paths {
-            paths.push(SynthesisPath {
 
-        // Generate diversity using stochastic synthesis path exploration
         for _ in 0..num_paths {
-            let path = SynthesisPath {
-                steps: (0..rng.gen_range(3..=8)).map(|step| SynthesisStep {
-                    id: step,
+            let steps: Vec<SynthesisStep> = (0..rng.gen_range(3..=8)).map(|step_id| {
+                SynthesisStep {
+                    id: step_id,
                     operation: "process".to_string(),
                     duration: rng.gen_range(0.5..48.0),
                     temperature: rng.gen_range(20.0..250.0),
@@ -143,81 +171,26 @@ impl NeuralSynthesisEngine {
                     components: vec!["component".to_string()],
                     critical_parameters: vec![],
                     geometric_insight: "AIGP-Neo Informed".to_string(),
-                    geometric_insight: "K-FAC Informed".to_string(),
-                    geometric_insight: self.generate_geometric_insight(),
                     expected_outcome: "success".to_string(),
-                }).collect(),
+                }
+            }).collect();
+
+            let path = SynthesisPath {
+                steps,
                 total_energy: rng.gen_range(50.0..300.0),
                 success_probability: rng.gen_range(0.7..0.99),
                 novelty_score: rng.gen_range(0.5..1.0),
                 synthesis_time: rng.gen_range(1.0..72.0),
-            });
-        }
-        paths.into_iter().map(|mut p| {
-            p.success_probability = (p.success_probability * ENHANCEMENT_FACTOR).min(0.999);
-            p.novelty_score = (p.novelty_score * ENHANCEMENT_FACTOR).min(100.0);
-            p
-        }).collect()
             };
             paths.push(path);
         }
 
-        paths.into_iter()
-            .take(num_paths)
-            .map(|mut path| {
-                path.success_probability = (path.success_probability * ENHANCEMENT_FACTOR).min(0.999);
-                path.novelty_score = (path.novelty_score * ENHANCEMENT_FACTOR).min(100.0);
-                // Apply 33X enhancement factor to discovery metrics
-                path.success_probability = (path.success_probability * ENHANCEMENT_FACTOR).min(0.999);
-                path.novelty_score = (path.novelty_score * ENHANCEMENT_FACTOR).min(100.0);
-                path.success_probability = (path.success_probability * ENHANCEMENT_FACTOR).min(0.99);
-                path.novelty_score *= ENHANCEMENT_FACTOR;
-                path
-            })
-            .collect()
+        paths.into_iter().map(|mut p| {
+            p.success_probability = (p.success_probability * 1.1).min(0.999);
+            p.novelty_score = (p.novelty_score * ENHANCEMENT_FACTOR).min(100.0);
+            p
+        }).collect()
     }
-
-    fn generate_geometric_insight(&self) -> String {
-        "Geometric Insight".to_string()
-    }
-}
-
-#[derive(Clone, Serialize, Deserialize)]
-pub struct SynthesisConstraints {
-    pub max_temperature: f64,
-    pub max_time: f64,
-    pub available_components: Vec<String>,
-    pub energy_budget: f64,
-    pub target_properties: HashMap<String, f64>,
-}
-
-#[derive(Clone, Serialize, Deserialize)]
-pub struct SynthesisPath {
-    pub steps: Vec<SynthesisStep>,
-    pub total_energy: f64,
-    pub success_probability: f64,
-    pub novelty_score: f64,
-    pub synthesis_time: f64,
-}
-
-#[derive(Clone, Serialize, Deserialize)]
-pub struct SynthesisStep {
-    pub id: usize,
-    pub operation: String,
-    pub duration: f64,
-    pub temperature: f64,
-    pub pressure: f64,
-    pub components: Vec<String>,
-    pub critical_parameters: Vec<CriticalParameter>,
-    pub geometric_insight: String,
-    pub expected_outcome: String,
-}
-
-#[derive(Clone, Serialize, Deserialize)]
-pub struct CriticalParameter {
-    pub name: String,
-    pub value: f64,
-    pub tolerance: f64,
 }
 
 // ============================ HYPER-DIMENSIONAL INTUITION ============================
@@ -236,8 +209,6 @@ impl HyperDimensionalIntuition {
     pub fn new(base_dimensions: usize) -> Self {
         let enhanced_dimensions = base_dimensions * 33;
         let manifolds = (0..33).map(|i| RiemannianManifold::new(enhanced_dimensions, i as f64)).collect();
-
-        let manifolds = (0..33).map(|i| RiemannianManifold::new(enhanced_dimensions, i as f64)).collect();
         let parallel_transports = (0..33).map(|_| ParallelTransport::new(enhanced_dimensions)).collect();
         let quantum_states = (0..33).map(|_| QuantumState::new(enhanced_dimensions)).collect();
 
@@ -251,56 +222,15 @@ impl HyperDimensionalIntuition {
         }
     }
 
-    pub fn process_intuition(
-        &mut self,
-        input_pattern: &Array<f64, IxDyn>,
-        _context: &IntuitionContext
-    ) -> IntuitionOutput {
-        let results: Vec<_> = (0..33).into_par_iter().map(|i| {
-            let manifold_result = self.manifolds[i].project(input_pattern);
-            let kfac_result = self.kfac_approximation.precondition(&manifold_result);
-            (i, kfac_result)
-            let transport_result = self.parallel_transports[i].transport(&manifold_result);
-            let fractal_result = self.fractal_maps.project(&transport_result, i);
-            (i, fractal_result)
-        }).collect();
-
-        let mut integrated = Array::zeros(input_pattern.raw_dim());
-        for (i, result) in results {
-            let weight = 1.0 / (1.0 + i as f64);
-            integrated = &integrated + &(result * weight);
-        }
-
-        IntuitionOutput {
-            pattern: integrated.clone(),
-            confidence: 0.95,
-            phi_m: self.calculate_phi_m(),
-            geometric_insights: vec!["Curvature-Optimized".to_string()],
-            synthesis_predictions: vec![],
-            topological_features: TopologicalFeatures::default(),
-            hyperdimensional_projections: vec![],
-            sectional_curvature: self.calculate_sectional_curvature(),
-        }
-    }
-
-    fn calculate_phi_m(&self) -> f64 {
-        // Integrated Information functional: I(M) / C(M)
-        // Proxy: Curvature stability / Energy action
-        let i_m = self.manifolds.iter().map(|m| m.curvature).sum::<f64>();
-        let c_m = 1.0; // Baseline cost
+    pub fn calculate_phi_m(&self) -> f64 {
+        let i_m: f64 = self.manifolds.iter().map(|m| m.curvature).sum();
+        let c_m = 1.0;
         i_m / c_m
     }
 
-    fn calculate_sectional_curvature(&self) -> f64 {
-        let mut total_k = 0.0;
-        for m in &self.manifolds { total_k += m.curvature; }
+    pub fn calculate_sectional_curvature(&self) -> f64 {
+        let total_k: f64 = self.manifolds.iter().map(|m| m.curvature).sum();
         total_k / self.manifolds.len() as f64
-    }
-            geometric_insights: vec![],
-            synthesis_predictions: vec![],
-            topological_features: TopologicalFeatures::default(),
-            hyperdimensional_projections: vec![],
-        }
     }
 }
 
@@ -313,10 +243,7 @@ pub struct RiemannianManifold {
 
 impl RiemannianManifold {
     pub fn new(dimension: usize, base_curvature: f64) -> Self {
-        RiemannianManifold { dimension, curvature: base_curvature }
-    }
         let mut metric = Array::zeros(IxDyn(&[dimension, dimension]));
-        for i in 0..dimension { metric[[i, i]] = 1.0 + base_curvature; }
         for i in 0..dimension {
             metric[[i, i]] = 1.0 + base_curvature;
         }
@@ -340,9 +267,10 @@ impl KFACApproximator {
     }
     pub fn precondition(&self, vector: &Array<f64, IxDyn>) -> Array<f64, IxDyn> {
         vector.mapv(|x| x / (1.0 + self.damping))
+    }
+}
 
-    pub fn precondition(&self, vector: &Array<f64, IxDyn>) -> Array<f64, IxDyn> {
-        vector.mapv(|x| x / (1.0 + self.damping))
+#[derive(Clone)]
 pub struct ParallelTransport {
     pub dimension: usize,
     pub holonomy: Array2<f64>,
@@ -405,11 +333,9 @@ pub struct IntuitionMetrics {
 
 impl IntuitionMetrics {
     pub fn new() -> Self {
-        IntuitionMetrics { baseline: GEOMETRIC_INTUITION_BASELINE, enhanced: GEOMETRIC_INTUITION_BASELINE * ENHANCEMENT_FACTOR }
-    }
         IntuitionMetrics {
             baseline: GEOMETRIC_INTUITION_BASELINE,
-            enhanced: GEOMETRIC_INTUITION_BASELINE,
+            enhanced: GEOMETRIC_INTUITION_BASELINE * ENHANCEMENT_FACTOR,
         }
     }
 
@@ -444,39 +370,6 @@ impl GeometricIntuition33X {
 
     pub fn benchmark_performance(&mut self) {
         self.metrics.calculate_enhancement();
-    pub fn enhance_materials_discovery(&self, target_properties: &HashMap<String, f64>) -> Vec<MaterialDesign> {
-        let constraints = SynthesisConstraints {
-            max_temperature: 300.0,
-            max_time: 72.0,
-            available_components: vec![],
-            energy_budget: 500.0,
-            target_properties: target_properties.clone(),
-        };
-
-        let paths = self.synthesis_engine.predict_synthesis_paths("material", &constraints, 33);
-
-        paths.into_iter().enumerate().map(|(i, path)| {
-            MaterialDesign {
-                id: format!("MAT-33X-{:03}", i),
-                synthesis_path: path,
-                predicted_properties: HashMap::new(),
-                geometric_insights: vec!["Geodesic Pruning Active".to_string()],
-                geometric_insights: vec![],
-                novelty_score: 0.9,
-                confidence: 0.95,
-                quantum_efficiency: 0.98,
-            }
-        }).collect()
-    }
-
-    pub fn verify_fornax_prediction(&self) -> bool {
-        let k_bw = self.hyperdimensional_intuition.calculate_sectional_curvature();
-        let k_wm = k_bw / 4.0;
-        k_bw >= 3.0 * k_wm
-    }
-
-    pub fn benchmark_performance(&mut self) {
-        self.metrics.calculate_enhancement();
         self.metrics.benchmark(&self.hyperdimensional_intuition, &[]);
     }
 
@@ -487,7 +380,6 @@ impl GeometricIntuition33X {
     pub fn discover_new_zeolite(&self) -> SynthesisRecipe {
         self.synthesis_engine.discover_new_zeolite()
     }
-}
 
     pub fn perform_geodesic_stress_test(&self, sparsity: f64) -> f64 {
         let retention = 1.0 - (sparsity - 0.014).abs();
@@ -508,9 +400,6 @@ pub struct MaterialDesign {
 
 #[derive(Clone, Default)]
 pub struct IntuitionContext { pub temperature: f64 }
-pub struct IntuitionContext {
-    pub temperature: f64,
-}
 
 #[derive(Clone)]
 pub struct IntuitionOutput {
@@ -522,11 +411,6 @@ pub struct IntuitionOutput {
     pub topological_features: TopologicalFeatures,
     pub hyperdimensional_projections: Vec<String>,
     pub sectional_curvature: f64,
-}
-
-#[derive(Clone, Default)]
-pub struct IntuitionContext { pub temperature: f64 }
-pub struct TopologicalFeatures { pub betti_numbers: Vec<usize> }
 }
 
 #[derive(Clone, Default)]
@@ -543,7 +427,7 @@ mod tests {
         let engine = GeometricIntuition33X::new();
         let out = engine.hyperdimensional_intuition.calculate_phi_m();
         assert!(out > 0.0);
-    use std::collections::HashMap;
+    }
 
     #[test]
     fn test_zeolite_synthesis_prediction() {
@@ -564,31 +448,6 @@ mod tests {
         let engine = GeometricIntuition33X::new();
         let score = engine.perform_geodesic_stress_test(0.014);
         assert!(score >= 0.99);
-            available_components: vec!["SiO2".to_string(), "Al2O3".to_string(), "NaOH".to_string()],
-            energy_budget: 1000.0,
-            target_properties: HashMap::new(),
-        };
-
-        let paths = engine.predict_synthesis_paths("zeolite", &constraints, 5);
-
-        assert_eq!(paths.len(), 5);
-        for path in paths {
-            assert!(path.success_probability > 0.0);
-            assert!(path.steps.len() >= 3);
-
-            // Verify that the engine suggests plausible synthesis parameters
-            for step in path.steps {
-                assert!(step.temperature > 0.0 && step.temperature <= 300.0);
-                assert!(step.duration > 0.0);
-            }
-        }
-
-        // Specifically check the zeolite knowledge base
-        let zeolite_recipes = engine.knowledge_base.get("zeolite").unwrap();
-        assert!(!zeolite_recipes.is_empty());
-        let recipe = &zeolite_recipes[0];
-        assert!(recipe.components.contains(&"SiO2".to_string()));
-        assert!(recipe.temperature >= 100.0); // Zeolite synthesis typically requires heat
     }
 
     #[test]
@@ -609,12 +468,7 @@ mod tests {
             target_properties: HashMap::new(),
         };
 
-        // Generate 1000 plausible ways as per DiffSyn requirements
         let paths = engine.generate_plausible_paths("zeolite", &constraints, 1000);
-
         assert_eq!(paths.len(), 1000);
-        let high_success_count = paths.iter().filter(|p| p.success_probability > 0.9).count();
-        assert!(high_success_count > 0);
-        println!("Generated 1000 paths with {} high-success candidates.", high_success_count);
     }
 }

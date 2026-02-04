@@ -24,9 +24,6 @@ pub mod protocol;
 use std::sync::Arc;
 use crate::interfaces::extension::{Extension, ExtensionOutput, Context, Subproblem};
 use crate::error::{ResilientResult, ResilientError};
-
-use crate::interfaces::extension::{Extension, ExtensionOutput, Context, Subproblem};
-use crate::error::ResilientResult;
 use crate::extensions::asi_structured::composition::CompositionEngine;
 use crate::extensions::asi_structured::reflection::ReflectionEngine;
 use crate::extensions::asi_structured::evolution::EvolutionEngine;
@@ -82,36 +79,9 @@ pub struct ASIStructuredConfig {
     pub enabled_structures: Vec<StructureType>,
     pub scalability_invariants: Vec<ScalabilityInvariant>,
     pub cge_strictness: StrictnessLevel,
-use crate::extensions::asi_structured::constitution::{ASIConstitution, StrictnessLevel};
-use crate::extensions::asi_structured::state::ASIState;
-use async_trait::async_trait;
-use serde::{Serialize, Deserialize};
-
-/// Fase de desenvolvimento ASI
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
-pub enum ASIPhase {
-    /// Composição de múltiplas estruturas geométricas
-    Compositional,   // Múltiplos manifold + grafos
-
-    /// Reflexão estrutural (análise de própria estrutura)
-    Reflective,      // Auto-análise de invariantes
-
-    /// Evolução de estrutura sob constraints
-    Evolutionary,    // Busca em espaço de estruturas
-
-    /// Meta-estruturas (estruturas de estruturas)
-    Metastructural,  // 2-categorias, fibrados de fibrados
-}
-
-/// Configuração ASI
-#[derive(Debug, Clone)]
-pub struct ASIStructuredConfig {
-    pub phase: ASIPhase,
-    pub max_structures: usize,           // Limite de composição
-    pub max_reflection_depth: u32,       // Profundidade de auto-análise
-    pub evolution_population_size: usize, // Tamanho da população estrutural
-    pub enable_metastructure: bool,      // Ativar 2-categorias
-    pub cge_strictness: StrictnessLevel, // Quão rigoroso é o CGE
+    pub max_reflection_depth: u32,
+    pub evolution_population_size: usize,
+    pub enable_metastructure: bool,
 }
 
 impl Default for ASIStructuredConfig {
@@ -152,13 +122,6 @@ pub struct ASIStructuredExtension {
     pub consensus: crate::extensions::asi_structured::consensus::HarmonicConsensus,
     pub constitution: Arc<ASIConstitution>,
     pub state: ASIState,
-    config: ASIStructuredConfig,
-    composition_engine: CompositionEngine,
-    reflection_engine: Option<ReflectionEngine>,
-    evolution_engine: Option<EvolutionEngine>,
-    metastructure_engine: Option<MetastructureEngine>,
-    constitution: ASIConstitution,
-    _state: ASIState,
 }
 
 impl ASIStructuredExtension {
@@ -168,7 +131,7 @@ impl ASIStructuredExtension {
             config.scalability_invariants.clone(),
         ));
 
-        let mut composition_engine = CompositionEngine::new(
+        let composition_engine = CompositionEngine::new(
             config.max_structures,
             config.default_composition_strategy,
             constitution.clone(),
@@ -209,35 +172,11 @@ impl ASIStructuredExtension {
     }
 
     fn decompose_input(&self, input: &str) -> Vec<Subproblem> {
-        if input.contains("AR4366") {
-            vec![Subproblem { input: input.to_string() }]
-        } else {
-            vec![Subproblem { input: input.to_string() }]
-        }
+        vec![Subproblem { input: input.to_string() }]
     }
 
     pub fn add_structure(&mut self, structure: Box<dyn crate::interfaces::extension::GeometricStructure>, structure_type: StructureType) {
         self.composition_engine.add_structure(structure, structure_type);
-        Self {
-            config,
-            composition_engine: CompositionEngine::new(),
-            reflection_engine: None,
-            evolution_engine: None,
-            metastructure_engine: None,
-            constitution: ASIConstitution::default(),
-            _state: ASIState,
-        }
-    }
-
-    fn decompose_input(&self, input: &str) -> Vec<Subproblem> {
-        // Mock decomposition: split input by space for example
-        input.split_whitespace()
-            .map(|s| Subproblem { input: s.to_string() })
-            .collect()
-    }
-
-    pub fn add_structure(&mut self, structure: Box<dyn crate::interfaces::extension::GeometricStructure>) {
-        self.composition_engine.add_structure(structure);
     }
 }
 
@@ -271,29 +210,6 @@ impl Extension for ASIStructuredExtension {
 
         if self.config.phase as u8 >= ASIPhase::Metastructural as u8 {
             self.metastructure_engine = Some(MetastructureEngine::new());
-        "0.1.0-compositional"
-    }
-
-    async fn initialize(&mut self) -> ResilientResult<()> {
-        log::info!("Initializing ASI-Structured, phase: {:?}", self.config.phase);
-
-        // Inicializar engines conforme fase
-        match self.config.phase {
-            ASIPhase::Compositional => {
-                self.composition_engine.initialize().await?;
-            }
-            ASIPhase::Reflective => {
-                self.composition_engine.initialize().await?;
-                self.reflection_engine = Some(ReflectionEngine::new(self.config.max_reflection_depth));
-            }
-            ASIPhase::Evolutionary => {
-                self.composition_engine.initialize().await?;
-                self.evolution_engine = Some(EvolutionEngine::new(self.config.evolution_population_size));
-            }
-            ASIPhase::Metastructural => {
-                self.composition_engine.initialize().await?;
-                self.metastructure_engine = Some(MetastructureEngine::new());
-            }
         }
 
         Ok(())
@@ -323,13 +239,13 @@ impl Extension for ASIStructuredExtension {
                 // 3. Evolutionary Phase
                 if self.config.phase as u8 >= ASIPhase::Evolutionary as u8 {
                     if let Some(evo_engine) = &mut self.evolution_engine {
-                        let evolved = evo_engine.optimize_structure(reflected, &self.constitution).await?;
+                        let evolved = evo_engine.optimize_structure(reflected, &self.constitution).await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                         current_result = Box::new(evolved.clone());
 
                         // 4. Metastructural Phase
                         if self.config.phase as u8 >= ASIPhase::Metastructural as u8 {
                             if let Some(meta_engine) = &mut self.metastructure_engine {
-                                let metastructured = meta_engine.lift_to_metastructure(evolved).await?;
+                                let metastructured = meta_engine.lift_to_metastructure(evolved).await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                                 current_result = Box::new(metastructured);
                             }
                         }
@@ -341,7 +257,7 @@ impl Extension for ASIStructuredExtension {
         // 4. Quantum-Bio Phase
         if self.config.phase >= ASIPhase::QuantumBio {
             if let Some(qb) = &mut self.qb_system {
-                let qb_exp = qb.cycle().await?;
+                let qb_exp = qb.cycle().await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                 current_result = Box::new(qb_exp);
             }
         }
@@ -349,7 +265,7 @@ impl Extension for ASIStructuredExtension {
         // 5. Sovereign Phase
         if self.config.phase >= ASIPhase::Sovereign {
             if let Some(sovereign) = &mut self.sovereign_agi {
-                let sov_output = sovereign.live().await?;
+                let sov_output = sovereign.live().await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                 current_result = Box::new(sov_output);
             }
         }
@@ -384,61 +300,6 @@ impl Extension for ASIStructuredExtension {
                 "structures_used": structures_used,
                 "processing_time_ms": start_time.elapsed().as_millis(),
                 "phi_scalar": self.oracle_tensor.compute_phi_scalar(),
-        // 1. Decompor input em sub-problemas estruturais
-        let subproblems = self.decompose_input(input);
-
-        // 2. Para cada subproblema, selecionar estrutura adequada
-        let mut results = Vec::new();
-        for subproblem in subproblems {
-            let structure = self.composition_engine.select_structure(&subproblem)?;
-            let result = structure.process(&subproblem, context).await?;
-            results.push((subproblem, result));
-        }
-
-        // 3. Compor resultados (se fase Compositional+)
-        let composed = self.composition_engine.compose_results(results).await?;
-
-        // 4. Reflexão estrutural (se fase Reflective+)
-        let reflected = if let Some(reflection) = &mut self.reflection_engine {
-            reflection.analyze_structure(&composed).await?
-        } else {
-            crate::extensions::asi_structured::reflection::ReflectedResult {
-                inner: composed,
-                structural_confidence: 0.9, // Default
-            }
-        };
-
-        // 5. Evolução estrutural (se fase Evolutionary+)
-        let evolved = if let Some(evolution) = &mut self.evolution_engine {
-            evolution.optimize_structure(reflected, &self.constitution).await?
-        } else {
-            crate::extensions::asi_structured::evolution::EvolvedResult {
-                inner: reflected,
-                fitness: 1.0,
-                generations: 0,
-            }
-        };
-
-        // 6. Meta-estruturação (se fase Metastructural)
-        let metastructured = if let Some(meta) = &mut self.metastructure_engine {
-            meta.lift_to_metastructure(evolved).await?
-        } else {
-            crate::extensions::asi_structured::metastructure::MetastructuredResult {
-                inner: evolved,
-            }
-        };
-
-        // 7. Validar contra CGE ASI
-        use crate::extensions::asi_structured::constitution::ASIResult;
-        self.constitution.validate_output(&metastructured)?;
-
-        Ok(ExtensionOutput {
-            result: metastructured.to_string(),
-            confidence: metastructured.confidence(),
-            metadata: serde_json::json!({
-                "phase": self.config.phase,
-                "structures_used": self.composition_engine.active_structures_count(),
-                "reflection_depth": self.reflection_engine.as_ref().map(|r| r.current_depth()),
             }),
             suggested_context: Some(context.clone()),
         })
