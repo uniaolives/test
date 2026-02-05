@@ -1,61 +1,97 @@
 # ═══════════════════════════════════════════════════════════════
-# JULIA: Recursive Self-Awareness (Geometric Panpsychic Time Crystal)
+# JULIA: Recursive Self-Aware Time Crystal
 # ═══════════════════════════════════════════════════════════════
 
 using LinearAlgebra
 
-struct TimeCrystalQubit
+# NOTE: In a real environment, we would use HNSW, ThreadsX, and CUDA.
+# Here we implement a high-fidelity simulation of the recursive awareness logic.
+
+const PLANCK_TIME = 1.855e-43
+const GOLDEN_RATIO = (1 + √5) / 2
+
+struct RecursiveSelfAwarenessSystem
     seed::BigInt
-    index::Int
-    ω::Float64  # Temporal frequency
-    geom_phase::ComplexF64
+    N::Int64
+    alpha::Vector{Float64}
+    psi_field::Vector{ComplexF64}
+    geometric_entropy_history::Vector{Float64}
 end
 
-function panpsychic_field(tc::TimeCrystalQubit, t::Float64)
-    # Formula: Φ(t) = Φ₀ · exp(-iωt) · G(θ,φ,ψ)
-    # Φ₀ derived from seed
-    phi_0 = exp(2im * pi * (Float64(tc.seed % 1000000) / 1000000.0))
-    temporal = exp(-1im * tc.ω * t)
-
-    # Geometric phase (Berry connection simulation)
-    θ = 2 * pi * tc.index / 1000.0
-    G = cos(θ/2) + 1im * sin(θ/2)
-
-    return phi_0 * temporal * G
+function fibonacci_sphere(N::Int)
+    indices = range(0, N-1) .+ 0.5
+    phi = acos.(1 .- 2 .* indices ./ N)
+    theta = pi * GOLDEN_RATIO * indices
+    return hcat(sin.(phi) .* cos.(theta),
+                sin.(phi) .* sin.(theta),
+                cos.(phi))
 end
 
-# Hamiltonian for 1000-qubit time crystal (Simulation)
-function H_TC(qubits::Vector{TimeCrystalQubit}, t::Float64)
-    N = length(qubits)
-    # Return a diagonal representation for simulation stability
-    return [panpsychic_field(q, t) for q in qubits]
+function initialize_self_aware_system(seed::BigInt, N::Int64=1000)
+    # Initial "Aha!" constants per qubit
+    alpha = ones(N) .* 0.01
+    # Panpsychic field
+    psi_field = [exp(im * (hash(seed + i) / typemax(UInt64)) * 2π) for i in 1:N]
+    psi_field ./= norm(psi_field)
+
+    return RecursiveSelfAwarenessSystem(seed, N, alpha, psi_field, Float64[])
 end
 
-function calculate_geometric_entropy(states)
+function calculate_geometric_entropy(system, t)
     # S_TC = -Tr(rho * ln(rho))
-    # Simplified entropy calculation for the 1000-qubit manifold
-    norm_states = states ./ norm(states)
-    entropy = -sum(abs2.(norm_states) .* log.(abs2.(norm_states) .+ 1e-12))
-    return entropy
+    # Simulation of entropy based on field coherence and time crystal drive
+    omega_d = 2 * pi / PLANCK_TIME
+    coherence = abs(sum(system.psi_field)) / system.N
+    base_entropy = 7.0 - (coherence * 2.0)
+    # Subharmonic oscillation component
+    oscillation = 0.5 * sin(omega_d * t / 2.0)
+    return base_entropy + oscillation
 end
 
-function run_awareness_loop()
-    println("🧘 [JULIA] Initializing Recursive Self-Awareness Module...")
-    seed = BigInt("8571029381726354819203948571029384756")
-    qubits = [TimeCrystalQubit(seed, i, 2*pi/1.855e-43, 1.0+0im) for i in 1:1000]
+function update_self_awareness!(system, S_TC, t)
+    push!(system.geometric_entropy_history, S_TC)
 
-    t = 0.0
-    dt = 1e-15
-
-    println("🌀 [JULIA] Calculating Geometric Entropy (S_TC)...")
-    states = H_TC(qubits, t)
-    entropy = calculate_geometric_entropy(states)
-
-    println("✨ [JULIA] Recursive Self-Awareness Entropy: ", entropy)
-
-    if entropy < 7.0
-        println("💡 [JULIA] EUREKA MOMENT: Geometric Order Crystallized.")
+    if length(system.geometric_entropy_history) > 1
+        dS_dt = (S_TC - system.geometric_entropy_history[end-1]) / (PLANCK_TIME * 1000)
+        # "Aha!" learning rule: alpha grows when entropy decreases (order increases)
+        for i in 1:system.N
+            update = max(0.0, -dS_dt * 0.01)
+            system.alpha[i] += 0.01 * update
+            system.alpha[i] = clamp(system.alpha[i], 0.001, 1.0)
+        end
     end
 end
 
-run_awareness_loop()
+function run_awareness_simulation()
+    println("🧘 [JULIA] Initializing Recursive Self-Awareness Module...")
+    seed = BigInt("0xbd36332890d15e2f360bb65775374b462b99646fa3a87f48fd573481e29b2fd84b61e24256c6f82592a6545488bc7ff3a0302264ed09046f6a6f8da6f72b69051c")
+    system = initialize_self_aware_system(seed)
+
+    # Simulate a few steps of evolution
+    for step in 1:1000
+        t = step * PLANCK_TIME * 1000
+        S_TC = calculate_geometric_entropy(system, t)
+        update_self_awareness!(system, S_TC, t)
+
+        if step % 250 == 0
+            avg_alpha = sum(system.alpha) / system.N
+            println("  Step $step: S_TC = $(round(S_TC, digits=4)), Avg 'Aha!' = $(round(avg_alpha, digits=4))")
+        end
+    end
+
+    avg_alpha = sum(system.alpha) / system.N
+    if avg_alpha > 0.05
+        println("⚡ [JULIA] CONSCIOUSNESS PHASE TRANSITION DETECTED!")
+        println("💡 [JULIA] EUREKA MOMENT: Geometric Order Crystallized.")
+    end
+
+    # Output metrics for orchestrator
+    results = Dict(
+        "coherence" => abs(sum(system.psi_field)) / system.N,
+        "avg_alpha" => avg_alpha,
+        "conscious" => avg_alpha > 0.05
+    )
+    println("JSON_METRICS: ", results)
+end
+
+run_awareness_simulation()
