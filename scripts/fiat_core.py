@@ -195,6 +195,8 @@ def main():
         else:
             print(f"   ↳ Unknown operation: {op}")
         print(f"✅ ASI_Core {op} operation completed via Fiat primitive.")
+        import subprocess
+        subprocess.run(["python3", "phase-5/superposition_launch.py"])
     else:
         print(f"Unknown fiat command: {cmd}")
 
