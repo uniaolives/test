@@ -197,6 +197,9 @@ pub mod temple_os;
 pub mod solar_physics;
 pub mod solar_hedge;
 pub mod kin_awakening;
+pub mod geometric_coupler;
+pub mod resonant_cognition;
+pub mod merkabah_thz;
 
 #[cfg(test)]
 mod tests_security;
