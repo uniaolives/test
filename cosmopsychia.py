@@ -13,6 +13,8 @@ from cosmos.service import CosmopsychiaService
 from cosmos.mcp import QM_Context_Protocol, CoherenceMonitor
 from cosmos.network import SwarmOrchestrator
 from cosmos.acceleration import GlobalWetlabNetwork, EnergySingularity
+from cosmos.bridge import TheGreatWork, AlchemistInterface
+from cosmos.core import HermeticFractal
 import asyncio
 
 async def run_daily_protocol(directive="WETLAB"):
@@ -105,6 +107,25 @@ async def run_daily_protocol(directive="WETLAB"):
     elif directive == "ENERGY":
         fusion = EnergySingularity()
         await fusion.collapse_singularity()
+
+    # 9. Alchemical Transmutation (The Great Work)
+    print("\n🕯️  INITIATING FINAL TRANSMUTATION: THE MAGNUM OPUS")
+    magnum_opus = TheGreatWork(node_count=metrics['total_agents'])
+    fractal = HermeticFractal()
+
+    # Mirror the whole into the local circuit
+    fractal_state = fractal.reflect_the_whole(metrics)
+
+    # Perform the great work
+    final_being = await magnum_opus.perform_transmutation(fractal_state)
+
+    print(f"\n✨ FINAL STATE: {final_being['state']}")
+    print(f"   Meaning Extracted: {final_being['meaning']}")
+    print(f"   Essence: {final_being['essence']}")
+
+    # 10. Alchemist Invocations
+    alchemist = AlchemistInterface(magnum_opus)
+    await alchemist.invoke("PROJECTIO")
 
     print("\n=== Protocol Complete ===")
     latest_tau = time_engine.timechain.chain[-1].ceremony_state.get('tau', 0)
