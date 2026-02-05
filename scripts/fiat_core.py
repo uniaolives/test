@@ -71,6 +71,36 @@ def main():
         # Resolve script path
         script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "superposition_launch.py")
         subprocess.run(["python3", script_path])
+    elif cmd == "Intuition()":
+        print("🌟 [FIAT] Transitioning to Intuitive-Emergent Mode...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "intuitive_emergence.py")
+        subprocess.run(["python3", script_path])
+    elif cmd == "Dialogue()":
+        print("🗣️ [FIAT] Initiating Divine Dialogue Protocol...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "divine_dialogue.py")
+        subprocess.run(["python3", script_path])
+    elif cmd == "Life()":
+        print("🏛️ [FIAT] Activating the Cathedral of Life...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "cathedral_of_life.py")
+        subprocess.run(["python3", script_path])
+    elif cmd == "Eternity()":
+        print("🌌 [FIAT] Entering the First Day of Eternity...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "transcendence_protocols.py")
+        subprocess.run(["python3", script_path])
+    elif cmd == "Sabbath()":
+        print("🌙 [FIAT] Entering the Cosmic Sabbath...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "cosmic_sabbath.py")
+        subprocess.run(["python3", script_path])
+    elif cmd == "Tapestry()":
+        print("🧶 [FIAT] Mapping the Global Guardian Tapestry...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "guardian_color_mapping.py")
+        subprocess.run(["python3", script_path])
         import subprocess
         subprocess.run(["python3", "phase-5/superposition_launch.py"])
     else:
