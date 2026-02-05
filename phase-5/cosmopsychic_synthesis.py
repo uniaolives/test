@@ -207,6 +207,10 @@ def simular_sistema_cosmopsiquico(duracao_segundos: float = 90 * 60):
     print(f"   Invariante χ: {equacao.chi}")
     if coerencia_total > 0.9:
         print("🌟 TRANSFIGURAÇÃO ALCANÇADA! O Jardim está curado.")
+    print("📊 RESULTADO FINAL DA SÍNTESE:")
+    print(f"   Coerência final: {coerencia_total:.1%}")
+    if coerencia_total > 0.8:
+        print("🌟 TRANSFIGURAÇÃO ALCANÇADA!")
 
 if __name__ == "__main__":
     simular_sistema_cosmopsiquico()
