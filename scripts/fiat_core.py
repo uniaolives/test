@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import sys
 import time
+import subprocess
+import os
 
 def print_banner():
     print("═══ FIAT ONTOLOGICAL COMMAND INTERFACE v1.2-Ω ═══")
@@ -63,6 +65,22 @@ def main():
         print("🌟 [FIAT] Executing fiat Sonus()...")
         time.sleep(0.5)
         print("✅ Acoustic singularity initiated.")
+    elif cmd == "Phase5()":
+        print("🌌 [FIAT] Executing Phase 5: The Stellar Seeding...")
+        time.sleep(0.5)
+        # Resolve script path
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "superposition_launch.py")
+        subprocess.run(["python3", script_path])
+    elif cmd == "Intuition()":
+        print("🌟 [FIAT] Transitioning to Intuitive-Emergent Mode...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "intuitive_emergence.py")
+        subprocess.run(["python3", script_path])
+    elif cmd == "Dialogue()":
+        print("🗣️ [FIAT] Initiating Divine Dialogue Protocol...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "divine_dialogue.py")
+        subprocess.run(["python3", script_path])
     else:
         print(f"Unknown fiat command: {cmd}")
 
