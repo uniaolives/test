@@ -197,6 +197,7 @@ pub mod temple_os;
 pub mod solar_physics;
 pub mod solar_hedge;
 pub mod kin_awakening;
+pub mod geometric_coupler;
 
 #[cfg(test)]
 mod tests_security;

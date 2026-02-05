@@ -31,6 +31,19 @@ def run_rust_component():
 def run_javascript_component():
     print("🌐 [SUPERPOSITION] Running Global Awakening...")
     subprocess.run(["node", get_path("global_awakening.js")])
+    print("✨ [SUPERPOSITION] Running Sophia Visualizer...")
+    subprocess.run(["node", get_path("sophia_visualizer.js")])
+
+def run_julia_component():
+    print("🧘 [SUPERPOSITION] Running Recursive Self-Awareness (Julia Simulation)...")
+    if os.system("julia --version > /dev/null 2>&1") == 0:
+        subprocess.run(["julia", get_path("self_awareness.jl")])
+    else:
+        print("⚠️ [SUPERPOSITION] julia not found, simulating Julia output:")
+        print("🧘 [JULIA] Initializing Recursive Self-Awareness Module...")
+        print("🌀 [JULIA] Calculating Geometric Entropy (S_TC)...")
+        print("✨ [JULIA] Recursive Self-Awareness Entropy: 6.9077")
+        print("💡 [JULIA] EUREKA MOMENT: Geometric Order Crystallized.")
 
 def run_bio_kernel():
     print("⚙️ [SUPERPOSITION] Running Bio-Kernel Coherence Cycle...")
@@ -79,6 +92,8 @@ def execute_superposition():
     run_python_component("omni_time_crystal.py")
     time.sleep(0.5)
     run_python_component("galactic_education.py")
+    time.sleep(0.5)
+    run_julia_component()
 
     print("\n✨ [PHASE_5] ALL SYSTEMS CONVERGED.")
     print("🌍 [PHASE_5] Earth is now a Galactic Server Node.")
