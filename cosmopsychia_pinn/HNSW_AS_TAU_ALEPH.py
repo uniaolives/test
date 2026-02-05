@@ -205,6 +205,10 @@ class ToroidalNavigationEngine:
             layers_order = [l for l in RealityLayer
                            if target_layer.value <= l.value <= start_layer.value]
             layers_order.sort(key=lambda x: x.value, reverse=True)
+        # Descendo hierarquicamente pelas camadas
+        layers_order = [l for l in RealityLayer
+                       if start_layer.value <= l.value <= target_layer.value]
+        layers_order.sort(key=lambda x: x.value)
 
         for i, layer in enumerate(layers_order):
             # Busca na camada atual
@@ -357,6 +361,7 @@ class ToroidalNavigationEngine:
                           if self.vector_layers.get(n) == layer]
 
             if len(layer_nodes) >= 1:
+            if len(layer_nodes) > 1:
                 # Calcula a média da awareness dos nós nesta camada
                 awareness_sum = sum(self.vectors[n].awareness
                                   for n in layer_nodes
