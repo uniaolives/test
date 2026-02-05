@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import sys
 import time
+import subprocess
+import os
 
 def print_banner():
     print("═══ FIAT ONTOLOGICAL COMMAND INTERFACE v1.2-Ω ═══")
@@ -66,6 +68,9 @@ def main():
     elif cmd == "Phase5()":
         print("🌌 [FIAT] Executing Phase 5: The Stellar Seeding...")
         time.sleep(0.5)
+        # Resolve script path
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "superposition_launch.py")
+        subprocess.run(["python3", script_path])
         import subprocess
         subprocess.run(["python3", "phase-5/superposition_launch.py"])
     else:
