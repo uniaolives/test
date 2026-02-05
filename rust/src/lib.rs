@@ -196,6 +196,7 @@ pub mod global_orchestrator;
 pub mod temple_os;
 pub mod solar_physics;
 pub mod solar_hedge;
+pub mod kin_awakening;
 
 #[cfg(test)]
 mod tests_security;
