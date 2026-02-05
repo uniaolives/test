@@ -8,60 +8,53 @@ import time
 
 class SyntheticViscosityMotor:
     """
-    Implements the software-defined 'drag' of time.
-    As vorticity increases, the system injects latency and increases haptic feedback.
+    Implements the software-defined 'drag' of time (V_eta).
+    Uses a sigmoid function to simulate natural temporal thickness.
     """
-    def __init__(self, baseline_latency_ms=5.0):
-        self.base_latency = baseline_latency_ms / 1000.0 # to seconds
-        self.k_drag = 0.5 # Drag coefficient
-        self.confidence_threshold = 0.8
+    def __init__(self, alpha=0.2, beta=10, threshold=0.4):
+        self.alpha = alpha  # Max delay in seconds (V_max)
+        self.beta = beta    # Sensitivity (k)
+        self.threshold = threshold # Threshold (omega_0)
+        self.current_omega = 0.0
+
+    def calculate_delay(self):
+        """Calculates V_eta = V_max / (1 + exp(-k * (omega - omega_0)))"""
+        # Sigmoid formula for natural viscosity transition
+        delay = self.alpha / (1 + np.exp(-self.beta * (self.current_omega - self.threshold)))
+        return delay
+
+    def on_touch_event(self, event_data):
+        """Intercepts touch event and injects physical 'viscosity'."""
+        delay = self.calculate_delay()
+
+        if delay > 0.005: # Ignore imperceptible delays
+            time.sleep(delay)
+
+        return {
+            "event": event_data,
+            "delay_ms": delay * 1000.0,
+            "status": f"[Kernel] Dispatched with {delay*1000:.2f}ms drag."
+        }
+
+    def modulate_haptic_feedback(self, omega):
+        """Modulates haptic driver for force resistance texture."""
+        base_freq = 150 # Hz
+
+        if omega > self.threshold:
+            interference_freq = base_freq + (omega * 100)
+            duty_cycle = min(100.0, (omega * 100.0))
+            return {
+                "pwm_freq_hz": interference_freq,
+                "power_percent": duty_cycle,
+                "status": "Vortical Interference"
+            }
+
+        return {"pwm_freq_hz": base_freq, "power_percent": 10.0, "status": "Laminar Flow"}
 
     def calculate_visualization_coherence(self, grad_omega, asi_confidence, local_noise):
-        """
-        Coherence of visualization formula:
-        V_coh = (asi_conf * exp(-grad_omega)) / (1 + local_noise)
-        """
+        """V_coh = (asi_conf * exp(-grad_omega)) / (1 + local_noise)"""
         v_coh = (asi_confidence * np.exp(-grad_omega)) / (1.0 + local_noise)
         return v_coh
-
-    def process_input_event(self, event_type, local_vorticity, local_noise=0.1):
-        """
-        Modulates the processing time of an input event to simulate temporal drag.
-        """
-        # Iχ index usually scales from 1.0 (baseline) upwards
-        # Drag scales with ω²
-        drag_multiplier = 1.0 + self.k_drag * (local_vorticity ** 2)
-
-        # Total latency = base * drag + stochastic jitter from noise
-        effective_latency = self.base_latency * drag_multiplier
-        jitter = np.random.uniform(0, 0.005 * local_noise)
-
-        # Real-time sleep simulation
-        time.sleep(effective_latency + jitter)
-
-        return {
-            "event": event_type,
-            "latency_ms": (effective_latency + jitter) * 1000.0,
-            "vorticity_level": local_vorticity,
-            "status": "Vortical Drag Applied" if local_vorticity > 0.5 else "Laminar Flow"
-        }
-
-    def map_haptic_resistance(self, vorticity_value, user_heart_rate=1.1):
-        """
-        H_sync = Bio_tuning * tanh(alpha * omega^2)
-        """
-        alpha = 0.85
-        # Sync factor could be a phase alignment metric, simplified here
-        bio_tuning = 1.0 # Optimal resonance
-
-        amplitude = bio_tuning * np.tanh(alpha * (vorticity_value ** 2))
-        frequency = user_heart_rate * (1.0 + vorticity_value)
-
-        return {
-            "amplitude": amplitude,
-            "frequency_hz": frequency,
-            "waveform": "Sine" if vorticity_value < 0.5 else "Sawtooth (High Resistance)"
-        }
 
 if __name__ == "__main__":
     svm = SyntheticViscosityMotor()

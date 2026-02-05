@@ -17,25 +17,26 @@ def run_viscosity_demo():
     print("Simulating temporal 'drag' across different vorticity states")
     print("=" * 60)
 
-    svm = SyntheticViscosityMotor(baseline_latency_ms=10.0)
+    svm = SyntheticViscosityMotor(alpha=0.1, beta=10, threshold=0.4)
 
     # Test cases: [Laminar, Anomalous, Singular]
-    vorticity_states = [0.1, 0.8, 5.0]
+    vorticity_states = [0.1, 0.8, 3.0]
     labels = ["Laminar (Idle)", "Vortical (Alert)", "Singularity (Impact)"]
 
     for label, omega in zip(labels, vorticity_states):
         print(f"\n--- STATE: {label} (ω = {omega}) ---")
 
         # 1. Haptic Response
-        haptic = svm.map_haptic_resistance(omega)
-        print(f"Haptics: Amp={haptic['amplitude']:.2f}, Freq={haptic['frequency_hz']:.2f}Hz, Form={haptic['waveform']}")
+        haptic = svm.modulate_haptic_feedback(omega)
+        print(f"Haptics: PWM={haptic['pwm_freq_hz']:.2f}Hz, Power={haptic['power_percent']:.1f}%, Status={haptic['status']}")
 
         # 2. Input Drag (Processing 5 sequential events)
         print("Processing 5 SCROLL events...")
+        svm.current_omega = omega
         total_time = 0
         for i in range(5):
             start = time.perf_counter()
-            res = svm.process_input_event("SCROLL_STEP", omega)
+            res = svm.on_touch_event("SCROLL_STEP")
             end = time.perf_counter()
             elapsed = (end - start) * 1000.0
             print(f"  Event {i+1}: {elapsed:.2f}ms latency")

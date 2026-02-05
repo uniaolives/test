@@ -6,6 +6,7 @@ import numpy as np
 import plotly.graph_objects as go
 from chronoflux.visualization.dashboard import ChronofluxDashboard
 from chronoflux.visualization.synthetic_viscosity import SyntheticViscosityMotor
+from chronoflux.visualization.temporal_lens import TemporalLens
 
 class TemporalUI:
     """
@@ -16,6 +17,7 @@ class TemporalUI:
         self.engine = engine_hnsw
         self.dashboard = dashboard_cf
         self.viscosity_motor = SyntheticViscosityMotor()
+        self.temporal_lens = TemporalLens()
         self.alert_status = "NOMINAL"
 
     def get_reality_state(self):
@@ -69,7 +71,7 @@ class TemporalUI:
         ))
 
         # 3. Synthetic Viscosity Parameters
-        haptics = self.viscosity_motor.map_haptic_resistance(state['ix_global'] / 10.0) # Scaled for UI
+        haptics = self.viscosity_motor.modulate_haptic_feedback(state['ix_global'] / 10.0) # Scaled for UI
 
         return {
             "state": state,
@@ -77,6 +79,10 @@ class TemporalUI:
             "gauge": gauge_fig,
             "haptic_feedback": haptics
         }
+
+    def process_vision_layer(self, frame, local_omega):
+        """Processes a camera frame through the Temporal Lens."""
+        return self.temporal_lens.process_frame(frame, local_omega)
 
 if __name__ == "__main__":
     print("Temporal UI Logic Initialized.")
