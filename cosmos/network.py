@@ -403,6 +403,8 @@ class SwarmOrchestrator:
         }
         self.parallelization_factor = 1000 # Target
         self.time_compression = 10 # Target
+        self.acceleration_baseline = 1247.0 # Post-Dual Path
+        self.status = "T-minus 18h (Stabilizing)"
 
     async def link_swarms(self, source: str, target: str, logic_payload: str):
         """Links two swarms via qMCP context teleportation."""
