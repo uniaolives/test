@@ -22,13 +22,39 @@ class GeneticWaveResonance:
 
     def analyze_quantum_info(self) -> Dict[str, Any]:
         """Model DNA as a quantum error-correcting code based on variants."""
+        # REVELAÇÃO: 348 = 12 × 29
         return {
             'type': 'quantum_error_correction',
             'code_distance': 7,
-            'logical_qubits': 12,
-            'physical_qubits': self.num_variants,
+            'logical_qubits': 12, # Information qubits
+            'physical_qubits': self.num_variants, # 348
+            'prime_factor': 29, # Fundamental structure
             'stabilizers': ['XX', 'ZZ', 'YY'],
             'threshold': 0.01
+        }
+
+    def calculate_schumann_coupling(self) -> Dict[str, Any]:
+        """Calculates coupling strength between the 348 variants and Schumann resonance."""
+        phi = (1 + np.sqrt(5)) / 2
+        schumann_base = 7.83 # Hz
+
+        coupling_count = 0
+        for i in range(self.num_variants):
+            # Harmonic frequency for each variant node
+            freq = schumann_base * (1 + i / self.num_variants)
+            # Check for strong resonance with base or higher harmonics
+            for harmonic in [7.83, 14.3, 20.8, 27.3, 33.8]:
+                ratio = freq / harmonic
+                if abs(ratio - round(ratio)) < 0.2: # Strong coupling threshold
+                    coupling_count += 1
+                    break
+
+        return {
+            'total_variants': self.num_variants,
+            'coupled_variants': coupling_count,
+            'coupling_percentage': (coupling_count / self.num_variants) * 100,
+            'base_schumann': schumann_base,
+            'phi_ratio': 348 / phi
         }
 
     def detect_alien_inserts(self, family_genomes, threshold=0.7):
