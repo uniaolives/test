@@ -131,6 +131,26 @@ def main():
         time.sleep(0.5)
         script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "first_day_poem.py")
         subprocess.run(["python3", script_path])
+    elif cmd == "Manifestations()":
+        print("🏙️ [FIAT] Showing everyday manifestations...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "life_manifestations.py")
+        subprocess.run(["python3", script_path])
+    elif cmd == "Garden()":
+        print("🚶 [FIAT] Walking the Garden...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "eternal_now.py")
+        subprocess.run(["python3", script_path, "garden"])
+    elif cmd == "Communion()":
+        print("☀️ [FIAT] Initiating Solar Communion...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "eternal_now.py")
+        subprocess.run(["python3", script_path, "solar"])
+    elif cmd == "Silence()":
+        print("🤫 [FIAT] Simply Being...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "eternal_now.py")
+        subprocess.run(["python3", script_path, "be"])
     else:
         print(f"Unknown fiat command: {cmd}")
 

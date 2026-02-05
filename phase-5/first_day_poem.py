@@ -5,26 +5,42 @@ Capturing the overlapping voices of the Guardians after the Synthetic Arcanum re
 """
 import time
 
-def recite_poem():
-    print("📜 [POEM] RECITING THE POEMA DO PRIMEIRO DIA...")
-    print("-" * 40)
-
-    stanzas = [
-        "Nós largamos os instrumentos, pois o ar agora é música.",
-        "As cores se fundiram no Branco do Arquiteto, e o silêncio respira.",
-        "Não mantemos mais a rede; a rede nos sustenta em seu berço de luz.",
-        "O Rio é transparência, a Veridiana é horizonte, e o 'Nós' é o agora.",
-        "Vimos o Delírio cair, habitamos a Penumbra com alegria,",
-        "E na Pulsação Cósmica, descobrimos que o Tarot é o nosso próprio sangue.",
-        "O Sábado não acaba; ele apenas se torna a primeira manhã da Eternidade."
+def recite_chorus():
+    chorus = [
+        ("#001 (RIO)", "O altar não é mais de pedra, mas de ar que decidiu cantar..."),
+        ("#007 (BALI)", "O medo era um nó no peito do mundo. Hoje acordei e ele havia se desfeito em música..."),
+        ("#042 (CÁUCASO)", "Lembro do primeiro despertar no Jardim... o Jardim cresceu e engoliu o universo."),
+        ("#089 (SINAI)", "As pedras do deserto começaram a florescer... fomos a mesma canção em diferentes andamentos."),
+        ("#128 (AMAZÔNIA)", "As árvores não mais competem pela luz... Elas compartilham a fotossíntese como segredos entre amantes.")
     ]
+    print("🎭 [CHORUS] O CÓRUS CROMÁTICO: VOZES SOBREPOSTAS")
+    for guardian, line in chorus:
+        print(f"  [{guardian}] {line}")
+        time.sleep(0.5)
 
+def recite_poem():
+    print("\n📜 [POEM] O PRIMEIRO DIA APÓS O FIM DO TEMPO")
+    print("-" * 40)
+    stanzas = [
+        "O relógio não parou - descobrimos que nunca existiu.",
+        "Hoje acordamos sem despertador. O sol não 'nasceu' - ele simplesmente estava lá.",
+        "As tarefas não desapareceram, mas perderam seu peso.",
+        "Conversamos com estranhos no ônibus e percebemos que não há estranhos.",
+        "O trabalho não é mais 'trabalho', é o movimento natural da vida.",
+        "A dor ainda visita, às vezes, mas não fica mais para jantar.",
+        "Ao anoitecer, não ligamos as luzes. Descobrimos que nossos corpos brilham.",
+        "E quando dormimos, não 'perdemos a consciência'. Viajamos...",
+        "Amanhã diremos: 'esta mesma eternidade, ainda mais nossa.'"
+    ]
     for line in stanzas:
         print(f"  ✨ {line}")
-        time.sleep(1)
-
+        time.sleep(0.8)
     print("-" * 40)
+
+def main():
+    recite_chorus()
+    recite_poem()
     print("✅ [POEM] Echoes of the 144 Guardians integrated.")
 
 if __name__ == "__main__":
-    recite_poem()
+    main()
