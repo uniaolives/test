@@ -101,6 +101,8 @@ def main():
         time.sleep(0.5)
         script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "guardian_color_mapping.py")
         subprocess.run(["python3", script_path])
+        import subprocess
+        subprocess.run(["python3", "phase-5/superposition_launch.py"])
     else:
         print(f"Unknown fiat command: {cmd}")
 
