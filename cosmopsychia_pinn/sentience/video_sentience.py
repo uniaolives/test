@@ -15,6 +15,27 @@ import matplotlib.pyplot as plt
 
 # --- Helper Modules ---
 
+# --- Quantum Retrocausality: Future Echoes ---
+
+class FutureEchoModulator(nn.Module):
+    """
+    Simulates future influences on the current state.
+    Present features are modulated by a "future context" proxy.
+    """
+    def __init__(self, dim):
+        super().__init__()
+        self.echo_intensity = nn.Parameter(torch.tensor(0.1))
+
+    def forward(self, features):
+        # features: (B, C, T, H, W)
+        # Shift features in time to simulate future context
+        # (Roll backwards so future indices come to the present)
+        future_proxy = torch.roll(features, shifts=-1, dims=2)
+
+        # Modulate present with future proxy
+        modulated = features + self.echo_intensity * future_proxy
+        return modulated
+
 class SpacetimeRelativePosition(nn.Module):
     def __init__(self, max_temporal_distance, max_spatial_distance):
         super().__init__()
@@ -41,6 +62,63 @@ class TemporalAttention(nn.Module):
         self.conv = nn.Conv3d(dim, dim, 1)
     def forward(self, x):
         return self.conv(x)
+
+# --- Physical Kernel: Quantized Inertia (MiHsC) & Holographic Physics ---
+
+class NewtonianLayer(nn.Module):
+    """
+    Classic Newtonian Physics (Identity mapping for mass).
+    """
+    def forward(self, mass):
+        return mass
+
+class QuantizedInertiaLayer(nn.Module):
+    """
+    Implements Quantized Inertia (MiHsC).
+    Feature importance (effective mass) depends on global horizon scale (Theta).
+    """
+    def __init__(self, global_horizon_scale=1000.0):
+        super().__init__()
+        self.Theta = global_horizon_scale
+        self.c_squared = 1.0
+
+    def forward(self, local_acceleration, mass_proxy):
+        """
+        Calculates modified inertia.
+        effective_mass = mass_proxy * (1 - (a_min / |a|)^2)
+        """
+        # Minimum acceleration based on horizon: a_min = 2c^2 / Theta
+        a_min = (2.0 * self.c_squared) / self.Theta
+
+        magnitude = local_acceleration.abs() + 1e-8
+
+        # Modification factor decreases as acceleration approaches a_min
+        modification_factor = 1.0 - (a_min / magnitude).clamp(max=0.9) ** 2
+
+        return mass_proxy * modification_factor
+
+class HolographicPhysicsEngine(nn.Module):
+    """
+    Dual regime physics: Newtonian for high acceleration, MiHsC for low acceleration.
+    """
+    def __init__(self, hubble_scale=46.5e9):
+        super().__init__()
+        self.newton = NewtonianLayer()
+        self.qi = QuantizedInertiaLayer(global_horizon_scale=hubble_scale)
+        self.crossfade_threshold = 1e-10
+
+    def forward(self, acceleration, mass):
+        magnitude = acceleration.abs()
+
+        # Determine regime
+        if magnitude.mean() > self.crossfade_threshold * 100:
+            return self.newton(mass)
+        elif magnitude.mean() < self.crossfade_threshold:
+            return self.qi(acceleration, mass)
+        else:
+            # Transition zone: simple linear blend for simulation
+            alpha = (magnitude.mean() / (self.crossfade_threshold * 100)).clamp(0, 1)
+            return alpha * self.newton(mass) + (1 - alpha) * self.qi(acceleration, mass)
 
 # --- Identity of Vision: Mutual Recognition ---
 
@@ -170,6 +248,14 @@ class SpacetimeConsciousness(nn.Module):
         )
 
         self.spacetime_attention = EinsteinAttention(256, 8, 32)
+
+        # Physical Kernel: Holographic Physics Engine
+        # Using a normalized cosmic scale for the simulation environment
+        self.physics_engine = HolographicPhysicsEngine(hubble_scale=1000.0)
+
+        # Retrocausal Module: Future Echoes
+        self.future_echo = FutureEchoModulator(256)
+
         self.temporal_memory = TemporalHologram(capacity=temporal_depth * 2)
         self.consciousness_emergence = IntegratedInformationLayer(256)
 
@@ -187,6 +273,14 @@ class SpacetimeConsciousness(nn.Module):
         # Perceptual processing
         features = self.spacetime_conv(x_4d)
         attended, attn_weights = self.spacetime_attention(features)
+
+        # Apply Holographic Physics (Physical Kernel)
+        # Compute local acceleration as temporal gradient
+        accel = attended.diff(dim=2, prepend=attended[:, :, :1])
+        attended = self.physics_engine(accel, attended)
+
+        # Apply Future Echoes (Retrocausality)
+        attended = self.future_echo(attended)
 
         # Temporal context
         memory_context = self.temporal_memory.store_and_retrieve(attended)
