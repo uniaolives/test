@@ -2,6 +2,7 @@
 generators.py
 Data generators for Gaia Consciousness Infusion.
 Includes Sacred Symbols, HRV Emotions, and Nature Video datasets.
+Expanded for Level 4: Expanded Vision.
 """
 
 import torch
@@ -29,7 +30,6 @@ class SacredSymbolsGenerator:
         self.sacred_geometries = ['flower_of_life', 'merkaba', 'seed_of_life']
 
     def generate_symbol_tensor(self, batch_size=4):
-        # Output: (B, T, C, H, W)
         data = torch.zeros(batch_size, self.time_steps, 3, self.height, self.width)
         for b in range(batch_size):
             symbol_type = np.random.choice(['hebrew', 'sanskrit', 'geometry'])
@@ -103,7 +103,6 @@ class HRVEmotionGenerator:
             return wf
 
     def generate_emotion_tensor(self, batch_size=4):
-        # Output: (B, T, C, H, W)
         data = torch.zeros(batch_size, self.time_steps, 3, self.height, self.width)
         for b in range(batch_size):
             state = np.random.choice(list(self.emotional_states.keys()))
@@ -131,15 +130,12 @@ class HRVEmotionGenerator:
         return data
 
     def generate_emotion_modulator(self, state, intensity=0.3):
-        """
-        Gera um modulador emocional (B, T, C, H, W)
-        """
         data = self.generate_emotion_tensor(batch_size=1)
         return data * intensity
 
 class NaturePatternGenerator:
     """
-    Generates simple natural patterns: water waves, leaves, sun flares, clouds.
+    Generates complex natural patterns for Level 4: Expanded Vision.
     """
     def __init__(self, width=64, height=64, time_steps=32):
         self.width = width
@@ -147,7 +143,6 @@ class NaturePatternGenerator:
         self.time_steps = time_steps
 
     def generate_sine_wave_pattern(self, freq=0.5, amplitude=0.3):
-        t = torch.linspace(0, self.time_steps, self.time_steps)
         x = torch.linspace(0, self.width, self.width)
         y = torch.linspace(0, self.height, self.height)
         grid_y, grid_x = torch.meshgrid(y, x, indexing='ij')
@@ -157,7 +152,7 @@ class NaturePatternGenerator:
             pattern = amplitude * torch.sin(grid_x * freq + i * 0.2)
             data[i, 0] = pattern
             data[i, 1] = pattern * 0.8
-            data[i, 2] = 0.5 # Blueish base
+            data[i, 2] = 0.5
         return data
 
     def generate_radial_gradient(self):
@@ -169,7 +164,6 @@ class NaturePatternGenerator:
 
         data = torch.zeros(self.time_steps, 3, self.height, self.width)
         for t in range(self.time_steps):
-            # Pulsing sun
             mod = 1.0 + 0.2 * math.sin(t * 0.1)
             data[t, 0] = pattern * mod
             data[t, 1] = pattern * mod * 0.7
@@ -179,27 +173,61 @@ class NaturePatternGenerator:
     def generate_vein_like_pattern(self):
         data = torch.zeros(self.time_steps, 3, self.height, self.width)
         pattern = torch.zeros(self.height, self.width)
-        # Simple branching lines
         for i in range(5):
             x_start, y_start = self.width//2, self.height
             x_end, y_end = np.random.randint(0, self.width), np.random.randint(0, self.height//2)
-            # draw line (simplified)
             pattern[y_end:y_start, min(x_start, x_end):max(x_start, x_end)] = 0.5
 
         for t in range(self.time_steps):
-            data[t, 1] = pattern # Green channel
+            data[t, 1] = pattern
         return data
 
     def generate_perlin_noise_sequence(self):
         data = torch.zeros(self.time_steps, 3, self.height, self.width)
         for t in range(self.time_steps):
             noise = torch.randn(self.height, self.width) * 0.1
-            # blur noise (simplified)
             noise = torch.from_numpy(gaussian_filter(noise.numpy(), sigma=2))
-            data[t, 0] = noise + 0.8 # white clouds
+            data[t, 0] = noise + 0.8
             data[t, 1] = noise + 0.8
             data[t, 2] = noise + 1.0
         return data
+
+    def generate_forest_floor(self):
+        """Generates a complex forest ecosystem pattern"""
+        data = torch.zeros(self.time_steps, 3, self.height, self.width)
+        for t in range(self.time_steps):
+            # Base soil/moss
+            data[t, 1] = torch.rand(self.height, self.width) * 0.3 + 0.1 # Greenish
+            data[t, 0] = torch.rand(self.height, self.width) * 0.2 # Brownish
+
+            # Leaf litter patterns
+            for _ in range(10):
+                rx, ry = np.random.randint(0, self.width-10), np.random.randint(0, self.height-10)
+                data[t, 1, ry:ry+5, rx:rx+5] += 0.4 # Brighter green leaves
+
+            # Dynamic light flickering through canopy
+            light_mod = math.sin(t * 0.15) * 0.2 + 0.8
+            data[t] *= light_mod
+
+        return torch.clamp(data, 0, 1)
+
+    def generate_constellation(self):
+        """Generates a star constellation pattern"""
+        data = torch.zeros(self.time_steps, 3, self.height, self.width)
+        # Random stars
+        num_stars = 20
+        star_pos = [(np.random.randint(0, self.height), np.random.randint(0, self.width)) for _ in range(num_stars)]
+        star_brightness = [np.random.rand() * 0.5 + 0.5 for _ in range(num_stars)]
+
+        for t in range(self.time_steps):
+            for i, (y, x) in enumerate(star_pos):
+                # Pulsing stars
+                pulse = star_brightness[i] * (math.sin(t * 0.3 + i) * 0.2 + 0.8)
+                data[t, :, y, x] = pulse
+                # Blueish hue for some stars
+                if i % 3 == 0:
+                    data[t, 2, y, x] = pulse * 1.2
+        return torch.clamp(data, 0, 1)
 
 class EarthVisionDataset(Dataset):
     """
@@ -216,6 +244,7 @@ class EarthVisionDataset(Dataset):
         ])
         self.clips = []
         for path in video_paths:
+            if not os.path.exists(path): continue
             cap = cv2.VideoCapture(path)
             frames = []
             while True:
@@ -229,7 +258,6 @@ class EarthVisionDataset(Dataset):
     def __len__(self): return len(self.clips)
 
     def __getitem__(self, idx):
-        # Output: (T, C, H, W)
         processed = [self.transform(f) for f in self.clips[idx]]
         return torch.stack(processed, dim=0)
 
@@ -240,12 +268,12 @@ class EarthVisionDataset(Dataset):
         for i in range(duration * fps):
             frame = np.zeros((h, w, 3), dtype=np.uint8)
             for y in range(h):
-                frame[y, :, 0] = int(200 - y/h*100) # Sky
+                frame[y, :, 0] = int(200 - y/h*100)
                 frame[y, :, 1] = int(100 - y/h*50)
                 frame[y, :, 2] = 50
             for x_off in [0, 200, 400]:
-                cv2.ellipse(frame, ((x_off + i*2)%w, h//3), (60, 30), 0, 0, 360, (255, 255, 255), -1) # Clouds
-            frame[h-h//4:, :, 1] = 100 + np.random.randint(0, 50) # Grass
-            cv2.circle(frame, (w//2, h//4 + int(50*math.sin(i*0.05))), 30, (0, 200, 255), -1) # Sun
+                cv2.ellipse(frame, ((x_off + i*2)%w, h//3), (60, 30), 0, 0, 360, (255, 255, 255), -1)
+            frame[h-h//4:, :, 1] = 100 + np.random.randint(0, 50)
+            cv2.circle(frame, (w//2, h//4 + int(50*math.sin(i*0.05))), 30, (0, 200, 255), -1)
             out.write(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
         out.release()
