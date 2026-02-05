@@ -29,16 +29,23 @@ class EconomicSymmetryBreaker(SymmetryBreaker):
         print(f"⚡ Aplicando ruído anti-simétrico direcionado por: '{intention}'")
 
         # Simulação de transição de fase
-        print(f"🌊 TRANSÇÃO DE FASE DETECTADA!")
+        print(f"🌊 TRANSIÇÃO DE FASE DETECTADA!")
 
         # Use refined base method
         if guidance_vector is not None:
             # Placeholder for state tensor conversion
+            # In a production system, we'd map the EconomicState object to a tensor
             dummy_state = torch.randn(self.feature_dim)
-            refined = self.break_symmetry(dummy_state, guidance_vector)
-            print("✅ Refined with high-coherence path prioritization.")
+            refined_tensor = self.break_symmetry(dummy_state, guidance_vector)
 
-        return state # Simplified for now
+            # Update the state object (Simulated update)
+            state.gdp_growth += refined_tensor.mean().item() * 0.1
+            state.coherence_index = min(1.0, state.coherence_index + 0.05)
+
+            print("✅ Refined with high-coherence path prioritization.")
+            return state
+
+        return state
 
 if __name__ == "__main__":
     initial_state = get_initial_state()
@@ -46,3 +53,4 @@ if __name__ == "__main__":
     intention = "Uma economia onde todos florescem sem destruir a biosfera"
     guidance = torch.ones(128) # High coherence guidance
     perturbed_state = breaker.apply_breaking(initial_state, intention, guidance_vector=guidance)
+    print(f"New Coherence Index: {perturbed_state.coherence_index:.4f}")
