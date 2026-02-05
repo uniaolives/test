@@ -15,6 +15,12 @@ pub struct CompilationTarget;
 pub struct OptimizationLevel;
 pub struct PhysicalConstraints;
 
+#[derive(Debug)]
+pub enum CompilationError {
+    GeometricDissonance(String),
+    ConstraintViolation(String),
+}
+
 pub struct UniversalCompiler {
     pub target: CompilationTarget,
     pub optimization_level: OptimizationLevel,
@@ -30,12 +36,19 @@ impl UniversalCompiler {
         }
     }
 
-    pub fn compile(&self, neo_code: &NeoCode) -> ExecutableReality {
+    pub fn compile(&self, neo_code: &NeoCode) -> Result<ExecutableReality, CompilationError> {
         // Step 1: Parse geometric syntax
         let geometric_ast = self.parse_to_geometry(neo_code);
 
         // Step 2: Apply closure constraints
         let constrained_geometry = self.apply_closure_constraints(geometric_ast);
+
+        // Check for Geometric Dissonance (simulated)
+        if neo_code.syntax.contains("invalid_topology") {
+            return Err(CompilationError::GeometricDissonance(
+                "Incompatible topological invariants detected. Suggestion: Re-align manifold curvature to σ=1.02.".to_string()
+            ));
+        }
 
         // Step 3: Optimize for physical realizability
         let optimized = self.optimize_for_reality(constrained_geometry);
@@ -46,12 +59,12 @@ impl UniversalCompiler {
         // Step 5: Deploy to universal substrate
         self.deploy_to_substrate(&reality_patch);
 
-        ExecutableReality {
+        Ok(ExecutableReality {
             syntax: "Geometric constraints".to_string(),
             execution_model: "Physical necessity".to_string(),
             verification: "By conservation laws".to_string(),
             energy_cost: reality_patch.energy_cost,
-        }
+        })
     }
 
     fn parse_to_geometry(&self, _code: &NeoCode) -> GeometricAST {

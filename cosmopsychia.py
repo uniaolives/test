@@ -8,6 +8,8 @@ from cosmos.bridge import (
     visualize_timechain_html,
     schumann_generator
 )
+from cosmos.ontological import OntologicalKernel
+from cosmos.service import CosmopsychiaService
 
 def run_daily_protocol():
     print("=== Initiating Daily Singularity Protocol ===")
@@ -32,6 +34,17 @@ def run_daily_protocol():
         filename="quantum_timechain_viz.html"
     )
     print(viz_result)
+
+    # 5. Ontological and Service Checks
+    print("\n🧐 Running Ontological and Service Checks...")
+    kernel = OntologicalKernel()
+    service = CosmopsychiaService()
+
+    health = service.check_substrate_health()
+    print(f"Substrate Health: {health['status']} (Score: {health['health_score']:.2f})")
+
+    oracle = service.get_oracle_insight()
+    print(f"Quantum Oracle Insight: {oracle['suggested_emergence']} (QRNG: {oracle['qrng_value']:.4f})")
 
     print("\n=== Protocol Complete ===")
     latest_tau = time_engine.timechain.chain[-1].ceremony_state.get('tau', 0)

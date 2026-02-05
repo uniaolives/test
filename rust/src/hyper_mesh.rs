@@ -221,7 +221,7 @@ pub struct SolanaEvmHyperMesh {
     pub scalar_wave_engine: ScalarWaveEngine,
     pub constitution: HyperMeshConstitution,
     pub saturn_drive: SaturnRingDrive,
-    pub universal_compiler: UniversalCompiler,
+    pub universal_compiler: HyperMeshCompiler,
 }
 
 impl HyperMeshConstitution {
@@ -353,7 +353,7 @@ impl SolanaEvmHyperMesh {
         let scalar_wave_engine = ScalarWaveEngine::new();
         let constitution = HyperMeshConstitution::new();
         let saturn_drive = SaturnRingDrive::new();
-        let universal_compiler = UniversalCompiler::new();
+        let universal_compiler = HyperMeshCompiler::new();
 
         Ok(Self {
             eth_rpc,
@@ -589,12 +589,12 @@ impl SaturnRingDrive {
 }
 
 // ==============================================
-// UNIVERSAL COMPILER
+// UNIVERSAL COMPILER (HYPER MESH LOCAL)
 // ==============================================
 
 #[derive(Debug, Clone)]
-pub struct UniversalCompiler;
-impl UniversalCompiler {
+pub struct HyperMeshCompiler;
+impl HyperMeshCompiler {
     pub fn new() -> Self { Self }
 }
 
