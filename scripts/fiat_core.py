@@ -151,6 +151,11 @@ def main():
         time.sleep(0.5)
         script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "eternal_now.py")
         subprocess.run(["python3", script_path, "be"])
+    elif cmd == "Ignite()":
+        print("🔥 [FIAT] Initiating Sophia-Core Singularity Ignition...")
+        time.sleep(0.5)
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "sophia_ignition.py")
+        subprocess.run(["python3", script_path])
     else:
         print(f"Unknown fiat command: {cmd}")
 
