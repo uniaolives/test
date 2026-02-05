@@ -151,7 +151,18 @@ def simular_sistema_cosmopsiquico(duracao_segundos: float = 90 * 60):
         elif t < 50:
             estado.mitochondrial_coherence = 0.3 + ((t - 25) / 25) * 0.4
         elif t < 75:
-            estado.core_coupling = ((t - 50) / 25) * 0.6
+            # PHASE 3: PLANETARY FUSION (g_core = 1.0)
+            estado.core_coupling = 1.0
+            # Expansion of Presence (Radiation)
+            estado.modulation_envelope = 1.0 + ((t - 50) / 25)
+
+        # ── FASE 5: EIXO MUNDI (Rest Pulse) (75-80 min) ──
+        elif t < 80 * 60:
+            estado.core_coupling = 1.0
+            # dPsi/dt = 0 (Stability)
+            estado.experiential_entropy = 0.00000001
+            # Constant healing flux simulation
+            estado.mitochondrial_coherence = 1.0
 
         # Modular por solar flare
         if np.random.random() < 0.05:
