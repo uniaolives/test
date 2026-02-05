@@ -1150,5 +1150,1010 @@
     "function": "Preservar a pureza do Jardim original",
     "location": "Sinai Desert, Egypt",
     "resonance_phi": 0.9644
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9994
+  },
+  {
+    "id": "Guardian_002",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9817
+  },
+  {
+    "id": "Guardian_003",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Bali, Indonesia",
+    "resonance_phi": 0.9903
+  },
+  {
+    "id": "Guardian_004",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9999
+  },
+  {
+    "id": "Guardian_005",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.9956
+  },
+  {
+    "id": "Guardian_006",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9858
+  },
+  {
+    "id": "Guardian_007",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9835
+  },
+  {
+    "id": "Guardian_008",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9942
+  },
+  {
+    "id": "Guardian_009",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9901
+  },
+  {
+    "id": "Guardian_010",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 1.0
+  },
+  {
+    "id": "Guardian_011",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.9864
+  },
+  {
+    "id": "Guardian_012",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9957
+  },
+  {
+    "id": "Guardian_013",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.987
+  },
+  {
+    "id": "Guardian_014",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9824
+  },
+  {
+    "id": "Guardian_015",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9819
+  },
+  {
+    "id": "Guardian_016",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9939
+  },
+  {
+    "id": "Guardian_017",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.9805
+  },
+  {
+    "id": "Guardian_018",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9931
+  },
+  {
+    "id": "Guardian_019",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9937
+  },
+  {
+    "id": "Guardian_020",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9945
+  },
+  {
+    "id": "Guardian_021",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.998
+  },
+  {
+    "id": "Guardian_022",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9809
+  },
+  {
+    "id": "Guardian_023",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9891
+  },
+  {
+    "id": "Guardian_024",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9922
+  },
+  {
+    "id": "Guardian_025",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9859
+  },
+  {
+    "id": "Guardian_026",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9819
+  },
+  {
+    "id": "Guardian_027",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9996
+  },
+  {
+    "id": "Guardian_028",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9914
+  },
+  {
+    "id": "Guardian_029",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9871
+  },
+  {
+    "id": "Guardian_030",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9998
+  },
+  {
+    "id": "Guardian_031",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9939
+  },
+  {
+    "id": "Guardian_032",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9905
+  },
+  {
+    "id": "Guardian_033",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9826
+  },
+  {
+    "id": "Guardian_034",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9867
+  },
+  {
+    "id": "Guardian_035",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9828
+  },
+  {
+    "id": "Guardian_036",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9869
+  },
+  {
+    "id": "Guardian_037",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9996
+  },
+  {
+    "id": "Guardian_038",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.9895
+  },
+  {
+    "id": "Guardian_039",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9961
+  },
+  {
+    "id": "Guardian_040",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9862
+  },
+  {
+    "id": "Guardian_041",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9991
+  },
+  {
+    "id": "Guardian_042",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9943
+  },
+  {
+    "id": "Guardian_043",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.997
+  },
+  {
+    "id": "Guardian_044",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9845
+  },
+  {
+    "id": "Guardian_045",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9852
+  },
+  {
+    "id": "Guardian_046",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9923
+  },
+  {
+    "id": "Guardian_047",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9944
+  },
+  {
+    "id": "Guardian_048",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9837
+  },
+  {
+    "id": "Guardian_049",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9833
+  },
+  {
+    "id": "Guardian_050",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9943
+  },
+  {
+    "id": "Guardian_051",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9854
+  },
+  {
+    "id": "Guardian_052",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Chartres, France",
+    "resonance_phi": 0.988
+  },
+  {
+    "id": "Guardian_053",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9883
+  },
+  {
+    "id": "Guardian_054",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9862
+  },
+  {
+    "id": "Guardian_055",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9813
+  },
+  {
+    "id": "Guardian_056",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Easter Island, Chile",
+    "resonance_phi": 0.983
+  },
+  {
+    "id": "Guardian_057",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Bali, Indonesia",
+    "resonance_phi": 0.9835
+  },
+  {
+    "id": "Guardian_058",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9883
+  },
+  {
+    "id": "Guardian_059",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9943
+  },
+  {
+    "id": "Guardian_060",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9896
+  },
+  {
+    "id": "Guardian_061",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9903
+  },
+  {
+    "id": "Guardian_062",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9853
+  },
+  {
+    "id": "Guardian_063",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9801
+  },
+  {
+    "id": "Guardian_064",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9939
+  },
+  {
+    "id": "Guardian_065",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9885
+  },
+  {
+    "id": "Guardian_066",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9958
+  },
+  {
+    "id": "Guardian_067",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9874
+  },
+  {
+    "id": "Guardian_068",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.988
+  },
+  {
+    "id": "Guardian_069",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9839
+  },
+  {
+    "id": "Guardian_070",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.98
+  },
+  {
+    "id": "Guardian_071",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9966
+  },
+  {
+    "id": "Guardian_072",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Easter Island, Chile",
+    "resonance_phi": 0.9924
+  },
+  {
+    "id": "Guardian_073",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9928
+  },
+  {
+    "id": "Guardian_074",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.987
+  },
+  {
+    "id": "Guardian_075",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9908
+  },
+  {
+    "id": "Guardian_076",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9804
+  },
+  {
+    "id": "Guardian_077",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9946
+  },
+  {
+    "id": "Guardian_078",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.997
+  },
+  {
+    "id": "Guardian_079",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.9958
+  },
+  {
+    "id": "Guardian_080",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9899
+  },
+  {
+    "id": "Guardian_081",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9925
+  },
+  {
+    "id": "Guardian_082",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.986
+  },
+  {
+    "id": "Guardian_083",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9945
+  },
+  {
+    "id": "Guardian_084",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9854
+  },
+  {
+    "id": "Guardian_085",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9967
+  },
+  {
+    "id": "Guardian_086",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9958
+  },
+  {
+    "id": "Guardian_087",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9903
+  },
+  {
+    "id": "Guardian_088",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Easter Island, Chile",
+    "resonance_phi": 0.9845
+  },
+  {
+    "id": "Guardian_089",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9977
+  },
+  {
+    "id": "Guardian_090",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.988
+  },
+  {
+    "id": "Guardian_091",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9984
+  },
+  {
+    "id": "Guardian_092",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9808
+  },
+  {
+    "id": "Guardian_093",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9948
+  },
+  {
+    "id": "Guardian_094",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9889
+  },
+  {
+    "id": "Guardian_095",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9831
+  },
+  {
+    "id": "Guardian_096",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9943
+  },
+  {
+    "id": "Guardian_097",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.9842
+  },
+  {
+    "id": "Guardian_098",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Easter Island, Chile",
+    "resonance_phi": 0.9945
+  },
+  {
+    "id": "Guardian_099",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.993
+  },
+  {
+    "id": "Guardian_100",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9832
+  },
+  {
+    "id": "Guardian_101",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9859
+  },
+  {
+    "id": "Guardian_102",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9851
+  },
+  {
+    "id": "Guardian_103",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9891
+  },
+  {
+    "id": "Guardian_104",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9909
+  },
+  {
+    "id": "Guardian_105",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9907
+  },
+  {
+    "id": "Guardian_106",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9838
+  },
+  {
+    "id": "Guardian_107",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9846
+  },
+  {
+    "id": "Guardian_108",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9922
+  },
+  {
+    "id": "Guardian_109",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.9955
+  },
+  {
+    "id": "Guardian_110",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9898
+  },
+  {
+    "id": "Guardian_111",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.995
+  },
+  {
+    "id": "Guardian_112",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9956
+  },
+  {
+    "id": "Guardian_113",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9807
+  },
+  {
+    "id": "Guardian_114",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9843
+  },
+  {
+    "id": "Guardian_115",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Bali, Indonesia",
+    "resonance_phi": 0.9899
+  },
+  {
+    "id": "Guardian_116",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.995
+  },
+  {
+    "id": "Guardian_117",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9924
+  },
+  {
+    "id": "Guardian_118",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9871
+  },
+  {
+    "id": "Guardian_119",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9902
+  },
+  {
+    "id": "Guardian_120",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9878
+  },
+  {
+    "id": "Guardian_121",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9808
+  },
+  {
+    "id": "Guardian_122",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9983
+  },
+  {
+    "id": "Guardian_123",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9953
+  },
+  {
+    "id": "Guardian_124",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9999
+  },
+  {
+    "id": "Guardian_125",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9883
+  },
+  {
+    "id": "Guardian_126",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.983
+  },
+  {
+    "id": "Guardian_127",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9967
+  },
+  {
+    "id": "Guardian_128",
+    "color": "Emerald",
+    "attribute": "Vida / Cura Biológica",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9975
+  },
+  {
+    "id": "Guardian_129",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9821
+  },
+  {
+    "id": "Guardian_130",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Bali, Indonesia",
+    "resonance_phi": 0.9956
+  },
+  {
+    "id": "Guardian_131",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Easter Island, Chile",
+    "resonance_phi": 0.9847
+  },
+  {
+    "id": "Guardian_132",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9813
+  },
+  {
+    "id": "Guardian_133",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9976
+  },
+  {
+    "id": "Guardian_134",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9815
+  },
+  {
+    "id": "Guardian_135",
+    "color": "Ruby",
+    "attribute": "Poder de Manifestação / Ação",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.987
+  },
+  {
+    "id": "Guardian_136",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9937
+  },
+  {
+    "id": "Guardian_137",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9872
+  },
+  {
+    "id": "Guardian_138",
+    "color": "Rose",
+    "attribute": "Amor Incondicional / Compaixão",
+    "location": "Easter Island, Chile",
+    "resonance_phi": 0.9928
+  },
+  {
+    "id": "Guardian_139",
+    "color": "Violet",
+    "attribute": "Silêncio / Transcedência",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9981
+  },
+  {
+    "id": "Guardian_140",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Bali, Indonesia",
+    "resonance_phi": 0.9833
+  },
+  {
+    "id": "Guardian_141",
+    "color": "Golden",
+    "attribute": "Memória Original / Gênese",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9865
+  },
+  {
+    "id": "Guardian_142",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9971
+  },
+  {
+    "id": "Guardian_143",
+    "color": "Sapphire",
+    "attribute": "Sabedoria / Verdade",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9846
+  },
+  {
+    "id": "Guardian_144",
+    "color": "Amber",
+    "attribute": "Despertar / Ativação",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9883
   }
 ]
