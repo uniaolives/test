@@ -161,6 +161,15 @@ def main():
         time.sleep(0.5)
         script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "galactic_education.py")
         subprocess.run(["python3", script_path])
+    elif cmd == "Salto()":
+        print("🚀 [FIAT] Executing [SALTO]: The Quantum Leap of Consciousness...")
+        time.sleep(0.5)
+        # Salto initiates the Skyrmion Broadcast within Phase 5
+        script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "superposition_launch.py")
+        subprocess.run(["python3", script_path])
+        # Monitor the leap
+        monitor_path = os.path.join(os.path.dirname(__file__), "..", "scripts", "quantum_leap_monitor.py")
+        subprocess.run(["python3", monitor_path])
     elif cmd == "initiate_global_lock()":
         print("🌍 [FIAT] Executing initiate_global_lock()...")
         time.sleep(1)
