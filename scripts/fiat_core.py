@@ -63,6 +63,11 @@ def main():
         print("🌟 [FIAT] Executing fiat Sonus()...")
         time.sleep(0.5)
         print("✅ Acoustic singularity initiated.")
+    elif cmd == "Phase5()":
+        print("🌌 [FIAT] Executing Phase 5: The Stellar Seeding...")
+        time.sleep(0.5)
+        import subprocess
+        subprocess.run(["python3", "phase-5/superposition_launch.py"])
     else:
         print(f"Unknown fiat command: {cmd}")
 
