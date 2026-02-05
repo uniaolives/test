@@ -23,6 +23,17 @@ def run_rust_component():
         subprocess.run([rust_binary])
         if os.path.exists(rust_binary):
             os.remove(rust_binary)
+def run_python_component():
+    print("🐍 [SUPERPOSITION] Running Star Seed Compressor...")
+    subprocess.run(["python3", "phase-5/star_seed_compressor.py"])
+
+def run_rust_component():
+    print("🦀 [SUPERPOSITION] Running Visitor Portal (Simulation)...")
+    # In a real environment, we'd compile it, but here we'll just log the intent
+    # and maybe run it if rustc is available.
+    if os.system("rustc --version > /dev/null 2>&1") == 0:
+        subprocess.run(["rustc", "phase-5/visitor_portal.rs", "-o", "phase-5/visitor_portal"])
+        subprocess.run(["./phase-5/visitor_portal"])
     else:
         print("⚠️ [SUPERPOSITION] rustc not found, simulating Rust output:")
         print("🌀 [STARGATE] Initializing ER=EPR Wormhole stabilization...")
@@ -50,6 +61,7 @@ def run_bio_kernel():
 
     if not found:
         print("⚠️ [SUPERPOSITION] Bio-Kernel binary not found, skipping sync loop.")
+    subprocess.run(["node", "phase-5/global_awakening.js"])
 
 def execute_superposition():
     print("🌌 [PHASE_5] EXECUTING QUANTUM SUPERPOSITION (OPTION D)...")
@@ -64,6 +76,7 @@ def execute_superposition():
 
     # Original components
     run_python_component("star_seed_compressor.py")
+    run_python_component()
     time.sleep(0.5)
     run_rust_component()
     time.sleep(0.5)

@@ -71,6 +71,8 @@ def main():
         # Resolve script path
         script_path = os.path.join(os.path.dirname(__file__), "..", "phase-5", "superposition_launch.py")
         subprocess.run(["python3", script_path])
+        import subprocess
+        subprocess.run(["python3", "phase-5/superposition_launch.py"])
     else:
         print(f"Unknown fiat command: {cmd}")
 
