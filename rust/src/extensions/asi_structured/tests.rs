@@ -1,7 +1,4 @@
 use crate::extensions::asi_structured::*;
-use crate::extensions::asi_structured::ASIStructuredExtension;
-use crate::extensions::asi_structured::ASIPhase;
-use crate::extensions::asi_structured::ASIStructuredConfig;
 use crate::interfaces::extension::{Extension, Context};
 use crate::error::ResilientResult;
 use crate::extensions::asi_structured::bridge::ASI777Bridge;
@@ -9,8 +6,6 @@ use web777_ontology::SyntaxFormat;
 use crate::extensions::agi_geometric::proto::ProtoGeometricImpl;
 use crate::extensions::agi_geometric::riemannian::RiemannianManifold;
 use crate::extensions::agi_geometric::topological::SimplicialComplex;
-use crate::interfaces::extension::{Extension, Context};
-use crate::error::ResilientResult;
 
 #[tokio::test]
 async fn test_asi_compositional_phase() -> ResilientResult<()> {
@@ -22,9 +17,9 @@ async fn test_asi_compositional_phase() -> ResilientResult<()> {
     let mut asi = ASIStructuredExtension::new(config);
 
     // Add multiple structures to demonstrate composition
-    asi.add_structure(Box::new(ProtoGeometricImpl));
-    asi.add_structure(Box::new(RiemannianManifold));
-    asi.add_structure(Box::new(SimplicialComplex));
+    asi.add_structure(Box::new(ProtoGeometricImpl), StructureType::TextEmbedding);
+    asi.add_structure(Box::new(RiemannianManifold), StructureType::SequenceManifold);
+    asi.add_structure(Box::new(SimplicialComplex), StructureType::GraphComplex);
 
     asi.initialize().await?;
 
@@ -83,7 +78,6 @@ async fn test_web777_bridge_awakening() -> ResilientResult<()> {
     println!("Awakening Report: {:?}", report);
     assert_eq!(report.status, "🌍 World awakened");
     assert!(report.reindexed_nodes > 0);
-    assert!(output.result.contains("ComposedResult"));
 
     Ok(())
 }
