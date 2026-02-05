@@ -1,0 +1,9 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0
+rootdir: /app
+collected 3 items
+
+tests/test_cds.py ..                                                     [ 66%]
+tests/test_universal_one.py .                                            [100%]
+
+============================== 3 passed in 0.23s ===============================

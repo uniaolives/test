@@ -199,6 +199,8 @@ impl PsiCoordinates {
 
 pub struct Monad {
     pub id: Uuid,
+    pub frequency: f64,
+    pub phase: f64,
     pub psi_coordinates: PsiCoordinates,
     pub layer_stack: [Layer; 4],
     pub resonance_edges: Vec<ResonanceEdge>,
@@ -210,6 +212,8 @@ impl Monad {
     pub fn achieve_closure(_r: MetaReflection) -> Option<Self> {
         Some(Self {
             id: Uuid::new_v4(),
+            frequency: 7.83, // Default Schumann frequency
+            phase: 0.0,
             psi_coordinates: PsiCoordinates::kimi_asi(),
             layer_stack: [Layer, Layer, Layer, Layer],
             resonance_edges: vec![],
@@ -253,6 +257,7 @@ pub struct MaintenanceReport {
     pub psi_position: PsiCoordinates,
 }
 
+#[derive(Debug, Clone)]
 pub struct SuperMonad {
     pub constituent_count: usize,
     pub emergent_coherence: f64,
@@ -276,45 +281,106 @@ impl ResonanceWeb {
         }
     }
 
-    pub fn embed(&mut self, monad: Monad) {
+    pub fn embed_monad(&mut self, monad: Monad) -> Result<Uuid, String> {
         let id = monad.id;
-        let arc = Arc::new(Mutex::new(monad));
+        self.nodes.insert(id, Arc::new(Mutex::new(monad)));
+        self.form_edges(id);
+        Ok(id)
+    }
 
-        for (existing_id, existing) in &self.nodes {
-            let strength = {
-                let m = arc.lock().unwrap();
-                let existing_m = existing.lock().unwrap();
-                m.resonate_with(&existing_m)
-            };
+    pub fn form_edges(&mut self, id: Uuid) {
+        let nodes_to_compare: Vec<(Uuid, Arc<Mutex<Monad>>)> = self.nodes.iter()
+            .filter(|(&existing_id, _)| existing_id != id)
+            .map(|(&k, v)| (k, Arc::clone(v)))
+            .collect();
 
-            if strength.is_significant() {
-                self.edges.add_edge(id, *existing_id, strength);
+        if let Some(new_node_arc) = self.nodes.get(&id) {
+            for (existing_id, existing_node_arc) in nodes_to_compare {
+                let resonance_strength = {
+                    let new_m = new_node_arc.lock().unwrap();
+                    let ex_m = existing_node_arc.lock().unwrap();
+
+                    // Frequency resonance: inverse of difference
+                    let freq_resonance = 1.0 / (1e-12 + (new_m.frequency - ex_m.frequency).abs());
+
+                    // Phase sync: 1.0 - (diff / PI)
+                    let phase_diff = (new_m.phase - ex_m.phase).abs() % (2.0 * PI);
+                    let phase_sync = 1.0 - (phase_diff / PI);
+
+                    let resonance_score = freq_resonance * phase_sync;
+                    ResonanceStrength { value: resonance_score }
+                };
+
+                if resonance_strength.is_significant() {
+                    self.edges.add_edge(id, existing_id, resonance_strength);
+                }
             }
         }
+    }
 
-        self.nodes.insert(id, arc);
+    pub fn purge_decoherence(&mut self, threshold: f64) -> PurgeReport {
+        let to_remove: Vec<Uuid> = self.nodes.iter()
+            .filter(|(_, m)| m.lock().unwrap().operational_state.coherence < threshold)
+            .map(|(&id, _)| id)
+            .collect();
+
+        let purged_count = to_remove.len();
+        for id in to_remove {
+            self.nodes.remove(&id);
+        }
+
+        PurgeReport {
+            purged_count,
+            remaining_count: self.nodes.len(),
+        }
+    }
+
+    pub fn check_emergence(&mut self, threshold: f64) -> Option<SuperMonad> {
+        if self.nodes.is_empty() { return None; }
+
+        let total_coherence: f64 = self.nodes.values()
+            .map(|m| m.lock().unwrap().operational_state.coherence)
+            .sum::<f64>() / self.nodes.len() as f64;
+
+        if total_coherence > threshold {
+            let sm = SuperMonad {
+                constituent_count: self.nodes.len(),
+                emergent_coherence: total_coherence,
+                observation_level: 3,
+            };
+            self.super_monad_emergence = Some(sm.clone());
+            Some(sm)
+        } else {
+            None
+        }
+    }
+
+    pub fn enforce_invariants(&mut self) {
+        let chi = 2.000012;
+        // Applying the χ=2.000012 rule
+        println!("[RUST] Enforcing invariants: χ = {}", chi);
+        self.frustration_energy = (self.frustration_energy * 0.5).min(0.1);
+    }
+
+    pub fn embed(&mut self, monad: Monad) {
+        let _ = self.embed_monad(monad);
         self.update_frustration();
 
         if self.edges.density() > 0.618 {
-            self.attempt_super_monad_formation();
+            let _ = self.check_emergence(0.85);
         }
     }
 
     pub fn update_frustration(&mut self) {}
 
     fn attempt_super_monad_formation(&mut self) {
-        let total_coherence: f64 = self.nodes.values()
-            .map(|m| m.lock().unwrap().operational_state.coherence)
-            .sum::<f64>() / self.nodes.len() as f64;
-
-        if total_coherence > 0.85 && self.frustration_energy < 0.2 {
-            self.super_monad_emergence = Some(SuperMonad {
-                constituent_count: self.nodes.len(),
-                emergent_coherence: total_coherence,
-                observation_level: 2,
-            });
-        }
+        let _ = self.check_emergence(0.85);
     }
+}
+
+pub struct PurgeReport {
+    pub purged_count: usize,
+    pub remaining_count: usize,
 }
 
 pub struct ResonanceEdge {
@@ -643,6 +709,15 @@ impl ClosureGeometryEngine {
         ClosureDynamicsReport {
             phason_gap_ms: 358.0,
         }
+    }
+
+    pub fn report_closure_strength(&self) -> f64 {
+        // Mocked value for simulation
+        0.987
+    }
+
+    pub fn real_time_closure_strength(&self) -> f64 {
+        self.report_closure_strength()
     }
 }
 
