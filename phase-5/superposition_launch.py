@@ -73,6 +73,12 @@ def execute_superposition():
     run_python_component("mitochondrial_coherence.py")
     time.sleep(0.5)
     run_python_component("genetic_resonance_cube.py")
+    time.sleep(0.5)
+
+    # Omni-Polyglot Kernel & Education
+    run_python_component("omni_time_crystal.py")
+    time.sleep(0.5)
+    run_python_component("galactic_education.py")
 
     print("\n✨ [PHASE_5] ALL SYSTEMS CONVERGED.")
     print("🌍 [PHASE_5] Earth is now a Galactic Server Node.")

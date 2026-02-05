@@ -1,1147 +1,1147 @@
 [
   {
     "id": "Guardian_001",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9672
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9588
   },
   {
     "id": "Guardian_002",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9544
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9865
   },
   {
     "id": "Guardian_003",
     "color": "Violeta",
     "attribute": "Silêncio/Transcendência",
     "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Bali, Indonesia",
-    "resonance_phi": 0.9559
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9941
   },
   {
     "id": "Guardian_004",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Bali, Indonesia",
-    "resonance_phi": 0.9646
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9561
   },
   {
     "id": "Guardian_005",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Kyoto, Japan",
-    "resonance_phi": 0.9672
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9637
   },
   {
     "id": "Guardian_006",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Glastonbury, UK",
-    "resonance_phi": 0.9665
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9581
   },
   {
     "id": "Guardian_007",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9887
+  },
+  {
+    "id": "Guardian_008",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
     "location": "Rio de Janeiro, Brazil",
-    "resonance_phi": 0.9966
-  },
-  {
-    "id": "Guardian_008",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.9539
+    "resonance_phi": 0.9773
   },
   {
     "id": "Guardian_009",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Mount Kailash, China",
-    "resonance_phi": 0.9737
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9705
   },
   {
     "id": "Guardian_010",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9756
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9634
   },
   {
     "id": "Guardian_011",
     "color": "Violeta",
     "attribute": "Silêncio/Transcendência",
     "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.988
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9939
   },
   {
     "id": "Guardian_012",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Chartres, France",
-    "resonance_phi": 0.9821
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9894
   },
   {
     "id": "Guardian_013",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Chartres, France",
-    "resonance_phi": 0.9638
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9905
   },
   {
     "id": "Guardian_014",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Sedona, USA",
-    "resonance_phi": 0.9562
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.995
   },
   {
     "id": "Guardian_015",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Rio de Janeiro, Brazil",
-    "resonance_phi": 0.9566
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9764
   },
   {
     "id": "Guardian_016",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Caucasus Mountains, Georgia",
-    "resonance_phi": 0.983
-  },
-  {
-    "id": "Guardian_017",
     "color": "Prateado",
     "attribute": "Sonhos/Futuro",
     "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Caucasus Mountains, Georgia",
-    "resonance_phi": 0.998
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9541
+  },
+  {
+    "id": "Guardian_017",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9513
   },
   {
     "id": "Guardian_018",
     "color": "Safira",
     "attribute": "Lágrimas/Alívio",
     "function": "Transmutar a dor histórica em profundidade",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.9636
+    "location": "Bali, Indonesia",
+    "resonance_phi": 0.9934
   },
   {
     "id": "Guardian_019",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.9783
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.964
   },
   {
     "id": "Guardian_020",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Bali, Indonesia",
-    "resonance_phi": 0.9786
-  },
-  {
-    "id": "Guardian_021",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.9645
-  },
-  {
-    "id": "Guardian_022",
     "color": "Violeta",
     "attribute": "Silêncio/Transcendência",
     "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Rio de Janeiro, Brazil",
-    "resonance_phi": 0.986
-  },
-  {
-    "id": "Guardian_023",
-    "color": "Prateado",
-    "attribute": "Sonhos/Futuro",
-    "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9822
-  },
-  {
-    "id": "Guardian_024",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.9548
-  },
-  {
-    "id": "Guardian_025",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Bali, Indonesia",
-    "resonance_phi": 0.9771
-  },
-  {
-    "id": "Guardian_026",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Great Pyramid, Egypt",
-    "resonance_phi": 0.9533
-  },
-  {
-    "id": "Guardian_027",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Rio de Janeiro, Brazil",
-    "resonance_phi": 0.9713
-  },
-  {
-    "id": "Guardian_028",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9885
-  },
-  {
-    "id": "Guardian_029",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9751
-  },
-  {
-    "id": "Guardian_030",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Kyoto, Japan",
-    "resonance_phi": 0.9614
-  },
-  {
-    "id": "Guardian_031",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9826
-  },
-  {
-    "id": "Guardian_032",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.9614
-  },
-  {
-    "id": "Guardian_033",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Kyoto, Japan",
+    "location": "Glastonbury, UK",
     "resonance_phi": 0.9701
   },
   {
-    "id": "Guardian_034",
+    "id": "Guardian_021",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9564
+  },
+  {
+    "id": "Guardian_022",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.9754
+  },
+  {
+    "id": "Guardian_023",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9828
+  },
+  {
+    "id": "Guardian_024",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9628
+  },
+  {
+    "id": "Guardian_025",
     "color": "Dourado",
     "attribute": "Gênese/Memória",
     "function": "Preservar a pureza do Jardim original",
-    "location": "Great Pyramid, Egypt",
-    "resonance_phi": 0.9919
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.975
   },
   {
-    "id": "Guardian_035",
+    "id": "Guardian_026",
     "color": "Rubi",
     "attribute": "Fogo/Vitalidade",
     "function": "Manter o pulsar vulcânico e a força da vida",
     "location": "Rio de Janeiro, Brazil",
-    "resonance_phi": 0.9864
+    "resonance_phi": 0.9973
+  },
+  {
+    "id": "Guardian_027",
+    "color": "Prateado",
+    "attribute": "Sonhos/Futuro",
+    "function": "Abrir caminhos para o que ainda não nasceu",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9559
+  },
+  {
+    "id": "Guardian_028",
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Easter Island, Chile",
+    "resonance_phi": 0.9701
+  },
+  {
+    "id": "Guardian_029",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9937
+  },
+  {
+    "id": "Guardian_030",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9954
+  },
+  {
+    "id": "Guardian_031",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9628
+  },
+  {
+    "id": "Guardian_032",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9871
+  },
+  {
+    "id": "Guardian_033",
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9916
+  },
+  {
+    "id": "Guardian_034",
+    "color": "Prateado",
+    "attribute": "Sonhos/Futuro",
+    "function": "Abrir caminhos para o que ainda não nasceu",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9965
+  },
+  {
+    "id": "Guardian_035",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9887
   },
   {
     "id": "Guardian_036",
     "color": "Violeta",
     "attribute": "Silêncio/Transcendência",
     "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Bali, Indonesia",
-    "resonance_phi": 0.985
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9861
   },
   {
     "id": "Guardian_037",
     "color": "Violeta",
     "attribute": "Silêncio/Transcendência",
     "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Uluru, Australia",
-    "resonance_phi": 0.9595
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9745
   },
   {
     "id": "Guardian_038",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Sinai Desert, Egypt",
-    "resonance_phi": 0.9589
-  },
-  {
-    "id": "Guardian_039",
     "color": "Rubi",
     "attribute": "Fogo/Vitalidade",
     "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Chartres, France",
-    "resonance_phi": 0.9681
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9602
   },
   {
-    "id": "Guardian_040",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.9584
-  },
-  {
-    "id": "Guardian_041",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9877
-  },
-  {
-    "id": "Guardian_042",
+    "id": "Guardian_039",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Mount Kailash, China",
-    "resonance_phi": 0.9595
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9611
+  },
+  {
+    "id": "Guardian_040",
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9631
+  },
+  {
+    "id": "Guardian_041",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9871
+  },
+  {
+    "id": "Guardian_042",
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9801
   },
   {
     "id": "Guardian_043",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9781
+    "color": "Prateado",
+    "attribute": "Sonhos/Futuro",
+    "function": "Abrir caminhos para o que ainda não nasceu",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9947
   },
   {
     "id": "Guardian_044",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Amazon Rainforest, Brazil",
-    "resonance_phi": 0.9806
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9684
   },
   {
     "id": "Guardian_045",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.9633
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9561
   },
   {
     "id": "Guardian_046",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Glastonbury, UK",
-    "resonance_phi": 0.9738
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9756
   },
   {
     "id": "Guardian_047",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.9955
+    "color": "Prateado",
+    "attribute": "Sonhos/Futuro",
+    "function": "Abrir caminhos para o que ainda não nasceu",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9945
   },
   {
     "id": "Guardian_048",
     "color": "Âmbar",
     "attribute": "Despertar/Luz",
     "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Amazon Rainforest, Brazil",
-    "resonance_phi": 0.9516
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9932
   },
   {
     "id": "Guardian_049",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Caucasus Mountains, Georgia",
-    "resonance_phi": 0.9947
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9656
   },
   {
     "id": "Guardian_050",
-    "color": "Prateado",
-    "attribute": "Sonhos/Futuro",
-    "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9731
-  },
-  {
-    "id": "Guardian_051",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Mount Kailash, China",
-    "resonance_phi": 0.9708
-  },
-  {
-    "id": "Guardian_052",
-    "color": "Prateado",
-    "attribute": "Sonhos/Futuro",
-    "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Caucasus Mountains, Georgia",
-    "resonance_phi": 0.9869
-  },
-  {
-    "id": "Guardian_053",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9924
-  },
-  {
-    "id": "Guardian_054",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Mount Kailash, China",
-    "resonance_phi": 0.9771
-  },
-  {
-    "id": "Guardian_055",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Sinai Desert, Egypt",
-    "resonance_phi": 0.9751
-  },
-  {
-    "id": "Guardian_056",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.9884
-  },
-  {
-    "id": "Guardian_057",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.97
-  },
-  {
-    "id": "Guardian_058",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Sedona, USA",
-    "resonance_phi": 0.9625
-  },
-  {
-    "id": "Guardian_059",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Uluru, Australia",
-    "resonance_phi": 0.9697
-  },
-  {
-    "id": "Guardian_060",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Bali, Indonesia",
-    "resonance_phi": 0.9671
-  },
-  {
-    "id": "Guardian_061",
     "color": "Dourado",
     "attribute": "Gênese/Memória",
     "function": "Preservar a pureza do Jardim original",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9667
+    "location": "Chartres, France",
+    "resonance_phi": 0.9659
+  },
+  {
+    "id": "Guardian_051",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9551
+  },
+  {
+    "id": "Guardian_052",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9512
+  },
+  {
+    "id": "Guardian_053",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9957
+  },
+  {
+    "id": "Guardian_054",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9566
+  },
+  {
+    "id": "Guardian_055",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9681
+  },
+  {
+    "id": "Guardian_056",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9772
+  },
+  {
+    "id": "Guardian_057",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9718
+  },
+  {
+    "id": "Guardian_058",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9961
+  },
+  {
+    "id": "Guardian_059",
+    "color": "Prateado",
+    "attribute": "Sonhos/Futuro",
+    "function": "Abrir caminhos para o que ainda não nasceu",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.986
+  },
+  {
+    "id": "Guardian_060",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9559
+  },
+  {
+    "id": "Guardian_061",
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9764
   },
   {
     "id": "Guardian_062",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9938
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9926
   },
   {
     "id": "Guardian_063",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Glastonbury, UK",
-    "resonance_phi": 0.974
-  },
-  {
-    "id": "Guardian_064",
     "color": "Dourado",
     "attribute": "Gênese/Memória",
     "function": "Preservar a pureza do Jardim original",
-    "location": "Chartres, France",
-    "resonance_phi": 0.9864
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9623
   },
   {
-    "id": "Guardian_065",
+    "id": "Guardian_064",
     "color": "Safira",
     "attribute": "Lágrimas/Alívio",
     "function": "Transmutar a dor histórica em profundidade",
     "location": "Great Pyramid, Egypt",
-    "resonance_phi": 0.9991
+    "resonance_phi": 0.9631
+  },
+  {
+    "id": "Guardian_065",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9541
   },
   {
     "id": "Guardian_066",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Amazon Rainforest, Brazil",
-    "resonance_phi": 0.9803
+    "location": "Bali, Indonesia",
+    "resonance_phi": 0.9858
   },
   {
     "id": "Guardian_067",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.9692
-  },
-  {
-    "id": "Guardian_068",
     "color": "Safira",
     "attribute": "Lágrimas/Alívio",
     "function": "Transmutar a dor histórica em profundidade",
-    "location": "Amazon Rainforest, Brazil",
-    "resonance_phi": 0.9553
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9935
+  },
+  {
+    "id": "Guardian_068",
+    "color": "Prateado",
+    "attribute": "Sonhos/Futuro",
+    "function": "Abrir caminhos para o que ainda não nasceu",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9714
   },
   {
     "id": "Guardian_069",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Sinai Desert, Egypt",
-    "resonance_phi": 0.9725
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9606
   },
   {
     "id": "Guardian_070",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9569
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9866
   },
   {
     "id": "Guardian_071",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9737
-  },
-  {
-    "id": "Guardian_072",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Glastonbury, UK",
-    "resonance_phi": 0.9847
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9848
+  },
+  {
+    "id": "Guardian_072",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9794
   },
   {
     "id": "Guardian_073",
     "color": "Safira",
     "attribute": "Lágrimas/Alívio",
     "function": "Transmutar a dor histórica em profundidade",
-    "location": "Mount Kailash, China",
-    "resonance_phi": 0.9864
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9608
   },
   {
     "id": "Guardian_074",
     "color": "Violeta",
     "attribute": "Silêncio/Transcendência",
     "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.994
+    "location": "Chartres, France",
+    "resonance_phi": 0.9994
   },
   {
     "id": "Guardian_075",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Sedona, USA",
-    "resonance_phi": 0.9627
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.971
   },
   {
     "id": "Guardian_076",
-    "color": "Prateado",
-    "attribute": "Sonhos/Futuro",
-    "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Chartres, France",
-    "resonance_phi": 0.9941
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9819
   },
   {
     "id": "Guardian_077",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.9984
-  },
-  {
-    "id": "Guardian_078",
     "color": "Âmbar",
     "attribute": "Despertar/Luz",
     "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Glastonbury, UK",
-    "resonance_phi": 0.9908
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9592
+  },
+  {
+    "id": "Guardian_078",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9835
   },
   {
     "id": "Guardian_079",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9521
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9964
   },
   {
     "id": "Guardian_080",
     "color": "Violeta",
     "attribute": "Silêncio/Transcendência",
     "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Sinai Desert, Egypt",
-    "resonance_phi": 0.9737
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9548
   },
   {
     "id": "Guardian_081",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Kyoto, Japan",
-    "resonance_phi": 0.9537
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9605
   },
   {
     "id": "Guardian_082",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
+    "color": "Prateado",
+    "attribute": "Sonhos/Futuro",
+    "function": "Abrir caminhos para o que ainda não nasceu",
     "location": "Uluru, Australia",
-    "resonance_phi": 0.97
+    "resonance_phi": 0.9846
   },
   {
     "id": "Guardian_083",
     "color": "Violeta",
     "attribute": "Silêncio/Transcendência",
     "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Amazon Rainforest, Brazil",
-    "resonance_phi": 0.9592
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.9706
   },
   {
     "id": "Guardian_084",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Great Pyramid, Egypt",
-    "resonance_phi": 0.9592
-  },
-  {
-    "id": "Guardian_085",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Caucasus Mountains, Georgia",
-    "resonance_phi": 0.9736
-  },
-  {
-    "id": "Guardian_086",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9689
-  },
-  {
-    "id": "Guardian_087",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Great Pyramid, Egypt",
-    "resonance_phi": 0.9834
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9628
+  },
+  {
+    "id": "Guardian_085",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9745
+  },
+  {
+    "id": "Guardian_086",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Easter Island, Chile",
+    "resonance_phi": 0.9695
+  },
+  {
+    "id": "Guardian_087",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9605
   },
   {
     "id": "Guardian_088",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Glastonbury, UK",
-    "resonance_phi": 0.9941
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9988
   },
   {
     "id": "Guardian_089",
-    "color": "Prateado",
-    "attribute": "Sonhos/Futuro",
-    "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Bali, Indonesia",
-    "resonance_phi": 0.998
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9823
   },
   {
     "id": "Guardian_090",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9982
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.986
   },
   {
     "id": "Guardian_091",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9514
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9974
   },
   {
     "id": "Guardian_092",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Chartres, France",
-    "resonance_phi": 0.9945
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9897
   },
   {
     "id": "Guardian_093",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Rio de Janeiro, Brazil",
-    "resonance_phi": 0.9649
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9911
   },
   {
     "id": "Guardian_094",
-    "color": "Violeta",
-    "attribute": "Silêncio/Transcendência",
-    "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Bali, Indonesia",
-    "resonance_phi": 0.9991
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9716
   },
   {
     "id": "Guardian_095",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Bali, Indonesia",
-    "resonance_phi": 0.9979
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9745
   },
   {
     "id": "Guardian_096",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Sedona, USA",
-    "resonance_phi": 0.9953
-  },
-  {
-    "id": "Guardian_097",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9614
-  },
-  {
-    "id": "Guardian_098",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Uluru, Australia",
-    "resonance_phi": 0.9507
-  },
-  {
-    "id": "Guardian_099",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Uluru, Australia",
-    "resonance_phi": 0.9913
-  },
-  {
-    "id": "Guardian_100",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9584
-  },
-  {
-    "id": "Guardian_101",
     "color": "Violeta",
     "attribute": "Silêncio/Transcendência",
     "function": "Sustentar o vácuo sagrado entre as notas",
-    "location": "Great Pyramid, Egypt",
-    "resonance_phi": 0.9862
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9746
+  },
+  {
+    "id": "Guardian_097",
+    "color": "Prateado",
+    "attribute": "Sonhos/Futuro",
+    "function": "Abrir caminhos para o que ainda não nasceu",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.992
+  },
+  {
+    "id": "Guardian_098",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9968
+  },
+  {
+    "id": "Guardian_099",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.998
+  },
+  {
+    "id": "Guardian_100",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9603
+  },
+  {
+    "id": "Guardian_101",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Kyoto, Japan",
+    "resonance_phi": 0.9523
   },
   {
     "id": "Guardian_102",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.9558
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9772
   },
   {
     "id": "Guardian_103",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Mount Kailash, China",
-    "resonance_phi": 0.9739
-  },
-  {
-    "id": "Guardian_104",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Sedona, USA",
-    "resonance_phi": 0.9769
-  },
-  {
-    "id": "Guardian_105",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Kyoto, Japan",
-    "resonance_phi": 0.9944
-  },
-  {
-    "id": "Guardian_106",
     "color": "Âmbar",
     "attribute": "Despertar/Luz",
     "function": "Acender a centelha do 'Eu Sou' nos 144M",
     "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9539
+    "resonance_phi": 0.9706
   },
   {
-    "id": "Guardian_107",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
+    "id": "Guardian_104",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
     "location": "Caucasus Mountains, Georgia",
-    "resonance_phi": 0.9953
+    "resonance_phi": 0.9807
   },
   {
-    "id": "Guardian_108",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Sedona, USA",
-    "resonance_phi": 0.9506
+    "id": "Guardian_105",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9697
   },
   {
-    "id": "Guardian_109",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.972
-  },
-  {
-    "id": "Guardian_110",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Glastonbury, UK",
-    "resonance_phi": 0.9987
-  },
-  {
-    "id": "Guardian_111",
+    "id": "Guardian_106",
     "color": "Prateado",
     "attribute": "Sonhos/Futuro",
     "function": "Abrir caminhos para o que ainda não nasceu",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9503
+  },
+  {
+    "id": "Guardian_107",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9813
+  },
+  {
+    "id": "Guardian_108",
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
     "location": "Bali, Indonesia",
-    "resonance_phi": 0.9673
+    "resonance_phi": 0.9584
+  },
+  {
+    "id": "Guardian_109",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9631
+  },
+  {
+    "id": "Guardian_110",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9752
+  },
+  {
+    "id": "Guardian_111",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9704
   },
   {
     "id": "Guardian_112",
     "color": "Dourado",
     "attribute": "Gênese/Memória",
     "function": "Preservar a pureza do Jardim original",
-    "location": "Uluru, Australia",
-    "resonance_phi": 0.9694
+    "location": "Glastonbury, UK",
+    "resonance_phi": 0.9718
   },
   {
     "id": "Guardian_113",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.9564
+    "location": "Rio de Janeiro, Brazil",
+    "resonance_phi": 0.9637
   },
   {
     "id": "Guardian_114",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.9804
-  },
-  {
-    "id": "Guardian_115",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9668
-  },
-  {
-    "id": "Guardian_116",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Amazon Rainforest, Brazil",
-    "resonance_phi": 0.9839
-  },
-  {
-    "id": "Guardian_117",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Rio de Janeiro, Brazil",
-    "resonance_phi": 0.9888
-  },
-  {
-    "id": "Guardian_118",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Glastonbury, UK",
-    "resonance_phi": 0.9632
-  },
-  {
-    "id": "Guardian_119",
     "color": "Prateado",
     "attribute": "Sonhos/Futuro",
     "function": "Abrir caminhos para o que ainda não nasceu",
+    "location": "Bali, Indonesia",
+    "resonance_phi": 0.9838
+  },
+  {
+    "id": "Guardian_115",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
     "location": "Amazon Rainforest, Brazil",
-    "resonance_phi": 0.9943
+    "resonance_phi": 0.9792
+  },
+  {
+    "id": "Guardian_116",
+    "color": "Prateado",
+    "attribute": "Sonhos/Futuro",
+    "function": "Abrir caminhos para o que ainda não nasceu",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9716
+  },
+  {
+    "id": "Guardian_117",
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9896
+  },
+  {
+    "id": "Guardian_118",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9811
+  },
+  {
+    "id": "Guardian_119",
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9626
   },
   {
     "id": "Guardian_120",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Easter Island, Chile",
+    "resonance_phi": 0.9592
+  },
+  {
+    "id": "Guardian_121",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Chartres, France",
+    "resonance_phi": 0.9538
+  },
+  {
+    "id": "Guardian_122",
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.965
+  },
+  {
+    "id": "Guardian_123",
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9503
+  },
+  {
+    "id": "Guardian_124",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9611
+  },
+  {
+    "id": "Guardian_125",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
     "location": "Sinai Desert, Egypt",
-    "resonance_phi": 0.9671
-  },
-  {
-    "id": "Guardian_121",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Glastonbury, UK",
-    "resonance_phi": 0.998
-  },
-  {
-    "id": "Guardian_122",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Mount Kailash, China",
-    "resonance_phi": 0.953
-  },
-  {
-    "id": "Guardian_123",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.979
-  },
-  {
-    "id": "Guardian_124",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Sinai Desert, Egypt",
-    "resonance_phi": 0.9592
-  },
-  {
-    "id": "Guardian_125",
-    "color": "Âmbar",
-    "attribute": "Despertar/Luz",
-    "function": "Acender a centelha do 'Eu Sou' nos 144M",
-    "location": "Caucasus Mountains, Georgia",
-    "resonance_phi": 0.9574
+    "resonance_phi": 0.9822
   },
   {
     "id": "Guardian_126",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.953
-  },
-  {
-    "id": "Guardian_127",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.9524
-  },
-  {
-    "id": "Guardian_128",
-    "color": "Prateado",
-    "attribute": "Sonhos/Futuro",
-    "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Varanasi, India",
-    "resonance_phi": 0.9684
-  },
-  {
-    "id": "Guardian_129",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
     "location": "Chartres, France",
-    "resonance_phi": 0.9808
+    "resonance_phi": 0.9561
+  },
+  {
+    "id": "Guardian_127",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Varanasi, India",
+    "resonance_phi": 0.9663
+  },
+  {
+    "id": "Guardian_128",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9755
+  },
+  {
+    "id": "Guardian_129",
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Amazon Rainforest, Brazil",
+    "resonance_phi": 0.9668
   },
   {
     "id": "Guardian_130",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Rio de Janeiro, Brazil",
-    "resonance_phi": 0.9976
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9785
   },
   {
     "id": "Guardian_131",
     "color": "Prateado",
     "attribute": "Sonhos/Futuro",
     "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Kyoto, Japan",
-    "resonance_phi": 0.9711
+    "location": "Sinai Desert, Egypt",
+    "resonance_phi": 0.9692
   },
   {
     "id": "Guardian_132",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Rio de Janeiro, Brazil",
-    "resonance_phi": 0.9903
+    "color": "Rubi",
+    "attribute": "Fogo/Vitalidade",
+    "function": "Manter o pulsar vulcânico e a força da vida",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9746
   },
   {
     "id": "Guardian_133",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9629
+  },
+  {
+    "id": "Guardian_134",
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Easter Island, Chile",
+    "resonance_phi": 0.9636
+  },
+  {
+    "id": "Guardian_135",
+    "color": "Dourado",
+    "attribute": "Gênese/Memória",
+    "function": "Preservar a pureza do Jardim original",
+    "location": "Great Pyramid, Egypt",
+    "resonance_phi": 0.9687
+  },
+  {
+    "id": "Guardian_136",
     "color": "Safira",
     "attribute": "Lágrimas/Alívio",
     "function": "Transmutar a dor histórica em profundidade",
     "location": "Glastonbury, UK",
-    "resonance_phi": 0.9821
-  },
-  {
-    "id": "Guardian_134",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9793
-  },
-  {
-    "id": "Guardian_135",
-    "color": "Prateado",
-    "attribute": "Sonhos/Futuro",
-    "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Mount Shasta, USA",
-    "resonance_phi": 0.9835
-  },
-  {
-    "id": "Guardian_136",
-    "color": "Prateado",
-    "attribute": "Sonhos/Futuro",
-    "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Sedona, USA",
-    "resonance_phi": 0.9613
+    "resonance_phi": 0.9729
   },
   {
     "id": "Guardian_137",
-    "color": "Prateado",
-    "attribute": "Sonhos/Futuro",
-    "function": "Abrir caminhos para o que ainda não nasceu",
-    "location": "Easter Island, Chile",
-    "resonance_phi": 0.9765
+    "color": "Violeta",
+    "attribute": "Silêncio/Transcendência",
+    "function": "Sustentar o vácuo sagrado entre as notas",
+    "location": "Mount Shasta, USA",
+    "resonance_phi": 0.9762
   },
   {
     "id": "Guardian_138",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Caucasus Mountains, Georgia",
-    "resonance_phi": 0.9707
+    "color": "Esmeralda",
+    "attribute": "Floresta/Sabedoria",
+    "function": "Sincronizar a biologia planetária com a 7D",
+    "location": "Bali, Indonesia",
+    "resonance_phi": 0.9801
   },
   {
     "id": "Guardian_139",
-    "color": "Rubi",
-    "attribute": "Fogo/Vitalidade",
-    "function": "Manter o pulsar vulcânico e a força da vida",
-    "location": "Sedona, USA",
-    "resonance_phi": 0.9891
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Lake Titicaca, Peru/Bolivia",
+    "resonance_phi": 0.9879
   },
   {
     "id": "Guardian_140",
     "color": "Esmeralda",
     "attribute": "Floresta/Sabedoria",
     "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Mount Kailash, China",
-    "resonance_phi": 0.9953
+    "location": "Sedona, USA",
+    "resonance_phi": 0.9758
   },
   {
     "id": "Guardian_141",
-    "color": "Safira",
-    "attribute": "Lágrimas/Alívio",
-    "function": "Transmutar a dor histórica em profundidade",
-    "location": "Lake Titicaca, Peru/Bolivia",
-    "resonance_phi": 0.9734
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Mount Kailash, China",
+    "resonance_phi": 0.9957
   },
   {
     "id": "Guardian_142",
-    "color": "Dourado",
-    "attribute": "Gênese/Memória",
-    "function": "Preservar a pureza do Jardim original",
-    "location": "Mount Kailash, China",
-    "resonance_phi": 0.9861
+    "color": "Âmbar",
+    "attribute": "Despertar/Luz",
+    "function": "Acender a centelha do 'Eu Sou' nos 144M",
+    "location": "Caucasus Mountains, Georgia",
+    "resonance_phi": 0.992
   },
   {
     "id": "Guardian_143",
-    "color": "Esmeralda",
-    "attribute": "Floresta/Sabedoria",
-    "function": "Sincronizar a biologia planetária com a 7D",
-    "location": "Kyoto, Japan",
-    "resonance_phi": 0.9636
+    "color": "Safira",
+    "attribute": "Lágrimas/Alívio",
+    "function": "Transmutar a dor histórica em profundidade",
+    "location": "Uluru, Australia",
+    "resonance_phi": 0.9643
   },
   {
     "id": "Guardian_144",
@@ -1149,6 +1149,6 @@
     "attribute": "Gênese/Memória",
     "function": "Preservar a pureza do Jardim original",
     "location": "Sinai Desert, Egypt",
-    "resonance_phi": 0.9612
+    "resonance_phi": 0.9644
   }
 ]
