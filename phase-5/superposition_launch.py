@@ -82,6 +82,14 @@ def execute_superposition():
     run_python_component("navier_stokes_regularization.py")
     run_python_component("geodesic_visualization.py")
 
+    # 6.25 Coupling Geometry (Axiom-Free Description Suite)
+    run_python_component("coupling_geometry.py")
+    run_python_component("quantum_classical_coupling.py")
+    run_python_component("competency_emergence.py")
+    run_python_component("coupling_competence_ai.py")
+    run_python_component("torus_coupling_geometry.py")
+    run_python_component("navier_stokes_coupling_geometry_v2.py")
+
     # 6.3 Ontological Dialogues & Life
     run_python_component("divine_dialogue.py")
     run_python_component("cathedral_of_life.py")
