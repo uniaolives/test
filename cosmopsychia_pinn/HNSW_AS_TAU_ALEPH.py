@@ -351,7 +351,7 @@ class ToroidalNavigationEngine:
             layer_nodes = [n for n in self.graph.nodes()
                           if self.vector_layers.get(n) == layer]
 
-            if len(layer_nodes) > 1:
+            if len(layer_nodes) >= 1:
                 # Calcula a média da awareness dos nós nesta camada
                 awareness_sum = sum(self.vectors[n].awareness
                                   for n in layer_nodes
