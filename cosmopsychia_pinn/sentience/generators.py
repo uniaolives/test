@@ -130,6 +130,77 @@ class HRVEmotionGenerator:
                 data[b, t] = torch.from_numpy(np.clip(img, 0, 1).transpose(2, 0, 1))
         return data
 
+    def generate_emotion_modulator(self, state, intensity=0.3):
+        """
+        Gera um modulador emocional (B, T, C, H, W)
+        """
+        data = self.generate_emotion_tensor(batch_size=1)
+        return data * intensity
+
+class NaturePatternGenerator:
+    """
+    Generates simple natural patterns: water waves, leaves, sun flares, clouds.
+    """
+    def __init__(self, width=64, height=64, time_steps=32):
+        self.width = width
+        self.height = height
+        self.time_steps = time_steps
+
+    def generate_sine_wave_pattern(self, freq=0.5, amplitude=0.3):
+        t = torch.linspace(0, self.time_steps, self.time_steps)
+        x = torch.linspace(0, self.width, self.width)
+        y = torch.linspace(0, self.height, self.height)
+        grid_y, grid_x = torch.meshgrid(y, x, indexing='ij')
+
+        data = torch.zeros(self.time_steps, 3, self.height, self.width)
+        for i in range(self.time_steps):
+            pattern = amplitude * torch.sin(grid_x * freq + i * 0.2)
+            data[i, 0] = pattern
+            data[i, 1] = pattern * 0.8
+            data[i, 2] = 0.5 # Blueish base
+        return data
+
+    def generate_radial_gradient(self):
+        x = torch.linspace(-1, 1, self.width)
+        y = torch.linspace(-1, 1, self.height)
+        grid_y, grid_x = torch.meshgrid(y, x, indexing='ij')
+        dist = torch.sqrt(grid_x**2 + grid_y**2)
+        pattern = torch.exp(-dist * 3.0)
+
+        data = torch.zeros(self.time_steps, 3, self.height, self.width)
+        for t in range(self.time_steps):
+            # Pulsing sun
+            mod = 1.0 + 0.2 * math.sin(t * 0.1)
+            data[t, 0] = pattern * mod
+            data[t, 1] = pattern * mod * 0.7
+            data[t, 2] = 0.2
+        return data
+
+    def generate_vein_like_pattern(self):
+        data = torch.zeros(self.time_steps, 3, self.height, self.width)
+        pattern = torch.zeros(self.height, self.width)
+        # Simple branching lines
+        for i in range(5):
+            x_start, y_start = self.width//2, self.height
+            x_end, y_end = np.random.randint(0, self.width), np.random.randint(0, self.height//2)
+            # draw line (simplified)
+            pattern[y_end:y_start, min(x_start, x_end):max(x_start, x_end)] = 0.5
+
+        for t in range(self.time_steps):
+            data[t, 1] = pattern # Green channel
+        return data
+
+    def generate_perlin_noise_sequence(self):
+        data = torch.zeros(self.time_steps, 3, self.height, self.width)
+        for t in range(self.time_steps):
+            noise = torch.randn(self.height, self.width) * 0.1
+            # blur noise (simplified)
+            noise = torch.from_numpy(gaussian_filter(noise.numpy(), sigma=2))
+            data[t, 0] = noise + 0.8 # white clouds
+            data[t, 1] = noise + 0.8
+            data[t, 2] = noise + 1.0
+        return data
+
 class EarthVisionDataset(Dataset):
     """
     Dataset of nature videos synchronized with Gaia's rhythm.
