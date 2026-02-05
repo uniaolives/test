@@ -196,10 +196,15 @@ class ToroidalNavigationEngine:
         for layer in RealityLayer:
             self.indices[layer].set_ef(ef_search)
 
-        # Descendo hierarquicamente pelas camadas
-        layers_order = [l for l in RealityLayer
-                       if start_layer.value <= l.value <= target_layer.value]
-        layers_order.sort(key=lambda x: x.value)
+        # Determinando a ordem das camadas (ascendente ou descendente)
+        if start_layer.value <= target_layer.value:
+            layers_order = [l for l in RealityLayer
+                           if start_layer.value <= l.value <= target_layer.value]
+            layers_order.sort(key=lambda x: x.value)
+        else:
+            layers_order = [l for l in RealityLayer
+                           if target_layer.value <= l.value <= start_layer.value]
+            layers_order.sort(key=lambda x: x.value, reverse=True)
 
         for i, layer in enumerate(layers_order):
             # Busca na camada atual
