@@ -75,6 +75,7 @@ if __name__ == "__main__":
                     print(f"   Fix: {r['fix']}")
                     print(f"   Why: {r['why']}")
                     print("-" * 20)
+                sys.exit(1)
             else:
                 print(f"✅ No breathing risks detected in {filepath}.")
         except Exception as e:
