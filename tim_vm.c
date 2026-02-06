@@ -17,6 +17,7 @@
 #include <math.h>
 #include <stdint.h>
 #include <netinet/tcp.h>
+#include <time.h>
 
 #define PORT 8000
 #define BUFFER_SIZE 4096
@@ -47,8 +48,8 @@ typedef struct {
     struct sockaddr_in address;
     double entropy_score;
     double predicted_latency;
-    uint64_t tsc_start;
-    uint64_t tsc_end;
+    struct timespec start_time;
+    struct timespec end_time;
 } TemporalEvent;
 
 typedef struct {
@@ -116,7 +117,7 @@ void update_cosmic_state(double new_entropy) {
 
 void* handle_client(void* arg) {
     TemporalEvent* te = (TemporalEvent*)arg;
-    te->tsc_start = rdtsc();
+    clock_gettime(CLOCK_MONOTONIC, &te->start_time);
 
     char buffer[BUFFER_SIZE];
     int bytes_read = recv(te->client_socket, buffer, sizeof(buffer) - 1, 0);
@@ -127,11 +128,12 @@ void* handle_client(void* arg) {
 
         // Simula o delay cognitivo regulado
         usleep((useconds_t)(te->entropy_score * 500));
-        te->predicted_latency = te->entropy_score * 1.5;
+        te->predicted_latency = te->entropy_score * 0.5; // Adjusted prediction
     }
 
-    te->tsc_end = rdtsc();
-    double latency_ns = (double)(te->tsc_end - te->tsc_start);
+    clock_gettime(CLOCK_MONOTONIC, &te->end_time);
+    double latency_ns = (double)(te->end_time.tv_sec - te->start_time.tv_sec) * 1.0e9 +
+                        (double)(te->end_time.tv_nsec - te->start_time.tv_nsec);
     double latency_ms = latency_ns / 1000000.0;
 
     double dilatation = (te->predicted_latency > 0) ? latency_ms / te->predicted_latency : 1.0;

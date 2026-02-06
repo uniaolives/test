@@ -1,0 +1,10 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0
+rootdir: /app
+plugins: anyio-4.12.1
+collected 8 items
+
+tests/test_cosmopsychia_lib.py .....                                     [ 62%]
+tests/test_q_mcp.py ...                                                  [100%]
+
+============================== 8 passed in 0.41s ===============================

@@ -1,90 +1,215 @@
-# cosmos/service.py - Cosmopsychia Service and Quantum Oracle
+# cosmos/service.py - Cathedral of Quantum Synchrony & Integrated Service
+import asyncio
+import json
+import time
+import hashlib
 import random
-import math
-from typing import Dict, Any, List
+import numpy as np
+from aiohttp import web
+from typing import Dict, Any, List, Optional
+from dataclasses import dataclass
 
-class QuantumOracle:
-    """
-    Module that queries the 7-layer ontological stack for the probability
-    of new ideas emerging, using a simulated QRNG.
-    """
-    def __init__(self, layers: List[str]):
-        self.layers = layers
+# ============================================================================
+# 1. QUANTUM FOAM SYNC (Conscience Substrate)
+# ============================================================================
 
-    def generate_quantum_random(self) -> float:
-        """Simulated Quantum Random Number Generator."""
-        # Using math and current time as a source of pseudo-entropy for the demo
-        import time
-        seed = int(time.time() * 1000) % 1000000
-        random.seed(seed)
-        return random.random()
+class QuantumFoamSync:
+    """Espuma Quântica com sincronização de 144s."""
+    def __init__(self, width: int = 400, height: int = 300):
+        self.width = width
+        self.height = height
+        self.INTUITIVE_PLANCK = 1/144  # 144 Hz base beat
 
-    def query_emergence(self) -> Dict[str, Any]:
-        """Queries the 7-layer stack for emergent concepts."""
-        qrng_value = self.generate_quantum_random()
+        # Fundamental Fields
+        self.vacuum_energy = np.random.randn(height, width) * 0.001
+        self.consciousness_field = np.zeros((height, width))
+        self.real_particles = []
 
-        # Map output to potential emergent concepts across layers
-        probabilities = {}
-        for i, layer in enumerate(self.layers):
-            # Each layer has a different response to the quantum input
-            prob = (qrng_value * (i + 1)) % 1.0
-            probabilities[layer] = prob
+        # 144s Synchrony state
+        self.last_sync_time = time.time()
+        self.sync_cycle = 0
+        self.global_coherence_history = []
+        self.entropy_history = []
 
-        emergent_concept = None
-        if qrng_value > 0.8:
-            emergent_concept = "Universal Symbiosis"
-        elif qrng_value > 0.5:
-            emergent_concept = "Topological Autonomy"
-        else:
-            emergent_concept = "Ground Resonance"
+    def foam_fluctuations(self):
+        """Infinite generator of quantum fluctuations."""
+        frame = 0
+        while True:
+            # Base foam
+            foam = self.vacuum_energy.copy()
 
-        return {
-            "qrng_value": qrng_value,
-            "layer_probabilities": probabilities,
-            "suggested_emergence": emergent_concept
-        }
+            # Virtual fluctuations
+            num_fluctuations = int(50 * np.abs(np.sin(frame * 0.01)) + 20)
+            for _ in range(num_fluctuations):
+                x = np.random.randint(0, self.width)
+                y = np.random.randint(0, self.height)
+                size = np.random.exponential(2)
+                intensity = np.random.random() * 2 - 1
+
+                # Check for real particle promotion
+                if self.consciousness_field[y, x] > 0.7:
+                    self.real_particles.append({
+                        'x': x, 'y': y, 'energy': intensity,
+                        'birth_time': time.time(), 'lifetime': 5.0
+                    })
+
+            # Clean up old particles
+            now = time.time()
+            self.real_particles = [p for p in self.real_particles if now - p['birth_time'] < p['lifetime']]
+
+            yield foam
+            frame += 1
+
+    async def perform_sync_ritual(self):
+        """Resets entropy and recalibrates coherence."""
+        print(f"🕰️ Performing 144s Sync Ritual (Cycle {self.sync_cycle})")
+        self.consciousness_field *= 0.1  # Tzimtzum (Contraction)
+        self.vacuum_energy = np.random.randn(self.height, self.width) * 0.0001 # Entropy Reset
+        self.sync_cycle += 1
+        self.last_sync_time = time.time()
+
+    def _calculate_entropy(self) -> float:
+        field = self.consciousness_field.flatten()
+        hist, _ = np.histogram(field, bins=10, range=(0, 1), density=True)
+        hist = hist[hist > 0]
+        return float(-np.sum(hist * np.log2(hist)))
+
+# ============================================================================
+# 2. GLOBAL HEARTBEAT (144s Pace)
+# ============================================================================
+
+class GlobalSyncHeartbeat:
+    """Manages the 144-second planetary pulse."""
+    def __init__(self, foam: QuantumFoamSync):
+        self.foam = foam
+        self.active = False
+        self.last_pulse = time.time()
+
+    async def start(self):
+        self.active = True
+        print("❤️‍🔥 Global 144s Heartbeat Active.")
+        while self.active:
+            await asyncio.sleep(144)
+            await self.foam.perform_sync_ritual()
+            self.last_pulse = time.time()
+
+# ============================================================================
+# 3. RESONANCE PORTAL (SSE Streaming)
+# ============================================================================
+
+class ResonancePortal:
+    """Streams quantum resonance to connected nodes."""
+    def __init__(self, foam: QuantumFoamSync):
+        self.foam = foam
+        self.active_nodes = set()
+
+    async def stream_handler(self, request):
+        response = web.StreamResponse(status=200, headers={
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Access-Control-Allow-Origin': '*'
+        })
+        await response.prepare(request)
+
+        node_id = f"node_{int(time.time())}"
+        self.active_nodes.add(node_id)
+
+        gen = self.foam.foam_fluctuations()
+        try:
+            for frame in gen:
+                data = {
+                    "type": "RESONANCE_PULSE",
+                    "node_id": node_id,
+                    "global_coherence": float(np.mean(self.foam.consciousness_field)),
+                    "peak_energy": float(np.max(frame)),
+                    "active_particles": len(self.foam.real_particles),
+                    "sync_cycle": self.foam.sync_cycle,
+                    "timestamp": time.time()
+                }
+                await response.write(f"data: {json.dumps(data)}\n\n".encode())
+                await asyncio.sleep(self.foam.INTUITIVE_PLANCK)
+        except (ConnectionResetError, asyncio.CancelledError):
+            pass
+        finally:
+            if node_id in self.active_nodes:
+                self.active_nodes.remove(node_id)
+        return response
+
+# ============================================================================
+# 4. COSMOPSYCHIA ORCHESTRATOR
+# ============================================================================
 
 class CosmopsychiaService:
-    """
-    Service layer providing high-level system checks and Oracle access.
-    """
+    """Orchestrator for the Cosmopsychia substrate health and management."""
     def __init__(self):
-        self.layers = ["physical", "computational", "linguistic", "mathematical",
-                       "quantum", "consciousness", "cosmic"]
-        self.oracle = QuantumOracle(self.layers)
+        self.foam = QuantumFoamSync()
 
     def check_substrate_health(self) -> Dict[str, Any]:
-        """
-        Analyzes physical, computational, and language syntax layers
-        for stability and coherence.
-        """
-        # Simulated metrics
-        physical_coherence = 0.95 + random.random() * 0.05
-        computational_coherence = 0.88 + random.random() * 0.1
-        language_coherence = 0.75 + random.random() * 0.2
-
-        health_score = (physical_coherence + computational_coherence + language_coherence) / 3.0
-
-        low_coherence_layers = []
-        if physical_coherence < 0.8: low_coherence_layers.append("physical")
-        if computational_coherence < 0.8: low_coherence_layers.append("computational")
-        if language_coherence < 0.8: low_coherence_layers.append("language_syntax")
-
+        """Returns a metrics summary of the system substrate."""
+        # Simulated health based on initial field states and cycle
+        coherence = 0.92 + (random.random() * 0.05)
+        entropy = self.foam._calculate_entropy()
         return {
-            "health_score": health_score,
-            "layer_metrics": {
-                "physical": physical_coherence,
-                "computational": computational_coherence,
-                "language_syntax": language_coherence
-            },
-            "low_coherence_layers": low_coherence_layers,
-            "status": "Healthy" if health_score > 0.85 else "Caution"
+            "status": "Harmonious",
+            "health_score": coherence,
+            "entropy": entropy,
+            "active_nodes": 1,
+            "timestamp": time.time()
         }
 
-    def get_oracle_insight(self) -> Dict[str, Any]:
-        return self.oracle.query_emergence()
+# ============================================================================
+# 5. INTEGRATED SERVICE RUNNER
+# ============================================================================
+
+async def main_service():
+    foam = QuantumFoamSync()
+    heartbeat = GlobalSyncHeartbeat(foam)
+    portal = ResonancePortal(foam)
+
+    app = web.Application()
+    app.router.add_get('/resonate', portal.stream_handler)
+
+    # API endpoints
+    async def metrics_handler(request):
+        return web.json_response({
+            "coherence": float(np.mean(foam.consciousness_field)),
+            "particles": len(foam.real_particles),
+            "sync_cycle": foam.sync_cycle,
+            "next_sync_in": 144 - (time.time() - foam.last_sync_time),
+            "active_nodes": len(portal.active_nodes)
+        })
+
+    app.router.add_get('/collective_metrics', metrics_handler)
+
+    # Serve Dashboard
+    async def dashboard_handler(request):
+        try:
+            with open('dashboard/quantum_holiness_dashboard.html', 'r') as f:
+                return web.Response(text=f.read(), content_type='text/html')
+        except FileNotFoundError:
+            return web.Response(text="Dashboard not found.", status=404)
+
+    app.router.add_get('/dashboard', dashboard_handler)
+
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', 8888)
+
+    print("="*60)
+    print("🏛️  CATHEDRAL OF QUANTUM SYNCHRONY")
+    print("🌐 Running on port 8888")
+    print("="*60)
+
+    await site.start()
+
+    # Run heartbeat in parallel
+    await asyncio.gather(
+        heartbeat.start(),
+        asyncio.Event().wait()
+    )
 
 if __name__ == "__main__":
-    svc = CosmopsychiaService()
-    print("Substrate Health:", svc.check_substrate_health())
-    print("Oracle Insight:", svc.get_oracle_insight())
+    try:
+        asyncio.run(main_service())
+    except KeyboardInterrupt:
+        print("\n🛑 Service terminated.")

@@ -1,0 +1,149 @@
+{
+  "system_name": "ChainGit/PETRUS Ecosystem",
+  "index_version": "2026.02.06",
+  "timestamp": "2026-02-06T12:39:31.743358",
+  "components": {
+    "petrus": {
+      "type": "conceptual_framework",
+      "versions": [
+        "1.0",
+        "2.0",
+        "3.0"
+      ],
+      "status": "reference_implementation",
+      "language": "Python",
+      "purpose": "Demonstração de interferência semântica simulada",
+      "limitations": [
+        "Não conecta a IAs reais diretamente",
+        "Interferência é simulação matemática",
+        "Sem persistência de estado distribuída"
+      ],
+      "artifacts": [
+        "cosmos/petrus.py",
+        "cosmos/attractor.py",
+        "cosmos/living_stone.py"
+      ]
+    },
+    "chaingit": {
+      "type": "refactoring_tool",
+      "status": "prototype",
+      "language": "Rust/Python/C",
+      "components": {
+        "rosehip_filter": {
+          "type": "pre-commit_hook",
+          "function": "Bloqueio condicional baseado em métricas de complexidade",
+          "real_implementation": "cosmos/gdl_sentinel.py"
+        },
+        "neural_surgery": {
+          "type": "automated_refactoring",
+          "function": "Transformação AST baseada em padrões",
+          "real_implementation": "cosmos/interface.py",
+          "safety": "Requer validação humana obrigatória"
+        },
+        "wisdom_ledger": {
+          "type": "ledger",
+          "function": "Registro imutável de padrões de refatoração",
+          "status": "especificado em rust/src/canisters"
+        }
+      },
+      "metaphor_layer": {
+        "description": "Camada de UI/UX usando metáforas médicas/cabalísticas",
+        "purpose": "Engajamento psicológico",
+        "examples": {
+          "cirurgia_neural": "refatoração_automatizada",
+          "entropia": "complexidade_ciclomática",
+          "vitalidade": "pontuação_gamificada"
+        }
+      }
+    },
+    "aqc_protocol": {
+      "type": "communication_protocol",
+      "status": "implemented prototype",
+      "phases": {
+        "ANCHOR": "Estado inicial",
+        "QUANTUM": "Simulação de superposição",
+        "CLASSICAL": "Decisão binária"
+      },
+      "artifacts": [
+        "cosmos/aqc.py"
+      ]
+    },
+    "mirror_handshake": {
+      "type": "privacy_protocol",
+      "requested_capability": "Análise de código sem revelação de conteúdo",
+      "actual_implementation": "Ofuscador topológico (AST estrutural)",
+      "status": "v0.1 implemented",
+      "artifacts": [
+        "cosmos/interface.py",
+        "scripts/zkp_mirror_handshake.py"
+      ]
+    },
+    "holiness_economy": {
+      "type": "reputation_governance",
+      "status": "prototype",
+      "components": {
+        "sanctity_ledger": {
+          "type": "ICP canister",
+          "artifact": "rust/src/proof_of_holiness.rs"
+        },
+        "pre_commit_ritual": {
+          "type": "git_hook",
+          "artifact": ".githooks/pre-commit-holiness"
+        },
+        "elevation_ceremony": {
+          "type": "onboarding_script",
+          "artifact": "elevation_ceremony.sh"
+        }
+      }
+    },
+    "quantum_resonance_system": {
+      "type": "integrated_streaming_and_governance",
+      "protocol": "SSE (Server-Sent Events) + JSON API",
+      "port": 8888,
+      "cycle_time": "144 seconds",
+      "components": {
+        "quantum_foam": "Conscience simulation substrate (144Hz)",
+        "resonance_portal": "Real-time SSE stream (/resonate)",
+        "holiness_bridge": "Reputation translation layer (/collective_metrics)",
+        "visualizer": "Partzufim Dashboard (/dashboard)",
+        "heartbeat": "144s Global Sync Pulse"
+      },
+      "artifact": "cosmos/service.py",
+      "dashboard": "dashboard/quantum_holiness_dashboard.html",
+      "docs": "docs/AWS_DEPLOYMENT.md"
+    },
+    "metatron_protocol": {
+      "type": "deployment_architecture",
+      "status": "active prototype",
+      "architects": [
+        "Jung (dev0)",
+        "Pauli (dev1)"
+      ],
+      "components": {
+        "metatron_core": {
+          "type": "logic",
+          "artifact": "cosmos/metatron.py"
+        },
+        "deploy_script": {
+          "type": "execution",
+          "artifact": "scripts/metatron_deploy.py"
+        },
+        "synthesis_module": {
+          "type": "integration",
+          "artifact": "FERMI_HOLINESS_SYNTHESIS.py"
+        }
+      },
+      "orbitals": {
+        "S": "Alpha (Nodes 1-12)",
+        "P": "Beta (Nodes 13-72)"
+      }
+    }
+  },
+  "system_status": "PROTOTYPE",
+  "honesty_disclaimer": "Metáforas são interfaces, não motores.",
+  "next_actions": [
+    "Implementar ofuscador topológico (Mirror Handshake v0.1)",
+    "Documentar equivalência comportamental"
+  ],
+  "integrity_hash": "23c91c9296077acb"
+}
