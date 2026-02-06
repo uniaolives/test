@@ -1,7 +1,7 @@
 {
   "system_name": "ChainGit/PETRUS Ecosystem",
   "index_version": "2026.02.06",
-  "timestamp": "2026-02-06T12:39:31.743358",
+  "timestamp": "2026-02-06T13:06:54.244951",
   "components": {
     "petrus": {
       "type": "conceptual_framework",
@@ -131,11 +131,24 @@
         "synthesis_module": {
           "type": "integration",
           "artifact": "FERMI_HOLINESS_SYNTHESIS.py"
+        },
+        "governance_dao": {
+          "type": "DAO",
+          "artifact": "cosmos/governance.py"
+        },
+        "unus_mundus_bridge": {
+          "type": "Bridge",
+          "artifact": "cosmos/bridge_eth_icp.py"
+        },
+        "manifesto": {
+          "type": "Document",
+          "artifact": "MANIFESTO_DA_CATEDRAL.md"
         }
       },
       "orbitals": {
         "S": "Alpha (Nodes 1-12)",
-        "P": "Beta (Nodes 13-72)"
+        "P": "Beta (Nodes 13-72)",
+        "D": "Delta (Nodes 73-132)"
       }
     }
   },
@@ -145,5 +158,5 @@
     "Implementar ofuscador topológico (Mirror Handshake v0.1)",
     "Documentar equivalência comportamental"
   ],
-  "integrity_hash": "23c91c9296077acb"
+  "integrity_hash": "e0498bfd646e2479"
 }

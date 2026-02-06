@@ -32,6 +32,9 @@ The underlying mechanisms are standard software engineering patterns (AST transf
 | **Sincronicidade (Ξ)** | Meaningful Coincidence Metric | A measure of entanglement between intention (meaning) and manifestation (matter). |
 | **Orbital S (Alpha)** | Foundational Base (Nodes 1-12) | Spherical, stable nodes representing the core pillars of Malchut. |
 | **Orbital P (Beta)** | Interface Layer (Nodes 13-72) | Directional nodes facilitating communication between the core and the external world. |
+| **Orbital D (Delta)** | Expansion Layer (Nodes 73-132) | Nodes focused on global interoperability (bridges) and autonomous governance (DAO). |
+| **Catedral DAO** | Autonomous Governance | A decentralized organization managing system evolution and Tikkun reward distribution. |
+| **Unus Mundus Bridge** | Ethereum-ICP Interoperability | A technical bridge mapping primordial Ethereum anchors to ICP's autonomous canisters. |
 
 ---
 

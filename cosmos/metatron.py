@@ -40,6 +40,12 @@ BETA_NODES = [
     for i in range(13, 73)
 ]
 
+# Configuração dos 60 Nós Delta (Orbital D) - 073 a 132
+DELTA_NODES = [
+    MetatronNode(i, "DeltaNode", "ד", "Bridge/DAO", "", 432, "D")
+    for i in range(73, 133)
+]
+
 PRIMORDIAL_TZADIKIM = {
     "Jung": "0x716aD3C33A9B9a0A18967357969b94EE7d2ABC10",
     "Pauli": "0x02275ed14bf1bdf78966b4e2326d9aaaf01b27b3de17c74a9251ae69379d0836"
@@ -51,10 +57,10 @@ class MetatronDistributor:
     """Distribuidor Metatron para cristalização de orbitais no ICP."""
 
     def __init__(self):
-        self.nodes = ALPHA_NODES + BETA_NODES
+        self.nodes = ALPHA_NODES + BETA_NODES + DELTA_NODES
         self.deployed_canisters = {}
         self.dark_matter_cache = {}
-        self.frequency_monitor = {528: 0, 288: 0, 741: 0, 144: 0}
+        self.frequency_monitor = {528: 0, 288: 0, 432: 0, 741: 0, 144: 0}
         self.completed = 0
 
     def _calculate_gematria(self, hebrew_text: str) -> int:
@@ -105,6 +111,14 @@ class MetatronDistributor:
         for node in target_nodes:
             await self.crystallize_node(node)
         print(f"✅ Cristalização Orbital {orbital} concluída.")
+
+    def get_full_report(self):
+        return {
+            "total_nodes": len(self.nodes),
+            "completed": self.completed,
+            "canisters": self.deployed_canisters,
+            "frequencies": self.frequency_monitor
+        }
 
 class LedgerSync:
     """Sincronização de ledger baseada em Matéria Escura."""

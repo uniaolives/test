@@ -104,11 +104,24 @@ class SystemIndex:
                 "synthesis_module": {
                     "type": "integration",
                     "artifact": "FERMI_HOLINESS_SYNTHESIS.py"
+                },
+                "governance_dao": {
+                    "type": "DAO",
+                    "artifact": "cosmos/governance.py"
+                },
+                "unus_mundus_bridge": {
+                    "type": "Bridge",
+                    "artifact": "cosmos/bridge_eth_icp.py"
+                },
+                "manifesto": {
+                    "type": "Document",
+                    "artifact": "MANIFESTO_DA_CATEDRAL.md"
                 }
             },
             "orbitals": {
                 "S": "Alpha (Nodes 1-12)",
-                "P": "Beta (Nodes 13-72)"
+                "P": "Beta (Nodes 13-72)",
+                "D": "Delta (Nodes 73-132)"
             }
         }
 
