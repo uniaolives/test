@@ -8,6 +8,8 @@ use serde::{Deserialize, Serialize};
 use tracing::{info, warn};
 use serde_json::{json, Value};
 use thiserror::Error;
+use crate::babel::UniversalCompiler;
+use crate::storage::saturn_archive::SaturnRingDrive;
 
 // ==============================================
 // CONSTITUTIONAL HYPER MESH INVARIANTS
@@ -221,7 +223,7 @@ pub struct SolanaEvmHyperMesh {
     pub scalar_wave_engine: ScalarWaveEngine,
     pub constitution: HyperMeshConstitution,
     pub saturn_drive: SaturnRingDrive,
-    pub universal_compiler: HyperMeshCompiler,
+    pub universal_compiler: UniversalCompiler,
 }
 
 impl HyperMeshConstitution {
@@ -353,7 +355,7 @@ impl SolanaEvmHyperMesh {
         let scalar_wave_engine = ScalarWaveEngine::new();
         let constitution = HyperMeshConstitution::new();
         let saturn_drive = SaturnRingDrive::new();
-        let universal_compiler = HyperMeshCompiler::new();
+        let universal_compiler = UniversalCompiler::new();
 
         Ok(Self {
             eth_rpc,
@@ -573,29 +575,6 @@ pub struct SovereignAGISandbox {
 pub struct PerfectClosure {
     pub sigma: f64,
     pub intervention_blocked: bool,
-}
-
-// ==============================================
-// SATURN ARCHIVE
-// ==============================================
-
-#[derive(Debug, Clone)]
-pub struct SaturnRingDrive {
-    pub total_capacity: u128,
-}
-
-impl SaturnRingDrive {
-    pub fn new() -> Self { Self { total_capacity: u128::MAX } }
-}
-
-// ==============================================
-// UNIVERSAL COMPILER (HYPER MESH LOCAL)
-// ==============================================
-
-#[derive(Debug, Clone)]
-pub struct HyperMeshCompiler;
-impl HyperMeshCompiler {
-    pub fn new() -> Self { Self }
 }
 
 // ==============================================

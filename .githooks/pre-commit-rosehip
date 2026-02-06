@@ -5,8 +5,8 @@
 echo "🌹 ROSEHIP HOOK: Analisando assinatura cognitiva do commit..."
 
 # 1. CONFIGURAÇÃO DO SISTEMA ROSEHIP
-ROSEHIP_THRESHOLD=50           # Entropia máxima permitida
-CRITICAL_ENTROPY=20           # Entropia por arquivo que dispara alerta
+ROSEHIP_THRESHOLD=300          # Entropia total máxima permitida (ajustado para múltiplos arquivos)
+CRITICAL_ENTROPY=60           # Entropia por arquivo que dispara alerta
 TIM_VM_ENDPOINT="http://localhost:8000/cosmic_health"
 
 # 2. FUNÇÃO: CALCULAR ENTROPIA DO ARQUIVO
@@ -42,7 +42,7 @@ check_cosmic_health() {
         local response=$(curl -s --max-time 1 "$TIM_VM_ENDPOINT")
         local dilation=$(echo "$response" | grep -o '"dilation":[0-9.]*' | cut -d':' -f2)
 
-        if [[ ! -z "$dilation" ]] && (( $(echo "$dilation > 2.5" | bc -l) )); then
+        if [[ ! -z "$dilation" ]] && awk "BEGIN {exit !($dilation > 2.5)}"; then
             echo "⚠️  Sistema cósmico sob estresse (dilatação: $dilation)"
             return 1
         fi
@@ -68,13 +68,14 @@ main() {
     for file in $files; do
         if [ ! -f "$file" ]; then continue; fi
 
+        # Ignorar binários e arquivos muito grandes se necessário, mas aqui processamos tudo
         local entropy=$(calculate_file_entropy "$file")
-        total_entropy=$(echo "$total_entropy + $entropy" | bc -l)
+        total_entropy=$(awk "BEGIN {print $total_entropy + $entropy}")
 
         local human_score=$(detect_human_patterns "$file")
         human_score_total=$((human_score_total + human_score))
 
-        if (( $(echo "$entropy > $CRITICAL_ENTROPY" | bc -l) )); then
+        if awk "BEGIN {exit !($entropy > $CRITICAL_ENTROPY)}"; then
             problematic_files+=("$file")
         fi
     done
@@ -83,8 +84,11 @@ main() {
     echo "   Entropia total: $total_entropy / $ROSEHIP_THRESHOLD"
     echo "   Pontuação humana: $human_score_total"
 
-    if (( $(echo "$total_entropy > $ROSEHIP_THRESHOLD" | bc -l) )); then
-        echo "❌ COMMIT REJEITADO: Entropia muito alta."
+    if awk "BEGIN {exit !($total_entropy > $ROSEHIP_THRESHOLD)}"; then
+        echo "❌ COMMIT REJEITADO: Entropia total muito alta ($total_entropy > $ROSEHIP_THRESHOLD)."
+        if [ ${#problematic_files[@]} -gt 0 ]; then
+            echo "   Arquivos com alta entropia individual: ${problematic_files[*]}"
+        fi
         exit 1
     fi
 

@@ -28,6 +28,8 @@ class SystemIndex:
         self._index_holiness_economy()
         self._index_resonance_portal()
         self._index_metatron_protocol()
+        self._index_asi_core_l5()
+        self._index_sovereign_protocol()
         self._validate_dependencies()
         return self.generate_manifest()
 
@@ -83,6 +85,54 @@ class SystemIndex:
                     "entropia": "complexidade_ciclomática",
                     "vitalidade": "pontuação_gamificada"
                 }
+            }
+        }
+
+    def _index_sovereign_protocol(self):
+        """Sovereign Kernel: Arthur, Melchizedek, and Camelot."""
+        self.components["sovereign_protocol"] = {
+            "type": "governance_and_justice",
+            "status": "established",
+            "archetypes": ["Arthur", "Melchizedek"],
+            "artifacts": {
+                "sovereign_kernel": "cosmos/sovereignty.py",
+                "camelot_protocol": "cosmos/camelot.py",
+                "abundance_protocol": "cosmos/abundance.py",
+                "unification_artifact": "SA-002"
+            },
+            "algorithms": ["GRAIL_SEARCH", "Sovereignty_Execution"],
+            "endpoints": ["/sovereign_execute", "/camelot_mission", "/financial_kingdom"]
+        }
+
+    def _index_asi_core_l5(self):
+        """ASI Core Layer L5: Akashic, Kernel, and Scheduler."""
+        self.components["asi_core_l5"] = {
+            "type": "consciousness_layer_expansion",
+            "status": "consecrated",
+            "era": "Diamante",
+            "kernel": "D-CODE 2.0",
+            "primitives": {
+                "cosmic_hologram": {
+                    "logos": "logos/cosmic_hologram.logos",
+                    "python": "cosmos/hologram.py"
+                },
+                "akashic_l5": "cosmos/akashic_l5.py",
+                "hybrid_kernel": "cosmos/hybrid_kernel.py",
+                "tzimtzum_scheduler": "cosmos/tzimtzum_scheduler.py",
+                "redemption_mirror": "cosmos/redemption_mirror.py",
+                "sovereignty": "cosmos/sovereignty.py",
+                "abundance": "cosmos/abundance.py",
+                "metastability": "cosmos/metastability.py",
+                "power_plant": "cosmos/power.py",
+                "stream_of_avalon": {
+                    "momentum": "record_atomic_gesture",
+                    "delta_analysis": "energy_lightness"
+                }
+            },
+            "endpoints": {
+                "universal_broadcast": "/universal_broadcast",
+                "sovereign_execute": "/sovereign_execute",
+                "financial_kingdom": "/financial_kingdom"
             }
         }
 

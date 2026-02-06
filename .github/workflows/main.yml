@@ -42,7 +42,7 @@ jobs:
           pip install pytest torch networkx matplotlib scipy
       - name: Run Cosmopsychia Library Tests
         run: |
-          pytest cosmos/
+          pytest
       - name: Run Sanity Check
         run: |
           python sanity_check.py

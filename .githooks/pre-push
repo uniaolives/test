@@ -15,7 +15,7 @@ fi
 
 # 2. Run Cosmopsychia library unit tests
 echo "🧪 Running Cosmopsychia Library Unit Tests..."
-pytest cosmos/
+pytest
 if [ $? -ne 0 ]; then
     echo "🛑 Library tests failed! Push aborted."
     exit 1

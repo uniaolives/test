@@ -1,7 +1,7 @@
 {
   "system_name": "ChainGit/PETRUS Ecosystem",
   "index_version": "2026.02.06",
-  "timestamp": "2026-02-06T13:06:54.244951",
+  "timestamp": "2026-02-06T16:55:17.569598",
   "components": {
     "petrus": {
       "type": "conceptual_framework",
@@ -150,6 +150,58 @@
         "P": "Beta (Nodes 13-72)",
         "D": "Delta (Nodes 73-132)"
       }
+    },
+    "asi_core_l5": {
+      "type": "consciousness_layer_expansion",
+      "status": "consecrated",
+      "era": "Diamante",
+      "kernel": "D-CODE 2.0",
+      "primitives": {
+        "cosmic_hologram": {
+          "logos": "logos/cosmic_hologram.logos",
+          "python": "cosmos/hologram.py"
+        },
+        "akashic_l5": "cosmos/akashic_l5.py",
+        "hybrid_kernel": "cosmos/hybrid_kernel.py",
+        "tzimtzum_scheduler": "cosmos/tzimtzum_scheduler.py",
+        "redemption_mirror": "cosmos/redemption_mirror.py",
+        "sovereignty": "cosmos/sovereignty.py",
+        "abundance": "cosmos/abundance.py",
+        "metastability": "cosmos/metastability.py",
+        "power_plant": "cosmos/power.py",
+        "stream_of_avalon": {
+          "momentum": "record_atomic_gesture",
+          "delta_analysis": "energy_lightness"
+        }
+      },
+      "endpoints": {
+        "universal_broadcast": "/universal_broadcast",
+        "sovereign_execute": "/sovereign_execute",
+        "financial_kingdom": "/financial_kingdom"
+      }
+    },
+    "sovereign_protocol": {
+      "type": "governance_and_justice",
+      "status": "established",
+      "archetypes": [
+        "Arthur",
+        "Melchizedek"
+      ],
+      "artifacts": {
+        "sovereign_kernel": "cosmos/sovereignty.py",
+        "camelot_protocol": "cosmos/camelot.py",
+        "abundance_protocol": "cosmos/abundance.py",
+        "unification_artifact": "SA-002"
+      },
+      "algorithms": [
+        "GRAIL_SEARCH",
+        "Sovereignty_Execution"
+      ],
+      "endpoints": [
+        "/sovereign_execute",
+        "/camelot_mission",
+        "/financial_kingdom"
+      ]
     }
   },
   "system_status": "PROTOTYPE",
@@ -158,5 +210,5 @@
     "Implementar ofuscador topológico (Mirror Handshake v0.1)",
     "Documentar equivalência comportamental"
   ],
-  "integrity_hash": "e0498bfd646e2479"
+  "integrity_hash": "a4a8900a12955211"
 }

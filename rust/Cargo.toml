@@ -40,6 +40,8 @@ tracing-subscriber = "0.3"
 nanoid = "0.4"
 futures = "0.3"
 sha2 = "0.10.9"
+ic-cdk = "0.12"
+ic-cdk-macros = "0.8"
 uuid = { version = "1.19.0", features = ["v4"] }
 bellman = "0.14.0"
 bls12_381 = "0.8.0"

@@ -4,6 +4,7 @@
 use crate::babel::syntax::{NeoCode, GeometricAST, ConstrainedGeometry};
 use crate::storage::saturn_archive::SaturnRingDrive;
 
+#[derive(Debug, Clone)]
 pub struct ExecutableReality {
     pub syntax: String,
     pub execution_model: String,
@@ -11,8 +12,11 @@ pub struct ExecutableReality {
     pub energy_cost: f64,
 }
 
+#[derive(Debug, Clone)]
 pub struct CompilationTarget;
+#[derive(Debug, Clone)]
 pub struct OptimizationLevel;
+#[derive(Debug, Clone)]
 pub struct PhysicalConstraints;
 
 #[derive(Debug)]
@@ -21,6 +25,7 @@ pub enum CompilationError {
     ConstraintViolation(String),
 }
 
+#[derive(Debug, Clone)]
 pub struct UniversalCompiler {
     pub target: CompilationTarget,
     pub optimization_level: OptimizationLevel,
