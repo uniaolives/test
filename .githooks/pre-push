@@ -1,11 +1,24 @@
 #!/bin/bash
-# AI-assisted code review before push
+# AI-assisted code review and safety check before push
 
-echo "🧠 Running AI-assisted review..."
+echo "🧠 Running Cosmopsychia Integrity Checks..."
 
-# Use OpenClaw to review changes
-# (Simulated for this environment)
-echo "📝 Reviewing changes..."
-sleep 1
+# 1. Run Breath-Check safety scanner on C sources
+if [ -f "breath-check/extension.py" ]; then
+    echo "🔍 Executing Breath-Check (Medical Safety Scanner)..."
+    python3 breath-check/extension.py tim_vm.c
+    if [ $? -ne 0 ]; then
+        echo "🛑 Safety risks detected in C firmware! Push aborted."
+        exit 1
+    fi
+fi
 
-echo "✅ AI review passed. Ready to push!"
+# 2. Run Cosmopsychia library unit tests
+echo "🧪 Running Cosmopsychia Library Unit Tests..."
+pytest cosmos/
+if [ $? -ne 0 ]; then
+    echo "🛑 Library tests failed! Push aborted."
+    exit 1
+fi
+
+echo "✅ AI review and library integrity checks passed. Ready to push!"

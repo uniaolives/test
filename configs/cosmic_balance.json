@@ -1,0 +1,16 @@
+{
+  "cosmic_constants": {
+    "time_dilation_limit": 5.0,
+    "entropy_threshold": 12.0
+  },
+  "rosehip_protocol": {
+    "active": true,
+    "inhibitory_power": 0.85,
+    "human_priority_mode": "enabled",
+    "cognition_filter_depth": "layer_1_cortex"
+  },
+  "git_on_chain": {
+    "canister_id": "rose-hip-01-node",
+    "identity_validation": "internet_identity_plus_neural_pattern"
+  }
+}
