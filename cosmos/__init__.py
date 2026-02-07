@@ -12,3 +12,17 @@ from .qhttp import (
     execute_global_dream_sync,
     execute_hal_surprise
 )
+from .biological import (
+    DamageType,
+    DNAConstraintViolation,
+    SolitonTherapeuticWave,
+    DNARepairSolitonEngine,
+    ZikaNeuroRepairProtocol
+)
+from .cgda import (
+    ConstraintMethod,
+    ObservedState,
+    ForbiddenConfiguration,
+    ConstraintGeometry,
+    CGDALab
+)
