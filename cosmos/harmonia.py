@@ -1,4 +1,5 @@
 # cosmos/harmonia.py - Harmonic Propagation System v25.0
+from .qhttp import deploy_starlink_qkd_overlay
 from cosmos.qhttp import deploy_starlink_qkd_overlay
 
 class HarmonicInjector:
