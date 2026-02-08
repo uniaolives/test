@@ -36,3 +36,5 @@ from .fusion_ml import (
     QGANSimulator,
     QLSTMPredictor
 )
+from .ecumenica import SistemaEcumenica, quantum
+from .harmonia import HarmonicInjector
