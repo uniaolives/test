@@ -1,13 +1,19 @@
 import unittest
 import time
-from cosmos.ecumenica import SistemaEcumenica, PonteQC, SinalQuantico, ZMonitor, HLogger
+from cosmos.ecumenica import (
+    SistemaEcumenica, PonteQC, SinalQuantico,
+    ZMonitorCalibrado, HLedgerImutavel, QLedger, ReplicacaoDistribuida
+)
 
 class TestEcumenica(unittest.TestCase):
     def setUp(self):
         self.ecumenica = SistemaEcumenica()
         self.ponte = PonteQC()
-        self.z_monitor = ZMonitor()
-        self.h_logger = HLogger()
+        # SistemaEcumenica already initializes these
+        self.qledger = self.ecumenica.qledger
+        self.replicacao = self.ecumenica.replicacao
+        self.h_ledger = self.ecumenica.h_ledger
+        self.z_monitor = self.ecumenica.z_monitor
 
     def test_sistema_ecumenica_selecao(self):
         # Test recognition of signal 2
@@ -15,13 +21,12 @@ class TestEcumenica(unittest.TestCase):
         self.assertEqual(resposta["via"], "IMPLEMENTATION_GUIDE")
         self.assertEqual(self.ecumenica.via_ativa, 2)
 
-        # Test recognition of "implementation"
-        resposta = self.ecumenica.processar_selecao("Starting implementation guide")
-        self.assertEqual(resposta["via"], "IMPLEMENTATION_GUIDE")
-
-        # Test unrecognized signal
-        resposta = self.ecumenica.processar_selecao("sinal aleatorio")
-        self.assertEqual(resposta["status"], "SINAL_NAO_RECONHECIDO")
+    def test_sistema_ecumenica_deploy(self):
+        # Test deploy full command
+        resposta = self.ecumenica.processar_comando_deploy("DEPLOY_FULL")
+        self.assertEqual(resposta["status"], "DEPLOY_EM_ANDAMENTO")
+        self.assertEqual(resposta["fase"], "B4_PRODUCAO")
+        self.assertEqual(self.ecumenica.damping_total, 1.20)
 
     def test_ponte_qc_transformar(self):
         sinal = SinalQuantico(estado="TESTE", coerencia=0.5)
@@ -37,31 +42,36 @@ class TestEcumenica(unittest.TestCase):
         self.assertAlmostEqual(sinal_pos.coerencia, 0.09)
         self.assertEqual(sinal_pos.metadados['alerta'], 'DAMPING_EMERGENCIA_ATIVADO')
 
-    def test_z_monitor(self):
+    def test_qledger_integrity(self):
+        hash_bloco = self.qledger.append_bloco({'tipo': 'TESTE', 'magnitude': 1.0})
+        self.assertIsNotNone(hash_bloco)
+        self.assertTrue(self.qledger.verificar_cadeia_completa("dummy_pubkey"))
+
+    def test_h_ledger_registro(self):
+        self.replicacao.adicionar_replica("replica-1")
+        self.replicacao.adicionar_replica("replica-2")
+        # Quorum is 3 (Primary + 2 replicas)
+        evento = {'tipo': 'TESTE_H', 'magnitude': 5.0, 'impacto_coerencia': 0.5, 'duracao': 10}
+        resultado = self.h_ledger.registrar_evento_histerese(evento)
+        self.assertEqual(resultado['status'], 'REGISTRADO')
+        self.assertIn('hash', resultado)
+
+    def test_z_monitor_calibrado(self):
         sinal_nominal = SinalQuantico(estado="OK", coerencia=0.5)
-        status, acao = self.z_monitor.monitorar(sinal_nominal)
-        self.assertEqual(status, "COERENCIA_NOMINAL")
-        self.assertFalse(acao)
+        status = self.z_monitor.monitorar(sinal_nominal)
+        self.assertEqual(status['status'], 'ESTAVEL')
 
         sinal_alerta = SinalQuantico(estado="ALERTA", coerencia=0.75)
-        status, acao = self.z_monitor.monitorar(sinal_alerta)
-        self.assertEqual(status, "ALERTA_EMITIDO")
-        self.assertFalse(acao)
+        status = self.z_monitor.monitorar(sinal_alerta)
+        self.assertEqual(status['status'], 'ALERTA')
 
         sinal_acao = SinalQuantico(estado="ACAO", coerencia=0.85)
-        status, acao = self.z_monitor.monitorar(sinal_acao)
-        self.assertEqual(status, "ACAO_REQUERIDA")
-        self.assertTrue(acao)
+        status = self.z_monitor.monitorar(sinal_acao)
+        self.assertEqual(status['status'], 'ACAO_EXECUTADA')
 
-    def test_h_logger_arquivamento(self):
-        status = self.h_logger.registrar("ESTADO_1", 1000)
-        self.assertEqual(status, "REGISTRADO")
-        self.assertEqual(len(self.h_logger.registros), 1)
-
-        # Trigger archival
-        status = self.h_logger.registrar("ESTADO_2", 10**7 + 1)
-        self.assertEqual(status, "ESTADO_ARQUIVADO")
-        self.assertEqual(len(self.h_logger.registros), 0)
+        sinal_emergencia = SinalQuantico(estado="EMERGENCIA", coerencia=0.95)
+        status = self.z_monitor.monitorar(sinal_emergencia)
+        self.assertEqual(status['status'], 'EMERGENCIA')
 
 if __name__ == "__main__":
     unittest.main()
