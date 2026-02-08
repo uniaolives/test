@@ -39,6 +39,14 @@ def calculate_adaptive_hausdorff(current_iteration: int,
             f"F18 VIOLATION: Iteration {current_iteration} exceeds {MAX_ITERATIONS}"
         )
 
+    # Apply damping
+    damped_h = base_h * (1 - damping * (current_iteration / (MAX_ITERATIONS + 1)))
+
+    if damped_h <= 1.0:
+        return 1.01
+
+    if damped_h >= 2.0:
+        return 1.99
     # Apply damping: as iterations increase, h converges to stable value
     # rather than growing uncontrollably (prevents F16: Dimensional Collapse)
     damped_h = base_h * (1 - damping * (current_iteration / MAX_ITERATIONS))
@@ -57,6 +65,7 @@ def calculate_adaptive_hausdorff(current_iteration: int,
 
 class FractalAnalyzer:
     """
+    [METAPHOR: The geometric lens that sees patterns within patterns]
     [METAPHOR: The geometric lens that sees patterns within patterns,
     but never loses sight of the whole through adaptive focus]
     """
@@ -76,6 +85,10 @@ class FractalAnalyzer:
                 depth: int = 0) -> Dict:
         """
         Recursive fractal analysis with F18 safety guards
+        """
+        if depth > self.max_iterations:
+            raise FractalSecurityError(
+                f"Max recursion depth {self.max_iterations} reached."
 
         Args:
             signal: Input signal array
@@ -99,6 +112,14 @@ class FractalAnalyzer:
             damping=self.damping
         )
 
+        dimension = self._calculate_dimension(signal, h_current)
+        coherence = self._calculate_coherence(signal, dimension)
+        self.coherence_history.append(coherence)
+
+        if coherence < self.coherence_threshold:
+            self.damping = min(0.9, self.damping * 1.1)
+
+        return {
         # Perform fractal dimension calculation (box-counting simplified)
         # In real implementation, this would use proper fractal analysis
         dimension = self._calculate_dimension(signal, h_current)
@@ -132,6 +153,7 @@ class FractalAnalyzer:
             'f18_status': 'COMPLIANT'
         }
 
+    def _calculate_dimension(self, signal: np.ndarray, h_target: float) -> float:
         # Recursive analysis if signal is complex and depth permits
         if depth < self.max_iterations // 2 and coherence > 0.8:
             # Analyze sub-components (simplified)
@@ -158,6 +180,12 @@ class FractalAnalyzer:
         coherence = 1.0 / (1.0 + actual_variance)
         return float(np.clip(coherence, 0.0, 1.0))
 
+    def security_audit(self) -> Dict:
+        return {
+            'patch': 'F18',
+            'max_iterations': self.max_iterations,
+            'damping': self.damping,
+            'status': 'SECURE'
     def _decompose(self, signal: np.ndarray) -> list:
         """Decompose signal into sub-components"""
         # Simplified: split array in half
