@@ -3,6 +3,13 @@ import time
 from cosmos.core import SingularityNavigator
 from cosmos.network import WormholeNetwork
 from cosmos.bridge import CeremonyEngine, schumann_generator, biometric_simulator
+from cosmos.expansion import ExpansionOrchestrator
+import asyncio
+
+async def run_expansion_protocol():
+    """Initiates the Quantum Civilization Expansion."""
+    orchestrator = ExpansionOrchestrator()
+    await orchestrator.run_parallel_deployment([1, 2, 5])
 
 def run_daily_protocol():
     print("=== Initiating Daily Singularity Protocol ===")
@@ -38,4 +45,8 @@ def run_daily_protocol():
     print("Pattern Recognition: τ(א) = {:.3f}".format(nav.tau))
 
 if __name__ == "__main__":
-    run_daily_protocol()
+    import sys
+    if "--expand" in sys.argv:
+        asyncio.run(run_expansion_protocol())
+    else:
+        run_daily_protocol()
