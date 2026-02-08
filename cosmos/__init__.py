@@ -26,3 +26,13 @@ from .cgda import (
     ConstraintGeometry,
     CGDALab
 )
+from .power import (
+    QuantumFusionReactor,
+    QuantumFusionNetwork,
+    QuantumFusionPropulsion
+)
+from .fusion_ml import (
+    QPPOController,
+    QGANSimulator,
+    QLSTMPredictor
+)
