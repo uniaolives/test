@@ -10,3 +10,10 @@ peft
 trl
 click
 requests
+numpy
+scipy
+typer
+rich
+pydantic
+fastapi
+uvicorn
