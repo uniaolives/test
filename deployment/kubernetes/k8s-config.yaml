@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avalon-simulator
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: avalon
+  template:
+    metadata:
+      labels:
+        app: avalon
+    spec:
+      containers:
+      - name: simulator
+        image: uniaolives/avalon-simulator:latest
+        ports:
+        - containerPort: 8080

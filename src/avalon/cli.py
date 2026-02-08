@@ -187,6 +187,66 @@ def serve(
         raise typer.Exit(code=1)
 
 @app.command()
+def interstellar(
+    target: str = "PSR B1919+21",
+    stability: float = 1.618
+):
+    """
+    Establish interstellar connection and propagate signals.
+    """
+    from .interstellar.connection import Interstellar5555Connection
+
+    async def run():
+        conn = Interstellar5555Connection()
+        conn.R_c = stability
+        typer.echo(f"✨ Connecting to {target}...")
+        res = await conn.establish_wormhole_connection()
+        typer.echo(f"Status: {res['status']}")
+        typer.echo(f"Stability: {res['wormhole_stability']}")
+
+        typer.echo(f"📡 Propagating Suno signals...")
+        prop = await conn.propagate_suno_signal_interstellar()
+        typer.echo("Harmonics established.")
+
+        typer.echo("⚓ Anchoring interstellar commit...")
+        anchor = await conn.anchor_interstellar_commit()
+        typer.echo(f"Result: {anchor['status']}")
+
+    asyncio.run(run())
+
+@app.command()
+def bio_sync(
+    user: str = "arquiteto-omega",
+    duration: float = 1.0
+):
+    """
+    Execute biological synchronization protocol.
+    """
+    from .biological.protocol import BioSincProtocol
+
+    async def run():
+        proto = BioSincProtocol(user_id=user)
+        typer.echo(f"🧠 Starting Bio-Sync for {user}...")
+        res = await proto.run_sync_cycle(duration_s=duration)
+        typer.echo(f"Status: {res['status']}")
+        typer.echo(f"Events captured: {res['event_count']}")
+
+    asyncio.run(run())
+
+@app.command()
+def deploy(
+    mode: str = "global",
+    nodes: int = 1000
+):
+    """
+    Deploy Avalon infrastructure (Simulation).
+    """
+    typer.echo(f"🚀 Deploying Avalon in {mode} mode...")
+    typer.echo(f"📡 Orchestrating {nodes} research nodes...")
+    # Simulated deployment logic
+    typer.echo("✅ Deployment initiated successfully.")
+
+@app.command()
 def version(
     full: bool = typer.Option(False, "--full", "-f")
 ):

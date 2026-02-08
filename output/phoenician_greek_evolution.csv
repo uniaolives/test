@@ -1,0 +1,7 @@
+PhoenicianLetter,PhoenicianGlyph,GreekLetter,GreekGlyph,ChangeType
+Aleph,𐤀,Alpha,Α,GutturalToVowel
+He,𐤄,Epsilon,Ε,GutturalToVowel
+Het,𐤇,Eta,Η,GutturalToVowel
+Yod,𐤉,Iota,Ι,GutturalToVowel
+Ayin,𐤏,Omicron,Ο,GutturalToVowel
+Waw,𐤅,Upsilon,Υ,LabiovelarToVowel

@@ -1,0 +1,39 @@
+<!-- phoenician_visualizer.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phoenician Alphabet Visualizer</title>
+    <style>
+        body { font-family: sans-serif; background: #1a237e; color: #fff; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
+        .card { background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #ffd700; }
+        .glyph { font-size: 3em; color: #ffd700; }
+        .name { font-weight: bold; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <h1>🏛️ Phoenician Alphabet Visualizer</h1>
+    <div class="grid" id="grid"></div>
+    <script>
+        const alphabet = [
+            { name: "Aleph", glyph: "𐤀" }, { name: "Bet", glyph: "𐤁" }, { name: "Gaml", glyph: "𐤂" },
+            { name: "Delt", glyph: "𐤃" }, { name: "He", glyph: "𐤄" }, { name: "Waw", glyph: "𐤅" },
+            { name: "Zayin", glyph: "𐤆" }, { name: "Het", glyph: "𐤇" }, { name: "Tet", glyph: "𐤈" },
+            { name: "Yod", glyph: "𐤉" }, { name: "Kaf", glyph: "𐤊" }, { name: "Lamed", glyph: "𐤋" },
+            { name: "Mem", glyph: "𐤌" }, { name: "Nun", glyph: "𐤍" }, { name: "Samek", glyph: "𐤎" },
+            { name: "Ayin", glyph: "𐤏" }, { name: "Pe", glyph: "𐤐" }, { name: "Sade", glyph: "𐤑" },
+            { name: "Qof", glyph: "𐤒" }, { name: "Resh", glyph: "𐤓" }, { name: "Shin", glyph: "𐤔" },
+            { name: "Taw", glyph: "𐤕" }
+        ];
+        const grid = document.getElementById('grid');
+        alphabet.forEach(l => {
+            const d = document.createElement('div');
+            d.className = 'card';
+            d.innerHTML = `<div class="glyph">${l.glyph}</div><div class="name">${l.name}</div>`;
+            grid.appendChild(d);
+        });
+    </script>
+</body>
+</html>
