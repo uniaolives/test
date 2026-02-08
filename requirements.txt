@@ -10,3 +10,5 @@ peft
 trl
 click
 requests
+numpy
+qiskit
