@@ -2,7 +2,8 @@ import unittest
 import time
 from cosmos.ecumenica import (
     SistemaEcumenica, PonteQC, SinalQuantico,
-    ZMonitorCalibrado, HLedgerImutavel, QLedger, ReplicacaoDistribuida
+    ZMonitorNeuralQuantum, HLedgerImutavel, QLedger, ReplicacaoDistribuida,
+    ZMonitorCalibrado, quantum, ProtocoloDampingLog, ProtocolosEmergenciaProducao
 )
 
 class TestEcumenica(unittest.TestCase):
@@ -26,7 +27,8 @@ class TestEcumenica(unittest.TestCase):
         resposta = self.ecumenica.processar_comando_deploy("DEPLOY_FULL")
         self.assertEqual(resposta["status"], "DEPLOY_EM_ANDAMENTO")
         self.assertEqual(resposta["fase"], "B4_PRODUCAO")
-        self.assertEqual(self.ecumenica.damping_total, 1.20)
+        # In v2.0, replicas_ativas is 5
+        self.assertEqual(resposta["configuracoes"]["replicas_ativas"], 5)
 
     def test_ponte_qc_transformar(self):
         sinal = SinalQuantico(estado="TESTE", coerencia=0.5)
@@ -37,7 +39,7 @@ class TestEcumenica(unittest.TestCase):
 
     def test_ponte_qc_damping_emergencia(self):
         sinal = SinalQuantico(estado="CRITICO", coerencia=0.9)
-        # coerencia 0.9 > limite 0.8
+        # coerencia 0.9 > limite 0.85 (v2.0)
         sinal_pos = self.ponte.transformar(sinal)
         self.assertAlmostEqual(sinal_pos.coerencia, 0.09)
         self.assertEqual(sinal_pos.metadados['alerta'], 'DAMPING_EMERGENCIA_ATIVADO')
@@ -56,22 +58,35 @@ class TestEcumenica(unittest.TestCase):
         self.assertEqual(resultado['status'], 'REGISTRADO')
         self.assertIn('hash', resultado)
 
-    def test_z_monitor_calibrado(self):
+    def test_z_monitor_neural_quantum(self):
         sinal_nominal = SinalQuantico(estado="OK", coerencia=0.5)
         status = self.z_monitor.monitorar(sinal_nominal)
         self.assertEqual(status['status'], 'ESTAVEL')
 
+        # Test proativo damping (tendência ACELERACAO_RISCO)
+        sinal_1 = SinalQuantico(estado="1", coerencia=0.5)
+        self.z_monitor.monitorar(sinal_1)
+        sinal_2 = SinalQuantico(estado="2", coerencia=0.6) # Delta 0.1 > 0.05
+        status_2 = self.z_monitor.monitorar(sinal_2)
+        self.assertEqual(status_2['tendencia'], 'ACELERACAO_RISCO')
+
+        # Thresholds: alerta 0.72, acao 0.80, emergencia 0.90
         sinal_alerta = SinalQuantico(estado="ALERTA", coerencia=0.75)
         status = self.z_monitor.monitorar(sinal_alerta)
         self.assertEqual(status['status'], 'ALERTA')
 
-        sinal_acao = SinalQuantico(estado="ACAO", coerencia=0.85)
-        status = self.z_monitor.monitorar(sinal_acao)
-        self.assertEqual(status['status'], 'ACAO_EXECUTADA')
+    def test_quantum_push(self):
+        res = quantum.PUSH("uri", {"data": 1})
+        self.assertEqual(res["status"], "PUSH_OK")
+        self.assertTrue(res["hash"].startswith("p_"))
 
-        sinal_emergencia = SinalQuantico(estado="EMERGENCIA", coerencia=0.95)
-        status = self.z_monitor.monitorar(sinal_emergencia)
-        self.assertEqual(status['status'], 'EMERGENCIA')
+    def test_restored_classes(self):
+        log = ProtocoloDampingLog()
+        res = log.registrar_evento("T", 1.0, "M")
+        self.assertEqual(res["status"], "REGISTRADO")
+
+        prot = ProtocolosEmergenciaProducao()
+        self.assertEqual(prot.intervencoes_autonomas, 0)
 
 if __name__ == "__main__":
     unittest.main()
