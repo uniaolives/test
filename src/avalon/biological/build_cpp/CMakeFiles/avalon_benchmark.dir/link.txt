@@ -1,1 +1,0 @@
-/usr/bin/c++  -O3 -march=native -ffast-math -pthread -O3 -DNDEBUG CMakeFiles/avalon_benchmark.dir/benchmark.cpp.o -o avalon_benchmark  libavalon_neural_core.a

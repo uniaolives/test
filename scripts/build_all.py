@@ -22,7 +22,7 @@ def build_python():
     print("Packaging Python Avalon...")
     # Simulate executable generation with PyInstaller or similar
     if shutil.which("pyinstaller"):
-        subprocess.run(["pyinstaller", "--onefile", "src/avalon/cli.py", "--name", "avalon"], check=True)
+        subprocess.run(["pyinstaller", "--onefile", "src/avalon/cli/__main__.py", "--name", "avalon"], check=True)
     else:
         print("PyInstaller not found, skipping standalone executable build.")
 

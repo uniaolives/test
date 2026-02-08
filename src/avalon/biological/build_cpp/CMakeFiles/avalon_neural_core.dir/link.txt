@@ -1,2 +1,0 @@
-/usr/bin/ar qc libavalon_neural_core.a CMakeFiles/avalon_neural_core.dir/avalon_neural_core.cpp.o CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o
-/usr/bin/ranlib libavalon_neural_core.a

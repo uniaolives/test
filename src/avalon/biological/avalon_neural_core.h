@@ -235,6 +235,34 @@ public:
 };
 
 // ============================================================================
+// CLASSE: NEURONAL RECONSTRUCTOR (PRGF)
+// ============================================================================
+
+struct ReconstructionMetrics {
+    double connectome_fidelity;
+    double synaptic_plasticity_index;
+    double reanimation_success_rate;
+    int restored_neurons;
+    int restored_synapses;
+};
+
+class NeuronalReconstructor {
+private:
+    AvalonNeuralNetwork* target_network;
+    double plasticity_coefficient;
+    double stability_threshold;
+
+public:
+    NeuronalReconstructor(AvalonNeuralNetwork* network);
+
+    void reconstruct_from_connectome(const std::vector<double>& connectome_data);
+    void simulate_post_reanimation_plasticity(double duration_ms);
+
+    ReconstructionMetrics get_reconstruction_status() const;
+    void optimize_synaptic_pathways();
+};
+
+// ============================================================================
 // UTILITIES & HELPER FUNCTIONS
 // ============================================================================
 

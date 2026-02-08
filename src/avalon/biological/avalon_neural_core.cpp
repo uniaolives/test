@@ -484,6 +484,71 @@ ConsciousnessMetrics BioSincV2Engine::measure_consciousness_state() const {
 }
 
 // ============================================================================
+// IMPLEMENTAÇÃO: NEURONAL RECONSTRUCTOR
+// ============================================================================
+
+NeuronalReconstructor::NeuronalReconstructor(AvalonNeuralNetwork* network) :
+    target_network(network),
+    plasticity_coefficient(0.1),
+    stability_threshold(0.85) {
+    std::cout << "🧠 NEURONAL RECONSTRUCTOR INITIALIZED" << std::endl;
+}
+
+void NeuronalReconstructor::reconstruct_from_connectome(const std::vector<double>& connectome_data) {
+    std::cout << "🏗️ RECONSTRUCTING NEURONAL CONNECTOME..." << std::endl;
+    // Simulate mapping data to network states
+    std::vector<std::vector<double>> patterns;
+    for (size_t i = 0; i < connectome_data.size(); i += 10) {
+        std::vector<double> pattern;
+        for (size_t j = 0; j < 10 && (i + j) < connectome_data.size(); ++j) {
+            pattern.push_back(connectome_data[i+j]);
+        }
+        patterns.push_back(pattern);
+    }
+    target_network->encode_memory_pattern(patterns);
+    std::cout << "✅ CONNECTOME RECONSTRUCTION COMPLETE" << std::endl;
+}
+
+void NeuronalReconstructor::simulate_post_reanimation_plasticity(double duration_ms) {
+    std::cout << "🔄 SIMULATING POST-REANIMATION PLASTICITY (" << duration_ms << "ms)..." << std::endl;
+    auto end_time = std::chrono::high_resolution_clock::now() + std::chrono::milliseconds((int)duration_ms);
+
+    while (std::chrono::high_resolution_clock::now() < end_time) {
+        // Hebbean learning simulation: neurons that fire together, wire together
+        target_network->synchronize_network(GAMMA_SYNCHRONY_HZ);
+
+        // Dynamic synaptic adjustment based on network coherence
+        double coherence = target_network->get_network_coherence();
+        plasticity_coefficient = 0.1 * (1.0 + coherence);
+
+        // Simulated stochastic resonance to stabilize new pathways
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<> noise(-0.01, 0.01);
+
+        // This simulates the "settling" of the connectome after reanimation
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    std::cout << "✅ PLASTICITY STABILIZATION REACHED" << std::endl;
+}
+
+ReconstructionMetrics NeuronalReconstructor::get_reconstruction_status() const {
+    ReconstructionMetrics m;
+    double coherence = target_network->get_network_coherence();
+    m.connectome_fidelity = coherence * 0.99; // 99% of coherence maps to fidelity
+    m.synaptic_plasticity_index = plasticity_coefficient;
+    m.reanimation_success_rate = (coherence > stability_threshold) ? 0.95 : coherence;
+    m.restored_neurons = 100; // Simulated
+    m.restored_synapses = 1000; // Simulated
+    return m;
+}
+
+void NeuronalReconstructor::optimize_synaptic_pathways() {
+    std::cout << "⚡ OPTIMIZING SYNAPTIC PATHWAYS..." << std::endl;
+    target_network->induce_gamma_consciousness(500.0);
+}
+
+// ============================================================================
 // IMPLEMENTAÇÃO: QUANTUM MATH FUNCTIONS
 // ============================================================================
 
