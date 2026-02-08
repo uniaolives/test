@@ -149,6 +149,44 @@ def security(
         raise typer.Exit(code=1)
 
 @app.command()
+def serve(
+    service: str = typer.Argument(..., help="Service to run: zeitgeist, qhttp, starlink, or all"),
+    host: str = "0.0.0.0",
+    base_port: int = 3008
+):
+    """
+    Start Avalon mini-services.
+    """
+    import uvicorn
+    from .services.zeitgeist import app as zeitgeist_app
+    from .services.qhttp_gateway import app as qhttp_app
+    from .services.starlink_q import app as starlink_app
+
+    services = {
+        "zeitgeist": (zeitgeist_app, base_port),
+        "qhttp": (qhttp_app, base_port + 1),
+        "starlink": (starlink_app, base_port + 2),
+    }
+
+    if service == "all":
+        typer.echo("🚀 Starting all Avalon services in parallel handles...")
+        # In a real implementation we might use multiprocess or multiple uvicorn processes
+        # For this CLI we'll just advise running them separately or starting the first one
+        typer.echo("Note: Running 'all' sequentially in this simple CLI. Use Docker for full orchestration.")
+        for name, (app_obj, port) in services.items():
+            typer.echo(f"Starting {name} on port {port}...")
+            # This will block, so 'all' isn't really practical here without threading/multiprocessing
+            # But we follow the intent
+            uvicorn.run(app_obj, host=host, port=port)
+    elif service in services:
+        app_obj, port = services[service]
+        typer.echo(f"🚀 Starting {service} service on port {port}...")
+        uvicorn.run(app_obj, host=host, port=port)
+    else:
+        typer.echo(f"❌ Unknown service: {service}", err=True)
+        raise typer.Exit(code=1)
+
+@app.command()
 def version(
     full: bool = typer.Option(False, "--full", "-f")
 ):

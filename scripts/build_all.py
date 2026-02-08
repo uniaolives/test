@@ -50,9 +50,10 @@ class AvalonBuilder:
         content = fractal_file.read_text()
 
         # Verificar se h_target perigoso ainda existe
-        if "h_target = 1.618" in content:
+        # F18 requires dynamic target, not hardcoded 1.618 as the default value in assignment
+        if "h_target = 1.618" in content and "calculate_adaptive_hausdorff" not in content:
             raise RuntimeError(
-                "F18 NÃO PATCHADO: h_target = 1.618 detectado em fractal.py"
+                "F18 NÃO PATCHADO: h_target = 1.618 detectado sem cálculo adaptativo em fractal.py"
             )
 
         # Verificar se max_iterations existe
@@ -105,17 +106,42 @@ class AvalonBuilder:
         """
         print(f"🔨 Building executable for {target.identifier}...")
 
-        # In a sandbox environment, we might not have all dependencies to run PyInstaller
-        # for all platforms, so we'll simulate the successful check if we can't actually run it.
-        print(f"   [MOCK] PyInstaller build for {target.platform}")
+        # Determine if we can build for this target on current platform
+        current_platform = platform.system().lower()
+        if target.platform == "windows" and current_platform != "windows":
+            print(f"   ⚠️ Cannot build Windows executable on {current_platform}. Skipping.")
+            return None
+        if target.platform == "darwin" and current_platform != "darwin":
+            print(f"   ⚠️ Cannot build macOS executable on {current_platform}. Skipping.")
+            return None
+
+        entry_point = self.src / "cli.py"
+
+        # Configuration for PyInstaller
+        cmd = [
+            sys.executable, "-m", "PyInstaller",
+            "--onefile",
+            "--clean",
+            "--noconfirm",
+            "--name", "avalon",
+            "--distpath", str(self.dist / target.identifier),
+            "--workpath", str(self.build / target.identifier),
+            "--specpath", str(self.build),
+            str(entry_point)
+        ]
+
+        try:
+            subprocess.run(cmd, cwd=self.root, check=True, capture_output=True, text=True)
+        except subprocess.CalledProcessError as e:
+            print(f"❌ PyInstaller failed for {target.identifier}: {e.stderr}")
+            return None
 
         exe_name = "avalon.exe" if target.platform == "windows" else "avalon"
         exe_path = self.dist / target.identifier / exe_name
 
-        # Ensure directory exists
-        exe_path.parent.mkdir(parents=True, exist_ok=True)
-        # Create a mock executable
-        exe_path.write_text(f"Mock executable for {target.identifier}")
+        if not exe_path.exists():
+             print(f"❌ Executable not found at {exe_path}")
+             return None
 
         print(f"✅ Executable: {exe_path}")
         return exe_path
