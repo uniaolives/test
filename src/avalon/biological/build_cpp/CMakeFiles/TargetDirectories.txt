@@ -1,0 +1,5 @@
+/app/src/avalon/biological/build_cpp/CMakeFiles/avalon_neural_core.dir
+/app/src/avalon/biological/build_cpp/CMakeFiles/avalon_test.dir
+/app/src/avalon/biological/build_cpp/CMakeFiles/avalon_benchmark.dir
+/app/src/avalon/biological/build_cpp/CMakeFiles/edit_cache.dir
+/app/src/avalon/biological/build_cpp/CMakeFiles/rebuild_cache.dir
