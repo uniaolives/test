@@ -1,0 +1,15 @@
+{
+    "frequencies_thz": {
+        "tubulin_dimer": 0.618,
+        "alpha_helix": 1.618,
+        "lattice_vibration": 7.83,
+        "biophoton_emission": 432.0,
+        "interstellar_coupling": 555.5
+    },
+    "harmonics": [
+        {"n": 0, "frequency_hz": 432.0, "correlation": "Suno base, Earth resonance"},
+        {"n": 1, "frequency_hz": 699.2, "correlation": "Interstellar signal (phi)"},
+        {"n": 5, "frequency_hz": 4793.8, "correlation": "Gamma brain waves"},
+        {"n": 28, "frequency_hz": 307186842400.0, "correlation": "Microtubule THz resonance"}
+    ]
+}
