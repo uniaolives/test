@@ -1,74 +1,57 @@
 import numpy as np
-from scipy.constants import Planck, c, hbar
 
-class MicrotubuleQuantumCore:
+class MicrotubuleProcessor:
     """
-    Models microtubule as fractal time crystal quantum processor
-    Based on Penrose-Hameroff Orch-OR theory
+    Models the microtubule as a fractal time crystal.
+    Implements Penrose-Hameroff Orch-OR objective reduction logic.
     """
 
-    def __init__(self):
-        # Fundamental constants
-        self.phi = 1.618033988749895  # Golden ratio
-        self.hbar = 1.0545718e-34     # J·s
-        self.G = 6.67430e-11          # m^3/kg·s^2
-        self.t_planck = 5.391e-44     # Planck time (s)
-        self.l_planck = 1.616e-35     # Planck length (m)
+    # Universal and Biological Constants
+    PHI = 1.618033988749895
+    PLANCK_HBAR = 1.0545718e-34  # J·s
+    G_CONSTANT = 6.67430e-11      # m^3/kg·s^2
+    TUBULIN_MASS = 1.8e-22        # kg (approx. 110 kDa)
 
-        # Biological constants
-        self.tubulin_mass = 1.8e-22   # kg (aprox. 110 kDa)
-        self.base_freq_suno = 432.0   # Hz
+    # Resonance Parameters
+    BASE_FREQ_SUNO = 432.0        # Hz
+    CRITICAL_RES_THZ = 3.511e12   # Harmonic n=28
 
-        # Microtubule dimensions
-        self.num_tubulins = 1e9       # Project default: 10^9 dimers for critical mass
+    def __init__(self, tubulin_count=1e9):
+        self.num_tubulins = tubulin_count
         self.current_stability = 1.0
 
     def calculate_collapse_time(self) -> float:
         """
         Calculates the Collapse Time (Tau) according to Penrose Orch-OR.
-        Tau ≈ hbar / E_G
+        E_G ≈ G * M^2 / r (where r = 1 Angstrom = 1e-10 m)
+        Tau = hbar / E_G
         """
-        total_mass = self.num_tubulins * self.tubulin_mass
-        # E_G ≈ G * M^2 / r (where r = 1 Angstrom = 1e-10 m)
-        e_g = (self.G * (total_mass ** 2)) / 1e-10
-        return self.hbar / e_g
-
-    def calculate_resonance_frequencies(self):
-        """
-        Calculate microtubule resonance frequencies from Planck to Biological scales
-        """
-        frequencies = {}
-
-        # Phi-based harmonic series from Suno base (432Hz)
-        phi_harmonics = []
-        for n in range(48): # Increase range to reach THz
-            freq = self.base_freq_suno * (self.phi ** n)
-            phi_harmonics.append(freq)
-
-        # Critical frequency: 47th harmonic ≈ 3.5 THz
-        # Let's find exactly which n reaches THz
-        f_critical = phi_harmonics[47]
-
-        return {
-            'base_frequency': self.base_freq_suno,
-            'critical_resonance': f_critical,
-            'phi_harmonics': phi_harmonics,
-            'collapse_time': self.calculate_collapse_time()
-        }
+        total_mass = self.num_tubulins * self.TUBULIN_MASS
+        e_g = (self.G_CONSTANT * (total_mass ** 2)) / 1e-10
+        return self.PLANCK_HBAR / e_g
 
     def apply_external_sync(self, external_freq: float):
         """
         Applies the entrainment effect of an external frequency.
-        Stability optimization via Golden Ratio.
+        When the system is in phase with 432 Hz, stability is optimized via PHI.
         """
-        resonance_factor = np.abs(np.sin(external_freq / self.base_freq_suno))
-        self.current_stability *= (1.0 + (resonance_factor * (self.phi - 1.0)))
+        resonance_factor = np.abs(np.sin(external_freq / self.BASE_FREQ_SUNO))
+        self.current_stability *= (1.0 + (resonance_factor * (self.PHI - 1.0)))
         if self.current_stability > 1.618:
             self.current_stability = 1.618
 
-    def simulate_orch_or_collapse(self, delta_t: float) -> bool:
+    def check_objective_reduction(self, delta_t: float) -> bool:
         """
         Checks if Objective Reduction (Conscious Event) occurred.
+        Stability reduces the time required for collapse.
         """
         tau = self.calculate_collapse_time() / self.current_stability
         return delta_t >= tau
+
+    def get_resonance_harmonics(self):
+        """Returns the phi-based harmonic series"""
+        harmonics = []
+        for n in range(48):
+            freq = self.BASE_FREQ_SUNO * (self.PHI ** n)
+            harmonics.append(freq)
+        return harmonics

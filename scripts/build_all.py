@@ -115,7 +115,7 @@ class AvalonBuilder:
             print(f"   ⚠️ Cannot build macOS executable on {current_platform}. Skipping.")
             return None
 
-        entry_point = self.src / "cli" / "main.py"
+        entry_point = self.src / "cli.py"
 
         # Configuration for PyInstaller
         cmd = [

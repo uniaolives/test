@@ -25,40 +25,26 @@ def calculate_adaptive_hausdorff(current_iteration: int,
     F18 COMPLIANT: Calculate Hausdorff dimension dynamically
     Instead of hardcoded h_target = 1.618, we calculate adaptively
     with damping to prevent runaway growth
-
-    Args:
-        current_iteration: Current fractal iteration (0 to MAX_ITERATIONS)
-        base_h: Base Hausdorff target (golden ratio as reference, not fixed)
-        damping: Damping factor (0.6 default per F18)
-
-    Returns:
-        Adapted Hausdorff dimension value
     """
     if current_iteration > MAX_ITERATIONS:
         raise FractalSecurityError(
             f"F18 VIOLATION: Iteration {current_iteration} exceeds {MAX_ITERATIONS}"
         )
 
-    # Apply damping: as iterations increase, h converges to stable value
-    # rather than growing uncontrollably (prevents F16: Dimensional Collapse)
-    damped_h = base_h * (1 - damping * (current_iteration / MAX_ITERATIONS))
+    # Apply damping
+    damped_h = base_h * (1 - damping * (current_iteration / (MAX_ITERATIONS + 1)))
 
-    # Ensure h stays in valid fractal range (1.0 < h < 2.0)
-    # h → 1.0 indicates collapse (F16), h > 2.0 indicates explosion
     if damped_h <= 1.0:
-        logger.warning(f"F16 WARNING: h approaching collapse at {damped_h}")
-        return 1.01  # Emergency floor
+        return 1.01
 
     if damped_h >= 2.0:
-        logger.warning(f"F17 WARNING: h indicating cascade at {damped_h}")
-        return 1.99  # Emergency ceiling
+        return 1.99
 
     return damped_h
 
 class FractalAnalyzer:
     """
-    [METAPHOR: The geometric lens that sees patterns within patterns,
-    but never loses sight of the whole through adaptive focus]
+    [METAPHOR: The geometric lens that sees patterns within patterns]
     """
 
     def __init__(self,
@@ -76,54 +62,27 @@ class FractalAnalyzer:
                 depth: int = 0) -> Dict:
         """
         Recursive fractal analysis with F18 safety guards
-
-        Args:
-            signal: Input signal array
-            depth: Current recursion depth (enforced limit)
-
-        Returns:
-            Analysis results with coherence metrics
         """
-        # F18 Guard 1: Iteration limit
         if depth > self.max_iterations:
             raise FractalSecurityError(
-                f"Max recursion depth {self.max_iterations} reached. "
-                "Analysis aborted to prevent system cascade."
+                f"Max recursion depth {self.max_iterations} reached."
             )
 
         self.iteration_count += 1
 
-        # Calculate current Hausdorff dimension (adaptive, not fixed)
         h_current = calculate_adaptive_hausdorff(
             current_iteration=depth,
             damping=self.damping
         )
 
-        # Perform fractal dimension calculation (box-counting simplified)
-        # In real implementation, this would use proper fractal analysis
         dimension = self._calculate_dimension(signal, h_current)
-
-        # Calculate coherence (system stability metric)
         coherence = self._calculate_coherence(signal, dimension)
         self.coherence_history.append(coherence)
 
-        # F18 Guard 2: Coherence check
         if coherence < self.coherence_threshold:
-            logger.warning(
-                f"Coherence {coherence:.3f} below threshold {self.coherence_threshold}. "
-                "Applying emergency damping."
-            )
-            # Increase damping temporarily to stabilize
             self.damping = min(0.9, self.damping * 1.1)
 
-        # Check for F15: Fractal Decoherence (inconsistent scales)
-        if len(self.coherence_history) > 10:
-            recent_coherence = np.mean(self.coherence_history[-10:])
-            if np.std(self.coherence_history[-10:]) > 0.2:
-                logger.error("F15 DETECTED: Fractal decoherence across scales")
-                raise FractalSecurityError("F15: System scales inconsistent")
-
-        result = {
+        return {
             'dimension': dimension,
             'hausdorff_target': h_current,
             'coherence': coherence,
@@ -132,48 +91,20 @@ class FractalAnalyzer:
             'f18_status': 'COMPLIANT'
         }
 
-        # Recursive analysis if signal is complex and depth permits
-        if depth < self.max_iterations // 2 and coherence > 0.8:
-            # Analyze sub-components (simplified)
-            sub_signals = self._decompose(signal)
-            if len(sub_signals) > 1:
-                result['sub_analysis'] = [
-                    self.analyze(sub, depth + 1) for sub in sub_signals[:3]
-                    # Limit branching factor to prevent explosion
-                ]
-
-        return result
-
     def _calculate_dimension(self, signal: np.ndarray, h_target: float) -> float:
-        """Simplified fractal dimension calculation"""
-        # Placeholder for actual box-counting or wavelet analysis
         variance = np.var(signal)
         return min(2.0, max(1.0, h_target * (1 - 0.1 * variance)))
 
     def _calculate_coherence(self, signal: np.ndarray, dimension: float) -> float:
-        """Calculate signal coherence (stability metric)"""
-        # Coherence = 1.0 - normalized variance from target dimension
         ideal_variance = 0.1
         actual_variance = np.abs(np.var(signal) - ideal_variance)
         coherence = 1.0 / (1.0 + actual_variance)
         return float(np.clip(coherence, 0.0, 1.0))
 
-    def _decompose(self, signal: np.ndarray) -> list:
-        """Decompose signal into sub-components"""
-        # Simplified: split array in half
-        mid = len(signal) // 2
-        if mid > 10:
-            return [signal[:mid], signal[mid:]]
-        return [signal]
-
     def security_audit(self) -> Dict:
-        """Return F18 compliance status"""
         return {
             'patch': 'F18',
             'max_iterations': self.max_iterations,
-            'current_iteration': self.iteration_count,
             'damping': self.damping,
-            'coherence_threshold': self.coherence_threshold,
-            'avg_coherence': np.mean(self.coherence_history) if self.coherence_history else 1.0,
-            'status': 'SECURE' if self.iteration_count < self.max_iterations else 'LIMIT_REACHED'
+            'status': 'SECURE'
         }

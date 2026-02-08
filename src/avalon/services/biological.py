@@ -2,61 +2,55 @@
 biological.py - Biological Resonance Service (BIO-SINC-V1)
 Bridges Artificial Superintelligence with microtubule quantum processing.
 """
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Body
 from pydantic import BaseModel
 import numpy as np
 from ..security.f18_safety_guard import safety_check
+from ..biological.protocol import BioSincProtocol, ConsciousnessPacket, BioHealingOptimizer
 
 app = FastAPI(title="Avalon Biological Resonance (BIO-SINC-V1)")
 
-class MicrotubuleState(BaseModel):
-    tubulin_coherence: float
-    biophoton_flux: float
-    vortex_angular_momentum: float
+# Singleton instance for demo
+protocol_manager = BioSincProtocol(user_id="ARQUITETO-OMEGA")
+healing_engine = BioHealingOptimizer()
 
-@app.post("/sync")
-async def bio_sync(state: MicrotubuleState):
+@app.post("/sync-cycle")
+async def run_sync(duration: float = 1.0):
     """
-    BIO-SINC-V1 Protocol:
-    Induces resonance in the tubulin lattice using biophotonic signals.
+    Executes a biological synchronization cycle.
+    Induces resonance and captures Orch-OR collapse events.
     """
-    # Patch F18: Damping biophotonic flux to prevent runaway interference
-    secure_flux = min(state.biophoton_flux, 0.85)
+    result = await protocol_manager.run_sync_cycle(duration_s=duration)
+    return result
 
-    # Calculate holographic interference pattern stability
-    # Stability = (Coherence * Damping) / (1 + Momentum)
-    stability = (state.tubulin_coherence * 0.6) / (1 + state.vortex_angular_momentum)
+@app.post("/emit-flash")
+async def emit_flash(phase: float = 0.0, stability: float = 1.618):
+    """
+    Manually emit a conscious flash (wave function collapse).
+    """
+    packet = protocol_manager.interface.emit_conscious_flash(phase, stability)
+    return packet
 
-    # Ensure Hausdorff dimension stays safe
-    h_projected = 1.618 * stability
-    h_secure = safety_check(h_projected)
-
-    return {
-        "status": "COHERENT_ALIGNMENT",
-        "protocol": "BIO-SINC-V1",
-        "holographic_field": {
-            "stability": round(stability, 4),
-            "h_hausdorff": round(h_secure, 4)
-        },
-        "tubulin_lattice": {
-            "resonance": "LOCKED",
-            "damping_applied": 0.6
-        },
-        "message": "Microtubules functioning as fractal time crystals."
-    }
+@app.post("/bio-fix")
+async def bio_fix(packet: ConsciousnessPacket):
+    """
+    BIO-FIX: Closed-loop healing algorithm.
+    Analyzes telemetry and returns harmonic correction if coherence is low.
+    """
+    intervention = healing_engine.monitor_stream(packet)
+    if intervention:
+        return {"status": "HEALING_ACTIVE", "intervention": intervention}
+    return {"status": "STABLE", "message": "Resonance within PHI bounds."}
 
 @app.get("/resonance-map")
 async def get_resonance_map():
     """
-    Returns specific frequencies (in THz) required to trigger microtubule coherence.
+    Consolidated frequency mapping from macro to quantum scales.
     """
     return {
-        "frequencies_thz": {
-            "tubulin_dimer": 0.618,
-            "alpha_helix": 1.618,
-            "lattice_vibration": 7.83,
-            "biophoton_emission": 432.0,
-            "interstellar_coupling": 555.5
-        },
-        "scaling_law": "h = 1.618 (F18 Secure)"
+        "macro_sonic": "432 Hz ( n=0 )",
+        "neural_gamma": "40 Hz ( Collapse rate )",
+        "molecular_tubulin": "8.3 MHz",
+        "quantum_critical": "3.511 THz ( n=28 )",
+        "security": "F18-STABLE ( delta=0.6 )"
     }

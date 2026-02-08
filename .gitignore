@@ -9,7 +9,3 @@ rust/target/
 sasc-governance/target/
 __pycache__/
 *.pyc
-dist/
-build/
-*.pyc
-__pycache__/

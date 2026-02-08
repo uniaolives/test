@@ -17,4 +17,3 @@ rich
 pydantic
 fastapi
 uvicorn
-httpx
