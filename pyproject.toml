@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "avalon"
+dynamic = ["version"]
+description = "Multi-AI Harmonic Analysis System - F18 Security Patched"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "typer>=0.9.0",
+    "rich>=13.0.0",
+    "pydantic>=2.5.0",
+]
+
+[project.optional-dependencies]
+build = ["pyinstaller>=6.0.0", "build>=1.0.0"]
+dev = ["pytest>=7.4.0", "black>=23.0.0"]
+
+[project.scripts]
+avalon = "avalon.cli:main"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/avalon"]
+
+[tool.avalon.security]
+f18_patch_applied = true
+damping_default = 0.6
+max_iterations = 1000
+coherence_threshold = 0.7
