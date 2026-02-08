@@ -83,17 +83,49 @@ CMakeFiles/avalon_neural_core.dir/avalon_neural_core.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/avalon_neural_core.dir/avalon_neural_core.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /app/src/avalon/biological/avalon_neural_core.cpp -o CMakeFiles/avalon_neural_core.dir/avalon_neural_core.cpp.s
 
+CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o: CMakeFiles/avalon_neural_core.dir/flags.make
+CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o: /app/src/avalon/biological/pulsar_sync.cpp
+CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o: CMakeFiles/avalon_neural_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/app/src/avalon/biological/build_cpp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o -MF CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o.d -o CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o -c /app/src/avalon/biological/pulsar_sync.cpp
+
+CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /app/src/avalon/biological/pulsar_sync.cpp > CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.i
+
+CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /app/src/avalon/biological/pulsar_sync.cpp -o CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.s
+
+CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o: CMakeFiles/avalon_neural_core.dir/flags.make
+CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o: /app/src/avalon/biological/collective_manifestation.cpp
+CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o: CMakeFiles/avalon_neural_core.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/app/src/avalon/biological/build_cpp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o -MF CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o.d -o CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o -c /app/src/avalon/biological/collective_manifestation.cpp
+
+CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /app/src/avalon/biological/collective_manifestation.cpp > CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.i
+
+CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /app/src/avalon/biological/collective_manifestation.cpp -o CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.s
+
 # Object files for target avalon_neural_core
 avalon_neural_core_OBJECTS = \
-"CMakeFiles/avalon_neural_core.dir/avalon_neural_core.cpp.o"
+"CMakeFiles/avalon_neural_core.dir/avalon_neural_core.cpp.o" \
+"CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o" \
+"CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o"
 
 # External object files for target avalon_neural_core
 avalon_neural_core_EXTERNAL_OBJECTS =
 
 libavalon_neural_core.a: CMakeFiles/avalon_neural_core.dir/avalon_neural_core.cpp.o
+libavalon_neural_core.a: CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o
+libavalon_neural_core.a: CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o
 libavalon_neural_core.a: CMakeFiles/avalon_neural_core.dir/build.make
 libavalon_neural_core.a: CMakeFiles/avalon_neural_core.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/app/src/avalon/biological/build_cpp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libavalon_neural_core.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/app/src/avalon/biological/build_cpp/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library libavalon_neural_core.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/avalon_neural_core.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/avalon_neural_core.dir/link.txt --verbose=$(VERBOSE)
 

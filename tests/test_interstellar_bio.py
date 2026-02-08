@@ -32,7 +32,7 @@ class TestInterstellarBio(unittest.TestCase):
             self.assertEqual(res["status"], "SYNCHRONIZED")
             self.assertGreaterEqual(res["event_count"], 0)
 
-            sync = await proto.processor.get_resonance_harmonics()
+            sync = proto.processor.get_resonance_harmonics()
             self.assertGreater(len(sync), 0)
 
         asyncio.run(run())

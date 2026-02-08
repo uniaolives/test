@@ -9,6 +9,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/app/src/avalon/biological/avalon_neural_core.cpp" "CMakeFiles/avalon_neural_core.dir/avalon_neural_core.cpp.o" "gcc" "CMakeFiles/avalon_neural_core.dir/avalon_neural_core.cpp.o.d"
+  "/app/src/avalon/biological/collective_manifestation.cpp" "CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o" "gcc" "CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o.d"
+  "/app/src/avalon/biological/pulsar_sync.cpp" "CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o" "gcc" "CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.

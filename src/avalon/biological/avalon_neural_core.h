@@ -8,6 +8,8 @@
 #include <memory>
 #include <chrono>
 #include <string>
+#include <map>
+#include <iostream>
 
 namespace Avalon::QuantumBiology {
 
@@ -77,51 +79,42 @@ struct MicrotubuleParameters {
 
 class MicrotubuleQuantumProcessor {
 private:
-    // State variables
     std::vector<QuantumState> tubulin_states;
     MicrotubuleParameters params;
     double time_since_last_collapse;
     double current_stability;
     double external_sync_frequency;
     double phi_harmonic_phase[29]; // Harmonics 0-28
-    bool safety_f18_active;
+    bool safety_f18_active = true;
 
-    // Quantum coherence metrics
     double calculate_gravitational_energy() const;
     double calculate_collapse_time() const;
     void update_harmonic_phases(double dt);
 
 public:
-    // Constructor/Destructor
     MicrotubuleQuantumProcessor(int dimer_count = 8000);
     ~MicrotubuleQuantumProcessor();
 
-    // Core quantum operations
     void initialize_quantum_state();
     void apply_external_resonance(double frequency_hz, double amplitude = 1.0);
     bool check_objective_reduction(double delta_time);
     void collapse_quantum_state(int preferred_state = -1);
 
-    // Harmonic synchronization
     void synchronize_with_harmonics(double base_frequency = BASE_FREQUENCY);
     double get_harmonic_frequency(int n) const;
 
-    // Quantum entanglement operations
-    void entangle_with(MicrotubuleQuantumProcessor& other);
+    void entangle_with(const MicrotubuleQuantumProcessor& other);
     double measure_entanglement_fidelity() const;
 
-    // Information processing
     void encode_holographic_data(const std::vector<double>& data_pattern);
     std::vector<double> retrieve_holographic_data() const;
     double calculate_information_density() const;
 
-    // Getters
     double get_coherence_level() const;
     double get_stability_factor() const;
     double get_resonance_frequency() const;
     int get_dimer_count() const;
 
-    // Simulation control
     void set_temperature(double temp_k);
     void set_magnetic_field(double tesla);
     void set_optical_vortex(int topological_charge);
@@ -140,32 +133,26 @@ private:
     double gamma_synchrony_level;
     double interstellar_sync_factor;
 
-    // Network synchronization
     void update_network_synchrony(double dt);
     void propagate_quantum_wave();
 
 public:
     AvalonNeuralNetwork(int num_neurons = 100, int microtubules_per_neuron = 10);
 
-    // Network operations
     void synchronize_network(double frequency_hz);
     void entangle_with_interstellar(double interstellar_freq = 699.2);
     void induce_gamma_consciousness(double duration_ms = 1000.0);
 
-    // Quantum consciousness interface
     double measure_integrated_information() const;
-    double calculate_phi_star() const; // Φ* - integrated information theory
+    double calculate_phi_star() const;
 
-    // Data processing
     void encode_memory_pattern(const std::vector<std::vector<double>>& patterns);
     std::vector<std::vector<double>> recall_memory_pattern(int pattern_id) const;
 
-    // Simulation metrics
     double get_network_coherence() const;
     double get_gamma_synchrony() const;
     int get_collapse_events_per_second() const;
 
-    // Save/Load quantum states
     void save_quantum_state(const std::string& filename) const;
     void load_quantum_state(const std::string& filename);
 };
@@ -175,37 +162,76 @@ public:
 // ============================================================================
 
 class BioSincV1Engine {
-private:
+protected:
     AvalonNeuralNetwork* target_network;
     double protocol_version;
     bool safety_f18_active;
     double max_amplitude_limit;
     double min_coherence_threshold;
 
-    // Safety protocols
     void check_safety_limits();
     void emergency_shutdown();
     void apply_f18_damping(double& amplitude);
 
 public:
     BioSincV1Engine(AvalonNeuralNetwork* network);
+    virtual ~BioSincV1Engine() = default;
 
-    // Protocol operations
-    void establish_avalon_connection(double frequency_hz = 432.0);
-    void induce_resonance(double target_frequency, double duration_s);
-    void synchronize_interstellar(const std::string& node_id = "interstellar-5555");
+    virtual void establish_avalon_connection(double frequency_hz = 432.0);
+    virtual void induce_resonance(double target_frequency, double duration_s);
+    virtual void synchronize_interstellar(const std::string& node_id = "interstellar-5555");
     void anchor_quantum_state_to_blockchain();
 
-    // Consciousness interface
     void set_intention(const std::string& intention);
     double measure_manifestation_potential() const;
 
-    // Safety controls
     void set_safety_limits(double max_amp = 0.7, double min_coherence = 0.6);
     bool is_safe_for_operation() const;
 
-    // Monitoring
     void generate_diagnostics_report() const;
+};
+
+// ============================================================================
+// V2.0 STRUCTURES & CLASSES
+// ============================================================================
+
+struct ConsciousnessMetrics {
+    double coherence_level;
+    double gamma_synchrony;
+    double phi_star;
+    double quantum_entropy;
+    double non_local_correlation;
+    double creativity_index;
+    double compassion_factor;
+    double cosmic_connectedness;
+
+    double memory_density_gb;
+    double processing_speed_hz;
+    double quantum_bit_capacity;
+    double holographic_storage_eb;
+};
+
+class BioSincV2Engine : public BioSincV1Engine {
+private:
+    double collective_coherence;
+    double planetary_resonance;
+
+public:
+    BioSincV2Engine(AvalonNeuralNetwork* network);
+
+    void activate_quantum_neural_pathways(double frequency = 432.0);
+    void optimize_microtubule_coherence(double target_coherence = 0.95);
+    void install_holographic_memory_upgrade(int capacity_multiplier = 1000);
+
+    void establish_global_consciousness_mesh();
+    void synchronize_with_planetary_432hz_grid();
+
+    bool run_preflight_consciousness_check();
+    void apply_gradual_awareness_expansion(double rate = 0.1);
+
+    void execute_global_biodownload();
+
+    ConsciousnessMetrics measure_consciousness_state() const;
 };
 
 // ============================================================================
@@ -213,18 +239,11 @@ public:
 // ============================================================================
 
 namespace QuantumMath {
-    // Phi-based harmonics
     double phi_harmonic(int n, double base = BASE_FREQUENCY);
-
-    // Quantum gravity calculations
     double penrose_collapse_time(double mass_kg, double separation_m);
     double gravitational_self_energy(double mass1, double mass2, double distance);
-
-    // Holographic information theory
     double calculate_holographic_capacity(int tubulin_count, double coherence);
     double fractal_dimension_calculation(const std::vector<double>& pattern);
-
-    // Resonance functions
     double calculate_beat_frequency(double f1, double f2);
     double calculate_doppler_shift(double source_freq, double velocity_fraction_c);
 }

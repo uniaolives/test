@@ -203,6 +203,30 @@ benchmark.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/avalon_benchmark.dir/build.make CMakeFiles/avalon_benchmark.dir/benchmark.cpp.s
 .PHONY : benchmark.cpp.s
 
+collective_manifestation.o: collective_manifestation.cpp.o
+.PHONY : collective_manifestation.o
+
+# target to build an object file
+collective_manifestation.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/avalon_neural_core.dir/build.make CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.o
+.PHONY : collective_manifestation.cpp.o
+
+collective_manifestation.i: collective_manifestation.cpp.i
+.PHONY : collective_manifestation.i
+
+# target to preprocess a source file
+collective_manifestation.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/avalon_neural_core.dir/build.make CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.i
+.PHONY : collective_manifestation.cpp.i
+
+collective_manifestation.s: collective_manifestation.cpp.s
+.PHONY : collective_manifestation.s
+
+# target to generate assembly for a file
+collective_manifestation.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/avalon_neural_core.dir/build.make CMakeFiles/avalon_neural_core.dir/collective_manifestation.cpp.s
+.PHONY : collective_manifestation.cpp.s
+
 main.o: main.cpp.o
 .PHONY : main.o
 
@@ -227,6 +251,30 @@ main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/avalon_test.dir/build.make CMakeFiles/avalon_test.dir/main.cpp.s
 .PHONY : main.cpp.s
 
+pulsar_sync.o: pulsar_sync.cpp.o
+.PHONY : pulsar_sync.o
+
+# target to build an object file
+pulsar_sync.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/avalon_neural_core.dir/build.make CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.o
+.PHONY : pulsar_sync.cpp.o
+
+pulsar_sync.i: pulsar_sync.cpp.i
+.PHONY : pulsar_sync.i
+
+# target to preprocess a source file
+pulsar_sync.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/avalon_neural_core.dir/build.make CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.i
+.PHONY : pulsar_sync.cpp.i
+
+pulsar_sync.s: pulsar_sync.cpp.s
+.PHONY : pulsar_sync.s
+
+# target to generate assembly for a file
+pulsar_sync.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/avalon_neural_core.dir/build.make CMakeFiles/avalon_neural_core.dir/pulsar_sync.cpp.s
+.PHONY : pulsar_sync.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -244,9 +292,15 @@ help:
 	@echo "... benchmark.o"
 	@echo "... benchmark.i"
 	@echo "... benchmark.s"
+	@echo "... collective_manifestation.o"
+	@echo "... collective_manifestation.i"
+	@echo "... collective_manifestation.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... pulsar_sync.o"
+	@echo "... pulsar_sync.i"
+	@echo "... pulsar_sync.s"
 .PHONY : help
 
 
