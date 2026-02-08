@@ -16,7 +16,8 @@ We have provided a suite of scripts in `scripts/` to manage this environment:
 - `scripts/emergency-cleanup.sh`: Detects and fixes nested `.git` directories.
 - `scripts/validate-structure.py`: Checks workspace health and manifest compliance.
 - `scripts/generate-manifest.py`: Automatically generates or updates the manifest.
-- `scripts/install-ai-hooks.sh`: Deploys AI-native Git hooks (`commit-msg`, `pre-push`).
+- `scripts/install-ai-hooks.sh`: Deploys AI-native Git hooks (`commit-msg`, `pre-push`) and adds `git push-all` alias.
+- `scripts/git-push-all.sh`: Utility to push all branches and tags to all configured remotes.
 - `scripts/migrate-secrets.py`: Scans and migrates plaintext secrets to the Quantum Vault.
 - `scripts/workspace-dashboard.py`: Generates a health report and visualization.
 
