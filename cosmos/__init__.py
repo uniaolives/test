@@ -26,3 +26,4 @@ from .cgda import (
     ConstraintGeometry,
     CGDALab
 )
+from .qvpn import QuantumVPN
