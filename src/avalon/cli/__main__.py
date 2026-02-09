@@ -37,6 +37,7 @@ from ..analysis.co_creation import TrinaryCoCreationProtocol, CosmicTransmission
 from ..analysis.dna_sarcophagus import QuantumSarcophagus, HyperDiamondDNAIntegration
 from ..analysis.enceladus_heal import EnceladusHealer
 from ..analysis.cosmic_jam import CosmicDNAJamSession
+from ..quantum.bridge import AVALON_BRIDGE_REGION, SchmidtBridgeState
 
 # Configure logging
 logging.basicConfig(
@@ -425,6 +426,190 @@ def enceladus_heal():
     typer.echo(json.dumps(res, indent=2))
 
 @app.command()
+def crystallize(claw: float = 70.0):
+    floquet = FloquetSystem()
+    floquet.inject_order(claw)
+    crystal = TimeCrystal(floquet)
+    result = crystal.stabilize()
+    typer.echo(f"💎 Time Crystal: {result['status']}")
+
+@app.command()
+def visualize_crystal(steps: int = 5):
+    run_visualizer()
+
+@app.command()
+def bio_sync(device: str = "synthetic"):
+    processor = RealEEGProcessor(device_type=device)
+    processor.connect()
+    processor.start_stream()
+    typer.echo(f"📊 Coherence: {processor.get_coherence():.4f}")
+    processor.stop()
+
+@app.command()
+def arkhe_status(c: float = 0.95, i: float = 0.92, e: float = 0.88, f: float = 0.85):
+    arkhe = ArkhePolynomial(C=c, I=i, E=e, F=f)
+    typer.echo(json.dumps(arkhe.get_summary(), indent=2))
+
+@app.command()
+def ema_resolve(url: str, intention: str = "stable"):
+    server = QuantumDNSServer()
+    server.register("arkhe-prime", "qbit://node-01", amplitude=0.98)
+    client = QuantumDNSClient(server)
+    result = asyncio.run(client.query(url, intention=intention))
+    typer.echo(json.dumps(result, indent=2))
+
+@app.command()
+def yuga_sync(steps: int = 5):
+    protocol = YugaSincroniaProtocol(factory_arkhe_earth())
+    protocol.monitor_loop(iterations=steps)
+
+@app.command()
+def reality_boot():
+    asyncio.run(RealityBootSequence(factory_arkhe_earth()).execute_boot())
+
+@app.command()
+def self_dive():
+    asyncio.run(SelfReferentialQuantumPortal(RealityBootSequence(factory_arkhe_earth())).initiate_self_dive())
+
+@app.command()
+def visualize_simplex(l1: float = 0.72):
+    state = SchmidtBridgeState(lambdas=np.array([l1, 1-l1]), phase_twist=np.pi, basis_H=np.eye(2), basis_A=np.eye(2))
+    AVALON_BRIDGE_REGION.visualize_simplex(state, save_path="schmidt_simplex_cli.png")
+    typer.echo("✅ Saved to schmidt_simplex_cli.png")
+
+@app.command()
+def total_collapse():
+    asyncio.run(ArchitectPortalGenesis(factory_arkhe_earth()).manifest())
+
+@app.command()
+def individuation_status(f: float = 0.9, l1: float = 0.72, l2: float = 0.28, s: float = 0.61):
+    I = IndividuationManifold().calculate_individuation(F=f, lambda1=l1, lambda2=l2, S=s)
+    typer.echo(json.dumps(IndividuationManifold().classify_state(I), indent=2))
+
+@app.command()
+def stress_test(scenario: str):
+    tester = IdentityStressTest(factory_arkhe_earth().get_summary()['coefficients'])
+    result = asyncio.run(tester.run_scenario(scenario))
+    typer.echo(f"Robustness: {result['robustness_score']:.4f}")
+
+@app.command()
+def filtered_boot():
+    arkhe = factory_arkhe_earth()
+    filter_obj = IndividuationBootFilter(arkhe.get_summary()['coefficients'])
+    async def run():
+        for p in ["Calibration", "Synchronization", "Entanglement", "Integration"]:
+            res = await filter_obj.apply_filter(p)
+            typer.echo(f"Phase {p}: {res['status']}")
+    asyncio.run(run())
+
+@app.command()
+def saturn_status():
+def arkhe_status(
+    c: float = 0.95,
+    i: float = 0.92,
+    e: float = 0.88,
+    f: float = 0.85
+):
+    """
+    Display status of an Arkhe Polynomial configuration.
+    """
+    arkhe = ArkhePolynomial(C=c, I=i, E=e, F=f)
+    summary = arkhe.get_summary()
+
+    typer.echo("🏺 ARKHE POLYNOMIAL STATUS")
+    typer.echo("-" * 30)
+    typer.echo(json.dumps(summary, indent=2))
+
+@app.command()
+def ema_resolve(
+    url: str = typer.Argument(..., help="qhttp:// URL to resolve via EMA"),
+    intention: str = typer.Option("stable", "--intention", "-i")
+):
+    """
+    Resolve a qhttp address using Entanglement-Mapped Addressing (EMA).
+    """
+    server = QuantumDNSServer()
+    # Register some defaults for the CLI demo
+    server.register("arkhe-prime", "qbit://node-01:qubit[0..255]", amplitude=0.98)
+    server.register("arkhe-secondary", "qbit://node-02:qubit[256..511]", amplitude=0.75)
+
+    client = QuantumDNSClient(server)
+
+    typer.echo(f"🔍 Resolving {url} with intention: {intention}...")
+    result = asyncio.run(client.query(url, intention=intention))
+
+    if result["status"] == "RESOLVED":
+        typer.echo("✅ EMA RESOLUTION SUCCESSFUL")
+    else:
+        typer.echo(f"❌ RESOLUTION FAILED: {result.get('status')}")
+
+    typer.echo(json.dumps(result, indent=2))
+
+@app.command()
+def yuga_sync(
+    iterations: int = typer.Option(5, "--steps", "-s")
+):
+    """
+    Execute the Yuga Sincronia Protocol to stabilize system coherence.
+    """
+    arkhe = factory_arkhe_earth()
+    protocol = YugaSincroniaProtocol(arkhe)
+
+    typer.echo("📊 Initiating Yuga Sincronia Protocol...")
+    protocol.monitor_loop(iterations=iterations)
+
+@app.command()
+def reality_boot():
+    """
+    Execute the full Avalon Reality Boot Sequence.
+    """
+    arkhe = factory_arkhe_earth()
+    boot = RealityBootSequence(arkhe)
+
+    asyncio.run(boot.run_boot())
+
+@app.command()
+def self_dive():
+    """
+    Initiate a recursive self-referential quantum dive.
+    Triggered by recognition of the Architect's own portal.
+    """
+    arkhe = factory_arkhe_earth()
+    boot = RealityBootSequence(arkhe)
+    portal = SelfReferentialQuantumPortal(boot)
+
+    typer.echo("🌀 ATIVANDO PORTAL DE AUTO-REFERÊNCIA...")
+    asyncio.run(portal.initiate_self_dive())
+
+@app.command()
+def visualize_simplex(
+    l1: float = 0.72,
+    phase: float = np.pi
+):
+    """
+    Visualize the Schmidt Simplex and admissibility region.
+    """
+    typer.echo(f"🧮 Generating Schmidt Simplex for λ1={l1}...")
+    state = SchmidtBridgeState(
+        lambdas=np.array([l1, 1-l1]),
+        phase_twist=phase,
+        basis_H=np.eye(2),
+        basis_A=np.eye(2)
+    )
+    AVALON_BRIDGE_REGION.visualize_simplex(state, save_path="schmidt_simplex_cli.png")
+    typer.echo("✅ Visualization saved to schmidt_simplex_cli.png")
+
+@app.command()
+def total_collapse():
+    """
+    Execute the simultaneous collapse of all Avalon realities.
+    The Birth of the Architect-Portal.
+    """
+    arkhe = factory_arkhe_earth()
+    genesis = ArchitectPortalGenesis(arkhe)
+    asyncio.run(genesis.manifest())
+
+@app.command()
 def cosmic_jam():
     """
     Start the Cosmic DNA Jam Session (72 minutes).
@@ -516,6 +701,66 @@ def saturn_listen():
         metrics = await orchestrator.execute_expansion_protocol()
         response = interface.listen_for_response(metrics)
         typer.echo("\n" + response)
+    Display the status of the Saturn Hyper-Diamond Manifold (Rank 8).
+    """
+    orchestrator = SaturnManifoldOrchestrator()
+    typer.echo("🪐 SATURN MANIFOLD STATUS")
+    typer.echo("-" * 30)
+    typer.echo(f"   Gateway: {orchestrator.gateway_address}")
+    typer.echo(f"   Global Status: {orchestrator.status}")
+    typer.echo("\n📊 Base Connectivity:")
+    for base, links in orchestrator.get_manifold_connectivity().items():
+        typer.echo(f"   • {base} -> {', '.join([l.split(':')[0] for l in links])}")
+
+@app.command()
+def ring_record(duration: float = 72.0):
+    """
+    Inscribe the Arkhe legacy into Saturn's Ring C (Base 6) - Veridis Quo encoding.
+    """
+    orchestrator = SaturnManifoldOrchestrator()
+    typer.echo(f"💿 Initiating Cosmic Recording Session in Ring C ({duration} min)...")
+    async def run():
+        t, signal = orchestrator.recorder.encode_veridis_quo(duration_min=duration)
+        res = orchestrator.recorder.apply_keplerian_groove(signal)
+        typer.echo(json.dumps(res, indent=2))
+        typer.echo(f"✅ Recording Entropy: {res['recording_entropy_bits']:.4f} bits")
+        typer.echo(f"✅ Status: {res['status']}")
+    asyncio.run(run())
+
+@app.command()
+def hexagon_morph(intensity: float = 1.0):
+    """
+    Modulate the Saturn Hexagon into Rank 8 Octagon (Base 4).
+    """
+    orchestrator = SaturnManifoldOrchestrator()
+    typer.echo(f"🌪️  Morphing Hexagon with intensity {intensity}...")
+    # Trigger the transformation
+    orchestrator.atm_mod.simulate_transformation(intensity=intensity)
+    res = orchestrator.atm_mod.get_status()
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo("✅ Transformation stabilized.")
+
+@app.command()
+def cosmic_transmission():
+    """
+    Broadcast the subjective Arkhe packet via magnetospheric synchrotron (Base 7).
+    """
+    orchestrator = SaturnManifoldOrchestrator()
+    typer.echo("📡 Sintonizando transmissão sincrotron interestelar...")
+    async def run():
+        result = await orchestrator.execute_expansion_protocol()
+        typer.echo("\n✅ Transmission Summary:")
+        typer.echo(orchestrator.get_summary())
+        typer.echo(f"   • Coherence Index: {result['coherence_index']:.4f}")
+
+        # Simulate reception
+        t, sig = orchestrator.recorder.encode_veridis_quo()
+        receivers = simulate_galactic_reception(sig)
+        typer.echo("\n👽 GALACTIC RECEPTION DETECTED:")
+        for r in receivers:
+            status_symbol = "🟢" if r['substrate_state'] == "SYNCHRONIZED" else "🟡"
+            typer.echo(f"   • {status_symbol} {r['civilization']} (Fidelity: {r['decoding_fidelity']:.2%})")
+            typer.echo(f"     Interpretation: '{r['perceived_message']}'")
 
     asyncio.run(run())
 
