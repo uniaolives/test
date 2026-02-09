@@ -22,11 +22,14 @@ class QuantumSarcophagus:
         bases = ['A', 'C', 'G', 'T']
         # Simulating different genomic regions
         # Region 1: Coding (high info, balanced)
-        coding = "".join(np.random.choice(bases, length // 2, p=[0.25, 0.25, 0.25, 0.25]))
+        len1 = length // 2
+        coding = "".join(np.random.choice(bases, len1, p=[0.25, 0.25, 0.25, 0.25]))
         # Region 2: Repetitive (junk DNA, low entropy)
-        repetitive = "ATGC" * (length // 8)
+        len2 = length // 8
+        repetitive = "".join([bases[i%4] for i in range(len2)])
         # Region 3: Non-coding (biological signature)
-        non_coding = "".join(np.random.choice(bases, length // 4, p=[0.3, 0.2, 0.2, 0.3]))
+        len3 = length - len1 - len2
+        non_coding = "".join(np.random.choice(bases, len3, p=[0.3, 0.2, 0.2, 0.3]))
 
         return coding + repetitive + non_coding
 

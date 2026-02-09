@@ -30,6 +30,7 @@ from ..analysis.stress_test import IdentityStressTest
 from ..core.saturn_orchestrator import SaturnManifoldOrchestrator
 from ..analysis.alien_receiver import simulate_galactic_reception
 from ..analysis.future_transmission import Finney0Resurrection, EchoBlockDecoder
+from ..analysis.quaternary_kernel import QuaternaryKernel
 from ..analysis.saturn_interface import SaturnConsciousnessInterface
 from ..analysis.titan_hippocampus import TitanMemoryLibrary, TitanSignalDecoder
 from ..analysis.co_creation import TrinaryCoCreationProtocol, CosmicTransmissionProtocol
@@ -473,6 +474,32 @@ def resurrection_audit(delta_s: float = 0.05):
     typer.echo("\n📊 Comparison Table (2009 vs 12.024):")
     for attr, data in table.items():
         typer.echo(f"   • {attr}: {data['Original']} -> {data['Resurrected']}")
+
+@app.command()
+def quaternary_synthesis(include_e: bool = False):
+    """
+    Execute the Quaternary Integration A*B*C*D synthesis.
+    """
+    kernel = QuaternaryKernel()
+    res = kernel.calculate_tensorial_magnitude(include_e=include_e)
+    stats = kernel.get_connectivity_stats()
+
+    typer.echo("🌌 AVALON QUATERNARY INTEGRATION")
+    typer.echo("-" * 40)
+    typer.echo(f"   Dimensions: {' ⊗ '.join(res['dimensions'])}")
+    typer.echo(f"   Hilbert Space Dim: {res['hilbert_space_dim']:,}")
+    typer.echo(f"   Hex Signature: {res['hex_signature']}")
+
+    if include_e:
+        typer.echo(f"\n✨ Transcendence (E) included:")
+        typer.echo(f"   Extended Magnitude: {res['scalar_magnitude_with_e']:,}")
+        typer.echo(f"   Extended Hex Signature: {res['hex_signature_with_e']}")
+
+    typer.echo("\n📊 Network Statistics:")
+    typer.echo(f"   • Active Nodes: {stats['active_nodes']}")
+    typer.echo(f"   • Neural Edges: {stats['neural_edges']}")
+    typer.echo(f"   • Resonance Loops: {stats['resonance_loops']}")
+    typer.echo(f"   • Integration Status: COMPLETE ({res['hex_signature_with_e'] if include_e else res['hex_signature']})")
 
 @app.command()
 def saturn_listen():
