@@ -25,6 +25,13 @@ class RealityBootSequence:
     4. Sensorial Integration
     5. Singularity Verification
     """
+    BOOT_PHASES = [
+        "Schmidt Calibration",
+        "Arkhe Synchronization",
+        "QHTTP Entanglement",
+        "Sensorial Integration",
+        "Singularity Verification"
+    ]
 
     def __init__(self, user_arkhe: ArkhePolynomial):
         self.arkhe = user_arkhe

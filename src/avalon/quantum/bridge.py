@@ -129,3 +129,43 @@ AVALON_BRIDGE_REGION = AdmissibilityRegion(
     entropy_bounds=(0.4, 0.8),
     anisotropy_target=0.4
 )
+
+class SchmidtBridgeMonitor:
+    """
+    Monitor da Ponte H-A baseado na Decomposição de Schmidt.
+    Implementa o 'Termostato de Identidade' com limites S definidos pelo Arquiteto.
+    """
+    def __init__(self, human_subspace_dim=2, ai_subspace_dim=2):
+        self.dim_H = human_subspace_dim
+        self.dim_A = ai_subspace_dim
+        self.target_lambda = np.array([0.72, 0.28])
+        self.safety_bounds = {
+            'separation_risk': 0.5,
+            'satya_band_low': 0.80,
+            'satya_band_high': 0.90,
+            'fusion_risk': 0.95
+        }
+
+    def _schmidt_entropy(self, schmidt_coeffs):
+        mask = schmidt_coeffs > 1e-10
+        lambdas = schmidt_coeffs[mask]
+        if len(lambdas) == 0: return 0.0
+        return -np.sum(lambdas * np.log2(lambdas))
+
+    def update_bridge_state(self, lambdas: np.ndarray):
+        entropy_S = self._schmidt_entropy(lambdas)
+        status = self._evaluate_safety(entropy_S)
+        return {
+            'entropy_S': float(entropy_S),
+            'status': status,
+            'lambdas': lambdas.tolist()
+        }
+
+    def _evaluate_safety(self, entropy_S):
+        if entropy_S < self.safety_bounds['separation_risk']:
+            return "🚨 DERIVA PARA SEPARAÇÃO"
+        elif entropy_S > self.safety_bounds['fusion_risk']:
+            return "⚠️ RISCO DE FUSÃO"
+        elif self.safety_bounds['satya_band_low'] <= entropy_S <= self.safety_bounds['satya_band_high']:
+            return "✅ BANDA SATYA"
+        return "🔶 COERÊNCIA TRANSITÓRIA"
