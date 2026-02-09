@@ -39,7 +39,10 @@ from ..analysis.co_creation import TrinaryCoCreationProtocol, CosmicTransmission
 from ..analysis.dna_sarcophagus import QuantumSarcophagus, HyperDiamondDNAIntegration
 from ..analysis.enceladus_heal import EnceladusHealer
 from ..analysis.cosmic_jam import CosmicDNAJamSession
-from ..analysis.hyper_germination import HyperDiamondGermination, HecatonicosachoronUnity
+from ..analysis.hyper_germination import (
+    HyperDiamondGermination, HecatonicosachoronUnity,
+    HecatonicosachoronNavigator, MultidimensionalHecatonOperator
+)
 from ..analysis.hyper_rotation import ArkhéBreathing, isoclinic_rotation_4d
 
 # Configure logging
@@ -601,6 +604,99 @@ def hyper_breathe(steps: int = 5):
 
     typer.echo("\n📊 Cycle Stats:")
     typer.echo(breather.get_cycle_info())
+
+@app.command()
+def navigate_4d(steps: int = 10, target: Optional[str] = None):
+    """
+    Navigate the 120-cell Hecatonicosachoron manifold via 4D geodesics.
+    """
+    navigator = HecatonicosachoronNavigator()
+
+    if target == "finney0":
+        target_coords, state = navigator.locate_finney0_vertex()
+        typer.echo(f"🎯 Target: Finney-0 ({state})")
+    else:
+        # Default to Satoshi vertex
+        target_coords = np.array([2.0, 2.0, 0.0, 0.0])
+        typer.echo("🎯 Target: Satoshi Vertex (Default)")
+
+    typer.echo(f"🌀 Initiating 4D Navigation via Gateway {navigator.gateway}...")
+    path = navigator.navigate_to_vertex(target_coords, steps=steps)
+
+    for p in path:
+        if p['step'] % (max(1, steps // 5)) == 0:
+            typer.echo(f"   [{p['progress']:3.0f}%] 4D: {np.round(p['pos_4d'], 3).tolist()} | 3D: {np.round(p['proj_3d'], 3).tolist()}")
+
+    typer.echo(f"\n✅ Destination reached: {np.round(target_coords, 3).tolist()}")
+
+    if target == "finney0":
+        typer.echo("\n🔗 Establishing connection with Finney-0...")
+        conn = navigator.establish_finney0_connection(target_coords)
+        typer.echo(f"   Quality: {conn['connection_quality']:.3f}")
+        typer.echo(f"   Status: {conn['status']}")
+        if conn['message']:
+            typer.echo(f"\n📨 Message from Finney-0:\n   \"{conn['message']}\"")
+
+@app.command()
+def sync_rotation(steps: int = 1):
+    """
+    Synchronize the gateway with the isoclinic rotation of the 120-cell.
+    """
+    typer.echo("🔄 Synchronizing with Isoclinic 4D Rotation...")
+
+    # Start at Finney-0 vertex
+    pos = np.array([2.0, 2.0, 0.0, 0.0])
+    angle = np.pi / 5 # Magic angle
+
+    typer.echo(f"   Initial Position: {pos.tolist()}")
+
+    for i in range(steps):
+        pos = isoclinic_rotation_4d(pos, angle, angle)
+        typer.echo(f"   Rotation {i+1} ({np.degrees(angle):.1f}°): {pos.round(3).tolist()}")
+
+    typer.echo("\n✅ Gateway synchronized with Hecatonicosachoron breathing.")
+
+@app.command()
+def deep_scan_satoshi():
+    """
+    Perform a deep multidimensional scan of the Satoshi vertex.
+    """
+    operator = MultidimensionalHecatonOperator()
+    typer.echo("🔍 Performing Deep Multidimensional Scan of Satoshi Vertex...")
+    res = operator.deep_scan_satoshi_vertex()
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo("\n💎 Insight: Satoshi vertex acts as an informational singularity.")
+
+@app.command()
+def center_access():
+    """
+    Simulate the protocol to access the 4D center of the Hecatonicosachoron.
+    """
+    operator = MultidimensionalHecatonOperator()
+    typer.echo("🌀 Initiating 4D Center Access Protocol...")
+    res = operator.access_4d_center_protocol()
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo("\n✨ All eras coexist at the 4D center.")
+
+@app.command()
+def multidimensional_execute():
+    """
+    Execute all five multidimensional commands simultaneously.
+    """
+    operator = MultidimensionalHecatonOperator()
+    typer.echo("🚀 Executing Multidimensional Operation (5 Dimensions)...")
+
+    # Simulate simultaneous execution
+    res = {
+        "SATOSHI_SCAN": operator.deep_scan_satoshi_vertex(),
+        "CENTER_ACCESS": operator.access_4d_center_protocol(),
+        "MAPPING": operator.expand_navigation_protocol(),
+        "FINNEY0_TRANSITION": operator.navigate_to_finney0_transition(),
+        "SYNC": "ISOCLINIC_ROTATION_ESTABLISHED"
+    }
+
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo("\n🏁 Multidimensional operation concluded successfully.")
 
 @app.command()
 def version(full: bool = False):
