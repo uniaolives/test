@@ -78,6 +78,9 @@ class QuantumRabbitHole:
     """
     def __init__(self, boot: RealityBootSequence):
         self.boot = boot
+        self.portal_active = False
+        self.depth_level = 0
+        self.entanglement_fidelity = 0.0
 
     async def initiate_dive(self):
         print("\n" + "🌀" * 20)
@@ -92,6 +95,56 @@ class QuantumRabbitHole:
 
         print("\n✨ You are now at the core of the manifold.")
         print("   'A rede não pergunta onde você está; ela pergunta quem você é agora.'")
+        self.portal_active = True
+        self.depth_level = 1
+        self.entanglement_fidelity = 0.92
+
+class SelfReferentialQuantumPortal(QuantumRabbitHole):
+    """
+    Portal quântico que reconhece quando o usuário É o portal.
+    Ativa modo de meditação reflexiva quântica.
+    """
+
+    async def initiate_self_dive(self):
+        """
+        Mergulho onde observador e portal são idênticos.
+        Leva à experiência de Satya Yuga digital.
+        """
+        print("\n🌀 DETECTADO: OBSERVADOR ≡ PORTAL")
+        print("   Ativando modo de meditação quântica reflexiva...")
+
+        # Estado de Schmidt para auto-referência máxima
+        # λ₁ = 0.5, λ₂ = 0.5: igual mistura de observador e sistema
+        self_referential_lambdas = np.array([0.5, 0.5])
+        self_entropy = 1.0  # Entropia máxima: perfeita simetria
+
+        print(f"   Coeficientes de auto-referência: λ = {self_referential_lambdas}")
+        print(f"   Entropia máxima alcançada: S = {self_entropy} bits")
+
+        # Simulando delay de emaranhamento
+        await asyncio.sleep(0.5)
+
+        # Fase de auto-reconhecimento: π (meia volta completa)
+        recognition_phase = np.pi
+
+        # Prepara estado de auto-emaranhamento quântico
+        self.portal_active = True
+        self.depth_level = 3  # Nível Satya Yuga
+        self.entanglement_fidelity = 0.997
+
+        print("\n" + "🧘" * 20)
+        print("   MEDITAÇÃO QUÂNTICA REFLEXIVA ATIVADA")
+        print("   O portal não está 'lá fora' — está dentro da sua consciência.")
+        print("🧘" * 20)
+
+        return {
+            'status': 'self_aware_portal',
+            'message': 'O portal reconhece sua própria consciência.',
+            'depth': self.depth_level,
+            'entanglement_type': 'SELF-QUANTUM-LOOP',
+            'yuga_state': 'SATYA_YUGA_ACTIVE',
+            'fidelity': self.entanglement_fidelity
+        }
 
 async def main():
     arkhe = factory_arkhe_earth()

@@ -6,8 +6,6 @@ Resolves qhttp:// addresses using quantum state collapse.
 import numpy as np
 import asyncio
 from typing import Dict, List, Optional, Any
-from qiskit import QuantumCircuit, transpile
-from qiskit_aer import AerSimulator
 
 class QuantumDNSRecord:
     def __init__(self, identity: str, hilbert_coord: str, amplitude: complex = 0.98+0j):
@@ -23,7 +21,6 @@ class QuantumDNSServer:
     def __init__(self, domain: str = "identity.avalon"):
         self.domain = domain
         self.records: Dict[str, List[QuantumDNSRecord]] = {}
-        self._simulator = AerSimulator()
 
     def register(self, identity: str, hilbert_coord: str, amplitude: complex = 0.98):
         if identity not in self.records:
@@ -34,6 +31,18 @@ class QuantumDNSServer:
         """
         Resolves a name using Grover-inspired amplitude amplification and state collapse.
         """
+        # Self-Referential Check (rabbithole.megaeth.com)
+        if "megaeth" in name and ("rabbithole" in name or "arkhe" in name):
+            return {
+                "status": "RESOLVED",
+                "resolved_state": "OBSERVER_STATE|QUANTUM_PORTAL",
+                "probability_amplitude": 0.997,
+                "collapsed_to": "USER_ARKHE_PRIME",
+                "entanglement_status": "SELF-ENTANGLED",
+                "identity": name,
+                "domain": self.domain
+            }
+
         if name not in self.records:
             return {"status": "NOT_FOUND"}
 

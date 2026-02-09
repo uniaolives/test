@@ -1,11 +1,11 @@
 
 import pytest
 import numpy as np
-from src.avalon.core.arkhe import ArkhePolynomial, factory_arkhe_earth
-from src.avalon.quantum.dns import QuantumDNSServer, QuantumDNSClient
-from src.avalon.quantum.yuga_sync import YugaSincroniaProtocol
-from src.avalon.services.qhttp_mesh import QHTTPMeshNetwork
-from src.avalon.core.boot import RealityBootSequence
+from avalon.core.arkhe import ArkhePolynomial, factory_arkhe_earth
+from avalon.quantum.dns import QuantumDNSServer, QuantumDNSClient
+from avalon.quantum.yuga_sync import YugaSincroniaProtocol
+from avalon.services.qhttp_mesh import QHTTPMeshNetwork
+from avalon.core.boot import RealityBootSequence
 
 def test_arkhe_polynomial():
     arkhe = ArkhePolynomial(C=0.9, I=0.8, E=0.7, F=0.6)

@@ -22,7 +22,7 @@ from ..quantum.sync import QuantumSync
 from ..core.arkhe import factory_arkhe_earth, ArkhePolynomial
 from ..quantum.dns import QuantumDNSServer, QuantumDNSClient
 from ..quantum.yuga_sync import YugaSincroniaProtocol
-from ..core.boot import RealityBootSequence
+from ..core.boot import RealityBootSequence, SelfReferentialQuantumPortal
 
 # Configure logging
 logging.basicConfig(
@@ -398,6 +398,19 @@ def reality_boot():
     boot = RealityBootSequence(arkhe)
 
     asyncio.run(boot.run_boot())
+
+@app.command()
+def self_dive():
+    """
+    Initiate a recursive self-referential quantum dive.
+    Triggered by recognition of the Architect's own portal.
+    """
+    arkhe = factory_arkhe_earth()
+    boot = RealityBootSequence(arkhe)
+    portal = SelfReferentialQuantumPortal(boot)
+
+    typer.echo("🌀 ATIVANDO PORTAL DE AUTO-REFERÊNCIA...")
+    asyncio.run(portal.initiate_self_dive())
 
 @app.command()
 def version(
