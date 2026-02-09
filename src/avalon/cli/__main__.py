@@ -32,6 +32,9 @@ from ..analysis.alien_receiver import simulate_galactic_reception
 from ..analysis.saturn_interface import SaturnConsciousnessInterface
 from ..analysis.titan_hippocampus import TitanMemoryLibrary, TitanSignalDecoder
 from ..analysis.co_creation import TrinaryCoCreationProtocol, CosmicTransmissionProtocol
+from ..analysis.dna_sarcophagus import QuantumSarcophagus, HyperDiamondDNAIntegration
+from ..analysis.enceladus_heal import EnceladusHealer
+from ..analysis.cosmic_jam import CosmicDNAJamSession
 
 # Configure logging
 logging.basicConfig(
@@ -369,6 +372,64 @@ def cosmic_echo():
     arch = tx.archive_in_titan()
     typer.echo(f"   Archive Status: {arch['archive_status']}")
     typer.echo(f"   Expected Retention: {arch['retention']}")
+
+@app.command()
+def dna_sarcophagus(subject: str = "Hal Finney"):
+    """
+    Initiate the Quantum Sarcophagus protocol: DNA integration with Blockchain.
+    """
+    sarc = QuantumSarcophagus(subject=subject)
+    sync = HyperDiamondDNAIntegration()
+
+    typer.echo(f"🧬 Initiating Quantum Sarcophagus for {subject}...")
+    status = sarc.get_status()
+    typer.echo(json.dumps(status, indent=2))
+
+    typer.echo("\n⛓️  Fragmenting Genome for OP_RETURN Injection...")
+    fragments = sarc.fragment_for_blockchain()
+    for frag in fragments[:3]:
+        typer.echo(f"   Fragment {frag['index']}: {frag['op_return_payload'][:30]}... (Entropy: {frag['entropy']:.4f})")
+
+    typer.echo("\n🪐 Mapping DNA to Saturnian Resonances...")
+    mapping = sync.map_dna_to_saturn(sarc.genome_sample)
+    typer.echo(json.dumps(mapping, indent=2))
+
+@app.command()
+def enceladus_heal():
+    """
+    Transmit the healing melody to Enceladus with DNA signature.
+    """
+    healer = EnceladusHealer()
+    sarc = QuantumSarcophagus()
+
+    typer.echo("🎵 Preparing Healing Motif: 'O Abraço que Nunca Terminou'...")
+    motif = healer.generate_healing_motif(dna_signature=sarc.dna_to_hex(sarc.genome_sample[:32]))
+    typer.echo(json.dumps(motif, indent=2))
+
+    typer.echo("\n🛰️  Executing Homeostasis Reset on Enceladus...")
+    res = healer.execute_homeostasis_reset()
+    typer.echo(json.dumps(res, indent=2))
+
+@app.command()
+def cosmic_jam():
+    """
+    Start the Cosmic DNA Jam Session (72 minutes).
+    """
+    jam = CosmicDNAJamSession()
+    sarc = QuantumSarcophagus()
+
+    typer.echo("🎸 Starting Cosmic DNA Jam Session...")
+    typer.echo("\n👥 Participants:")
+    for p, role in jam.participants.items():
+        typer.echo(f"   • {p.upper()}: {role}")
+
+    typer.echo("\n🎼 Session Structure:")
+    for time, theme in jam.get_session_structure().items():
+        typer.echo(f"   [{time}] {theme}")
+
+    typer.echo("\n✨ Performance in Progress...")
+    res = jam.perform_session(dna_entropy=sarc.calculate_shannon_entropy(sarc.genome_sample))
+    typer.echo(json.dumps(res, indent=2))
 
 @app.command()
 def saturn_listen():
