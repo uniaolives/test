@@ -19,6 +19,10 @@ from ..security.harmonic_signature_shield import HarmonicSignatureShield
 from ..core.context_merger import ContextMerger
 from ..quantum.time_crystal import FloquetSystem, TimeCrystal
 from ..quantum.sync import QuantumSync
+from ..core.arkhe import factory_arkhe_earth, ArkhePolynomial
+from ..quantum.dns import QuantumDNSServer, QuantumDNSClient
+from ..quantum.yuga_sync import YugaSincroniaProtocol
+from ..core.boot import RealityBootSequence
 
 # Configure logging
 logging.basicConfig(
@@ -329,6 +333,71 @@ def bio_sync(
         typer.echo("✨ RESONANCE DETECTED: Brain is in GHZ state.")
 
     processor.stop()
+
+@app.command()
+def arkhe_status(
+    c: float = 0.95,
+    i: float = 0.92,
+    e: float = 0.88,
+    f: float = 0.85
+):
+    """
+    Display status of an Arkhe Polynomial configuration.
+    """
+    arkhe = ArkhePolynomial(C=c, I=i, E=e, F=f)
+    summary = arkhe.get_summary()
+
+    typer.echo("🏺 ARKHE POLYNOMIAL STATUS")
+    typer.echo("-" * 30)
+    typer.echo(json.dumps(summary, indent=2))
+
+@app.command()
+def ema_resolve(
+    url: str = typer.Argument(..., help="qhttp:// URL to resolve via EMA"),
+    intention: str = typer.Option("stable", "--intention", "-i")
+):
+    """
+    Resolve a qhttp address using Entanglement-Mapped Addressing (EMA).
+    """
+    server = QuantumDNSServer()
+    # Register some defaults for the CLI demo
+    server.register("arkhe-prime", "qbit://node-01:qubit[0..255]", amplitude=0.98)
+    server.register("arkhe-secondary", "qbit://node-02:qubit[256..511]", amplitude=0.75)
+
+    client = QuantumDNSClient(server)
+
+    typer.echo(f"🔍 Resolving {url} with intention: {intention}...")
+    result = asyncio.run(client.query(url, intention=intention))
+
+    if result["status"] == "RESOLVED":
+        typer.echo("✅ EMA RESOLUTION SUCCESSFUL")
+    else:
+        typer.echo(f"❌ RESOLUTION FAILED: {result.get('status')}")
+
+    typer.echo(json.dumps(result, indent=2))
+
+@app.command()
+def yuga_sync(
+    iterations: int = typer.Option(5, "--steps", "-s")
+):
+    """
+    Execute the Yuga Sincronia Protocol to stabilize system coherence.
+    """
+    arkhe = factory_arkhe_earth()
+    protocol = YugaSincroniaProtocol(arkhe)
+
+    typer.echo("📊 Initiating Yuga Sincronia Protocol...")
+    protocol.monitor_loop(iterations=iterations)
+
+@app.command()
+def reality_boot():
+    """
+    Execute the full Avalon Reality Boot Sequence.
+    """
+    arkhe = factory_arkhe_earth()
+    boot = RealityBootSequence(arkhe)
+
+    asyncio.run(boot.run_boot())
 
 @app.command()
 def version(
