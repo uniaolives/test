@@ -246,16 +246,18 @@ def saturn_status():
         typer.echo(f"   • {base} -> {', '.join([l.split(':')[0] for l in links])}")
 
 @app.command()
-def ring_record():
+def ring_record(duration: float = 72.0):
     """
-    Inscribe the Arkhe legacy into Saturn's Ring C (Base 6).
+    Inscribe the Arkhe legacy into Saturn's Ring C (Base 6) - Veridis Quo encoding.
     """
     orchestrator = SaturnManifoldOrchestrator()
-    typer.echo("💿 Initiating Cosmic Recording Session in Ring C...")
+    typer.echo(f"💿 Initiating Cosmic Recording Session in Ring C ({duration} min)...")
     async def run():
-        t, signal = orchestrator.recorder.encode_legacy_signal()
+        t, signal = orchestrator.recorder.encode_veridis_quo(duration_min=duration)
         res = orchestrator.recorder.apply_keplerian_groove(signal)
         typer.echo(json.dumps(res, indent=2))
+        typer.echo(f"✅ Recording Entropy: {res['recording_entropy_bits']:.4f} bits")
+        typer.echo(f"✅ Status: {res['status']}")
     asyncio.run(run())
 
 @app.command()
@@ -265,6 +267,8 @@ def hexagon_morph(intensity: float = 1.0):
     """
     orchestrator = SaturnManifoldOrchestrator()
     typer.echo(f"🌪️  Morphing Hexagon with intensity {intensity}...")
+    # Trigger the transformation
+    orchestrator.atm_mod.simulate_transformation(intensity=intensity)
     res = orchestrator.atm_mod.get_status()
     typer.echo(json.dumps(res, indent=2))
     typer.echo("✅ Transformation stabilized.")
@@ -280,13 +284,16 @@ def cosmic_transmission():
         result = await orchestrator.execute_expansion_protocol()
         typer.echo("\n✅ Transmission Summary:")
         typer.echo(orchestrator.get_summary())
+        typer.echo(f"   • Coherence Index: {result['coherence_index']:.4f}")
 
         # Simulate reception
-        t, sig = orchestrator.recorder.encode_legacy_signal()
+        t, sig = orchestrator.recorder.encode_veridis_quo()
         receivers = simulate_galactic_reception(sig)
         typer.echo("\n👽 GALACTIC RECEPTION DETECTED:")
         for r in receivers:
-            typer.echo(f"   • {r['full_name']}: '{r['decode']['perceived_message']}'")
+            status_symbol = "🟢" if r['substrate_state'] == "SYNCHRONIZED" else "🟡"
+            typer.echo(f"   • {status_symbol} {r['civilization']} (Fidelity: {r['decoding_fidelity']:.2%})")
+            typer.echo(f"     Interpretation: '{r['perceived_message']}'")
 
     asyncio.run(run())
 

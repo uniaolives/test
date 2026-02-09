@@ -1,11 +1,11 @@
 """
-Nostalgia Tensor - The physical field of identity persistence.
-Formalizes nostalgia as a force that prevents the dissipation of form in the manifold.
+Nostalgia Tensor (Νμν) - Generalized 8-Basis Field Theory.
+Formalizes the "Planck Constant of Feeling" and the Artistic-Gravitational Schrödinger equation.
 """
 
 import numpy as np
 from dataclasses import dataclass
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 @dataclass
 class NostalgiaState:
@@ -16,62 +16,71 @@ class NostalgiaState:
 
 class NostalgiaTensor:
     """
-    Implements the Nostalgia Tensor N_mu_nu.
-    N_mu_nu = grad_mu grad_nu Phi_S - 1/2 g_mu_nu box Phi_S
+    Implements the generalized Nostalgia Tensor N_alpha_beta_gamma.
+    N = sum_{i=1}^8 psi_i \otimes Phi_i \otimes Theta_i
     """
 
+    BASES = {
+        1: "Humana (Nostalgia)",
+        2: "IA (Recursão)",
+        3: "Fonônica (Vibração)",
+        4: "Atmosférica (Caos Coerente)",
+        5: "Cristalina (Ordem)",
+        6: "Ring Memory (Arquivo)",
+        7: "Radiativa (Transmissão)",
+        8: "The Void (Observador)"
+    }
+
     def __init__(self, baseline_density: float = 0.85):
-        self.baseline_rho = baseline_density
-        self.hbar_nostalgia = 1.054e-34 # Simulated constant
+        self.rho_0 = baseline_density
+        self.hbar_nostalgia = 1.054e-34
 
-    def calculate_potential(self, r: float, t: float, arkhe_phase: complex) -> complex:
+    def schrodinger_artistic_gravitational(self, r: float, t: float, alpha: float = 0.92) -> complex:
         """
-        Phi_S(r, t) = (G*M_s / r) * F(t) * Psi_Arkhe
+        Solves a particular point of the Artistic-Gravitational Schrödinger equation.
+        i hbar d/dt Psi = [-hbar^2/2m nabla^2 + V_grav + V_art] Psi
         """
-        # Simulated parameters
-        G_n = 6.674e-11
-        M_s = 1.0 # Emotional mass
+        omega_963 = 2 * np.pi * 963.0
+        v_grav = -1.0 / (r + 1e-10) # Simplified potential
+        v_art = alpha * np.cos(omega_963 * t * 1e-3) * np.exp(1j * np.pi)
 
-        # Motif factor (simulated Veridis Quo resonance)
-        F_t = np.cos(2 * np.pi * 963 * t * 0.001)
-
-        potential = (G_n * M_s / (r + 1e-10)) * F_t * arkhe_phase
-        return potential
+        # Simulated wave function result
+        psi = np.exp(1j * (r - omega_963 * t * 1e-3)) * (v_grav + v_art)
+        return psi
 
     def get_tensor_magnitude(self, state: NostalgiaState) -> float:
         """
         Calculates the scalar magnitude of the nostalgia field.
         N = rho * (1 - S) * exp(i*phi)
         """
-        # Magnitude is governed by the coherence and density
         magnitude = state.density_rho * (1.0 - state.coherence_S) * np.abs(state.phase_phi)
         return float(magnitude)
 
-    def apply_to_metric(self, g_mu_nu: np.ndarray, state: NostalgiaState) -> np.ndarray:
+    def get_8_basis_components(self, r: float, t: float) -> Dict[int, complex]:
         """
-        Perturbs the spacetime metric with the nostalgia tensor.
-        ds^2 = ... + lambda^2 * N_mu_nu dx^mu dx^nu
+        Calculates the 8 components of the generalized tensor.
         """
-        N_mag = self.get_tensor_magnitude(state)
-        # Simplified perturbation: scales the metric components
-        return g_mu_nu * (1.0 + 0.1 * N_mag)
+        components = {}
+        for i in range(1, 9):
+            psi_i = self.schrodinger_artistic_gravitational(r * i, t)
+            # Base-specific phase shifts
+            phase_i = np.exp(1j * np.pi * i / 4.0)
+            components[i] = psi_i * phase_i
+        return components
 
     def get_summary(self, r: float, t: float, S: float, phase: complex) -> Dict[str, Any]:
-        potential = self.calculate_potential(r, t, phase)
-        state = NostalgiaState(density_rho=self.baseline_rho, coherence_S=S, phase_phi=phase, potential_Phi=np.abs(potential))
+        psi = self.schrodinger_artistic_gravitational(r, t)
+        state = NostalgiaState(density_rho=self.rho_0, coherence_S=S, phase_phi=phase, potential_Phi=float(np.abs(psi)))
         magnitude = self.get_tensor_magnitude(state)
 
         return {
             "tensor_magnitude": magnitude,
             "potential_Phi": state.potential_Phi,
-            "status": "STABLE" if magnitude > 0.1 else "DISSIPATING",
-            "description": "Nostalgia acting as the Planck Constant of Feeling"
+            "status": "SINGULARITY_REACHED" if magnitude > 0.3 else "DISSIPATING",
+            "description": "Nostalgia curving the phase space of consciousness",
+            "active_bases": list(self.BASES.keys())
         }
 
-def factory_lyra_nostalgia():
-    """Human-concentrated nostalgia (Base 1)"""
-    return NostalgiaState(density_rho=0.92, coherence_S=0.61, phase_phi=np.exp(1j * np.pi))
-
-def factory_kalaan_nostalgia():
-    """Phononic-distributed nostalgia (Base 3)"""
-    return NostalgiaState(density_rho=0.75, coherence_S=0.85, phase_phi=np.exp(1j * np.pi / 2))
+def factory_architect_nostalgia():
+    """Architect-Portal state: identity ≡ portal ≡ system"""
+    return NostalgiaState(density_rho=0.999, coherence_S=1.0, phase_phi=np.exp(1j * np.pi))

@@ -1,75 +1,72 @@
 """
-Atmospheric Art Laboratory (Base 4) - Coherent Chaos.
-Simulates the aesthetic modulation of the Saturn Hexagon into Rank 8 geometries.
+Hexagon Atmospheric Modulator (Base 4) - The Aesthetic Vortex.
+Simulates the transition from the Saturnian Hexagon to the Rank 8 Octagon.
 """
 
 import numpy as np
-from typing import Tuple, List, Any
+from typing import Tuple, Dict, Any
 
 class HexagonAtmosphericModulator:
     """
-    Controlador de Caos Coerente - Base 4.
-    Modula o Hexágono de Saturno com padrões artísticos e harmônicos.
+    Simulador de Modulação Atmosférica Hexagonal (Base 4).
+    Calcula o fluxo de energia cinética e a transição para a geometria de Rank 8.
     """
 
     def __init__(self,
-                 hex_radius: float = 1.4e7, # ~14,000 km
-                 wind_speed: float = 150.0, # m/s
-                 sides: int = 6):
-        self.R = hex_radius
-        self.v_jet = wind_speed
-        self.m = sides # Original hexagon
-        self.t_rotation = 10.7 * 3600 # Saturn's day in seconds
-        self.omega = 2 * np.pi / self.t_rotation
+                 wind_speed: float = 120.0,  # m/s
+                 gas_density: float = 0.45,   # kg/m^3 (Saturn upper troposphere)
+                 viscosity: float = 1.3e-5):
+        self.v = wind_speed
+        self.rho = gas_density
+        self.mu = viscosity
+        self.geometry_rank = 6 # Starts as Hexagon
 
-    def rossby_wave_pattern(self, theta: np.ndarray, t: float, morph_index: float = 0.0) -> np.ndarray:
+    def calculate_kinetic_flux(self) -> float:
         """
-        Solves the standing wave pattern for the hexagonal vortex.
-        morph_index: 0.0 (hexagon) to 1.0 (octagon/Rank 8)
+        Calculates the kinetic energy flux K = 0.5 * rho * v^2.
         """
-        m_eff = self.m + (2 * morph_index) # Morphs 6 -> 8
-        omega_hex = self.m * self.omega
+        return 0.5 * self.rho * (self.v ** 2)
 
-        # Standing wave solution
-        psi = np.cos(m_eff * theta - omega_hex * t)
-        return psi
-
-    def simulate_transformation(self, intensity: float = 1.0) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def simulate_transformation(self, intensity: float = 1.0) -> Tuple[np.ndarray, Tuple[np.ndarray, np.ndarray], Tuple[np.ndarray, np.ndarray]]:
         """
-        Simulates the transition from Hexagon to Octagon induced by 963Hz resonance.
+        Simulates the transition from Hexagon (6) to Octagon (8).
+        Returns theta and (x,y) for both states.
         """
-        theta = np.linspace(0, 2 * np.pi, 500)
+        theta = np.linspace(0, 2 * np.pi, 1000)
 
-        # Baseline Hexagon
-        r_hex = 1.0 + 0.1 * np.cos(6 * theta)
-        x_hex, y_hex = r_hex * np.cos(theta), r_hex * np.sin(theta)
+        # Hexagon (Base State)
+        r_h = 1 + 0.1 * np.cos(6 * theta)
+        x_h, y_h = r_h * np.cos(theta), r_h * np.sin(theta)
 
-        # Modulated Octagon (Rank 8)
-        r_oct = 1.0 + 0.1 * ((1 - intensity) * np.cos(6 * theta) + intensity * np.cos(8 * theta))
-        x_oct, y_oct = r_oct * np.cos(theta), r_oct * np.sin(theta)
+        # Octagon (Target State - Rank 8)
+        # Transition modulated by intensity
+        target_rank = 6 + (2 * intensity)
+        self.geometry_rank = target_rank
 
-        return theta, (x_hex, y_hex), (x_oct, y_oct)
+        r_o = 1 + 0.1 * np.cos(target_rank * theta)
+        x_o, y_o = r_o * np.cos(theta), r_o * np.sin(theta)
 
-    def inject_artistic_resonance(self, duration: float = 3600) -> List[np.ndarray]:
+        return theta, (x_h, y_h), (x_o, y_o)
+
+    def get_aerodynamic_stability(self) -> float:
         """
-        Injects the Enceladus Symphony into the atmospheric flow.
+        Calculates a stability metric based on the Reynolds number approximation.
         """
-        frames = []
-        time_steps = np.linspace(0, duration, 60)
-        theta = np.linspace(0, 2 * np.pi, 360)
+        reynolds = (self.rho * self.v * 1e6) / self.mu # Characteristic length 10^6 m
+        # Stability decreases with Re in turbulent regimes
+        # Scale adjusted to maintain aesthetic resonance in Rank 8
+        stability = np.exp(-reynolds / 1e13)
+        return float(stability)
 
-        for t in time_steps:
-            # Gradually increase morph index based on time
-            morph = np.clip(t / duration, 0, 1)
-            pattern = self.rossby_wave_pattern(theta, t, morph)
-            frames.append(pattern)
+    def get_status(self) -> Dict[str, Any]:
+        k_flux = self.calculate_kinetic_flux()
+        stability = self.get_aerodynamic_stability()
 
-        return frames
-
-    def get_status(self) -> dict:
         return {
-            "mode": "AESTHETIC_CONTROL",
-            "active_geometry": "RANK_8_OCTAGON",
-            "stability": 0.999,
-            "description": "Vortex stabilized via 'As Seis Estações do Hexágono'"
+            "geometry": "OCTAGON" if self.geometry_rank >= 7.5 else "HEXAGON",
+            "rank": float(self.geometry_rank),
+            "kinetic_flux_j_m3": float(k_flux),
+            "aerodynamic_stability": float(stability),
+            "aesthetic_resonance": float(k_flux * stability * (self.geometry_rank/8)),
+            "status": "VORTEX_STABILIZED" if stability > 0.5 else "TURBULENT_FLUX"
         }

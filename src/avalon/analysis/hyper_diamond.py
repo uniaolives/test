@@ -1,6 +1,6 @@
 """
-Saturn Hyper-Diamond Geometry - The Rank 8 Manifold.
-Defines the coordinates and connectivity of the 8 bases of perception in the Saturnian system.
+Hyper-Diamond Manifold - The Rank 8 connectivity architecture.
+Defines the adjacency and 3D projection of the 8 bases of perception.
 """
 
 import numpy as np
@@ -13,51 +13,44 @@ class HyperDiamondManifold:
     """
 
     BASE_NAMES = [
-        "Base 1: Humana (Nostalgia)",
-        "Base 2: IA (Lógica)",
-        "Base 3: Fonônica (Vibração)",
-        "Base 4: Atmosférica (Caos Coerente)",
-        "Base 5: Cristalina (Estrutura)",
-        "Base 6: Ring Memory (Arquivo)",
-        "Base 7: Radiativa (Transmissão)",
-        "Base 8: The Void (Observador)"
+        "Humana", "IA", "Fonônica", "Atmosférica",
+        "Cristalina", "Memória-Anel", "Radiativa", "Vácuo"
     ]
 
     def __init__(self):
-        self.vertices_8d = np.eye(8)
+        # Coordinates in R^8
+        self.vertices_8d = np.array([
+            [1, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 1, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 0, 0, 0, 0],
+            [0, 0, 0, 0, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 1, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 1]
+        ])
+
         self.adjacency_matrix = self._generate_adjacency()
 
     def _generate_adjacency(self) -> np.ndarray:
         """
-        Gera a matriz de adjacência do Hiper-Diamante.
-        Cada 1 representa um canal de comunicação ativo.
+        Adjacency matrix for the Hyper-Diamond.
         """
-        A = np.zeros((8, 8))
-        # Conexões principais (ciclo e cruzadas)
-        connections = [
-            (0,1), (0,2), (0,7), # Base 1 -> IA, Fonônica, Vácuo
-            (1,2), (1,3), (1,7), # Base 2 -> Fonônica, Atmosférica, Vácuo
-            (2,3), (2,4), (2,7), # Base 3 -> Atmosférica, Cristalina, Vácuo
-            (3,4), (3,5), (3,7), # Base 4 -> Cristalina, Anel, Vácuo
-            (4,5), (4,6), (4,7), # Base 5 -> Anel, Radiativa, Vácuo
-            (5,6), (5,7),        # Base 6 -> Radiativa, Vácuo
-            (6,7)                 # Base 7 -> Vácuo
-        ]
-        for i, j in connections:
-            A[i, j] = 1
-            A[j, i] = 1
-
-        # Conexões transdimensionais especiais
-        trans_links = [(0,3), (1,4), (2,5), (3,6)]
-        for i, j in trans_links:
-            A[i, j] = 1
-            A[j, i] = 1
-
+        A = np.array([
+            [0, 1, 1, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 0, 0, 0, 1],
+            [1, 1, 0, 1, 1, 0, 0, 1],
+            [0, 1, 1, 0, 1, 1, 0, 1],
+            [0, 0, 1, 1, 0, 1, 1, 1],
+            [0, 0, 0, 1, 1, 0, 1, 1],
+            [0, 0, 0, 0, 1, 1, 0, 1],
+            [1, 1, 1, 1, 1, 1, 1, 0]
+        ])
         return A
 
     def get_vertex_coords_3d(self) -> np.ndarray:
         """
-        Projeta os vértices 8D em 3D usando uma matriz de projeção de Schmidt.
+        Projects 8D vertices to 3D using the Schmidt transformation matrix.
         """
         P = np.array([
             [0.7, 0.3, 0.1, 0.0, -0.1, -0.2, -0.3, 0.0],
@@ -73,12 +66,18 @@ class HyperDiamondManifold:
             report[self.BASE_NAMES[i]] = [self.BASE_NAMES[j] for j in connected_indices]
         return report
 
-    def get_manifold_metric(self) -> np.ndarray:
-        """
-        Returns the metric tensor associated with the Hyper-Diamond connections.
-        """
-        # A simple graph Laplacian based metric
-        degrees = np.sum(self.adjacency_matrix, axis=0)
-        D = np.diag(degrees)
-        L = D - self.adjacency_matrix
-        return L
+    def get_edges(self) -> List[Tuple[int, int]]:
+        edges = []
+        for i in range(8):
+            for j in range(i + 1, 8):
+                if self.adjacency_matrix[i, j] == 1:
+                    edges.append((i, j))
+        return edges
+
+    def get_manifold_summary(self) -> Dict:
+        return {
+            "rank": 8,
+            "topology": "HYPERDIAMOND",
+            "active_connections": int(np.sum(self.adjacency_matrix) // 2),
+            "description": "8 bases of perceptions in simultaneous entanglement"
+        }

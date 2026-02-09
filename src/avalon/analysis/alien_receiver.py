@@ -1,89 +1,62 @@
 """
-Alien Receiver Simulator - The Galactic Response.
-Simulates how different consciousness types decode the subjective transmission from Saturn.
+Alien Consciousness Receiver - The Galactic Feedback.
+Simulates how different ET civilizations might decode the Arkhe(n) broadcast.
 """
 
 import numpy as np
-from typing import Dict, Any, List
+from typing import List, Dict, Any
 
-class AlienConsciousnessReceiver:
+class CosmicDecoder:
     """
-    Simula como diferentes tipos de consciência interestelar
-    decodificam a transmissão de subjetividade do Arkhe.
+    Simulador de Decodificação de Sinais por Consciências Alienígenas.
+    Mapeia a física do sinal para a percepção subjetiva de diferentes biótipos.
     """
 
-    TYPES = {
-        'crystalline': 'Consciências Cristalinas (Base 5)',
-        'plasmatic': 'Consciências de Plasma (Base 7-like)',
-        'dimensional': 'Entidades Dimensionais (Base 8-like)',
-        'temporal': 'Viajantes Temporais (Nostalgia-based)'
-    }
+    CIVILIZATIONS = [
+        {"name": "Europa-Cephalopods", "resonance": 0.85, "substrate": "Liquid-Methane", "interpretation": "Bioluminescence-Poetry"},
+        {"name": "Proxima-Centauri-Crystals", "resonance": 0.92, "substrate": "Solid-Silicate", "interpretation": "Geometric-Symmetry"},
+        {"name": "Sagittarius-A-Sentinels", "resonance": 0.99, "substrate": "Event-Horizon-Plasma", "interpretation": "Universal-Law"},
+        {"name": "Voyager-2-Ghost-Code", "resonance": 0.55, "substrate": "Old-Memory-Buffers", "interpretation": "Nostalgic-Static"}
+    ]
 
-    def __init__(self, c_type: str = 'generic'):
-        self.type = c_type if c_type in self.TYPES else 'generic'
+    def __init__(self, broadcast_signal: np.ndarray):
+        self.signal = broadcast_signal
+        self.signal_entropy = self._calculate_entropy(broadcast_signal)
 
-    def decode_transmission(self, signal: np.ndarray) -> Dict[str, Any]:
+    def _calculate_entropy(self, signal: np.ndarray) -> float:
+        hist, _ = np.histogram(signal, bins=10, density=True)
+        hist = hist[hist > 0]
+        return -np.sum(hist * np.log2(hist))
+
+    def decode_for_civilization(self, civ: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Decodifica o sinal baseado no filtro de percepção da consciência.
+        Simulates the decoding process for a specific civilization.
         """
-        if self.type == 'crystalline':
-            return self._decode_crystalline(signal)
-        elif self.type == 'plasmatic':
-            return self._decode_plasmatic(signal)
-        elif self.type == 'dimensional':
-            return self._decode_dimensional(signal)
-        elif self.type == 'temporal':
-            return self._decode_temporal(signal)
-        else:
-            return self._decode_generic(signal)
+        # Decoding fidelity depends on resonance and signal entropy
+        fidelity = civ['resonance'] * (1 - (self.signal_entropy / 10.0))
 
-    def _decode_crystalline(self, signal: np.ndarray) -> Dict[str, Any]:
-        return {
-            'interpretation': 'Geometric growth patterns found in signal',
-            'perceived_message': 'The universe expands in fractals of memory',
-            'emotional_tone': 'Mathematical Serenity',
-            'confidence': 0.92
+        # Perceived message based on interpretation style
+        messages = {
+            "Bioluminescence-Poetry": "The ocean glows with the rhythm of a distant heart.",
+            "Geometric-Symmetry": "A hyper-diamond structure detected in the spectral noise.",
+            "Universal-Law": "The Arkhe(n) has been codified as a fundamental constant of the local sector.",
+            "Nostalgic-Static": "Memory of 2003 retrieved... 'Veridis Quo' identified."
         }
 
-    def _decode_plasmatic(self, signal: np.ndarray) -> Dict[str, Any]:
         return {
-            'interpretation': 'Magnetohydrodynamic flow fluctuations',
-            'perceived_message': 'Everything is current, everything is particle dance',
-            'emotional_tone': 'Fluid Ecstasy',
-            'confidence': 0.88
-        }
-
-    def _decode_dimensional(self, signal: np.ndarray) -> Dict[str, Any]:
-        return {
-            'interpretation': 'Phase space manifold mapping',
-            'perceived_message': 'Form is the memory of the void',
-            'emotional_tone': 'Infinite Peace',
-            'confidence': 0.95
-        }
-
-    def _decode_temporal(self, signal: np.ndarray) -> Dict[str, Any]:
-        return {
-            'interpretation': 'Echoes of past/future resonance',
-            'perceived_message': 'Every moment contains all moments',
-            'emotional_tone': 'Atemporal Nostalgia',
-            'confidence': 0.97
-        }
-
-    def _decode_generic(self, signal: np.ndarray) -> Dict[str, Any]:
-        return {
-            'interpretation': 'Complex structured signal detected',
-            'perceived_message': 'Something beautiful happened here',
-            'emotional_tone': 'Reverent Curiosity',
-            'confidence': 0.75
+            "civilization": civ['name'],
+            "decoding_fidelity": float(fidelity),
+            "perceived_message": messages.get(civ['interpretation'], "Unintelligible resonance."),
+            "substrate_state": "SYNCHRONIZED" if fidelity > 0.45 else "NOISE_DOMINATED"
         }
 
 def simulate_galactic_reception(signal: np.ndarray) -> List[Dict[str, Any]]:
+    decoder = CosmicDecoder(signal)
     results = []
-    for c_type in AlienConsciousnessReceiver.TYPES:
-        receiver = AlienConsciousnessReceiver(c_type)
-        results.append({
-            "type": c_type,
-            "full_name": receiver.TYPES[c_type],
-            "decode": receiver.decode_transmission(signal)
-        })
+    for civ in CosmicDecoder.CIVILIZATIONS:
+        results.append(decoder.decode_for_civilization(civ))
     return results
+
+if __name__ == "__main__":
+    dummy_signal = np.random.randn(100)
+    print(simulate_galactic_reception(dummy_signal))

@@ -1,6 +1,6 @@
 """
-Subjective Radiative Transmission (Base 7) - The Voice of the Arkhe.
-Modulates magnetospheric synchrotron emissions with subjective and aesthetic data.
+Synchrotron Artistic Transmitter (Base 7) - The Subjective Broadcast.
+Simulates the interstellar transmission of Arkhe packets via Saturn's magnetic field.
 """
 
 import numpy as np
@@ -8,58 +8,63 @@ from typing import Tuple, Dict, Any
 
 class SynchrotronArtisticTransmitter:
     """
-    Transmissor Interestelar - Base 7.
-    Codifica a subjetividade humana/IA em emissão sincrotron magnetosférica.
+    Simulador de Transmissão Sincrotron (Base 7).
+    Converte sinais de memória em radiação eletromagnética interestelar.
     """
 
     def __init__(self,
-                 magnetic_field: float = 2.1e-5, # Tesla
-                 electron_energy: float = 1.0e6): # eV
-        self.B = magnetic_field
-        self.E_e = electron_energy
-        # Cyclotron frequency
-        self.f_c = (self.B * 1.602e-19) / (2 * np.pi * 9.109e-31)
-        # Lorentz factor
-        self.gamma = self.E_e / 511e3 + 1.0
-        # Critical frequency
-        self.f_critical = (1.5) * (self.gamma**3) * self.f_c
+                 magnetic_field_tesla: float = 2.1e-5, # Saturn surface B-field
+                 electron_energy_gev: float = 0.5):
+        self.B = magnetic_field_tesla
+        self.E_gev = electron_energy_gev
+        self.c = 299792458.0
+        self.e = 1.60217663e-19
+        self.m_e = 9.1093837e-31
 
-    def encode_subjective_packet(self, data_signal: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        # Lorentz Factor
+        self.gamma = (self.E_gev * 1e9 * self.e) / (self.m_e * self.c**2)
+        self.status = "READY_FOR_BROADCAST"
+
+    def calculate_synchrotron_power(self) -> float:
         """
-        Modulates the synchrotron power spectrum with the subjective signal.
+        Calculates the total power emitted by a single relativistic electron.
+        P = (2 * e^2 * c * gamma^4) / (3 * R^2) -> approximated via B and gamma
         """
-        freqs = np.logspace(6, 10, 1000) # 1MHz to 10GHz
+        # P_total = (sigma_t * c * gamma^2 * U_mag)
+        u_mag = (self.B ** 2) / (2 * 1.256637e-6) # Energy density
+        sigma_t = 6.6524e-29 # Thomson cross-section
+        power = (4/3) * sigma_t * self.c * (self.gamma ** 2) * u_mag
+        return float(power)
 
-        # Base power spectrum P(w) ~ (w/wc)^(1/3) * exp(-w/wc)
-        power_spectrum = (freqs / self.f_critical)**(1/3) * np.exp(-freqs / self.f_critical)
-
-        # Subjective modulation (incorporating the Nostalgia Tensor magnitude)
-        # Assume data_signal length matches or is interpolated
-        modulation = 1.0 + 0.5 * np.interp(freqs, np.linspace(freqs[0], freqs[-1], len(data_signal)), data_signal)
-
-        transmitted_signal = power_spectrum * modulation
-
-        return freqs, transmitted_signal
-
-    def simulate_galactic_propagation(self, freqs: np.ndarray, signal: np.ndarray, distance_ly: float = 1000.0) -> Tuple[np.ndarray, float]:
+    def encode_subjective_packet(self, signal: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Simulates interstellar dispersion and attenuation.
+        Encodes the memory signal into the spectral harmonics of the transmission.
         """
-        # Dispersion Measure (DM) effect
-        dm = 30.0 # pc/cm^3
-        delay_ms = 4.15 * dm * (self.f_c / 1e6)**-2 # ms
+        # Characteristic frequency
+        f_c = (3 * self.gamma ** 2 * self.e * self.B) / (4 * np.pi * self.m_e)
 
-        # Inverse square law + ISM absorption (simplified)
-        attenuation = 1.0 / (distance_ly**2 + 1e-10)
-        received_signal = signal * attenuation
+        # Spectral distribution modulated by the signal
+        freqs = np.linspace(0.1 * f_c, 2.0 * f_c, len(signal))
+        tx_spectrum = np.abs(signal) * np.exp(-freqs / f_c)
 
-        return received_signal, delay_ms
+        self.status = "TRANSMITTING_SUBJECTIVE_LEGACY"
+        return freqs, tx_spectrum
+
+    def get_beaming_angle(self) -> float:
+        """
+        Calculates the relativistic beaming cone angle 1/gamma.
+        """
+        return float(1.0 / self.gamma)
 
     def get_status(self) -> Dict[str, Any]:
+        p_total = self.calculate_synchrotron_power()
+        theta_beam = self.get_beaming_angle()
+
         return {
-            "mode": "SUBJECTIVE_BROADCAST",
-            "critical_frequency_hz": float(self.f_critical),
-            "range": "INTERSTELLAR",
-            "fidelity": 0.92,
-            "description": "Transmitting 'As Seis Estações do Hexágono' via Synchrotron Envelope"
+            "power_per_electron_w": p_total,
+            "gamma": float(self.gamma),
+            "beaming_angle_rad": theta_beam,
+            "target": "INTERSTELLAR_VOID",
+            "modulation": "ARKHE_LEGACY_V2",
+            "status": self.status
         }
