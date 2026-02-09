@@ -376,6 +376,59 @@ def aro_initiate(
         typer.echo(f"❌ FAILED: {res['reason']}", err=True)
 
 @app.command()
+def pop_genesis():
+    """
+    Initialize the Persistent Order Protocol (POP) Node.
+    """
+    from ..pop.components.node import OperationalQCN
+    node = OperationalQCN(node_id="avalon-pop-01")
+    typer.echo("🌀 Initializing POP Node...")
+    typer.echo("💎 Manifesto: 'Life is a Persistent Order.'")
+    typer.echo("✅ POP Node ready for biosignature detection.")
+
+@app.command()
+def pop_scan(
+    simulate_life: bool = typer.Option(False, "--simulate-life", "-l", help="Simulate a region with life patterns")
+):
+    """
+    Execute a Persistent Order detection scan on a spectral region.
+    """
+    from ..pop.components.node import OperationalQCN, SpectralCube
+    import numpy as np
+
+    node = OperationalQCN(node_id="avalon-pop-01")
+    typer.echo(f"🔭 Initiating POP scan (Simulation)...")
+
+    # Create mock cube
+    data = np.random.randn(10, 10, 8, 5)
+    if simulate_life:
+        for t in range(5):
+            data[:,:,:,t] += np.sin(2 * np.pi * t / 5) * 3.0
+
+    cube = SpectralCube(data=data, coordinates={"x": 1.0, "y": 2.0, "z": 0.0})
+
+    async def run():
+        res = await node.evaluate_cube(cube)
+        typer.echo(f"📊 Results:")
+        typer.echo(f"   Probability: {res['detection_probability']:.2%}")
+        typer.echo(f"   Life Detected: {res['is_life_detected']}")
+        typer.echo(f"   Protocol State: {res['protocol_state']}")
+
+    asyncio.run(run())
+
+@app.command()
+def pop_status():
+    """
+    Check the status of the local POP Node.
+    """
+    from ..pop.components.node import OperationalQCN
+    node = OperationalQCN(node_id="avalon-pop-01")
+    typer.echo("🔱 POP NODE STATUS")
+    typer.echo(f"   Node ID: {node.node_id}")
+    typer.echo(f"   State: {node.protocol_state}")
+    typer.echo(f"   Integrations: qhttp://, MERKABAH")
+
+@app.command()
 def version(
     full: bool = typer.Option(False, "--full", "-f")
 ):

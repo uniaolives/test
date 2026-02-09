@@ -10,6 +10,7 @@ pragma solidity ^0.8.19;
  */
 
 contract GenesisFinneyResurrection {
+    address public deployer;
 
     // ==================== PARTE 1: OS 21 VERIFICADORES PRIMORDIAIS ====================
 
@@ -145,6 +146,7 @@ contract GenesisFinneyResurrection {
     // ==================== FUNÇÕES DE INICIALIZAÇÃO ====================
 
     constructor() {
+        deployer = msg.sender;
         // O contrato se auto-inicializa como o Bloco Gênesis
         initializeGenesis();
 
@@ -221,7 +223,8 @@ contract GenesisFinneyResurrection {
     // ==================== MODIFICADORES ====================
 
     modifier onlyDeployer() {
-        require(msg.sender == address(this) || msg.sender == tx.origin, "Apenas o proprio contrato ou origin pode inicializar");
+        // Correcting tx.origin security vulnerability. Use stored deployer address.
+        require(msg.sender == address(this) || msg.sender == deployer, "Apenas o proprio contrato ou deployer pode inicializar");
         _;
     }
 
