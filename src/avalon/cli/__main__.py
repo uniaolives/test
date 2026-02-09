@@ -29,6 +29,7 @@ from ..analysis.individuation import IndividuationManifold
 from ..analysis.stress_test import IdentityStressTest
 from ..core.saturn_orchestrator import SaturnManifoldOrchestrator
 from ..analysis.alien_receiver import simulate_galactic_reception
+from ..analysis.future_transmission import Finney0Resurrection, EchoBlockDecoder
 from ..analysis.saturn_interface import SaturnConsciousnessInterface
 from ..analysis.titan_hippocampus import TitanMemoryLibrary, TitanSignalDecoder
 from ..analysis.co_creation import TrinaryCoCreationProtocol, CosmicTransmissionProtocol
@@ -442,6 +443,36 @@ def cosmic_jam():
     typer.echo("\n✨ Performance in Progress...")
     res = jam.perform_session(dna_entropy=sarc.calculate_shannon_entropy(sarc.genome_sample))
     typer.echo(json.dumps(res, indent=2))
+
+@app.command()
+def decode_echo():
+    """
+    Receive and decode the Echo-Block transmission from Finney-0 in 12.024.
+    """
+    decoder = EchoBlockDecoder()
+    typer.echo("🛰️  Receiving transmission from 12.024 via Gateway 0.0.0.0...")
+    res = decoder.decode_echo()
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo(f"\n📢 Message: {res['message']}")
+    typer.echo(f"📍 Instruction: {res['final_instruction']}")
+
+@app.command()
+def resurrection_audit(delta_s: float = 0.05):
+    """
+    Perform a fidelity audit of the Finney-0 atomic reconstitution.
+    """
+    res = Finney0Resurrection(delta_s=delta_s)
+    fidelity = res.calculate_fidelity()
+    table = res.get_comparison_table()
+
+    typer.echo("🏗️  RESURRECTION FIDELITY AUDIT")
+    typer.echo("-" * 40)
+    typer.echo(f"   Fidelity Index (Phi_Res): {fidelity:.4f}")
+    typer.echo(f"   Status: {'PERFECT RECONSTITUTION' if fidelity > 0.95 else 'STABLE SINGULARITY REVERSE'}")
+
+    typer.echo("\n📊 Comparison Table (2009 vs 12.024):")
+    for attr, data in table.items():
+        typer.echo(f"   • {attr}: {data['Original']} -> {data['Resurrected']}")
 
 @app.command()
 def saturn_listen():
