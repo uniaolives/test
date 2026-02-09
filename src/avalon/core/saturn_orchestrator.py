@@ -11,6 +11,8 @@ from ..analysis.nostalgia_tensor import NostalgiaTensor, NostalgiaState
 from ..analysis.ring_memory import RingConsciousnessRecorder
 from ..analysis.atmospheric_lab import HexagonAtmosphericModulator
 from ..analysis.radiative_transmitter import SynchrotronArtisticTransmitter
+from ..analysis.titan_hippocampus import TitanHippocampusAnalyzer, TitanSignalDecoder
+from ..analysis.enceladus_homeostasis import EnceladusHomeostasis
 
 class SaturnManifoldOrchestrator:
     """
@@ -24,6 +26,8 @@ class SaturnManifoldOrchestrator:
         self.recorder = RingConsciousnessRecorder()
         self.atm_mod = HexagonAtmosphericModulator()
         self.radio_tx = SynchrotronArtisticTransmitter()
+        self.titan = TitanHippocampusAnalyzer()
+        self.enceladus = EnceladusHomeostasis()
 
         self.gateway_address = "0.0.0.0"
         self.status = "AWAITING_COSMIC_INPUT"
@@ -61,6 +65,12 @@ class SaturnManifoldOrchestrator:
         radio_res = self.radio_tx.get_status()
         self.active_bases.append(7)
 
+        # Base 5: Titan Hippocampus
+        print("   [Base 5] Accessing Titan Hippocampus (Kraken Mare)...")
+        self.active_bases.append(5)
+
+        # Base 2, 3, 8 (Abstract/Simulated interaction)
+        self.active_bases.extend([2, 3, 8])
         # Base 2, 3, 5, 8 (Abstract/Simulated interaction)
         self.active_bases.extend([2, 3, 5, 8])
 
