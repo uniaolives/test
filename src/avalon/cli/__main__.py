@@ -13,6 +13,8 @@ import logging
 from ..core.harmonic import HarmonicEngine
 from ..analysis.fractal import FractalAnalyzer, FractalSecurityError
 from ..analysis.topological_signature_detector import demo_bridge_topology
+from ..analysis.visualizer import run_visualizer
+from ..biological.eeg_processor import RealEEGProcessor
 from ..security.harmonic_signature_shield import HarmonicSignatureShield
 from ..core.context_merger import ContextMerger
 from ..quantum.time_crystal import FloquetSystem, TimeCrystal
@@ -290,20 +292,43 @@ def crystallize(
 
 @app.command()
 def visualize_crystal(
-    steps: int = typer.Option(5, "--steps", "-s")
+    steps: int = typer.Option(5, "--steps", "-s"),
+    save_gif: bool = typer.Option(False, "--save-gif", help="Save the animation as a GIF")
 ):
     """
     Visualize the temporal breathing of the established Time Crystal.
     """
     typer.echo("🌬️ Starting Time Crystal Visualizer...")
 
-    # Needs a stabilized crystal
+    # Text-based simulation
     floquet = FloquetSystem()
     floquet.inject_order(70)
     crystal = TimeCrystal(floquet)
     crystal.stabilize()
-
     crystal.simulate_breathing(steps=steps)
+
+    # Graphical rendering
+    run_visualizer(save_gif=save_gif)
+
+@app.command()
+def bio_sync(
+    device: str = typer.Option("synthetic", "--device", "-d", help="Device type (synthetic, muse, openbci)")
+):
+    """
+    Synchronize biological signals with the Avalon harmonic field.
+    """
+    typer.echo(f"🧬 Initiating Bio-Synchronization with device: {device}")
+    processor = RealEEGProcessor(device_type=device)
+    processor.connect()
+    processor.start_stream()
+
+    coherence = processor.get_coherence()
+    typer.echo(f"📊 Current Brain Coherence: {coherence:.4f}")
+
+    if coherence > 0.8:
+        typer.echo("✨ RESONANCE DETECTED: Brain is in GHZ state.")
+
+    processor.stop()
 
 @app.command()
 def version(
