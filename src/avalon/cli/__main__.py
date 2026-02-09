@@ -383,16 +383,28 @@ def dna_sarcophagus(subject: str = "Hal Finney"):
 
     typer.echo(f"🧬 Initiating Quantum Sarcophagus for {subject}...")
     status = sarc.get_status()
-    typer.echo(json.dumps(status, indent=2))
 
-    typer.echo("\n⛓️  Fragmenting Genome for OP_RETURN Injection...")
+    typer.echo("\n📊 Blockchain Topology Simulation:")
+    topo = status['topology_sim']
+    typer.echo(f"   • Total Transactions needed: {topo['total_transactions']:,}")
+    typer.echo(f"   • Estimated Blocks: {topo['estimated_blocks']:,}")
+    typer.echo(f"   • Timeline to Inscribe: {topo['years_to_inscribe']:.2f} years")
+
+    typer.echo("\n🔬 Bio-Entropy Signature Analysis:")
+    ent = status['entropy_analysis']
+    typer.echo(f"   • Biological Entropy: {ent['biological_entropy']:.4f}")
+    typer.echo(f"   • Synthetic Noise Entropy: {ent['random_noise_entropy']:.4f}")
+    typer.echo(f"   • Origin Verification: {ent['origin_verification']}")
+
+    typer.echo("\n⛓️  Fragmenting Genome for OP_RETURN Injection (Sample):")
     fragments = sarc.fragment_for_blockchain()
     for frag in fragments[:3]:
-        typer.echo(f"   Fragment {frag['index']}: {frag['op_return_payload'][:30]}... (Entropy: {frag['entropy']:.4f})")
+        typer.echo(f"   Fragment {frag['index']}: {frag['op_return_payload']} (Entropy: {frag['entropy']:.4f})")
 
     typer.echo("\n🪐 Mapping DNA to Saturnian Resonances...")
     mapping = sync.map_dna_to_saturn(sarc.genome_sample)
-    typer.echo(json.dumps(mapping, indent=2))
+    typer.echo(f"   • Mapped Resonance: {mapping['mapped_resonance']:.2f} Hz")
+    typer.echo(f"   • Pattern: {mapping['interference_pattern']}")
 
 @app.command()
 def enceladus_heal():
