@@ -9,9 +9,11 @@ from pathlib import Path
 from typing import Optional
 import logging
 
-from .core.harmonic import HarmonicEngine
-from .analysis.fractal import FractalAnalyzer, FractalSecurityError
-from .quantum.sync import QuantumSync
+from ..core.harmonic import HarmonicEngine
+from ..analysis.fractal import FractalAnalyzer, FractalSecurityError
+from ..analysis.topological_signature_detector import demo_bridge_topology
+from ..security.harmonic_signature_shield import HarmonicSignatureShield
+from ..quantum.sync import QuantumSync
 
 # Configure logging
 logging.basicConfig(
@@ -158,9 +160,9 @@ def serve(
     Start Avalon mini-services.
     """
     import uvicorn
-    from .services.zeitgeist import app as zeitgeist_app
-    from .services.qhttp_gateway import app as qhttp_app
-    from .services.starlink_q import app as starlink_app
+    from ..services.zeitgeist import app as zeitgeist_app
+    from ..services.qhttp_gateway import app as qhttp_app
+    from ..services.starlink_q import app as starlink_app
 
     services = {
         "zeitgeist": (zeitgeist_app, base_port),
@@ -187,13 +189,72 @@ def serve(
         raise typer.Exit(code=1)
 
 @app.command()
+def topology():
+    """
+    Detect topological signatures (Möbius twist) in system trajectories.
+    """
+    typer.echo("🔬 Starting Topological Signature Analysis...")
+    asyncio.run(demo_bridge_topology())
+
+@app.command()
+def sign(
+    content: str = typer.Argument(..., help="Content to sign"),
+    metadata: str = typer.Argument(..., help="Metadata as JSON string"),
+    output: Optional[Path] = typer.Option(None, "--output", "-o", help="Path to save signed document")
+):
+    """
+    Sign a document with harmonic protection.
+    """
+    shield = HarmonicSignatureShield()
+    try:
+        meta_dict = json.loads(metadata)
+        signed_doc = shield.sign_document(content, meta_dict)
+
+        output_str = json.dumps(signed_doc, indent=2)
+        if output:
+            output.write_text(output_str)
+            typer.echo(f"✅ Signed document saved to {output}")
+        else:
+            typer.echo(output_str)
+    except json.JSONDecodeError:
+        typer.echo("❌ Error: Metadata must be a valid JSON string", err=True)
+        raise typer.Exit(code=1)
+
+@app.command()
+def verify(
+    path: Path = typer.Argument(..., help="Path to the signed document JSON")
+):
+    """
+    Verify a harmonically signed document.
+    """
+    shield = HarmonicSignatureShield()
+    if not path.exists():
+        typer.echo(f"❌ Error: File {path} not found", err=True)
+        raise typer.Exit(code=1)
+
+    try:
+        signed_doc = json.loads(path.read_text())
+        is_authentic, reason = shield.verify_document(signed_doc)
+
+        if is_authentic:
+            typer.echo("✅ DOCUMENT AUTHENTIC")
+        else:
+            typer.echo(f"❌ DOCUMENT FORGED: {reason}", err=True)
+            forgery_type = shield.detect_forgery_type(signed_doc)
+            typer.echo(f"   Detected attack: {forgery_type}", err=True)
+            raise typer.Exit(code=1)
+    except Exception as e:
+        typer.echo(f"❌ Error: {str(e)}", err=True)
+        raise typer.Exit(code=1)
+
+@app.command()
 def version(
     full: bool = typer.Option(False, "--full", "-f")
 ):
     """
     Display version information
     """
-    from . import __version__, __security_patch__
+    from .. import __version__, __security_patch__
 
     typer.echo(f"Avalon System v{__version__}")
     typer.echo(f"Security Patch: {__security_patch__}")
