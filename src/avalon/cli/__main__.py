@@ -5,13 +5,20 @@ Command Line Interface - Entry point for Avalon executables
 import typer
 import asyncio
 import json
+import numpy as np
 from pathlib import Path
 from typing import Optional
 import logging
 
-from .core.harmonic import HarmonicEngine
-from .analysis.fractal import FractalAnalyzer, FractalSecurityError
-from .quantum.sync import QuantumSync
+from ..core.harmonic import HarmonicEngine
+from ..analysis.fractal import FractalAnalyzer, FractalSecurityError
+from ..analysis.topological_signature_detector import demo_bridge_topology
+from ..analysis.visualizer import run_visualizer
+from ..biological.eeg_processor import RealEEGProcessor
+from ..security.harmonic_signature_shield import HarmonicSignatureShield
+from ..core.context_merger import ContextMerger
+from ..quantum.time_crystal import FloquetSystem, TimeCrystal
+from ..quantum.sync import QuantumSync
 
 # Configure logging
 logging.basicConfig(
@@ -158,9 +165,9 @@ def serve(
     Start Avalon mini-services.
     """
     import uvicorn
-    from .services.zeitgeist import app as zeitgeist_app
-    from .services.qhttp_gateway import app as qhttp_app
-    from .services.starlink_q import app as starlink_app
+    from ..services.zeitgeist import app as zeitgeist_app
+    from ..services.qhttp_gateway import app as qhttp_app
+    from ..services.starlink_q import app as starlink_app
 
     services = {
         "zeitgeist": (zeitgeist_app, base_port),
@@ -187,13 +194,150 @@ def serve(
         raise typer.Exit(code=1)
 
 @app.command()
+def topology():
+    """
+    Detect topological signatures (Möbius twist) in system trajectories.
+    """
+    typer.echo("🔬 Starting Topological Signature Analysis...")
+    asyncio.run(demo_bridge_topology())
+
+@app.command()
+def sign(
+    content: str = typer.Argument(..., help="Content to sign"),
+    metadata: str = typer.Argument(..., help="Metadata as JSON string"),
+    output: Optional[Path] = typer.Option(None, "--output", "-o", help="Path to save signed document")
+):
+    """
+    Sign a document with harmonic protection.
+    """
+    shield = HarmonicSignatureShield()
+    try:
+        meta_dict = json.loads(metadata)
+        signed_doc = shield.sign_document(content, meta_dict)
+
+        output_str = json.dumps(signed_doc, indent=2)
+        if output:
+            output.write_text(output_str)
+            typer.echo(f"✅ Signed document saved to {output}")
+        else:
+            typer.echo(output_str)
+    except json.JSONDecodeError:
+        typer.echo("❌ Error: Metadata must be a valid JSON string", err=True)
+        raise typer.Exit(code=1)
+
+@app.command()
+def verify(
+    path: Path = typer.Argument(..., help="Path to the signed document JSON")
+):
+    """
+    Verify a harmonically signed document.
+    """
+    shield = HarmonicSignatureShield()
+    if not path.exists():
+        typer.echo(f"❌ Error: File {path} not found", err=True)
+        raise typer.Exit(code=1)
+
+    try:
+        signed_doc = json.loads(path.read_text())
+        is_authentic, reason = shield.verify_document(signed_doc)
+
+        if is_authentic:
+            typer.echo("✅ DOCUMENT AUTHENTIC")
+        else:
+            typer.echo(f"❌ DOCUMENT FORGED: {reason}", err=True)
+            forgery_type = shield.detect_forgery_type(signed_doc)
+            typer.echo(f"   Detected attack: {forgery_type}", err=True)
+            raise typer.Exit(code=1)
+    except Exception as e:
+        typer.echo(f"❌ Error: {str(e)}", err=True)
+        raise typer.Exit(code=1)
+
+@app.command()
+def merge():
+    """
+    Execute Quantum Context Merge between perspectives.
+    """
+    typer.echo("🌌 Initiating Quantum Context Merge...")
+    merger = ContextMerger()
+
+    # Mock perspectives for demonstration
+    source = np.random.randn(10, 5)
+    target = source + np.random.normal(0, 0.05, (10, 5))
+
+    result = merger.execute_merge(source, target)
+    typer.echo(f"\nMerge Status: {result['status']}")
+    typer.echo(f"Disparity: {result['disparity']:.6f}")
+
+@app.command()
+def crystallize(
+    claw: float = typer.Option(70.0, "--claw", "-c", help="Amount of CLAW tokens to burn")
+):
+    """
+    Create a Time Crystal to extend temporal coherence.
+    """
+    typer.echo(f"⏳ Initiating Temporal Crystallization using {claw} CLAW...")
+
+    floquet = FloquetSystem()
+    floquet.inject_order(claw)
+
+    crystal = TimeCrystal(floquet)
+    result = crystal.stabilize()
+
+    if result["status"] == "STABLE":
+        typer.echo("💎 Time Crystal established.")
+        typer.echo(f"⏱️  Coherence: {result['coherence_ms']} ms")
+    else:
+        typer.echo("❌ Crystallization failed: Insufficient energy.")
+        raise typer.Exit(code=1)
+
+@app.command()
+def visualize_crystal(
+    steps: int = typer.Option(5, "--steps", "-s"),
+    save_gif: bool = typer.Option(False, "--save-gif", help="Save the animation as a GIF")
+):
+    """
+    Visualize the temporal breathing of the established Time Crystal.
+    """
+    typer.echo("🌬️ Starting Time Crystal Visualizer...")
+
+    # Text-based simulation
+    floquet = FloquetSystem()
+    floquet.inject_order(70)
+    crystal = TimeCrystal(floquet)
+    crystal.stabilize()
+    crystal.simulate_breathing(steps=steps)
+
+    # Graphical rendering
+    run_visualizer(save_gif=save_gif)
+
+@app.command()
+def bio_sync(
+    device: str = typer.Option("synthetic", "--device", "-d", help="Device type (synthetic, muse, openbci)")
+):
+    """
+    Synchronize biological signals with the Avalon harmonic field.
+    """
+    typer.echo(f"🧬 Initiating Bio-Synchronization with device: {device}")
+    processor = RealEEGProcessor(device_type=device)
+    processor.connect()
+    processor.start_stream()
+
+    coherence = processor.get_coherence()
+    typer.echo(f"📊 Current Brain Coherence: {coherence:.4f}")
+
+    if coherence > 0.8:
+        typer.echo("✨ RESONANCE DETECTED: Brain is in GHZ state.")
+
+    processor.stop()
+
+@app.command()
 def version(
     full: bool = typer.Option(False, "--full", "-f")
 ):
     """
     Display version information
     """
-    from . import __version__, __security_patch__
+    from .. import __version__, __security_patch__
 
     typer.echo(f"Avalon System v{__version__}")
     typer.echo(f"Security Patch: {__security_patch__}")

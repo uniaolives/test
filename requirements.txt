@@ -12,6 +12,10 @@ click
 requests
 numpy
 scipy
+ripser
+persim
+matplotlib
+pillow
 typer
 rich
 pydantic
