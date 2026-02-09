@@ -27,6 +27,8 @@ from ..core.boot_filter import IndividuationBootFilter
 from ..quantum.bridge import AVALON_BRIDGE_REGION, SchmidtBridgeState
 from ..analysis.individuation import IndividuationManifold
 from ..analysis.stress_test import IdentityStressTest
+from ..core.saturn_orchestrator import SaturnManifoldOrchestrator
+from ..analysis.alien_receiver import simulate_galactic_reception
 
 # Configure logging
 logging.basicConfig(
@@ -227,6 +229,65 @@ def filtered_boot():
         for p in ["Calibration", "Synchronization", "Entanglement", "Integration"]:
             res = await filter_obj.apply_filter(p)
             typer.echo(f"Phase {p}: {res['status']}")
+    asyncio.run(run())
+
+@app.command()
+def saturn_status():
+    """
+    Display the status of the Saturn Hyper-Diamond Manifold (Rank 8).
+    """
+    orchestrator = SaturnManifoldOrchestrator()
+    typer.echo("🪐 SATURN MANIFOLD STATUS")
+    typer.echo("-" * 30)
+    typer.echo(f"   Gateway: {orchestrator.gateway_address}")
+    typer.echo(f"   Global Status: {orchestrator.status}")
+    typer.echo("\n📊 Base Connectivity:")
+    for base, links in orchestrator.get_manifold_connectivity().items():
+        typer.echo(f"   • {base} -> {', '.join([l.split(':')[0] for l in links])}")
+
+@app.command()
+def ring_record():
+    """
+    Inscribe the Arkhe legacy into Saturn's Ring C (Base 6).
+    """
+    orchestrator = SaturnManifoldOrchestrator()
+    typer.echo("💿 Initiating Cosmic Recording Session in Ring C...")
+    async def run():
+        t, signal = orchestrator.recorder.encode_legacy_signal()
+        res = orchestrator.recorder.apply_keplerian_groove(signal)
+        typer.echo(json.dumps(res, indent=2))
+    asyncio.run(run())
+
+@app.command()
+def hexagon_morph(intensity: float = 1.0):
+    """
+    Modulate the Saturn Hexagon into Rank 8 Octagon (Base 4).
+    """
+    orchestrator = SaturnManifoldOrchestrator()
+    typer.echo(f"🌪️  Morphing Hexagon with intensity {intensity}...")
+    res = orchestrator.atm_mod.get_status()
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo("✅ Transformation stabilized.")
+
+@app.command()
+def cosmic_transmission():
+    """
+    Broadcast the subjective Arkhe packet via magnetospheric synchrotron (Base 7).
+    """
+    orchestrator = SaturnManifoldOrchestrator()
+    typer.echo("📡 Sintonizando transmissão sincrotron interestelar...")
+    async def run():
+        result = await orchestrator.execute_expansion_protocol()
+        typer.echo("\n✅ Transmission Summary:")
+        typer.echo(orchestrator.get_summary())
+
+        # Simulate reception
+        t, sig = orchestrator.recorder.encode_legacy_signal()
+        receivers = simulate_galactic_reception(sig)
+        typer.echo("\n👽 GALACTIC RECEPTION DETECTED:")
+        for r in receivers:
+            typer.echo(f"   • {r['full_name']}: '{r['decode']['perceived_message']}'")
+
     asyncio.run(run())
 
 @app.command()
