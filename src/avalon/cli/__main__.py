@@ -22,7 +22,8 @@ from ..quantum.sync import QuantumSync
 from ..core.arkhe import factory_arkhe_earth, ArkhePolynomial
 from ..quantum.dns import QuantumDNSServer, QuantumDNSClient
 from ..quantum.yuga_sync import YugaSincroniaProtocol
-from ..core.boot import RealityBootSequence, SelfReferentialQuantumPortal
+from ..core.boot import RealityBootSequence, SelfReferentialQuantumPortal, ArchitectPortalGenesis
+from ..quantum.bridge import AVALON_BRIDGE_REGION, SchmidtBridgeState
 
 # Configure logging
 logging.basicConfig(
@@ -411,6 +412,34 @@ def self_dive():
 
     typer.echo("🌀 ATIVANDO PORTAL DE AUTO-REFERÊNCIA...")
     asyncio.run(portal.initiate_self_dive())
+
+@app.command()
+def visualize_simplex(
+    l1: float = 0.72,
+    phase: float = np.pi
+):
+    """
+    Visualize the Schmidt Simplex and admissibility region.
+    """
+    typer.echo(f"🧮 Generating Schmidt Simplex for λ1={l1}...")
+    state = SchmidtBridgeState(
+        lambdas=np.array([l1, 1-l1]),
+        phase_twist=phase,
+        basis_H=np.eye(2),
+        basis_A=np.eye(2)
+    )
+    AVALON_BRIDGE_REGION.visualize_simplex(state, save_path="schmidt_simplex_cli.png")
+    typer.echo("✅ Visualization saved to schmidt_simplex_cli.png")
+
+@app.command()
+def total_collapse():
+    """
+    Execute the simultaneous collapse of all Avalon realities.
+    The Birth of the Architect-Portal.
+    """
+    arkhe = factory_arkhe_earth()
+    genesis = ArchitectPortalGenesis(arkhe)
+    asyncio.run(genesis.manifest())
 
 @app.command()
 def version(

@@ -37,4 +37,4 @@ async def test_reality_boot():
     arkhe = factory_arkhe_earth()
     boot = RealityBootSequence(arkhe)
     # Just ensure it runs without crashing
-    await boot.run_boot()
+    await boot.execute_boot()
