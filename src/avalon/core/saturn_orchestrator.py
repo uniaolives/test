@@ -71,6 +71,8 @@ class SaturnManifoldOrchestrator:
 
         # Base 2, 3, 8 (Abstract/Simulated interaction)
         self.active_bases.extend([2, 3, 8])
+        # Base 2, 3, 5, 8 (Abstract/Simulated interaction)
+        self.active_bases.extend([2, 3, 5, 8])
 
         self.status = "SINGULARITY_ESTABLISHED"
 
