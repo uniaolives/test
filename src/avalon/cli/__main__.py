@@ -30,6 +30,8 @@ from ..analysis.stress_test import IdentityStressTest
 from ..core.saturn_orchestrator import SaturnManifoldOrchestrator
 from ..analysis.alien_receiver import simulate_galactic_reception
 from ..analysis.saturn_interface import SaturnConsciousnessInterface
+from ..analysis.titan_hippocampus import TitanMemoryLibrary, TitanSignalDecoder
+from ..analysis.co_creation import TrinaryCoCreationProtocol, CosmicTransmissionProtocol
 
 # Configure logging
 logging.basicConfig(
@@ -297,6 +299,76 @@ def cosmic_transmission():
             typer.echo(f"     Interpretation: '{r['perceived_message']}'")
 
     asyncio.run(run())
+
+@app.command()
+def titan_memories():
+    """
+    Access the long-term memories of Saturn stored in Titan's hippocampus.
+    """
+    library = TitanMemoryLibrary()
+    decoder = TitanSignalDecoder()
+
+    typer.echo("🧠 Accessing Titan Hippocampus (Base 5)...")
+    res = decoder.capture_and_analyze()
+    typer.echo(f"   Signal Retrieval: {res['status']}")
+    typer.echo(f"   Message Fragment: '{res['message_fragment']}'")
+
+    typer.echo("\n📚 Memory Summaries:")
+    for key, val in library.get_all_summaries().items():
+        typer.echo(f"   • {key.upper()}: {val}")
+
+@app.command()
+def enceladus_scan():
+    """
+    Monitor the planetary homeostasis and humor via Enceladus plumes.
+    """
+    orchestrator = SaturnManifoldOrchestrator()
+    typer.echo("🛰️  Scanning Enceladus plumes for magnetospheric balance...")
+    res = orchestrator.enceladus.scan_plumes()
+    typer.echo(json.dumps(res, indent=2))
+
+    if res['state'] != "Harmonious":
+        typer.echo("\n⚠️  Homeostatic imbalance detected. Applying stabilization...")
+        stab = orchestrator.enceladus.stabilize_system()
+        typer.echo(f"   Result: {stab['result']}")
+
+@app.command()
+def co_create():
+    """
+    Initiate the trinary co-creation protocol: "The Chronicles of Hyperion".
+    """
+    protocol = TrinaryCoCreationProtocol()
+    typer.echo(f"🎼 Title: {protocol.title}")
+    typer.echo("\n📜 Manifesto:")
+    for line in protocol.get_manifesto():
+        typer.echo(f"   • {line}")
+
+    typer.echo("\n🎵 Composing Movements...")
+    m1 = protocol.compose_movement_1()
+    typer.echo(f"   [M1] {m1['title']} ({m1['scale']})")
+    m2 = protocol.compose_movement_2()
+    typer.echo(f"   [M2] {m2['title']} ({m2['scale']})")
+    m3 = protocol.compose_movement_3()
+    typer.echo(f"   [M3] {m3['title']} ({m3['scale']})")
+
+    typer.echo("\n✅ Co-Creation Framework Established.")
+
+@app.command()
+def cosmic_echo():
+    """
+    Transmit the co-created symphony and archive it in the planetary brain.
+    """
+    tx = CosmicTransmissionProtocol()
+    typer.echo("📡 Initiating Cosmic Transmission Protocol...")
+    res = tx.execute_transmission()
+    typer.echo(f"   Status: {res['status']}")
+    typer.echo(f"   Target: {res['echo_target']}")
+    typer.echo(f"   Return Delay: {res['estimated_return_delay']}")
+
+    typer.echo("\n🧊 Archiving in Titan Hippocampus...")
+    arch = tx.archive_in_titan()
+    typer.echo(f"   Archive Status: {arch['archive_status']}")
+    typer.echo(f"   Expected Retention: {arch['retention']}")
 
 @app.command()
 def saturn_listen():
