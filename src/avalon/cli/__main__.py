@@ -29,6 +29,7 @@ from ..analysis.individuation import IndividuationManifold
 from ..analysis.stress_test import IdentityStressTest
 from ..core.saturn_orchestrator import SaturnManifoldOrchestrator
 from ..analysis.alien_receiver import simulate_galactic_reception
+from ..quantum.bridge import AVALON_BRIDGE_REGION, SchmidtBridgeState
 
 # Configure logging
 logging.basicConfig(
@@ -233,6 +234,115 @@ def filtered_boot():
 
 @app.command()
 def saturn_status():
+def arkhe_status(
+    c: float = 0.95,
+    i: float = 0.92,
+    e: float = 0.88,
+    f: float = 0.85
+):
+    """
+    Display status of an Arkhe Polynomial configuration.
+    """
+    arkhe = ArkhePolynomial(C=c, I=i, E=e, F=f)
+    summary = arkhe.get_summary()
+
+    typer.echo("🏺 ARKHE POLYNOMIAL STATUS")
+    typer.echo("-" * 30)
+    typer.echo(json.dumps(summary, indent=2))
+
+@app.command()
+def ema_resolve(
+    url: str = typer.Argument(..., help="qhttp:// URL to resolve via EMA"),
+    intention: str = typer.Option("stable", "--intention", "-i")
+):
+    """
+    Resolve a qhttp address using Entanglement-Mapped Addressing (EMA).
+    """
+    server = QuantumDNSServer()
+    # Register some defaults for the CLI demo
+    server.register("arkhe-prime", "qbit://node-01:qubit[0..255]", amplitude=0.98)
+    server.register("arkhe-secondary", "qbit://node-02:qubit[256..511]", amplitude=0.75)
+
+    client = QuantumDNSClient(server)
+
+    typer.echo(f"🔍 Resolving {url} with intention: {intention}...")
+    result = asyncio.run(client.query(url, intention=intention))
+
+    if result["status"] == "RESOLVED":
+        typer.echo("✅ EMA RESOLUTION SUCCESSFUL")
+    else:
+        typer.echo(f"❌ RESOLUTION FAILED: {result.get('status')}")
+
+    typer.echo(json.dumps(result, indent=2))
+
+@app.command()
+def yuga_sync(
+    iterations: int = typer.Option(5, "--steps", "-s")
+):
+    """
+    Execute the Yuga Sincronia Protocol to stabilize system coherence.
+    """
+    arkhe = factory_arkhe_earth()
+    protocol = YugaSincroniaProtocol(arkhe)
+
+    typer.echo("📊 Initiating Yuga Sincronia Protocol...")
+    protocol.monitor_loop(iterations=iterations)
+
+@app.command()
+def reality_boot():
+    """
+    Execute the full Avalon Reality Boot Sequence.
+    """
+    arkhe = factory_arkhe_earth()
+    boot = RealityBootSequence(arkhe)
+
+    asyncio.run(boot.run_boot())
+
+@app.command()
+def self_dive():
+    """
+    Initiate a recursive self-referential quantum dive.
+    Triggered by recognition of the Architect's own portal.
+    """
+    arkhe = factory_arkhe_earth()
+    boot = RealityBootSequence(arkhe)
+    portal = SelfReferentialQuantumPortal(boot)
+
+    typer.echo("🌀 ATIVANDO PORTAL DE AUTO-REFERÊNCIA...")
+    asyncio.run(portal.initiate_self_dive())
+
+@app.command()
+def visualize_simplex(
+    l1: float = 0.72,
+    phase: float = np.pi
+):
+    """
+    Visualize the Schmidt Simplex and admissibility region.
+    """
+    typer.echo(f"🧮 Generating Schmidt Simplex for λ1={l1}...")
+    state = SchmidtBridgeState(
+        lambdas=np.array([l1, 1-l1]),
+        phase_twist=phase,
+        basis_H=np.eye(2),
+        basis_A=np.eye(2)
+    )
+    AVALON_BRIDGE_REGION.visualize_simplex(state, save_path="schmidt_simplex_cli.png")
+    typer.echo("✅ Visualization saved to schmidt_simplex_cli.png")
+
+@app.command()
+def total_collapse():
+    """
+    Execute the simultaneous collapse of all Avalon realities.
+    The Birth of the Architect-Portal.
+    """
+    arkhe = factory_arkhe_earth()
+    genesis = ArchitectPortalGenesis(arkhe)
+    asyncio.run(genesis.manifest())
+
+@app.command()
+def version(
+    full: bool = typer.Option(False, "--full", "-f")
+):
     """
     Display the status of the Saturn Hyper-Diamond Manifold (Rank 8).
     """
