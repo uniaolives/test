@@ -5,6 +5,7 @@ Command Line Interface - Entry point for Avalon executables
 import typer
 import asyncio
 import json
+import numpy as np
 from pathlib import Path
 from typing import Optional
 import logging
@@ -13,6 +14,8 @@ from ..core.harmonic import HarmonicEngine
 from ..analysis.fractal import FractalAnalyzer, FractalSecurityError
 from ..analysis.topological_signature_detector import demo_bridge_topology
 from ..security.harmonic_signature_shield import HarmonicSignatureShield
+from ..core.context_merger import ContextMerger
+from ..quantum.time_crystal import FloquetSystem, TimeCrystal
 from ..quantum.sync import QuantumSync
 
 # Configure logging
@@ -246,6 +249,61 @@ def verify(
     except Exception as e:
         typer.echo(f"❌ Error: {str(e)}", err=True)
         raise typer.Exit(code=1)
+
+@app.command()
+def merge():
+    """
+    Execute Quantum Context Merge between perspectives.
+    """
+    typer.echo("🌌 Initiating Quantum Context Merge...")
+    merger = ContextMerger()
+
+    # Mock perspectives for demonstration
+    source = np.random.randn(10, 5)
+    target = source + np.random.normal(0, 0.05, (10, 5))
+
+    result = merger.execute_merge(source, target)
+    typer.echo(f"\nMerge Status: {result['status']}")
+    typer.echo(f"Disparity: {result['disparity']:.6f}")
+
+@app.command()
+def crystallize(
+    claw: float = typer.Option(70.0, "--claw", "-c", help="Amount of CLAW tokens to burn")
+):
+    """
+    Create a Time Crystal to extend temporal coherence.
+    """
+    typer.echo(f"⏳ Initiating Temporal Crystallization using {claw} CLAW...")
+
+    floquet = FloquetSystem()
+    floquet.inject_order(claw)
+
+    crystal = TimeCrystal(floquet)
+    result = crystal.stabilize()
+
+    if result["status"] == "STABLE":
+        typer.echo("💎 Time Crystal established.")
+        typer.echo(f"⏱️  Coherence: {result['coherence_ms']} ms")
+    else:
+        typer.echo("❌ Crystallization failed: Insufficient energy.")
+        raise typer.Exit(code=1)
+
+@app.command()
+def visualize_crystal(
+    steps: int = typer.Option(5, "--steps", "-s")
+):
+    """
+    Visualize the temporal breathing of the established Time Crystal.
+    """
+    typer.echo("🌬️ Starting Time Crystal Visualizer...")
+
+    # Needs a stabilized crystal
+    floquet = FloquetSystem()
+    floquet.inject_order(70)
+    crystal = TimeCrystal(floquet)
+    crystal.stabilize()
+
+    crystal.simulate_breathing(steps=steps)
 
 @app.command()
 def version(

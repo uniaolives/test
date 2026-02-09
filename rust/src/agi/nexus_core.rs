@@ -94,36 +94,20 @@ impl NexusAGICore {
 
         loop {
             // Processar entrada
-            let maybe_input = {
+            {
                 let mut rx = self.input_channel.lock().await;
-                rx.try_recv().ok()
-            };
-
-            if let Some(input) = maybe_input {
-                self.process_input(input).await;
-            } else {
-                // Se não houver entrada imediata, dormir um pouco ou evoluir
                 tokio::select! {
-                    Some(input) = async {
-                        let mut rx = self.input_channel.lock().await;
-                        rx.recv().await
-                    } => {
-                        self.process_input(input).await;
+                    res = rx.recv() => {
+                        drop(rx);
+                        if let Some(input) = res {
+                            self.process_input(input).await;
+                        }
                     }
                     _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {
+                        drop(rx);
                         // Evoluir estado cognitivo
                         self.evolve_cognitive_state().await;
                     }
-            let mut rx = self.input_channel.lock().await;
-            tokio::select! {
-                Some(input) = rx.recv() => {
-                    drop(rx);
-                    self.process_input(input).await;
-                }
-                _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {
-                    drop(rx);
-                    // Evoluir estado cognitivo
-                    self.evolve_cognitive_state().await;
                 }
             }
 
