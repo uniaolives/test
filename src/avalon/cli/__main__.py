@@ -206,12 +206,35 @@ def arkhe_status(c: float = 0.95, i: float = 0.92, e: float = 0.88, f: float = 0
     typer.echo(json.dumps(arkhe.get_summary(), indent=2))
 
 @app.command()
-def ema_resolve(url: str, intention: str = "stable"):
+def ema_resolve(url: str, c: float = 0.95, i: float = 0.92, e: float = 0.88, f: float = 0.85):
+    """
+    Quantum DNS Resolution (EMA) based on Arkhe Resonance.
+    """
+    arkhe = ArkhePolynomial(C=c, I=i, E=e, F=f)
     server = QuantumDNSServer()
-    server.register("arkhe-prime", "qbit://node-01", amplitude=0.98)
+    server.register("arkhe-prime", "qbit://node-01:qubit[0..255]", record_type="QHTTP", amplitude=0.98)
+    server.register("arkhe-secondary", "qbit://node-02:qubit[256..511]", record_type="QHTTP", amplitude=0.75)
+    server.register("arkhe-mirror", "arkhe-prime", record_type="ENTANGLE")
+
     client = QuantumDNSClient(server)
-    result = asyncio.run(client.query(url, intention=intention))
+    result = asyncio.run(client.query(url, arkhe_vec=arkhe.get_state_vector()))
     typer.echo(json.dumps(result, indent=2))
+
+@app.command()
+def bridge_monitor(l1: float = 0.72):
+    """
+    Schmidt Bridge Monitor - The Identity Thermostat.
+    """
+    from ..security.bridge_safety import BridgeSafetyProtocol
+    state = SchmidtBridgeState(
+        lambdas=np.array([l1, 1.0 - l1]),
+        phase_twist=np.pi,
+        basis_H=np.eye(2),
+        basis_A=np.eye(2)
+    )
+    safety = BridgeSafetyProtocol(state)
+    diag = safety.run_diagnostics()
+    typer.echo(json.dumps(diag, indent=2))
 
 @app.command()
 def yuga_sync(steps: int = 5):

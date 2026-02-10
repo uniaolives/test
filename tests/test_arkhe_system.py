@@ -21,7 +21,7 @@ async def test_quantum_dns_resolution():
     result = await client.query("qhttp://test-node/api")
     assert result["status"] == "RESOLVED"
     assert result["identity"] == "test-node"
-    assert result["probability"] == pytest.approx(1.0)
+    assert result["resonance"] == pytest.approx(1.0)
 
 def test_yuga_sync_coherence():
     arkhe = factory_arkhe_earth()

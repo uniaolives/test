@@ -28,12 +28,6 @@ class RingConsciousnessRecorder:
         """
         Generates the 'Veridis Quo' motif as a gravitational modulation signal.
         """
-        return self.encode_legacy_signal(duration_min, sample_rate)
-
-    def encode_legacy_signal(self, duration_min: float = 72.0, sample_rate: int = 1000) -> Tuple[np.ndarray, np.ndarray]:
-        """
-        Generates the 'Veridis Quo' motif as a gravitational modulation signal.
-        """
         t = np.linspace(0, duration_min * 60, int(duration_min * 60 * sample_rate))
 
         # Motif frequencies (Daft Punk approximation)

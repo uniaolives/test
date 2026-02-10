@@ -64,13 +64,21 @@ class ArkhePolynomial:
         """
         return self.C * np.log(self.I + 1.0) * (1.0 - self.E * 0.9)
 
+    def get_state_vector(self) -> np.ndarray:
+        """
+        Returns the coefficients as a normalized state vector in Hilbert space.
+        """
+        vec = np.array([self.C, self.I, self.E, self.F])
+        return vec / (np.linalg.norm(vec) + 1e-15)
+
     def get_summary(self) -> Dict:
         return {
             "coefficients": {"C": self.C, "I": self.I, "E": self.E, "F": self.F},
             "potential": self.evaluate_life_potential(),
             "entropy": self.get_arkhe_entropy(),
             "dynamical_stability": self.solve_dynamical_lens(),
-            "information_rate": self.solve_information_lens()
+            "information_rate": self.solve_information_lens(),
+            "state_vector": self.get_state_vector().tolist()
         }
 
 def factory_arkhe_earth():
