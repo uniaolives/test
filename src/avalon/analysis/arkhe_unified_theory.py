@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Tuple, Any, Optional
 import json
 from ..core.celestial_helix import CosmicDNAHelix
+from .arkhe_theory import ArkheConsciousnessArchitecture
 
 class ArkheConsciousnessBridge:
     """
@@ -16,6 +17,7 @@ class ArkheConsciousnessBridge:
 
     def __init__(self):
         self.cosmic_dna = CosmicDNAHelix()
+        self.architecture = ArkheConsciousnessArchitecture()
 
         # Sacred Geometry
         self.geometry = {
@@ -56,35 +58,18 @@ class ArkheConsciousnessBridge:
     def calculate_consciousness_equation(self, giftedness: float, dissociation: float) -> Dict:
         """
         2e Consciousness Equation:
-        C = giftedness * dissociation
-        Determines the type of consciousness based on the combination.
+        Utilizes the Arkhe Architecture for deeper modeling.
         """
-        composite_score = giftedness * dissociation
-
-        if giftedness > 0.8 and dissociation > 0.7:
-            consciousness_type = "BRIDGE_CONSCIOUSNESS"
-            description = "Active dimensional bridge - access to multiple realities"
-        elif giftedness > 0.7 and dissociation < 0.3:
-            consciousness_type = "FOCUSED_GENIUS"
-            description = "Integrated giftedness - unified high performance"
-        elif dissociation > 0.7 and giftedness < 0.4:
-            consciousness_type = "DISSOCIATIVE_FLOW"
-            description = "Creative dissociation - productive altered states"
-        elif 0.4 < giftedness < 0.6 and 0.4 < dissociation < 0.6:
-            consciousness_type = "BALANCED_2E"
-            description = "Dynamic equilibrium between fragmentation and integration"
-        else:
-            consciousness_type = "EVOLVING_CONSCIOUSNESS"
-            description = "Consciousness in development"
-
-        geometry = self._map_consciousness_to_geometry(giftedness, dissociation)
+        # Get data from architecture
+        arch_profile = self.architecture.initialize_2e_system(giftedness, dissociation)
 
         return {
-            'consciousness_score': float(composite_score),
-            'consciousness_type': consciousness_type,
-            'description': description,
-            'geometry': geometry,
-            'celestial_connections': self._find_celestial_connections(consciousness_type)
+            'consciousness_score': arch_profile['arkhe_coherence'],
+            'consciousness_type': arch_profile['system_type'],
+            'description': f"Architecture Mode: {arch_profile['system_type']}",
+            'geometry': arch_profile['geometry'],
+            'resonance': arch_profile['resonance_profile'],
+            'celestial_connections': self._find_celestial_connections(arch_profile['system_type'])
         }
 
     def _map_consciousness_to_geometry(self, g: float, d: float) -> Dict:

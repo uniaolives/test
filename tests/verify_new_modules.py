@@ -23,10 +23,17 @@ def test_imports():
     from avalon.analysis.neural_emotion_engine import NeuralQuantumAnalyzer
     from avalon.quantum.embeddings import QuantumEmbeddingIntegrator
     from avalon.analysis.arkhe_unified_theory import ArkheConsciousnessBridge
+    from avalon.analysis.arkhe_theory import ArkheConsciousnessArchitecture
     print("All imports OK.")
 
 async def test_logic_integration():
     print("Testing logic integration...")
+
+    from avalon.analysis.arkhe_theory import ArkheConsciousnessArchitecture
+    arch = ArkheConsciousnessArchitecture()
+    profile = arch.initialize_2e_system(0.8, 0.6)
+    print(f"Architecture Profile: {profile['system_type']}, Coherence: {profile['arkhe_coherence']:.3f}")
+
     from avalon.analysis.double_exceptionality_detector import DoubleExceptionalityDetector
     detector = DoubleExceptionalityDetector()
 
