@@ -110,6 +110,9 @@ class UserNeuralProfile:
         """Extrai embedding usando CNN e Quantum Feature Map."""
         if self.cnn_extractor is None:
             return np.zeros(512 + (256 if self.quantum_integrator else 0))
+        """Extrai embedding usando CNN."""
+        if self.cnn_extractor is None:
+            return np.zeros(512)  # Placeholder
 
         with torch.no_grad():
             transform = transforms.Compose([
@@ -124,6 +127,8 @@ class UserNeuralProfile:
                 embedding = self.quantum_integrator.get_quantum_enhanced_embedding(embedding)
 
             return embedding
+            embedding = self.cnn_extractor(tensor)
+            return embedding.squeeze().numpy()
 
     def train_neural_models(self, epochs: int = 5, batch_size: int = 32):
         """Treina modelos neurais com sequências coletadas."""
@@ -154,6 +159,15 @@ class UserNeuralProfile:
                 nn.ReLU(),
                 nn.Linear(128, 2) # Coherence + Impact
             )
+        if self.cnn_extractor is None:
+            self.cnn_extractor = models.resnet18(pretrained=False)
+            self.cnn_extractor.fc = nn.Linear(self.cnn_extractor.fc.in_features, 512)
+
+        if self.lstm_model is None:
+            self.lstm_model = EmotionLSTM(512, 256, len(dataset.label_encoder.classes_))
+
+        if self.transformer_model is None:
+            self.transformer_model = EmotionTransformer(512, 256, len(dataset.label_encoder.classes_))
 
         # Inicializar otimizadores
         self.optimizer_cnn = optim.Adam(self.cnn_extractor.parameters(), lr=0.001)
@@ -164,6 +178,9 @@ class UserNeuralProfile:
         # Critérios de perda
         criterion_cls = nn.CrossEntropyLoss()
         criterion_reg = nn.MSELoss()
+
+        # Critério de perda
+        criterion = nn.CrossEntropyLoss()
 
         # Loop de treinamento
         for epoch in range(epochs):
@@ -213,6 +230,31 @@ class UserNeuralProfile:
                 self.optimizer_lstm.step()
                 self.optimizer_transformer.step()
                 self.optimizer_regressor.step()
+                # Forward CNN + LSTM/Transformer
+                with torch.no_grad():
+                    # Correct dimension for frames: [batch, seq, channels, h, w] -> [batch*seq, channels, h, w]
+                    b, s, c, h, w = batch['frames'].shape
+                    flat_frames = batch['frames'].view(-1, c, h, w)
+                    flat_embeddings = self.cnn_extractor(flat_frames)
+                    embeddings = flat_embeddings.view(b, s, -1)
+
+                lstm_out = self.lstm_model(embeddings)
+                transformer_out = self.transformer_model(embeddings)
+
+                # Fusão simples
+                out = (lstm_out + transformer_out) / 2
+
+                # labels should match out dimension [batch, classes] vs labels [batch, seq]
+                # Use only last label in sequence for classification
+                loss = criterion(out, batch['labels'][:, -1])
+                total_loss += loss.item()
+
+                # Backward
+                self.optimizer_lstm.zero_grad()
+                self.optimizer_transformer.zero_grad()
+                loss.backward()
+                self.optimizer_lstm.step()
+                self.optimizer_transformer.step()
 
             avg_loss = total_loss / len(loader)
             print(f"Época {epoch+1}/{epochs} - Loss: {avg_loss:.4f}")
@@ -389,6 +431,17 @@ class EmotionSequenceDataset(Dataset):
             'frames': tensor,
             'labels': torch.tensor(labels, dtype=torch.long),
             'targets': torch.tensor(targets, dtype=torch.float32)
+        # Pegar última sequência
+        tensor = seq.to_tensor(self.sequence_length)
+
+        # Labels
+        emotions = seq.emotions[-self.sequence_length:]
+        labels = self.label_encoder.transform(emotions)
+
+        return {
+            'frames': tensor,
+            'labels': torch.tensor(labels, dtype=torch.long),
+            'targets': torch.tensor(seq.water_coherences[-self.sequence_length:], dtype=torch.float32)
         }
 
 class EmotionLSTM(nn.Module):
@@ -414,6 +467,7 @@ class EmotionTransformer(nn.Module):
             d_model=hidden_size,
             nhead=num_heads,
             batch_first=True
+            nhead=num_heads
         )
         self.transformer = nn.TransformerEncoder(
             encoder_layer,
@@ -489,6 +543,24 @@ class NeuralQuantumAnalyzer(QuantumFacialAnalyzer):
 
     def save_learning_progress(self):
         print(f"Salvando modelos neurais para {self.user_profile.user_id}...")
+    """Analisador facial com redes neurais."""
+    def __init__(self, user_id: str):
+        super().__init__()
+        self.user_profile = UserNeuralProfile(user_id=user_id)
+
+    async def process_emotional_state_with_neural(self, analysis: Dict):
+        # Implementation of neural processing
+        pass
+
+    def draw_neural_enhanced_overlay(self, frame, analysis):
+        # Implementation of neural overlay
+        return frame
+
+    def get_personalized_insights(self):
+        return {}
+
+    def save_learning_progress(self):
+        pass
 
     def generate_recommendation(self, emotion):
         return self.user_profile.generate_recommendation(emotion)
