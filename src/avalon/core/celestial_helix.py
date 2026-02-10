@@ -1,6 +1,7 @@
 """
 Cosmic DNA Helix: Solar System as a 9-stranded Helical Quantum System.
 Unified model of celestial mechanics as a helical quantum system.
+Updated with Normalized Arkhe Framework.
 """
 
 import numpy as np
@@ -9,6 +10,7 @@ from typing import Dict, List, Tuple, Any
 from enum import Enum
 from scipy.spatial.transform import Rotation
 from .schmidt_bridge import SchmidtBridgeHexagonal
+from .arkhe import NormalizedArkhe
 
 class CelestialBody(Enum):
     """Corpos celestes do sistema solar."""
@@ -54,7 +56,8 @@ class CosmicDNAHelix:
             'golden_ratio': 1.61803398875
         }
 
-        self.arkhe_coefficients = {
+        # Raw coefficients from Article Table 4.2.1
+        raw_coefficients = {
             'Sun': {'C': 1.0, 'I': 0.9, 'E': 1.0, 'F': 0.8},
             'Mercury': {'C': 0.65, 'I': 0.4, 'E': 0.5, 'F': 0.35},
             'Venus': {'C': 0.75, 'I': 0.6, 'E': 0.7, 'F': 0.5},
@@ -66,7 +69,14 @@ class CosmicDNAHelix:
             'Neptune': {'C': 0.6, 'I': 0.5, 'E': 0.4, 'F': 0.5}
         }
 
-        print("🌌 COSMIC DNA HELIX SYSTEM INITIALIZED")
+        # Normalize them as per Definition 2.1.2
+        self.arkhe_coefficients = {}
+        for body, coeffs in raw_coefficients.items():
+            self.arkhe_coefficients[body] = NormalizedArkhe(
+                coeffs['C'], coeffs['I'], coeffs['E'], coeffs['F']
+            )
+
+        print("🌌 COSMIC DNA HELIX SYSTEM INITIALIZED (NORMALIZED)")
 
     def calculate_triple_helix_position(self, planet: str, time_years: float, include_vertical: bool = True) -> Tuple[float, float, float]:
         T = self.constants['orbital_periods'][planet]
@@ -118,7 +128,7 @@ class CosmicDNAHelix:
         return entanglement
 
     def to_schmidt_state(self) -> SchmidtBridgeHexagonal:
-        # Simplified mapping of system entropy to Schmidt state
+        # Improved mapping of system entropy to Schmidt state
         matrix = self.calculate_entanglement_matrix()
         evals = np.linalg.eigvals(matrix)
         evals = np.abs(evals)

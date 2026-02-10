@@ -1,10 +1,12 @@
 """
 Arkhe Polynomial - The generating function of life variables
 L = f(C, I, E, F, ...)
+Integrated with Normalized Arkhe Framework (2026).
 """
 
 import numpy as np
-from typing import Dict
+import itertools
+from typing import Dict, List, Tuple
 
 class ArkhePolynomial:
     """
@@ -73,10 +75,62 @@ class ArkhePolynomial:
             "information_rate": self.solve_information_lens()
         }
 
+class NormalizedArkhe(ArkhePolynomial):
+    """
+    Implementation of the Normalized Arkhe Framework.
+    Constraint: C + I + E + F = 1
+    """
+    def __init__(self, C: float, I: float, E: float, F: float):
+        total = C + I + E + F
+        if total == 0:
+            super().__init__(0.25, 0.25, 0.25, 0.25)
+        else:
+            super().__init__(C/total, I/total, E/total, F/total)
+
+    def __repr__(self):
+        return f"NormalizedArkhe(C={self.C:.3f}, I={self.I:.3f}, E={self.E:.3f}, F={self.F:.3f})"
+
+class HexagonalArkhe:
+    """
+    Hexagonal extension of Arkhe based on permutations of (C, I, E).
+    Each permutation represents a 'dominant phase'.
+    """
+    def __init__(self, C: float, I: float, E: float):
+        self.base = (C, I, E)
+        self.permutations = list(itertools.permutations(self.base))
+        self.phases = self._generate_phases()
+
+    def _generate_phases(self) -> List[np.ndarray]:
+        # Embed in R6 as per article Definition 2.2.1
+        phases = []
+        for i, p in enumerate(self.permutations):
+            v = np.zeros(6)
+            if i == 0: v[0:3] = p # CIE
+            elif i == 1: v[0], v[3], v[4] = p # CEI
+            elif i == 2: v[2], v[0], v[1] = p # ICE
+            elif i == 3: v[2], v[4], v[3] = p # IEC
+            elif i == 4: v[4], v[0], v[2] = p # ECI
+            elif i == 5: v[4], v[5], v[0] = p # EIC
+            phases.append(v)
+        return phases
+
+    def calculate_cayley_distance(self, sigma1_idx: int, sigma2_idx: int) -> int:
+        """Approximate Cayley distance as number of transpositions."""
+        p1 = self.permutations[sigma1_idx]
+        p2 = self.permutations[sigma2_idx]
+        return sum(1 for a, b in zip(p1, p2) if a != b)
+
+def factory_arkhe_earth_normalized():
+    """Returns Normalized Arkhe for Earth as per Table 4.2.1"""
+    return NormalizedArkhe(C=0.70, I=0.95, E=0.60, F=1.00)
+
+def factory_arkhe_water_normalized():
+    """Returns Normalized Arkhe for Pure Water as per Example 2.1.3"""
+    return NormalizedArkhe(C=0.85, I=0.05, E=0.08, F=0.02)
+
+# Backward compatibility aliases
 def factory_arkhe_earth():
-    """Returns Arkhe for Earth-like conditions"""
     return ArkhePolynomial(C=0.95, I=0.92, E=0.88, F=0.85)
 
 def factory_arkhe_europa():
-    """Returns Arkhe for Europa-like conditions"""
     return ArkhePolynomial(C=0.75, I=0.60, E=0.45, F=0.40)
