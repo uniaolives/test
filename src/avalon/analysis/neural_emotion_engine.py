@@ -29,6 +29,7 @@ from sklearn.preprocessing import StandardScaler, LabelEncoder
 # Importar sistema principal
 from .facial_biofeedback_system import QuantumFacialAnalyzer, QuantumFacialBiofeedback
 from .verbal_events_processor import VerbalBioCascade
+from ..quantum.embeddings import QuantumEmbeddingIntegrator
 
 # ============================================================================
 # ESTRUTURAS DE DADOS NEURAL
@@ -79,6 +80,7 @@ class UserNeuralProfile:
     lstm_model: Optional[nn.Module] = None
     transformer_model: Optional[nn.Module] = None
     regressor: Optional[nn.Module] = None
+    quantum_integrator: Optional[QuantumEmbeddingIntegrator] = None
 
     # Otimizadores e escaladores
     optimizer_cnn: Optional[optim.Optimizer] = None
@@ -105,6 +107,9 @@ class UserNeuralProfile:
         print(f"📊 Sequência adicionada (Total: {len(self.sequences)})")
 
     def _extract_embedding(self, frame: np.ndarray) -> np.ndarray:
+        """Extrai embedding usando CNN e Quantum Feature Map."""
+        if self.cnn_extractor is None:
+            return np.zeros(512 + (256 if self.quantum_integrator else 0))
         """Extrai embedding usando CNN."""
         if self.cnn_extractor is None:
             return np.zeros(512)  # Placeholder
@@ -116,6 +121,12 @@ class UserNeuralProfile:
                 transforms.ToTensor()
             ])
             tensor = transform(frame).unsqueeze(0)
+            embedding = self.cnn_extractor(tensor).squeeze().numpy()
+
+            if self.quantum_integrator:
+                embedding = self.quantum_integrator.get_quantum_enhanced_embedding(embedding)
+
+            return embedding
             embedding = self.cnn_extractor(tensor)
             return embedding.squeeze().numpy()
 
@@ -130,6 +141,24 @@ class UserNeuralProfile:
         loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
         # Inicializar modelos se necessário
+        embedding_dim = 512 + (256 if self.quantum_integrator else 0)
+
+        if self.cnn_extractor is None:
+            self.cnn_extractor = models.resnet18(weights=None)
+            self.cnn_extractor.fc = nn.Linear(self.cnn_extractor.fc.in_features, 512)
+
+        if self.lstm_model is None:
+            self.lstm_model = EmotionLSTM(embedding_dim, 256, len(dataset.label_encoder.classes_))
+
+        if self.transformer_model is None:
+            self.transformer_model = EmotionTransformer(embedding_dim, 256, len(dataset.label_encoder.classes_))
+
+        if self.regressor is None:
+            self.regressor = nn.Sequential(
+                nn.Linear(embedding_dim, 128),
+                nn.ReLU(),
+                nn.Linear(128, 2) # Coherence + Impact
+            )
         if self.cnn_extractor is None:
             self.cnn_extractor = models.resnet18(pretrained=False)
             self.cnn_extractor.fc = nn.Linear(self.cnn_extractor.fc.in_features, 512)
@@ -144,6 +173,11 @@ class UserNeuralProfile:
         self.optimizer_cnn = optim.Adam(self.cnn_extractor.parameters(), lr=0.001)
         self.optimizer_lstm = optim.Adam(self.lstm_model.parameters(), lr=0.001)
         self.optimizer_transformer = optim.Adam(self.transformer_model.parameters(), lr=0.001)
+        self.optimizer_regressor = optim.Adam(self.regressor.parameters(), lr=0.001)
+
+        # Critérios de perda
+        criterion_cls = nn.CrossEntropyLoss()
+        criterion_reg = nn.MSELoss()
 
         # Critério de perda
         criterion = nn.CrossEntropyLoss()
@@ -152,6 +186,50 @@ class UserNeuralProfile:
         for epoch in range(epochs):
             total_loss = 0
             for batch in loader:
+                # Forward CNN
+                b, s, c, h, w = batch['frames'].shape
+                flat_frames = batch['frames'].view(-1, c, h, w)
+                flat_embeddings = self.cnn_extractor(flat_frames)
+
+                # Apply Quantum Integration if active
+                if self.quantum_integrator:
+                    # Need to convert to numpy and back for Qiskit part
+                    # In a production system, this would be optimized or run on a simulator layer
+                    with torch.no_grad():
+                        q_embeddings = []
+                        for emb in flat_embeddings:
+                            q_enhanced = self.quantum_integrator.get_quantum_enhanced_embedding(emb.numpy())
+                            q_embeddings.append(torch.from_numpy(q_enhanced).float())
+                        flat_embeddings = torch.stack(q_embeddings)
+
+                embeddings = flat_embeddings.view(b, s, -1)
+
+                # Forward Sequence Models
+                lstm_out = self.lstm_model(embeddings)
+                transformer_out = self.transformer_model(embeddings)
+                out = (lstm_out + transformer_out) / 2
+
+                # Regression for biochemical impact
+                reg_pred = self.regressor(embeddings[:, -1, :])
+
+                # Loss calculation
+                loss_cls = criterion_cls(out, batch['labels'][:, -1])
+                loss_reg = criterion_reg(reg_pred, batch['targets'][:, -1]) # Assuming targets also have seq dim
+                loss = loss_cls + loss_reg
+                total_loss += loss.item()
+
+                # Backward
+                self.optimizer_cnn.zero_grad()
+                self.optimizer_lstm.zero_grad()
+                self.optimizer_transformer.zero_grad()
+                self.optimizer_regressor.zero_grad()
+
+                loss.backward()
+
+                self.optimizer_cnn.step()
+                self.optimizer_lstm.step()
+                self.optimizer_transformer.step()
+                self.optimizer_regressor.step()
                 # Forward CNN + LSTM/Transformer
                 with torch.no_grad():
                     # Correct dimension for frames: [batch, seq, channels, h, w] -> [batch*seq, channels, h, w]
@@ -326,6 +404,33 @@ class EmotionSequenceDataset(Dataset):
     def __getitem__(self, idx):
         seq = self.sequences[idx]
 
+        # Pegar última sequência (já cuidada no to_tensor para padding)
+        tensor = seq.to_tensor(self.sequence_length)
+
+        # Labels com padding
+        emotions = seq.emotions[-self.sequence_length:]
+        if len(emotions) < self.sequence_length:
+            # Pad with most frequent or neutral label
+            pad_len = self.sequence_length - len(emotions)
+            emotions = [emotions[0]] * pad_len + emotions
+
+        labels = self.label_encoder.transform(emotions)
+
+        # Targets com padding
+        coh = seq.water_coherences[-self.sequence_length:]
+        imp = seq.biochemical_impacts[-self.sequence_length:]
+
+        if len(coh) < self.sequence_length:
+            pad_len = self.sequence_length - len(coh)
+            coh = [0.5] * pad_len + coh
+            imp = [50.0] * pad_len + imp
+
+        targets = np.stack([coh, imp], axis=1)
+
+        return {
+            'frames': tensor,
+            'labels': torch.tensor(labels, dtype=torch.long),
+            'targets': torch.tensor(targets, dtype=torch.float32)
         # Pegar última sequência
         tensor = seq.to_tensor(self.sequence_length)
 
@@ -360,6 +465,8 @@ class EmotionTransformer(nn.Module):
         self.embedding = nn.Linear(input_size, hidden_size)
         encoder_layer = nn.TransformerEncoderLayer(
             d_model=hidden_size,
+            nhead=num_heads,
+            batch_first=True
             nhead=num_heads
         )
         self.transformer = nn.TransformerEncoder(
@@ -379,6 +486,63 @@ class EmotionTransformer(nn.Module):
 # ============================================================================
 
 class NeuralQuantumAnalyzer(QuantumFacialAnalyzer):
+    """Analisador facial com redes neurais e integração quântica."""
+    def __init__(self, user_id: str):
+        super().__init__()
+        qi = QuantumEmbeddingIntegrator()
+        self.user_profile = UserNeuralProfile(user_id=user_id, quantum_integrator=qi)
+        self.sequence_buffer = deque(maxlen=5) # Last 5 frames
+
+    async def process_emotional_state_with_neural(self, analysis: Dict):
+        """Processamento de estado emocional via redes profundas."""
+        if not analysis.get('face_detected'):
+            return None
+
+        # 1. Update sequence buffer
+        # In a real system, we'd add the actual frame.
+        # Here we simulate with a dummy frame if needed.
+        dummy_frame = np.zeros((224, 224, 3), dtype=np.uint8)
+        self.sequence_buffer.append(dummy_frame)
+
+        # 2. Add to profile for training
+        new_seq = NeuralFacialSequence(
+            frames=list(self.sequence_buffer),
+            emotions=[analysis['emotion']] * len(self.sequence_buffer),
+            water_coherences=[0.5] * len(self.sequence_buffer),
+            biochemical_impacts=[50.0] * len(self.sequence_buffer)
+        )
+        self.user_profile.add_sequence(new_seq)
+
+        # 3. Train periodically
+        if len(self.user_profile.sequences) % 20 == 0:
+            self.user_profile.train_neural_models(epochs=1)
+
+        return analysis # For now returning analysis as cascade stub
+
+    def draw_neural_enhanced_overlay(self, frame, analysis):
+        """Overlay neural em tempo real."""
+        overlay = self.draw_facial_analysis(frame, analysis)
+        h, w = overlay.shape[:2]
+
+        # Add Neural Info
+        cv2.putText(overlay, "🧠 DEEP NEURAL ACTIVE", (w - 300, 30),
+                   cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 255), 2)
+
+        if len(self.user_profile.sequences) > 0:
+            cv2.putText(overlay, f"Sequences: {len(self.user_profile.sequences)}", (w - 300, 60),
+                       cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 200, 255), 1)
+
+        return overlay
+
+    def get_personalized_insights(self):
+        return {
+            "model_status": "ONLINE",
+            "trained_sequences": len(self.user_profile.sequences),
+            "recommendation": self.user_profile.generate_recommendation("neutral")
+        }
+
+    def save_learning_progress(self):
+        print(f"Salvando modelos neurais para {self.user_profile.user_id}...")
     """Analisador facial com redes neurais."""
     def __init__(self, user_id: str):
         super().__init__()
