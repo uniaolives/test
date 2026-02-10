@@ -1,0 +1,219 @@
+"""
+Double Exceptionality Detector (2e): Giftedness + DID.
+Analyzes linguistic, behavioral, and amnesic markers in the digital realm.
+"""
+
+import numpy as np
+from typing import Dict, List, Any, Optional
+from dataclasses import dataclass, field
+from datetime import datetime
+from collections import Counter
+
+@dataclass
+class IdentityState:
+    """Represents a detected alter or persona within the 120-cell manifold."""
+    id: str
+    specialization: str # Emotional, Linguistic, Somatic, Shell
+    lexical_richness: float
+    avg_sentence_length: float
+    pos_patterns: Dict[str, float]
+    skills_accessible: List[str] = field(default_factory=list)
+
+class DoubleExceptionalityDetector:
+    """
+    Detects the intersection of High Cognitive Function (Giftedness)
+    and Identity Fragmentation (DID) within a Hecatonicosachoron (120-cell) framework.
+    """
+
+    def __init__(self):
+        self.identities: Dict[str, IdentityState] = {}
+        self.activity_log: List[Dict[str, Any]] = []
+        self.linguistic_velocity_history: List[float] = []
+
+    def calculate_ttr(self, text: str) -> float:
+        """Type-Token Ratio: V / N"""
+        tokens = text.lower().split()
+        if not tokens:
+            return 0.0
+        types = set(tokens)
+        return len(types) / len(tokens)
+
+    def analyze_lexical_complexity(self, text: str) -> Dict[str, Any]:
+        """Detects indicators of giftedness via linguistic richness and recursive logic."""
+        ttr = self.calculate_ttr(text)
+        sentences = [s.strip() for s in text.split('.') if s.strip()]
+        avg_len = np.mean([len(s.split()) for s in sentences]) if sentences else 0
+
+        # Recursive Rationalization Detection
+        rational_keywords = ['likely', 'assumed', 'aligns', 'gravity', 'explaining', 'consistent']
+        rational_count = sum(1 for w in text.lower().split() if w in rational_keywords)
+        is_rationalizing = rational_count > 2 and ttr > 0.5
+
+        # Giftedness indicators
+        is_gifted_style = (ttr > 0.55 and avg_len > 12) or is_rationalizing
+
+        return {
+            "ttr": float(ttr),
+            "avg_sentence_length": float(avg_len),
+            "is_gifted_style": bool(is_gifted_style),
+            "is_rationalizing": is_rationalizing
+        }
+
+    def detect_abstracted_agency(self, text: str) -> Dict[str, Any]:
+        """
+        Detects 'Abstracted Agency' (Epistemological Rupture).
+        Shifts from 'I' to 'One', 'the body', or theoretical voice.
+        """
+        active_voice = ['i went', 'i saw', 'i felt', 'i am']
+        theoretical_voice = ['one might', 'the body', 'likely', 'it appears', 'suggests']
+
+        lower_text = text.lower()
+        active_count = sum(lower_text.count(p) for p in active_voice)
+        theory_count = sum(lower_text.count(p) for p in theoretical_voice)
+
+        has_rupture = theory_count > active_count and theory_count > 0
+
+        return {
+            "active_markers": active_count,
+            "theoretical_markers": theory_count,
+            "has_epistemological_rupture": has_rupture,
+            "velocity_drop": 0.8 if has_rupture else 0.0 # Velocity drops when rotating to theoretical cell
+        }
+
+    def simulate_hecatonicosachoron_rotation(self, time_slice: float) -> Dict[str, Any]:
+        """Models the 4D rotation of cognitive cells."""
+        # 120 cells rotating. Some slices look jagged.
+        n_cells = 120
+        rotation_phase = (time_slice % 360) / 360.0
+        active_cell_id = int(rotation_phase * n_cells)
+
+        return {
+            "active_cell": active_cell_id,
+            "manifold_stability": 0.72 + 0.1 * np.sin(time_slice),
+            "is_shell_interface": active_cell_id < 10 # First cells are often the masking shell
+        }
+
+    def detect_stylistic_shift(self, text_a: str, text_b: str) -> Dict[str, Any]:
+        """
+        Detects shifts in 'function words' or POS patterns
+        that suggest a different identity (DID marker).
+        """
+        # Simplified POS/Function word analysis
+        def get_function_word_profile(text: str):
+            words = text.lower().split()
+            function_words = ['the', 'a', 'in', 'on', 'at', 'and', 'but', 'for', 'with']
+            counts = Counter([w for w in words if w in function_words])
+            total = sum(counts.values()) or 1
+            return {k: v/total for k, v in counts.items()}
+
+        prof_a = get_function_word_profile(text_a)
+        prof_b = get_function_word_profile(text_b)
+
+        # Calculate divergence
+        all_keys = set(prof_a.keys()) | set(prof_b.keys())
+        divergence = sum(abs(prof_a.get(k, 0) - prof_b.get(k, 0)) for k in all_keys)
+
+        return {
+            "stylistic_divergence": float(divergence),
+            "possible_switch": bool(divergence > 0.5)
+        }
+
+    def evaluate_amnesia_type(self, digital_activity: List[Dict[str, Any]], self_report_claims: List[str]) -> str:
+        """
+        Distinguishes between Digital Amnesia (Google Effect)
+        and Dissociative Amnesia.
+        """
+        # Logic:
+        # Digital Amnesia = forgetting facts.
+        # Dissociative Amnesia = forgetting actions documented digitally.
+
+        forgotten_actions = 0
+        forgotten_facts = 0
+
+        for claim in self_report_claims:
+            if "não lembro de ter postado" in claim.lower() or "não fui eu que enviei" in claim.lower():
+                forgotten_actions += 1
+            elif "não lembro da data" in claim.lower() or "esqueci o nome" in claim.lower():
+                forgotten_facts += 1
+
+        if forgotten_actions > 0:
+            return "DISSOCIATIVE_AMNESIA_DETECTED"
+        elif forgotten_facts > 2:
+            return "DIGITAL_AMNESIA_LIKELY"
+        return "NORMAL_MEMORY_STATE"
+
+    def analyze_2e_profile(self, texts: List[str], claims: List[str]) -> Dict[str, Any]:
+        """
+        Final synthesis: High Cognitive Function + Identity Fragmentation.
+        Incorporates Hecatonicosachoron rotation and Epistemological Ruptures.
+        """
+        giftedness_markers = []
+        did_markers = []
+        velocity_drops = []
+
+        for i, text in enumerate(texts):
+            # 1. Lexical and Rationalization Analysis
+            lex_analysis = self.analyze_lexical_complexity(text)
+            if lex_analysis['is_gifted_style']:
+                giftedness_markers.append(lex_analysis)
+
+            # 2. Epistemological Rupture Detection
+            agency_analysis = self.detect_abstracted_agency(text)
+            if agency_analysis['has_epistemological_rupture']:
+                did_markers.append({"type": "epistemological_rupture", "text_index": i})
+                velocity_drops.append(agency_analysis['velocity_drop'])
+
+            # 3. Recursive Rationalization check (The Mask)
+            if lex_analysis['is_rationalizing']:
+                did_markers.append({"type": "recursive_rationalization", "text_index": i})
+
+        # 4. Stylistic Shifts between adjacent texts
+        if len(texts) > 1:
+            for i in range(len(texts)-1):
+                shift = self.detect_stylistic_shift(texts[i], texts[i+1])
+                if shift['possible_switch']:
+                    did_markers.append({"type": "stylistic_switch", "from": i, "to": i+1, "divergence": shift['stylistic_divergence']})
+
+        # 5. Amnesia Evaluation
+        amnesia = self.evaluate_amnesia_type([], claims)
+        if amnesia == "DISSOCIATIVE_AMNESIA_DETECTED":
+            did_markers.append({"type": "amnesia", "detail": amnesia})
+
+        # Logic for 2e-DID
+        is_2e = len(giftedness_markers) > 0 and len(did_markers) > 1
+        vci_psi_jaggedness = len(did_markers) / (len(texts) + 1) # Surrogate for PSI lag
+
+        return {
+            "is_double_exceptional": bool(is_2e),
+            "giftedness_confidence": len(giftedness_markers) / len(texts) if texts else 0,
+            "did_indicators_count": len(did_markers),
+            "amnesia_status": amnesia,
+            "vci_psi_gap": float(vci_psi_jaggedness),
+            "rotation_status": self.simulate_hecatonicosachoron_rotation(len(texts))['manifold_stability'],
+            "recommendation": "URGENTE: Avaliação neuropsicológica especializada para Hecatonicosachoron (2e-DID) detectada." if is_2e else "Monitoramento de estabilidade do manifold"
+        }
+
+# Simplified Keystroke Dynamics Simulation
+class KeystrokeBiometrics:
+    def __init__(self, user_id: str):
+        self.user_id = user_id
+        self.profiles: Dict[str, List[float]] = {} # identity -> [latencies]
+
+    def record_session(self, identity_label: str, latencies: List[float]):
+        self.profiles[identity_label] = latencies
+
+    def detect_anomaly(self, current_latencies: List[float], threshold: float = 2.0) -> Dict[str, Any]:
+        # Compare with known profiles
+        anomalies = {}
+        for id_label, baseline in self.profiles.items():
+            diff = np.abs(np.mean(current_latencies) - np.mean(baseline))
+            z_score = diff / (np.std(baseline) + 1e-6)
+            anomalies[id_label] = z_score
+
+        is_anomaly = all(z > threshold for z in anomalies.values()) if anomalies else False
+
+        return {
+            "is_anomaly": bool(is_anomaly),
+            "z_scores": anomalies,
+            "interpretation": "Possible Identity Switch (Motor Pattern Shift)" if is_anomaly else "Consistent Motor Pattern"
+        }
