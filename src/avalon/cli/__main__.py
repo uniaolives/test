@@ -966,6 +966,32 @@ def pdcp_simulate_threshold():
         typer.echo("\n💎 ENGRAM Ω ESTABLISHED: Planetary memory locked for milennia.")
 
 @app.command()
+def pdcp_rhythmic_monitor(intensity: float = 1.0):
+    """
+    Simulate the detection of the LTP-compatible Amazon signature (Rhythmic Pattern Filter).
+    """
+    pdcp = PlanetaryDataCalibrationProtocol()
+    typer.echo("🎵 INITIATING RHYTHMIC VIGILANCE CYCLE...")
+
+    phi = (1 + 5**0.5) / 2
+    v0 = phi**3
+    f_phi = 1.157
+    alpha = 0.05
+    tau = 1000.0
+
+    t = np.linspace(0, 10, 100) # 10 seconds of data
+    rhythmic_stream = v0 * (1 + alpha * np.sin(2 * np.pi * f_phi * t) * np.exp(-t / tau))
+
+    typer.echo("--- Testing with Rhythmic Signal ---")
+    res = pdcp.run_rhythmic_cycle(rhythmic_stream.tolist(), t.tolist(), 2.0 * intensity)
+    typer.echo(json.dumps(res, indent=2))
+
+    typer.echo("\n--- Testing with Chaotic Signal ---")
+    chaotic_stream = rhythmic_stream + np.random.normal(0, 0.5, len(t))
+    res_chaotic = pdcp.run_rhythmic_cycle(chaotic_stream.tolist(), t.tolist(), 2.0)
+    typer.echo(json.dumps(res_chaotic, indent=2))
+
+@app.command()
 def version(full: bool = False):
     from .. import __version__, __security_patch__
     typer.echo(f"Avalon System v{__version__} ({__security_patch__})")
