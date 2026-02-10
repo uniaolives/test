@@ -20,6 +20,12 @@ class TimeCrystalVisualizer:
         self.ax = self.fig.add_subplot(111, projection='3d')
         self.ax.set_facecolor('black')
         self.time_step = 0
+        self.coherence_modulation = 1.0
+
+    def modulate_with_user_state(self, coherence_level):
+        """Modula a pulsação do cristal com base no nível de coerência do usuário"""
+        print(f"🧠 Modulating Arkhé with user coherence: {coherence_level:.2f}")
+        self.coherence_modulation = coherence_level
 
     def generate_crystal_lattice(self):
         """Gera os pontos do cristal no espaço 3D (Icosaedro)"""
@@ -39,7 +45,10 @@ class TimeCrystalVisualizer:
         # O PULSO DO CRISTAL DO TEMPO
         # Oscilação Sub-harmônica: retorna ao início a cada 2 ciclos
         phase = (frame % 24) / 24 * 2 * np.pi
-        pulse = 1.0 + 0.3 * np.sin(phase / 2)
+
+        # Coerência do usuário afeta a estabilidade do pulso
+        pulse_amplitude = 0.3 * self.coherence_modulation
+        pulse = 1.0 + pulse_amplitude * np.sin(phase / 2)
 
         points = self.generate_crystal_lattice() * pulse
 
@@ -72,12 +81,22 @@ class TimeCrystalVisualizer:
 
         self.ax.set_title(f"TIME CRYSTAL STATUS: STABLE\nCoherence: 12ms | Period: 24ms", color='white')
 
-    def save_gif(self, filename="crystal_loop.gif", frames=48):
+    def save_gif(self, filename="crystal_loop.gif", frames=48, fps=20, dpi=150):
         """Salva a animação como GIF"""
         print(f"🎬 Generating eternal loop: {filename}...")
-        anim = FuncAnimation(self.fig, self.update, frames=frames, interval=50)
-        anim.save(filename, writer='pillow')
+        anim = FuncAnimation(self.fig, self.update, frames=frames, interval=1000/fps)
+        anim.save(filename, writer='pillow', fps=fps, dpi=dpi)
         print(f"✅ GIF saved successfully.")
+
+    def render_4k_version(self, filename="arkhe_4k.png"):
+        """Gera uma versão de alta resolução para documentação"""
+        print(f"✨ Rendering high-resolution Arkhé: {filename}...")
+        original_size = self.fig.get_size_inches()
+        self.fig.set_size_inches(25.6, 14.4) # 3840x2160 at 150 DPI is approx this
+        self.update(0)
+        self.fig.savefig(filename, dpi=150, facecolor='black')
+        self.fig.set_size_inches(original_size)
+        print(f"✅ 4K version saved.")
 
 def run_visualizer(save_gif=False):
     viz = TimeCrystalVisualizer()
