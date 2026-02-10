@@ -5,7 +5,6 @@ Analyzes linguistic, behavioral, and amnesic markers in the digital realm.
 
 import numpy as np
 from typing import Dict, List, Any, Optional, Set
-from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 from datetime import datetime
 from collections import Counter
@@ -82,13 +81,6 @@ class DoubleExceptionalityDetector:
         """
         active_voice = ['i went', 'i saw', 'i felt', 'i am', 'i did']
         theoretical_voice = ['one might', 'the body', 'likely', 'it appears', 'suggests', 'one could infer', 'the system']
-    def detect_abstracted_agency(self, text: str) -> Dict[str, Any]:
-        """
-        Detects 'Abstracted Agency' (Epistemological Rupture).
-        Shifts from 'I' to 'One', 'the body', or theoretical voice.
-        """
-        active_voice = ['i went', 'i saw', 'i felt', 'i am']
-        theoretical_voice = ['one might', 'the body', 'likely', 'it appears', 'suggests']
 
         lower_text = text.lower()
         active_count = sum(lower_text.count(p) for p in active_voice)
@@ -98,13 +90,12 @@ class DoubleExceptionalityDetector:
         # High ratio of theoretical to active markers increases Delta D
         delta_d = (theory_count / (active_count + 1)) * 1.618
 
-        # Identity Latency (L)
+        # Identity Latency (L) - From Academic Article
         latency = delta_d / (psi_integration + 1e-6)
 
         # Velocity c: 1.0 is standard, 0.0 is frozen at the seam
         has_rupture = theory_count > active_count and theory_count > 0
         velocity = 1.0 / (1.0 + latency)
-        has_rupture = theory_count > active_count and theory_count > 0
 
         return {
             "active_markers": active_count,
@@ -114,7 +105,6 @@ class DoubleExceptionalityDetector:
             "ego_latency_l": float(latency),
             "velocity_c": float(velocity),
             "interpretation": "Chronological Shear Detected" if has_rupture else "Smooth Manifold Navigation"
-            "velocity_drop": 0.8 if has_rupture else 0.0 # Velocity drops when rotating to theoretical cell
         }
 
     def simulate_hecatonicosachoron_rotation(self, time_slice: float) -> Dict[str, Any]:
@@ -160,10 +150,6 @@ class DoubleExceptionalityDetector:
         Distinguishes between Digital Amnesia (Google Effect)
         and Dissociative Amnesia.
         """
-        # Logic:
-        # Digital Amnesia = forgetting facts.
-        # Dissociative Amnesia = forgetting actions documented digitally.
-
         forgotten_actions = 0
         forgotten_facts = 0
 
@@ -191,14 +177,6 @@ class DoubleExceptionalityDetector:
 
         # 9th Strand Integration Coefficient (Psi)
         psi_integration = celestial_context.get('psi_coefficient', 0.72) if celestial_context else 0.72
-    def analyze_2e_profile(self, texts: List[str], claims: List[str]) -> Dict[str, Any]:
-        """
-        Final synthesis: High Cognitive Function + Identity Fragmentation.
-        Incorporates Hecatonicosachoron rotation and Epistemological Ruptures.
-        """
-        giftedness_markers = []
-        did_markers = []
-        velocity_drops = []
 
         for i, text in enumerate(texts):
             # 1. Lexical and Rationalization Analysis
@@ -214,18 +192,6 @@ class DoubleExceptionalityDetector:
                 if any(w in text.lower() for w in ['float', 'unreal', 'dream', 'detach']):
                     mask_types.append({**self.psychometrics.neptunian_mask(text), "dna_strands": [6, 7, 8]})
 
-                # Oracle: Saturnine Mask (Compensation/Structure)
-                if lex_analysis['avg_sentence_length'] < 10 and lex_analysis['ttr'] > 0.7:
-                    mask_types.append({**self.psychometrics.saturnine_mask([]), "dna_strands": [7]})
-
-                # Oracle: Jupiterian Mask (Expansion/Synthesis)
-                if lex_analysis['avg_sentence_length'] > 30 and lex_analysis['ttr'] > 0.6:
-                    mask_types.append({**self.psychometrics.jupiterian_mask(set()), "dna_strands": [5, 6]})
-
-                # Oracle: Uranian Mask (Innovation/Breakthrough)
-                if "quantum" in text.lower() or "breakthrough" in text.lower():
-                    mask_types.append({**self.psychometrics.uranian_mask([]), "dna_strands": [8, 9]})
-
             # 2. Epistemological Rupture Detection with Oracle Latency Formula
             agency_analysis = self.detect_abstracted_agency(text, psi_integration=psi_integration)
             velocities.append(agency_analysis['velocity_c'])
@@ -236,11 +202,6 @@ class DoubleExceptionalityDetector:
                     "ego_latency": agency_analysis['ego_latency_l'],
                     "velocity_c": agency_analysis['velocity_c']
                 })
-            # 2. Epistemological Rupture Detection
-            agency_analysis = self.detect_abstracted_agency(text)
-            if agency_analysis['has_epistemological_rupture']:
-                did_markers.append({"type": "epistemological_rupture", "text_index": i})
-                velocity_drops.append(agency_analysis['velocity_drop'])
 
             # 3. Recursive Rationalization check (The Mask)
             if lex_analysis['is_rationalizing']:
@@ -253,21 +214,6 @@ class DoubleExceptionalityDetector:
                 if shift['possible_switch']:
                     did_markers.append({"type": "stylistic_switch", "from": i, "to": i+1, "divergence": shift['stylistic_divergence']})
 
-        # 5. Skill-set Bleed Tracking
-        if skill_access_log:
-            for entry in skill_access_log:
-                if entry.get('skill_level') > 0.8 and not entry.get('procedural_recall'):
-                    did_markers.append({"type": "skill_set_bleed", "skill": entry.get('skill')})
-
-        # 6. Shell-Interface Detection (IQ 150+ vs Emotional Age 8)
-        shell_indicators = []
-        if any(m.get('ttr', 0) > 0.7 for m in giftedness_markers): # High VCI
-            # Look for emotional age markers in claims or context
-            # Simulating finding emotional age 8 markers
-            if any("fear" in c.lower() or "scared" in c.lower() for c in claims):
-                shell_indicators.append("VCI-Emotional-Age-Discrepancy")
-                did_markers.append({"type": "shell_interface_active", "vci": "High", "emotional_age": "Low"})
-
         # 5. Amnesia Evaluation
         amnesia = self.evaluate_amnesia_type([], claims)
         if amnesia == "DISSOCIATIVE_AMNESIA_DETECTED":
@@ -275,13 +221,6 @@ class DoubleExceptionalityDetector:
 
         # 7. Dimensional Thought Analysis
         dim_analysis = self.dimensional_bridge.diagnose_thought_dimensionality(texts)
-
-        # 8. Celestial Switch Prediction
-        switch_forecast = None
-        if celestial_context:
-            switch_forecast = self.switch_predictor.predict_switch_windows(
-                datetime.now(), celestial_context.get('moon_house', 1)
-            )
 
         # 9. Arkhe Unified Theory Synthesis
         g_score = len(giftedness_markers) / len(texts) if texts else 0
@@ -306,24 +245,11 @@ class DoubleExceptionalityDetector:
             "avg_linguistic_velocity_c": float(avg_velocity),
             "dimensional_profile": dim_analysis['dimensional_profile'],
             "primary_dimension": dim_analysis['primary_dimension'],
-            "celestial_switch_forecast": switch_forecast,
             "unified_consciousness": unified_profile,
             "detected_masks": mask_types,
             "bilocation_protocol_status": "ACTIVE_PARALLEL_MANIFOLD" if bilocation_active else "SYNC_IN_PROGRESS",
             "ego_cursor_position": f"Cell_{int(avg_velocity * 120)}",
             "recommendation": "Oracle Prescription: Stop forcing Sync. Enable Bilocation Protocol." if is_2e else "Monitoramento de estabilidade do manifold"
-        # Logic for 2e-DID
-        is_2e = len(giftedness_markers) > 0 and len(did_markers) > 1
-        vci_psi_jaggedness = len(did_markers) / (len(texts) + 1) # Surrogate for PSI lag
-
-        return {
-            "is_double_exceptional": bool(is_2e),
-            "giftedness_confidence": len(giftedness_markers) / len(texts) if texts else 0,
-            "did_indicators_count": len(did_markers),
-            "amnesia_status": amnesia,
-            "vci_psi_gap": float(vci_psi_jaggedness),
-            "rotation_status": self.simulate_hecatonicosachoron_rotation(len(texts))['manifold_stability'],
-            "recommendation": "URGENTE: Avaliação neuropsicológica especializada para Hecatonicosachoron (2e-DID) detectada." if is_2e else "Monitoramento de estabilidade do manifold"
         }
 
 # Simplified Keystroke Dynamics Simulation
