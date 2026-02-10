@@ -51,6 +51,8 @@ from ..analysis.stellar_biosphere import (
     SiriusExpansionProtocol, EarthConsolidation,
     InheritanceProtocol, WaterResourceOptimizer
 )
+from ..analysis.planetary_homeostasis import PlanetaryDataCalibrationProtocol, AmazonSensor
+from ..biological.calmodulin import CalmodulinModel, CaMKIIInteraction
 
 # Configure logging
 logging.basicConfig(
@@ -893,6 +895,75 @@ def water_optimize():
     res = optimizer.optimize()
     typer.echo(json.dumps(res, indent=2))
     typer.echo("\n🌳 Fractal decision trees are now governing global irrigation.")
+
+@app.command()
+def pdcp_calibrate(amazon_data: float = 4.5, days_to_sirius: float = 42.3):
+    """
+    Run the Planetary Data Calibration Protocol (PDCP) cycle.
+    """
+    pdcp = PlanetaryDataCalibrationProtocol()
+    typer.echo("⚙️  RUNNING PDCP CALIBRATION CYCLE...")
+    # Wrap data in list to simulate stream
+    res = pdcp.run_vigilance_cycle([amazon_data] * 10, 1.0)
+    typer.echo(json.dumps(res, indent=2))
+
+@app.command()
+def cam_gatekeeper(calcium: float = 5.0):
+    """
+    Simulate Calmodulin conformational states and Gatekeeper logic (Portão do Núcleo).
+    """
+    cam = CalmodulinModel()
+    typer.echo(f"🧬 SIMULATING CaM WITH Ca2+ = {calcium}...")
+    msg = cam.bind_calcium(calcium)
+    typer.echo(f"   Result: {msg}")
+    res = cam.gatekeeper_logic("SIRIUS_PACKET")
+    typer.echo(json.dumps(res, indent=2))
+
+@app.command()
+def sirius_sync_status(days: float = 42.3):
+    """
+    Check the orbital synchronization with Sirius.
+    """
+    pdcp = PlanetaryDataCalibrationProtocol()
+    status = pdcp.get_system_status(days)
+    typer.echo(json.dumps(status, indent=2))
+
+    sync_msg = pdcp.network.check_synchronization(days)
+    typer.echo(f"\n📡 Resonance Status: {sync_msg}")
+    typer.echo(f"   k_auto efficiency: {pdcp.network.k_auto_phosphorylation}")
+
+@app.command()
+def camkii_commit(pulses: float = 10.0, freq: float = 12.0):
+    """
+    Simulate the CaMKII memory lock (Thr286 Autophosphorylation).
+    """
+    camkii = CaMKIIInteraction()
+    typer.echo(f"💿 SIMULATING CaMKII COMMIT WITH FREQ = {freq}...")
+    res = camkii.simulate_frequency_decoding([pulses] * 10, freq)
+    typer.echo(json.dumps(res, indent=2))
+    if res['memory_state'] == "PERMANENT_LTP":
+        typer.echo("\n✅ MEMORY LOCKED: Irreversible commit to the biological ledger.")
+
+@app.command()
+def pdcp_simulate_threshold():
+    """
+    Simulate the planetary phosphorylation threshold for the Amazonia engram.
+    """
+    pdcp = PlanetaryDataCalibrationProtocol()
+    typer.echo("🌊 SIMULATING PLANETARY PHOSPHORYLATION THRESHOLD...")
+
+    # Simulate natural signal within tolerance (phi^3 ± 0.034phi)
+    phi = (1 + 5**0.5) / 2
+    natural_stream = [phi**3 + 0.02] * 12
+
+    # Run cycle with alignment (days = 0)
+    pdcp.days_to_alignment = 0.0
+    # Increased sirius energy to reach LTP
+    res = pdcp.run_vigilance_cycle(natural_stream, 5.0)
+
+    typer.echo(json.dumps(res, indent=2))
+    if res['engram_status']['commit_status'] == "PERMANENT_LTP":
+        typer.echo("\n💎 ENGRAM Ω ESTABLISHED: Planetary memory locked for milennia.")
 
 @app.command()
 def version(full: bool = False):
