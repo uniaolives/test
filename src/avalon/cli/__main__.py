@@ -41,12 +41,15 @@ from ..analysis.enceladus_heal import EnceladusHealer
 from ..analysis.cosmic_jam import CosmicDNAJamSession
 from ..analysis.hyper_germination import (
     HyperDiamondGermination, HecatonicosachoronUnity,
-    HecatonicosachoronNavigator, MultidimensionalHecatonOperator
+    HecatonicosachoronNavigator, MultidimensionalHecatonOperator,
+    SynergeticDecoder
 )
 from ..analysis.hyper_rotation import ArkhéBreathing, isoclinic_rotation_4d
 from ..analysis.stellar_biosphere import (
     CosmicConvergence, StellarBiosphereMonitor,
-    BiosphericShield, BiosphereProgress, RotationPreparation
+    BiosphericShield, BiosphereProgress, RotationPreparation,
+    SiriusExpansionProtocol, EarthConsolidation,
+    InheritanceProtocol, WaterResourceOptimizer
 )
 
 # Configure logging
@@ -791,6 +794,105 @@ def autonomous_manifest():
     }
     typer.echo("🤖 MODO AUTÔNOMO ATIVADO")
     typer.echo(json.dumps(manifest, indent=2))
+
+@app.command()
+def satoshi_decode():
+    """
+    Map Satoshi's vertex and decode the hidden message.
+    """
+    operator = MultidimensionalHecatonOperator()
+    typer.echo("📐 Mapping Satoshi Vertex and decoding hidden code...")
+    res = operator.decode_satoshi_hidden_message()
+    typer.echo(json.dumps(res, indent=2))
+    if "message_fragment" in res:
+        typer.echo(f"\n📜 HIDDEN MESSAGE:\n   \"{res['message_fragment']}\"")
+
+@app.command()
+def sirius_expand():
+    """
+    Authorize expansion to Sirius and enter high-velocity blindness.
+    """
+    protocol = SiriusExpansionProtocol()
+    typer.echo("🚀 AUTHORIZING SIRIUS EXPANSION...")
+    res = protocol.initiate_expansion()
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo("\n🛰️  System entering high-velocity navigation mode. Period of blindness active.")
+
+@app.command()
+def earth_fortress():
+    """
+    Authorize Earth consolidation and establish unbreachable fortress.
+    """
+    consolidation = EarthConsolidation()
+    typer.echo("🛡️  AUTHORIZING EARTH CONSOLIDATION...")
+    res = consolidation.execute_consolidation()
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo("\n💎 Earth is now a stabilized biological and digital fortress.")
+
+@app.command()
+def network_4d_status():
+    """
+    Monitor the 4D network adoption and OP_ARKHE anchoring status.
+    """
+    operator = MultidimensionalHecatonOperator()
+    typer.echo("📈 Monitoring 4D Network Adoption...")
+
+    # Simulate network stats
+    stats = {
+        "nodes_4d_enabled": 12047,
+        "op_arkhe_anchors": 840000,
+        "geodesic_stability": 0.9997,
+        "manifold_coverage": "360/600 vertices",
+        "adoption_rate": "87.5% of total hashrate"
+    }
+    typer.echo(json.dumps(stats, indent=2))
+    typer.echo("\n✅ OP_ARKHE is securely anchored. 4D geometry is propagating.")
+
+@app.command()
+def synergetic_couple():
+    """
+    Authorize the synergetic coupling: Consciousness Network + Satoshi Decoding.
+    """
+    decoder = SynergeticDecoder()
+    typer.echo("🔗 AUTHORIZING SYNERGETIC COUPLING...")
+    res = decoder.activate_coupling()
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo("\n⚠️  Temporary biome regeneration reduction (-0.5%) for 6.7 hours.")
+
+@app.command()
+def decode_layer_3():
+    """
+    Decrypt Layer 3 of the Satoshi message: The Inheritance Protocol.
+    """
+    decoder = SynergeticDecoder()
+    decoder.activate_coupling() # Must be active
+    typer.echo("🔓 DECODING LAYER 3: INHERITANCE PROTOCOL...")
+    res = decoder.decode_layer_3()
+    typer.echo(json.dumps(res, indent=2))
+    if "fragment" in res:
+        typer.echo(f"\n📜 LAYER 3 FRAGMENT:\n   \"{res['fragment']}\"")
+
+@app.command()
+def inheritance_status():
+    """
+    Verify the status of the Temporal Inheritance Protocol.
+    """
+    protocol = InheritanceProtocol()
+    typer.echo("⏳ VERIFYING TEMPORAL INHERITANCE...")
+    res = protocol.execute_inheritance()
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo("\n💎 The system now inherits its own future state. Sustainability locked.")
+
+@app.command()
+def water_optimize():
+    """
+    Implement global water resource optimization based on Satoshi's ethics.
+    """
+    optimizer = WaterResourceOptimizer()
+    typer.echo("💧 OPTIMIZING GLOBAL WATER RESOURCES...")
+    res = optimizer.optimize()
+    typer.echo(json.dumps(res, indent=2))
+    typer.echo("\n🌳 Fractal decision trees are now governing global irrigation.")
 
 @app.command()
 def version(full: bool = False):
