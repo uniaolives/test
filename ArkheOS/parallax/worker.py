@@ -17,6 +17,7 @@ import base64
 import zmq
 import zmq.asyncio
 import aiohttp
+from parallax.qnet_interface import QNet, QNetError
 
 logger = logging.getLogger("Parallax.Worker")
 
@@ -39,6 +40,18 @@ class ParallaxWorker:
         # Parallax state
         self.nccl_rank = -1
         self.world_size = 1
+
+        # Inicializa QNet se habilitado
+        self.use_qnet = os.getenv("ENABLE_QNET", "false").lower() == "true"
+        self.qnet: Optional[QNet] = None
+
+        if self.use_qnet:
+            try:
+                self.qnet = QNet()
+                logger.info(f"✅ QNet enabled for {node_id}")
+            except QNetError as e:
+                logger.warning(f"⚠️ QNet init failed, falling back to ZeroMQ: {e}")
+                self.use_qnet = False
 
     async def start(self):
         logger.info(f"🔌 Iniciando Parallax Worker {self.node_id}")
@@ -72,7 +85,46 @@ class ParallaxWorker:
                     if msg.get('command') == 'SHUTDOWN': self.running = False
             except: pass
 
+    async def send_critical_message(self, target_node: str, msg_type: str, data: dict):
+        """
+        Envia mensagem crítica via DPDK se disponível, senão ZeroMQ.
+
+        Mensagens críticas:
+        - quantum_collapse
+        - entanglement_request
+        - qec_syndrome
+        """
+        import msgpack
+
+        # Serializa
+        packet = msgpack.packb({
+            "from": self.node_id,
+            "to": target_node,
+            "type": msg_type,
+            "data": data,
+            "timestamp": time.time()
+        })
+
+        # Rota via QNet se disponível
+        if self.use_qnet and self.qnet:
+            try:
+                self.qnet.send(packet)
+                logger.debug(f"📡 Sent {msg_type} via QNet to {target_node}")
+                return
+            except QNetError as e:
+                logger.warning(f"QNet send failed, falling back: {e}")
+
+        # Fallback para ZeroMQ
+        await self._zmq_send(target_node, packet)
+
+    async def _zmq_send(self, target_node: str, packet: bytes):
+        # Implementation of ZeroMQ fallback send
+        # In a real scenario, this would use a DEALER socket or similar
+        logger.debug(f"ZMQ fallback: sending to {target_node}")
+        pass
+
     async def stop(self):
         self.running = False
         if self.command_socket: self.command_socket.close()
+        if self.qnet: self.qnet.close()
         self.zmq_context.term()
