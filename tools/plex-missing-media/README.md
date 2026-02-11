@@ -18,6 +18,13 @@ Version 3.0 is the **"Holy Query"** edition, featuring optimized SQL logic for m
 - 🧹 **Protocolo de Higiene** – Automatically cleans up all metadata traces after execution.
 - ⚡ **Responsive UI** – Real-time log updates with persona-consistent terminology.
 
+## 📁 Repository Structure
+- `PlexMissingMedia_GUI.ps1`: The integrated PowerShell source code.
+- `Compile_Arkhe.bat`: Batch script for executable generation.
+- `Axioma_Governanca.md`: The ethical contract and preservation principles.
+- `LOG_DA_CRIACAO.txt`: Brief history of the module development.
+- `README.md`: This documentation.
+
 ## 🛠 Requirements
 - Windows 10/11
 - PowerShell 5+
@@ -38,15 +45,6 @@ Version 3.0 is the **"Holy Query"** edition, featuring optimized SQL logic for m
 2. **Volume Perdido**: Enter the root of the missing drive (e.g., `F:\`).
 3. **Iniciar Diagnóstico**: Observe the progress and the **Severidade (Φ)** in the log panel.
 4. **Receita de Restauração**: Open the generated CSV in your Documents folder for use with Sonarr/Radarr.
-
-## 📂 Example Output (Arr-Ready)
-### TV CSV
-`Title, Year, TvdbId, Seasons, Severity, LostRoot`
-`Family Guy, 1999, 75978, "1,2,3", 100.00%, F:\`
-
-### Movies CSV
-`Title, Year, TmdbId, Severity, LostRoot`
-`Inception, 2010, 27205, 100.00%, F:\`
 
 ## ⚠️ Safety & Persona
 This tool is built on the principles of the **Arkhe(n) OS**. It treats your data as a biological entity, using isolation for diagnosis and hygiene for cleanup. No modifications are made to your Plex library or configuration.
