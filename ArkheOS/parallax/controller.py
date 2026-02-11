@@ -13,6 +13,7 @@ import base64
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, field
 import numpy as np
+import uvicorn
 
 import zmq
 import zmq.asyncio
@@ -70,7 +71,6 @@ class ParallaxController:
                 logger.error(f"   ✗ Falha no Redis: {e}")
 
         # Simula geração de NCCL Unique ID
-        # Em produção: import nccl; self.nccl_id = nccl.get_unique_id()
         self.nccl_unique_id_b64 = base64.b64encode(b"MOCKED_NCCL_UNIQUE_ID_128BIT_LENGTH_!!!").decode()
 
         self.command_socket = self.zmq_context.socket(zmq.PUB)
@@ -88,7 +88,6 @@ class ParallaxController:
         if node_id in self.nodes:
             node = self.nodes[node_id]
         else:
-            # Atribui rank NCCL sequencial
             rank = len(self.nodes)
             node = ArkheNode(
                 node_id=node_id,
@@ -110,7 +109,7 @@ class ParallaxController:
             "success": True,
             "nccl_rank": node.nccl_rank,
             "nccl_unique_id": self.nccl_unique_id_b64,
-            "world_size": len(self.nodes) # Simplificado
+            "world_size": len(self.nodes)
         }
 
     async def heartbeat_monitor(self):
@@ -178,37 +177,32 @@ async def get_nccl_unique_id():
 async def create_entanglement(payload: Dict):
     if not controller.registry:
         raise HTTPException(status_code=503, detail="Registry not active")
-
     success = await controller.registry.create_pair(
         payload['node_a'], int(payload['agent_a']),
         payload['node_b'], int(payload['agent_b']),
         payload.get('bell_type', 0)
     )
-
     if success and controller.command_socket:
-        await controller.command_socket.send_json({
-            'command': 'REMOTE_ENTANGLE',
-            **payload
-        })
-
+        await controller.command_socket.send_json({'command': 'REMOTE_ENTANGLE', **payload})
     return {"success": success}
 
 @app.post("/entangle/break")
 async def break_entanglement(payload: Dict):
-    if not controller.registry:
-        raise HTTPException(status_code=503)
+    if not controller.registry: raise HTTPException(status_code=503)
     success = await controller.registry.break_pair(payload['node'], int(payload['agent']))
     return {"success": success}
 
 @app.get("/entangle/partner")
 async def get_partner(node: str, agent: int):
-    if not controller.registry:
-        raise HTTPException(status_code=503)
+    if not controller.registry: raise HTTPException(status_code=503)
     partner = await controller.registry.get_partner(node, agent)
-    if partner:
-        return {"node": partner[0], "agent": partner[1], "bell_type": partner[2]}
+    if partner: return {"node": partner[0], "agent": partner[1], "bell_type": partner[2]}
     raise HTTPException(status_code=404, detail="No entanglement found")
 
+async def main():
+    config = uvicorn.Config(app, host="0.0.0.0", port=8080, log_level="info")
+    server = uvicorn.Server(config)
+    await server.serve()
+
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8080)
+    asyncio.run(main())

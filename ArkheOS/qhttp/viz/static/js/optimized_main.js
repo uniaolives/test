@@ -5,6 +5,15 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 
+const ARKHE_COLORS = {
+    0: 0x00ffff,  // CIEF → Cyan (Química)
+    1: 0x00ff00,  // CEIF → Verde (Energia+Química)
+    2: 0xff00ff,  // ICEF → Magenta (Informação)
+    3: 0xffff00,  // IECF → Amarelo (Info+Energia)
+    4: 0xff8800,  // ECIF → Laranja (Energia)
+    5: 0x8800ff   // EICF → Roxo (Energia+Info)
+};
+
 class QuantumVisualizer {
     constructor() {
         this.scene = new THREE.Scene();
@@ -146,8 +155,14 @@ class QuantumVisualizer {
         const scale = 1 + Math.sin(performance.now() * 0.002 * (1 + load)) * 0.1;
         node.group.scale.setScalar(scale);
 
-        const hue = coherence * 0.33;
-        node.core.material.color.setHSL(hue, 1, 0.5);
+        // Arkhe dynamic colors update
+        if (data.dominant_component !== undefined) {
+             node.core.material.color.setHex(ARKHE_COLORS[data.dominant_component] || 0x00ffff);
+             node.core.material.opacity = 0.5 + coherence * 0.5;
+        } else {
+            const hue = coherence * 0.33;
+            node.core.material.color.setHSL(hue, 1, 0.5);
+        }
 
         this.updateNodeParticles(id, data.agents || 0);
     }
@@ -165,11 +180,14 @@ class QuantumVisualizer {
         group.add(core);
 
         const positions = {
+            "q1": new THREE.Vector3(0, 5, -15),
+            "q2": new THREE.Vector3(-13, -5, 10),
+            "q3": new THREE.Vector3(13, -5, 10),
             "arkhe-node-1": new THREE.Vector3(0, 5, -15),
             "arkhe-node-2": new THREE.Vector3(-13, -5, 10),
             "arkhe-node-3": new THREE.Vector3(13, -5, 10)
         };
-        group.position.copy(positions[id] || new THREE.Vector3());
+        group.position.copy(positions[id] || new THREE.Vector3(Math.random()*20-10, Math.random()*20-10, Math.random()*20-10));
 
         this.createLabel(group, id);
 
@@ -347,6 +365,15 @@ class QuantumVisualizer {
         animate();
     }
 
+    handleArkheUpdate(event) {
+        const { node, coherence, dominant_component } = event;
+        const nodeObj = this.nodes.get(node);
+        if (nodeObj) {
+            nodeObj.core.material.color.setHex(ARKHE_COLORS[dominant_component]);
+            nodeObj.core.material.opacity = 0.5 + coherence * 0.5;
+        }
+    }
+
     connectWebSocket() {
         const wsUrl = `ws://${window.location.host}/ws/quantum_stream`;
         this.ws = new WebSocket(wsUrl);
@@ -363,7 +390,9 @@ class QuantumVisualizer {
                     break;
 
                 case 'EVENT':
-                    if (msg.data?.type === 'COLLAPSE') {
+                    if (msg.channel === 'arkhe:evolution') {
+                        this.handleArkheUpdate(msg.data);
+                    } else if (msg.data?.type === 'COLLAPSE') {
                         this.triggerCollapse(msg.data);
                     }
                     break;

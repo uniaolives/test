@@ -2,44 +2,42 @@ version: '3.8'
 
 x-common-env: &common-env
   REDIS_URL: redis://redis:6379
-  PARALLAX_CONTROLLER_URL: http://controller:8080
+  PARALLAX_CONTROLLER_URL: http://parallax-controller:8080
   QHTTP_GATEWAY_URL: http://qhttp-gateway:7070
-  NCCL_DEBUG: INFO
+  NCCL_DEBUG: WARN
+  NCCL_IB_DISABLE: 0
+  NCCL_SOCKET_IFNAME: eth0
 
 services:
+  # ------------------ INFRAESTRUTURA ------------------
   redis:
     image: redis:7-alpine
     container_name: arkhe-redis
     command: redis-server --appendonly yes --maxmemory 2gb
     ports: ["6379:6379"]
     networks: [arkhe-net]
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      timeout: 3s
-      retries: 5
 
+  # ------------------ ORQUESTRAÇÃO GLOBAL ------------------
   parallax-controller:
     build:
       context: .
       dockerfile: Dockerfile.arkhe-full
     container_name: parallax-controller
-    command: python -m parallax.controller
+    command: python -m src.main --mode=controller --node-id=master
     environment:
       <<: *common-env
       ROLE: controller
     ports: ["8080:8080"]
-    depends_on:
-      redis:
-        condition: service_healthy
+    depends_on: [redis]
     networks: [arkhe-net]
 
+  # ------------------ GATEWAY QUÂNTICO ------------------
   qhttp-gateway:
     build:
       context: .
       dockerfile: Dockerfile.arkhe-full
     container_name: qhttp-gateway
-    command: python -m qhttp.gateway
+    command: python -m src.main --mode=gateway --node-id=gateway
     environment:
       <<: *common-env
       ROLE: gateway
@@ -48,6 +46,7 @@ services:
     depends_on: [redis, parallax-controller]
     networks: [arkhe-net]
 
+  # ------------------ NÓS QUÂNTICOS (DGX) ------------------
   arkhe-node-1:
     build:
       context: .
@@ -56,20 +55,13 @@ services:
     hostname: q1
     command: python -m src.main --mode=worker --node-id=q1
     runtime: nvidia
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
     environment:
       <<: *common-env
       NODE_ID: q1
-      QHTTP_QUBITS: 20
+      ROLE: worker
       ARKHE_AGENTS: 200
-      QSHIELD_ENABLED: "true"
     shm_size: 16gb
+    ports: ["8101:8000"]
     depends_on: [qhttp-gateway]
     networks: [arkhe-net]
 
@@ -81,20 +73,13 @@ services:
     hostname: q2
     command: python -m src.main --mode=worker --node-id=q2
     runtime: nvidia
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
     environment:
       <<: *common-env
       NODE_ID: q2
-      QHTTP_QUBITS: 20
+      ROLE: worker
       ARKHE_AGENTS: 200
-      QSHIELD_ENABLED: "true"
     shm_size: 16gb
+    ports: ["8102:8000"]
     depends_on: [qhttp-gateway]
     networks: [arkhe-net]
 
@@ -106,34 +91,28 @@ services:
     hostname: q3
     command: python -m src.main --mode=worker --node-id=q3
     runtime: nvidia
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
     environment:
       <<: *common-env
       NODE_ID: q3
-      QHTTP_QUBITS: 20
+      ROLE: worker
       ARKHE_AGENTS: 200
-      QSHIELD_ENABLED: "true"
     shm_size: 16gb
+    ports: ["8103:8000"]
     depends_on: [qhttp-gateway]
     networks: [arkhe-net]
 
+  # ------------------ VISUALIZADOR QUÂNTICO 3D ------------------
   arkhe-viz:
     build:
       context: .
       dockerfile: qhttp/viz/Dockerfile.production
     container_name: arkhe-viz
-    ports: ["8100:8080"]
     environment:
       <<: *common-env
       ROLE: viz
+    ports: ["8100:8080"]
     volumes:
-      - ./qhttp/viz/static:/app/qhttp/viz/static:ro
+      - ./qhttp/viz:/app/qhttp/viz:ro
     depends_on: [redis]
     networks: [arkhe-net]
 
