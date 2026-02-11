@@ -6,7 +6,11 @@ from dataclasses import dataclass
 from typing import Dict, Set, Optional, List
 from enum import Enum
 import redis.asyncio as aioredis
-from .tla_monitor import TLAMonitor
+import sys
+import os
+# Adjust path to import from formal.monitors
+sys.path.append(os.path.join(os.path.dirname(__file__), "../../../"))
+from formal.monitors.tla_monitor import QuantumPaxosMonitor
 
 class QuantumStateProof(Enum):
     SUPERPOSITION = "superposition"
@@ -39,18 +43,9 @@ class QuantumPaxosVerified:
         self.state_log: List[QuantumCommit] = []
 
         # Runtime Verification
-        self.monitor = TLAMonitor("ArkheOS/spec/quantum_paxos.tla")
-
-    def _get_local_state(self):
-        return {
-            "ballot": self.ballot,
-            "slot": self.slot,
-            "promises_count": len(self.promises),
-            "accepts_count": len(self.accepts)
-        }
+        self.monitor = QuantumPaxosMonitor()
 
     async def propose_state(self, quantum_state: Dict) -> bool:
-        old_state = self._get_local_state()
         self.ballot += 1
         self.promises.clear()
         self.accepts.clear()
@@ -64,7 +59,7 @@ class QuantumPaxosVerified:
             "timestamp": time.time()
         }
 
-        self.monitor.log_transition("PREPARE", self.node_id, old_state, self._get_local_state())
+        self.monitor.handle_event({"type": "PROPOSE", "node": self.node_id, "ballot": self.ballot})
         await self.redis.publish("quantum:consensus:prepare", json.dumps(prepare_msg))
 
         try:
@@ -91,7 +86,7 @@ class QuantumPaxosVerified:
             "node": self.node_id
         }
 
-        self.monitor.log_transition("ACCEPT", self.node_id, self._get_local_state(), self._get_local_state())
+        self.monitor.handle_event({"type": "ACCEPT", "node": self.node_id, "from": self.node_id, "ballot": self.ballot, "value": quantum_state})
         await self.redis.publish("quantum:consensus:accept", json.dumps(accept_msg))
 
         try:
@@ -100,15 +95,11 @@ class QuantumPaxosVerified:
             return False
 
         if len(self.accepts) >= 2 * self.fault_tolerance + 1:
-            prev_state = self._get_local_state()
             self.state_log.append(commit)
-            self.slot += 1
             await self._apply_commit(commit)
 
-            self.monitor.log_transition("COMMIT", self.node_id, prev_state, {
-                **self._get_local_state(),
-                "value": hashlib.sha256(json.dumps(quantum_state).encode()).hexdigest()
-            })
+            self.monitor.handle_event({"type": "LEARN", "node": self.node_id, "slot": self.slot, "value": quantum_state})
+            self.slot += 1
             return True
 
         return False

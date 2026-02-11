@@ -9,6 +9,9 @@
 #include <string.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <time.h>
+#include <arpa/inet.h>
+#include <unistd.h>
 
 #define RX_RING_SIZE 1024
 #define TX_RING_SIZE 1024
@@ -22,9 +25,40 @@ typedef struct {
     bool initialized;
     uint64_t tx_count;
     uint64_t rx_count;
+    int log_socket;
 } qnet_context_t;
 
 static qnet_context_t g_ctx = {0};
+
+static uint64_t time_ns() {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (uint64_t)ts.tv_sec * 1000000000ULL + ts.tv_nsec;
+}
+
+#define ENABLE_FORMAL_LOGGING
+#ifdef ENABLE_FORMAL_LOGGING
+void qnet_log_consensus_message(const char *msg_type,
+                                const void *payload,
+                                size_t len) {
+    if (g_ctx.log_socket <= 0) return;
+
+    struct sockaddr_in monitor_addr = {
+        .sin_family = AF_INET,
+        .sin_port = htons(9999),
+        .sin_addr.s_addr = inet_addr("127.0.0.1")
+    };
+
+    char log_buf[1024];
+    // Simple log format for the monitor
+    snprintf(log_buf, sizeof(log_buf),
+             "{\"type\":\"%s\",\"timestamp\":%lu,\"len\":%zu}",
+             msg_type, time_ns(), len);
+
+    sendto(g_ctx.log_socket, log_buf, strlen(log_buf), 0,
+           (struct sockaddr*)&monitor_addr, sizeof(monitor_addr));
+}
+#endif
 
 int qnet_init(const char *pci_addr) {
     if (g_ctx.initialized) {
@@ -87,6 +121,9 @@ int qnet_init(const char *pci_addr) {
 
     rte_eth_promiscuous_enable(g_ctx.port_id);
 
+    // Initialize logging socket
+    g_ctx.log_socket = socket(AF_INET, SOCK_DGRAM, 0);
+
     g_ctx.initialized = true;
     printf("qnet initialized on port %u with PCI %s\n", g_ctx.port_id, pci_addr);
     return 0;
@@ -116,6 +153,10 @@ int qnet_send(const void *data, size_t len) {
         return -1;
     }
 
+#ifdef ENABLE_FORMAL_LOGGING
+    qnet_log_consensus_message("SEND", data, len);
+#endif
+
     g_ctx.tx_count++;
     return (int)len;
 }
@@ -124,7 +165,6 @@ int qnet_recv(void *buffer, size_t max_len) {
     if (!g_ctx.initialized) return -1;
 
     struct rte_mbuf *bufs[1];
-    // Pull only 1 packet to avoid discarding others in this simple interface
     uint16_t nb_rx = rte_eth_rx_burst(g_ctx.port_id, 0, bufs, 1);
 
     if (nb_rx == 0) return 0;
@@ -143,6 +183,9 @@ int qnet_recv(void *buffer, size_t max_len) {
 
     if (payload_len > 0) {
         rte_memcpy(buffer, (char*)eth_hdr + sizeof(struct rte_ether_hdr), payload_len);
+#ifdef ENABLE_FORMAL_LOGGING
+        qnet_log_consensus_message("RECV", buffer, payload_len);
+#endif
     }
 
     rte_pktmbuf_free(m);
@@ -152,6 +195,7 @@ int qnet_recv(void *buffer, size_t max_len) {
 
 void qnet_close() {
     if (g_ctx.initialized) {
+        if (g_ctx.log_socket > 0) close(g_ctx.log_socket);
         rte_eth_dev_stop(g_ctx.port_id);
         rte_eth_dev_close(g_ctx.port_id);
         rte_eal_cleanup();
