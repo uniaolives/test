@@ -1,0 +1,18 @@
+# Dockerfile.quantum
+FROM arkhe-parallax:node-v2
+
+LABEL qhttp.enabled="true"
+LABEL qhttp.version="1.0"
+
+COPY requirements.quantum.txt .
+RUN pip install --no-cache-dir -r requirements.quantum.txt
+
+ENV QHTTP_ENABLED=true
+ENV QHTTP_GATEWAY_URL=http://qhttp-gateway:7070
+
+# Ensure source code and qhttp package are available
+COPY qhttp/ /opt/arkhe/qhttp/
+
+EXPOSE 7070 7071
+
+ENTRYPOINT ["python", "-m", "src.main"]
