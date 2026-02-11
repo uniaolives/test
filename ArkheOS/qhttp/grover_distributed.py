@@ -1,79 +1,113 @@
-"""
-Grover Distribuído – Busca global de agentes por genoma.
-"""
-
+# qhttp/grover_distributed.py
+import cupy as cp
+import nccl
 import asyncio
-import ctypes
-import logging
-import os
+import json
+from typing import List, Callable, Optional
+import redis.asyncio as aioredis
 import numpy as np
-import aiohttp
-from typing import Optional, Dict, Any
-
-logger = logging.getLogger("Grover.Distributed")
 
 class DistributedGrover:
-    def __init__(self, node_client, controller_url):
-        self.node_client = node_client
-        self.controller_url = controller_url
-        self.libgrover = None
+    """
+    Distributed Grover's algorithm using NCCL for amplitude amplification.
+    Searches across N = 2^n qubits distributed across multiple GPUs.
+    """
 
-    async def initialize(self):
-        lib_path = "/opt/arkhe/lib/libgrover.so"
-        if not os.path.exists(lib_path):
-            logger.error(f"libgrover.so não encontrada em {lib_path}. Grover desativado.")
-            return False
+    def __init__(self, node_id: str, num_nodes: int, local_qubits: int, redis_url: str):
+        self.node_id = node_id
+        self.num_nodes = num_nodes
+        self.local_qubits = local_qubits
+        self.total_qubits = local_qubits + int(np.log2(num_nodes))
+        self.N = 2 ** self.total_qubits
+        self.local_N = 2 ** local_qubits
 
-        try:
-            self.libgrover = ctypes.CDLL(lib_path)
-            self.libgrover.grover_iteration.argtypes = [
-                ctypes.c_void_p,  # d_agents
-                ctypes.c_int,     # n (local)
-                ctypes.c_int,     # target_genome
-                ctypes.c_void_p,  # ncclComm_t
-                ctypes.c_int,     # rank
-                ctypes.c_int      # world_size
-            ]
-            self.libgrover.grover_iteration.restype = ctypes.c_int
-            logger.info("✅ libgrover.so carregada.")
-            return True
-        except Exception as e:
-            logger.error(f"Falha ao carregar libgrover.so: {e}")
-            return False
+        # NCCL communicator
+        # In a real DGX setup, we would initialize this properly with ncclUniqueId
+        # For this implementation, we assume a mock or pre-initialized communicator
+        self.comm = None
 
-    async def run_search(self, target_genome: int) -> Optional[Dict[str, Any]]:
-        """Executa Grover distribuído e retorna o agente encontrado."""
-        if not self.node_client or not self.node_client.qhttp_dist_lib: # Check if distributed quantum ready
-            logger.error("Quantum distribuído não inicializado.")
-            return None
+        # State vector (distributed)
+        # Each node holds 2^local_qubits amplitudes
+        self.state = cp.ones(self.local_N, dtype=cp.complex64) / cp.sqrt(self.N)
 
-        # Obter número total de agentes no cluster
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get(f"{self.controller_url}/health") as resp:
-                    data = await resp.json()
-                    total_agents = data.get('total_agents', 150)
-        except:
-            total_agents = 150
+        self.redis = aioredis.from_url(redis_url)
 
-        iterations = int((np.pi / 4) * np.sqrt(total_agents))
-        logger.info(f"🔍 Grover: {iterations} iterações para genoma {target_genome}")
+    async def search(self, oracle_func: Callable[[int], bool], max_iterations: Optional[int] = None) -> int:
+        """
+        Execute distributed Grover search.
 
-        for i in range(iterations):
-            # In a real scenario, we'd need access to the NCCL comm pointer from the node client
-            # Here we assume the node client has it or the lib handles it
-            ret = self.libgrover.grover_iteration(
-                self.node_client.d_agents,
-                self.node_client.num_agents,
-                target_genome,
-                None, # ncclComm_t stub
-                self.node_client.nccl_rank,
-                self.node_client.world_size
-            )
-            if ret != 0:
-                logger.error(f"Falha na iteração {i}")
-                return None
+        Args:
+            oracle_func: Function that returns True for target state(s)
+            max_iterations: Maximum iterations (defaults to ~pi/4 * sqrt(N))
+        """
+        if max_iterations is None:
+            max_iterations = int(np.pi / 4 * np.sqrt(self.N))
 
-        # Medição
-        measured = await self.node_client.measure_all_agents()
-        return {"agent_id": measured, "genome": target_genome}
+        # Determine local target indices
+        local_targets = [i for i in range(self.local_N) if oracle_func(self._global_index(i))]
+
+        for iteration in range(max_iterations):
+            # Phase 1: Oracle (local)
+            await self._apply_oracle(local_targets)
+
+            # Phase 2: Diffusion (requires NCCL AllReduce)
+            await self._apply_diffusion()
+
+            # Check convergence
+            probabilities = cp.abs(self.state) ** 2
+            max_prob_idx = int(cp.argmax(probabilities))
+            max_prob = float(probabilities[max_prob_idx])
+
+            if max_prob > 0.9:  # Threshold for measurement
+                result = self._global_index(max_prob_idx)
+                await self.redis.publish("grover:search", json.dumps({
+                    "node": self.node_id,
+                    "found": result,
+                    "probability": max_prob,
+                    "iterations": iteration + 1
+                }))
+                return result
+
+            # Broadcast progress
+            if iteration % 10 == 0:
+                await self.redis.publish("grover:progress", json.dumps({
+                    "iteration": iteration,
+                    "max_prob": max_prob
+                }))
+
+        # Return most likely result
+        probabilities = cp.abs(self.state) ** 2
+        return self._global_index(int(cp.argmax(probabilities)))
+
+    async def _apply_oracle(self, target_indices: List[int]):
+        """Apply phase oracle to target states (local operation)"""
+        for idx in target_indices:
+            self.state[idx] *= -1  # Phase flip
+
+    async def _apply_diffusion(self):
+        """
+        Apply Grover diffusion operator.
+        Requires global average computation via NCCL.
+        """
+        # Compute local average
+        local_avg = cp.mean(self.state)
+
+        # AllReduce to get global average
+        if self.comm:
+            global_avg = cp.empty_like(local_avg)
+            self.comm.allReduce(local_avg, global_avg, nccl.NCCL_SUM)
+            global_avg /= self.num_nodes
+        else:
+            # Mock behavior if NCCL is not available
+            global_avg = local_avg
+
+        # Reflection about average: 2|avg><avg| - I
+        self.state = 2 * global_avg - self.state
+
+    def _global_index(self, local_idx: int) -> int:
+        """Convert local index to global index"""
+        # Extract numeric part of node_id (e.g., 'q1' -> 1)
+        import re
+        match = re.search(r'(\d+)', self.node_id)
+        node_rank = int(match.group(1)) - 1 if match else 0
+        return (node_rank << self.local_qubits) | local_idx

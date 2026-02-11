@@ -2,11 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Arkhe(n) Quantum Viz</title>
+    <title>Arkhe(n) Quantum Observer</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; color: #0f0; font-family: monospace; }
-        #info { position: absolute; top: 10px; left: 10px; pointer-events: none; z-index: 10; }
-        #status { color: #0ff; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Courier New', monospace; }
+        #ui-layer { position: absolute; top: 20px; left: 20px; color: #00ffcc; pointer-events: none; z-index: 10; }
+        h1 { margin: 0; font-size: 24px; text-shadow: 0 0 10px #00ffcc; }
+        .blink { animation: blinker 1s linear infinite; color: #ff0055; }
+        @keyframes blinker { 50% { opacity: 0; } }
+        #stats { margin-top: 10px; font-size: 14px; background: rgba(0,0,0,0.5); padding: 10px; border: 1px solid #00ffcc; }
+        #log-console {
+            position: absolute; bottom: 20px; left: 0; width: 300px; height: 150px;
+            overflow-y: hidden; font-size: 10px; color: #aaa; padding: 10px;
+            background: linear-gradient(to top, rgba(0,20,0,0.8), transparent);
+            pointer-events: none;
+        }
     </style>
     <script type="importmap">
         {
@@ -18,11 +27,15 @@
     </script>
 </head>
 <body>
-    <div id="info">
-        <h1>⚛️ Arkhe(n) Quantum Observer</h1>
-        <div id="status">Connecting...</div>
-        <div id="metrics">Active Pairs: 0</div>
+    <div id="ui-layer">
+        <h1>⚛️ ARKHE(N) <span class="blink">LIVE</span></h1>
+        <div id="stats">
+            <div>NODES: <span id="node-count">3</span></div>
+            <div>ENTANGLEMENTS: <span id="link-count">0</span></div>
+            <div>COHERENCE: <span id="coherence">99.9%</span></div>
+        </div>
+        <div id="log-console"></div>
     </div>
-    <script type="module" src="./js/main.js"></script>
+    <script type="module" src="./js/optimized_main.js"></script>
 </body>
 </html>
