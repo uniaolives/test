@@ -1,0 +1,215 @@
+"""
+Unified Particle System for Consciousness Representation.
+Integrates Mandala (Order), DNA (Evolution), and Hyper-Core (4D Unification).
+"""
+
+import math
+import numpy as np
+import itertools
+from typing import Dict, List, Tuple, Any
+
+def get_mandala_pos(index, total_particles, time_pulse):
+    """
+    Generates positions for a Mandala pattern (concentric circles).
+    """
+    # Number of rings
+    n_rings = 5
+    particles_per_ring = total_particles // n_rings
+    if particles_per_ring == 0: particles_per_ring = 1
+
+    ring_idx = index // particles_per_ring
+    particle_in_ring_idx = index % particles_per_ring
+
+    radius = (ring_idx + 1) * 2.0
+    angle = (particle_in_ring_idx / particles_per_ring) * 2 * np.pi + time_pulse * 0.1
+
+    # Add vertical oscillation
+    z = 0.5 * math.sin(time_pulse + ring_idx)
+
+    return np.array([
+        radius * math.cos(angle),
+        radius * math.sin(angle),
+        z
+    ])
+
+def get_dna_pos(index, total_particles, time_pulse):
+    """
+    Generates positions for a DNA double helix pattern.
+    """
+    # Two strands
+    strand = index % 2
+    z_step = 0.2
+    angle_step = 0.5
+
+    # Progress along the helix
+    t = (index // 2) * z_step - (total_particles // 4) * z_step
+    angle = (index // 2) * angle_step + strand * np.pi + time_pulse * 0.5
+
+    radius = 2.0
+
+    return np.array([
+        radius * math.cos(angle),
+        radius * math.sin(angle),
+        t
+    ])
+
+def get_hypercore_pos(index, total_particles, time_pulse, rotation_4d=True):
+    """
+    Gera posições 3D projetadas a partir do Hecatonicosachoron 4D.
+    """
+    vertices_4d = []
+    phi = (1 + math.sqrt(5)) / 2
+    ones = [1, -1]
+
+    for i in range(4):
+        for sign in ones:
+            v = [0, 0, 0, 0]
+            v[i] = sign
+            vertices_4d.append(v)
+
+    half = 0.5
+    for sx in ones:
+        for sy in ones:
+            for sz in ones:
+                for sw in ones:
+                    neg_count = (sx < 0) + (sy < 0) + (sz < 0) + (sw < 0)
+                    if neg_count % 2 == 0:
+                        vertices_4d.append([sx*half, sy*half, sz*half, sw*half])
+
+    if len(vertices_4d) < 120:
+        n = 120 - len(vertices_4d)
+        indices = np.arange(0, n, dtype=float) + 0.5
+        phi_inv = (np.sqrt(5) - 1) / 2
+        for i in indices:
+            phi1 = 2 * np.pi * i * phi_inv
+            phi2 = 2 * np.pi * i * (phi_inv**2)
+            z = 1 - (2 * i) / n
+            r = np.sqrt(max(0, 1 - z*z))
+            vertices_4d.append([r * np.cos(phi1), r * np.sin(phi1), z * np.cos(phi2), z * np.sin(phi2)])
+
+    vertex_idx = index % len(vertices_4d)
+    point_4d = np.array(vertices_4d[vertex_idx])
+
+    if rotation_4d:
+        angle1 = time_pulse * 0.2
+        angle2 = time_pulse * 0.15
+        cos1, sin1 = math.cos(angle1), math.sin(angle1)
+        cos2, sin2 = math.cos(angle2), math.sin(angle2)
+        x, y, z, w = point_4d
+        x_new = x * cos1 - y * sin1
+        y_new = x * sin1 + y * cos1
+        z_new = z * cos2 - w * sin2
+        w_new = z * sin2 + w * cos2
+        point_4d = np.array([x_new, y_new, z_new, w_new])
+
+    x, y, z, w = point_4d
+    if abs(1 - w) < 0.001: w = 0.999
+    scale = 1.0 / (1.0 - w)
+    x_3d, y_3d, z_3d = x * scale, y * scale, z * scale
+    pulse = 1.0 + 0.1 * math.sin(time_pulse * 3 + index * 0.1)
+
+    return np.array([x_3d * pulse, y_3d * pulse, z_3d * pulse])
+
+class UnifiedParticleSystem:
+    """
+    Sistema de partículas que representa estados de consciência.
+    """
+
+    def __init__(self, num_particles=120):
+        self.particles = []
+        self.time = 0.0
+        self.current_mode = "MANDALA"
+        self.target_mode = "MANDALA"
+        self.transition_progress = 0.0
+        self.transition_speed = 0.02
+        self.quantum_jitter = 0.01
+
+        for i in range(num_particles):
+            self.particles.append({
+                'index': i,
+                'pos': np.array([0.0, 0.0, 0.0]),
+                'target_pos': np.array([0.0, 0.0, 0.0]),
+                'color': [1.0, 1.0, 1.0, 1.0],
+                'size': 1.0,
+                'energy': 0.5 + 0.5 * math.sin(i * 0.1)
+            })
+
+    def set_mode(self, new_mode):
+        if new_mode in ["MANDALA", "DNA", "HYPERCORE"]:
+            self.target_mode = new_mode
+            self.transition_progress = 0.0
+
+    def update(self, dt):
+        self.time += dt
+
+        if self.current_mode != self.target_mode:
+            self.transition_progress += self.transition_speed
+            if self.transition_progress >= 1.0:
+                self.transition_progress = 1.0
+                self.current_mode = self.target_mode
+
+        for p in self.particles:
+            idx = p['index']
+
+            if self.target_mode == "MANDALA":
+                target = get_mandala_pos(idx, len(self.particles), self.time)
+            elif self.target_mode == "DNA":
+                target = get_dna_pos(idx, len(self.particles), self.time)
+            else:  # HYPERCORE
+                target = get_hypercore_pos(idx, len(self.particles), self.time)
+
+            if self.transition_progress < 1.0:
+                if self.current_mode == "MANDALA":
+                    current = get_mandala_pos(idx, len(self.particles), self.time)
+                elif self.current_mode == "DNA":
+                    current = get_dna_pos(idx, len(self.particles), self.time)
+                else:
+                    current = get_hypercore_pos(idx, len(self.particles), self.time)
+
+                t = self.transition_progress
+                smooth_t = t * t * (3 - 2 * t)
+                p['target_pos'] = current * (1 - smooth_t) + target * smooth_t
+            else:
+                p['target_pos'] = target
+
+            p['pos'] = p['pos'] * 0.9 + p['target_pos'] * 0.1
+            self.update_particle_color(p)
+            # Use quantum_jitter for noise
+            p['pos'] += np.random.normal(0, self.quantum_jitter, 3)
+
+    def update_particle_color(self, particle):
+        if self.current_mode == "MANDALA":
+            hue, saturation = 0.12, 0.8
+            value = 0.7 + 0.3 * particle['energy']
+        elif self.current_mode == "DNA":
+            hue, saturation = 0.5, 0.9
+            value = 0.6 + 0.4 * math.sin(self.time + particle['index'] * 0.1)
+        else:
+            hue, saturation = 0.8, 0.7
+            value = 0.5 + 0.5 * math.sin(self.time * 2 + particle['index'] * 0.05)
+
+        particle['color'] = self.hsv_to_rgb(hue, saturation, value)
+
+    def hsv_to_rgb(self, h, s, v):
+        i = int(h * 6.)
+        f = (h * 6.) - i
+        p = v * (1. - s)
+        q = v * (1. - s * f)
+        t = v * (1. - s * (1. - f))
+        i %= 6
+        if i == 0: return [v, t, p, 1.0]
+        if i == 1: return [q, v, p, 1.0]
+        if i == 2: return [p, v, t, 1.0]
+        if i == 3: return [p, q, v, 1.0]
+        if i == 4: return [t, p, v, 1.0]
+        if i == 5: return [v, p, q, 1.0]
+        return [0, 0, 0, 1.0]
+
+    def get_particle_data(self):
+        return {
+            'positions': [p['pos'].tolist() for p in self.particles],
+            'colors': [p['color'] for p in self.particles],
+            'sizes': [p['size'] for p in self.particles],
+            'mode': self.current_mode,
+            'transition': self.transition_progress
+        }
