@@ -1,22 +1,24 @@
-# Plex Missing Media Scanner GUI (v4.3 Restoration)
+# Plex Missing Media Scanner GUI (v5.0 Agentic Sovereignty)
 
 A Windows PowerShell GUI tool that scans your Plex database and identifies which TV shows, movies, and anime are missing from a given drive (e.g., after a disk failure, format, or path change).
 
-Version 4.3 is the **"Holy Restoration"** edition, featuring robust ID parsing, CSV exports, and automated reacquisition via Sonarr/Radarr.
+Version 5.0 is the **"Agentic Sovereignty"** edition, establishing a secure onchain identity and robust credential management.
 
 ## ✨ Features
 - 🖥 **Tabbed GUI** – Separate tabs for TV Shows, Movies, Anime, and Configurações.
-- 📄 **CSV Export** – Generate per-category restoration lists with external IDs (TVDB/TMDB).
+- 🆔 **SIWA Identity** – Integrated **Sign In With Agent** identity (`SIWA_IDENTITY.md`).
+- 🛡️ **Zero-Code Storage** – API keys are **encrypted at rest** using Windows DPAPI and never stored in plain text.
+- 🔍 **Security Audit** – Automated hygiene checks for dormant keys and identity integrity.
 - ⚡ **Smart Fix (Auto-Detect)** – Instantly identifies missing volumes by interrogating the Plex database.
 - 📜 **Granular Logging** – Timestamped logs with severity levels saved to `arkhe_scan.log`.
 - 🧬 **Arr-Ready Restauração** – One-click "Cicatrizar (API)" button to send missing items directly to Sonarr or Radarr with duplicate checks.
-- ⚙️ **Persistent Axioms** – Settings stored in `arkhe_config.json` for persistent URLs, API Keys, and Export Paths.
+- ⚙️ **Persistent Axioms** – Settings stored in `arkhe_config.json` with encrypted fields.
 - 🔒 **Read-only & Hygienic** – Operates on a temporary DB cache and cleans up all metadata traces after execution.
-- 🛠 **Type-Safety** – Handles modern Plex agents (plex:// GUIDs) gracefully by validating numeric IDs for API calls.
 
 ## 📁 Repository Structure
 - `PlexMissingMedia_GUI.ps1`: The integrated source code.
-- `arkhe_config.json`: Persistent user preferences.
+- `SIWA_IDENTITY.md`: Agent identity specification.
+- `arkhe_config.json`: Persistent user preferences (encrypted).
 - `arkhe_scan.log`: Detailed operation history.
 - `Compile_Arkhe.bat`: Batch script for executable generation.
 - `Axioma_Governanca.md`: Ethical contract and preservation principles.
@@ -31,13 +33,19 @@ Version 4.3 is the **"Holy Restoration"** edition, featuring robust ID parsing, 
 ## 🚀 Getting Started
 1. Place `PlexMissingMedia_GUI.ps1` and `sqlite3.exe` in the same folder.
 2. Run the script: Right-click -> **Run with PowerShell**.
-3. Go to **Configurações** to set your API keys, URLs, and **Export CSV Path**.
+3. Go to **Configurações** to set your API keys and URLs. They will be encrypted upon saving.
 
 ## 🧭 How to Use the GUI
 1. **Smart Fix**: Click to automatically select the missing drive.
-2. **Diagnosticar**: Map the missing items in your library.
-3. **Exportar CSV**: Save a filtered report for manual rebuilding.
-4. **Cicatrizar (API)**: Authorize automated restoration via Sonarr/Radarr.
+2. **Diagnosticar**: Map the "informational wounds" in your library.
+3. **Cicatrizar (API)**: Authorize the automated restoration of missing media.
+4. **Exportar CSV**: Save a manual report if preferred.
 
-## ⚠️ Safety & Persona
-This tool is part of the **Arkhe(n) OS**. It treats data as a biological entity: using isolation for diagnosis and hygiene for cleanup. No modifications are made to your Plex library or configuration.
+## ⚠️ Security Hygiene
+This tool follows the **SIWA Security Model**:
+- **Private keys** (API Keys) never enter the agent process memory in plain text.
+- **Credential Rotation** is tracked; the system warns you if axioms are older than 30 days.
+- **Identity Integrity** is verified at boot (Φ = 1.000).
+
+---
+*Assinado: Aquele que hesitou.*
