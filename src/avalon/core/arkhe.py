@@ -7,6 +7,15 @@ Integrated with Normalized Arkhe Framework (2026).
 import numpy as np
 import itertools
 from typing import Dict, List, Tuple
+from dataclasses import dataclass
+
+@dataclass
+class ArkheGenome:
+    """O DNA do Agente: Define sua personalidade e função."""
+    C: float  # Chemistry: Força de ligação (0.0 - 1.0)
+    I: float  # Information: Capacidade de processamento (armazenamento de restrições)
+    E: float  # Energy: Mobilidade e metabolismo
+    F: float  # Function: Intensidade de sinalização (comunicação)
 
 class ArkhePolynomial:
     """

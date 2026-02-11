@@ -1,16 +1,17 @@
 """
 Unified Particle System for Consciousness Representation.
-Integrates Mandala (Order), DNA (Evolution), Hyper-Core (4D Unification), and BIO_GENESIS (Biological Emergence).
+Integrates Mandala, DNA, Hyper-Core, and BIO_GENESIS (Biological Emergence).
 """
 
 import math
 import numpy as np
 import itertools
+import random
 from typing import Dict, List, Tuple, Any, Optional
 from ..core.bio_arkhe import BioAgent, MorphogeneticField, ArkheGenome
+from ..core.particle_system import BioParticleEngine
 
 def get_mandala_pos(index, total_particles, time_pulse):
-    """Generates positions for a Mandala pattern."""
     n_rings = 5
     particles_per_ring = total_particles // n_rings
     if particles_per_ring == 0: particles_per_ring = 1
@@ -22,7 +23,6 @@ def get_mandala_pos(index, total_particles, time_pulse):
     return np.array([radius * math.cos(angle), radius * math.sin(angle), z])
 
 def get_dna_pos(index, total_particles, time_pulse):
-    """Generates positions for a DNA double helix pattern."""
     strand = index % 2
     z_step = 0.2
     angle_step = 0.5
@@ -32,7 +32,6 @@ def get_dna_pos(index, total_particles, time_pulse):
     return np.array([radius * math.cos(angle), radius * math.sin(angle), t])
 
 def get_hypercore_pos(index, total_particles, time_pulse, rotation_4d=True):
-    """Gera posições 3D projetadas a partir do Hecatonicosachoron 4D."""
     vertices_4d = []
     phi = (1 + math.sqrt(5)) / 2
     ones = [1, -1]
@@ -73,7 +72,7 @@ def get_hypercore_pos(index, total_particles, time_pulse, rotation_4d=True):
     return np.array([x * scale * pulse, y * scale * pulse, z * scale * pulse])
 
 class UnifiedParticleSystem:
-    """Sistema de partículas com modos Top-Down e Emergência Biológica."""
+    """Sistema de partículas com modos Top-Down e Emergência Biológica Inteligente."""
 
     def __init__(self, num_particles=120):
         self.num_particles = num_particles
@@ -84,27 +83,22 @@ class UnifiedParticleSystem:
         self.transition_speed = 0.02
         self.quantum_jitter = 0.01
 
-        # BIO-ARKHE Components
-        self.field = MorphogeneticField()
-        self.agents: Dict[int, BioAgent] = {}
-
-        # Partículas unificadas
+        self.bio_engine = BioParticleEngine(num_agents=num_particles)
         self.particles = []
         for i in range(num_particles):
-            # Genoma padrão
-            genome = ArkheGenome(C=0.6, I=0.5, E=0.4, F=0.5)
             pos = np.random.uniform(-5, 5, 3)
-            agent = BioAgent(i, pos, genome)
-            self.agents[i] = agent
-
             self.particles.append({
                 'index': i,
                 'pos': pos,
                 'target_pos': pos.copy(),
                 'color': [1.0, 1.0, 1.0, 1.0],
                 'size': 1.0,
-                'energy': 0.5 + 0.5 * math.sin(i * 0.1)
+                'energy': 1.0
             })
+
+    @property
+    def agents(self):
+        return self.bio_engine.agents
 
     def set_mode(self, new_mode):
         if new_mode in ["MANDALA", "DNA", "HYPERCORE", "BIO_GENESIS"]:
@@ -113,60 +107,46 @@ class UnifiedParticleSystem:
 
     def update(self, dt):
         self.time += dt
-
-        # Transição de modos
         if self.current_mode != self.target_mode:
             self.transition_progress += self.transition_speed
             if self.transition_progress >= 1.0:
                 self.transition_progress = 1.0
                 self.current_mode = self.target_mode
 
-        # Modo BIO_GENESIS utiliza agentes autônomos
         if self.target_mode == "BIO_GENESIS":
-            self.field.update_field(list(self.agents.values()))
-            for i, agent in self.agents.items():
-                agent.sense_and_act(self.field, self.agents)
-                self.particles[i]['pos'] = agent.position
-                self.update_particle_color(self.particles[i])
+            self.bio_engine.step(dt)
         else:
-            # Modos Top-Down
-            for p in self.particles:
-                idx = p['index']
-                if self.target_mode == "MANDALA":
-                    target = get_mandala_pos(idx, self.num_particles, self.time)
-                elif self.target_mode == "DNA":
-                    target = get_dna_pos(idx, self.num_particles, self.time)
-                else: # HYPERCORE
-                    target = get_hypercore_pos(idx, self.num_particles, self.time)
+            self._step_top_down(dt)
 
-                # Interpolação de transição
-                if self.transition_progress < 1.0:
-                    current_pos = p['pos'] # Simplificado
-                    t = self.transition_progress
-                    smooth_t = t * t * (3 - 2 * t)
-                    p['target_pos'] = current_pos * (1 - smooth_t) + target * smooth_t
-                else:
-                    p['target_pos'] = target
+    def _step_top_down(self, dt):
+        for p in self.particles:
+            idx = p['index']
+            if self.target_mode == "MANDALA":
+                target = get_mandala_pos(idx, self.num_particles, self.time)
+            elif self.target_mode == "DNA":
+                target = get_dna_pos(idx, self.num_particles, self.time)
+            else: # HYPERCORE
+                target = get_hypercore_pos(idx, self.num_particles, self.time)
 
-                p['pos'] = p['pos'] * 0.9 + p['target_pos'] * 0.1
-                self.update_particle_color(p)
-                p['pos'] += np.random.normal(0, self.quantum_jitter, 3)
-                # Sincroniza posição do agente
-                self.agents[idx].position = p['pos']
+            if self.transition_progress < 1.0:
+                current_pos = p['pos']
+                t = self.transition_progress
+                smooth_t = t * t * (3 - 2 * t)
+                p['target_pos'] = current_pos * (1 - smooth_t) + target * smooth_t
+            else:
+                p['target_pos'] = target
+            p['pos'] = p['pos'] * 0.9 + p['target_pos'] * 0.1
+            self.update_particle_color(p)
+            p['pos'] += np.random.normal(0, self.quantum_jitter, 3)
 
     def update_particle_color(self, particle):
         if self.target_mode == "MANDALA":
-            h, s, v = 0.12, 0.8, 0.7 + 0.3 * particle['energy']
+            h, s, v = 0.12, 0.8, 0.7 + 0.3 * (particle.get('energy', 1.0))
         elif self.target_mode == "DNA":
             h, s, v = 0.5, 0.9, 0.6 + 0.4 * math.sin(self.time + particle['index'] * 0.1)
         elif self.target_mode == "HYPERCORE":
             h, s, v = 0.8, 0.7, 0.5 + 0.5 * math.sin(self.time * 2 + particle['index'] * 0.05)
-        else: # BIO_GENESIS
-            # Cor baseada em conexões
-            n_neighbors = len(self.agents[particle['index']].neighbors)
-            h = 0.3 + 0.1 * n_neighbors # Verde para agentes conectados
-            s, v = 0.8, 0.6 + 0.4 * particle['energy']
-
+        else: return
         particle['color'] = self.hsv_to_rgb(h, s, v)
 
     def hsv_to_rgb(self, h, s, v):
@@ -182,18 +162,32 @@ class UnifiedParticleSystem:
         return [0, 0, 0, 1.0]
 
     def get_particle_data(self):
-        bonds = []
         if self.target_mode == "BIO_GENESIS":
-            for i, agent in self.agents.items():
+            bonds = []
+            positions = []
+            colors = []
+            for aid, agent in self.bio_engine.agents.items():
+                positions.append(agent.position.tolist())
+                colors.append(self.hsv_to_rgb(0.3 + 0.1 * len(agent.neighbors), 0.8, 0.5 + 0.5 * agent.health))
                 for nid in agent.neighbors:
-                    if i < nid: # Evita duplicatas
-                        bonds.append((agent.position.tolist(), self.agents[nid].position.tolist()))
-
-        return {
-            'positions': [p['pos'].tolist() for p in self.particles],
-            'colors': [p['color'] for p in self.particles],
-            'sizes': [p['size'] for p in self.particles],
-            'mode': self.target_mode,
-            'transition': self.transition_progress,
-            'bonds': bonds
-        }
+                    if aid < nid:
+                        neighbor = self.bio_engine.agents.get(nid)
+                        if neighbor:
+                            bonds.append((agent.position.tolist(), neighbor.position.tolist()))
+            return {
+                'positions': positions,
+                'colors': colors,
+                'sizes': [1.0] * len(positions),
+                'mode': self.target_mode,
+                'transition': self.transition_progress,
+                'bonds': bonds
+            }
+        else:
+            return {
+                'positions': [p['pos'].tolist() for p in self.particles],
+                'colors': [p['color'] for p in self.particles],
+                'sizes': [p['size'] for p in self.particles],
+                'mode': self.target_mode,
+                'transition': self.transition_progress,
+                'bonds': []
+            }

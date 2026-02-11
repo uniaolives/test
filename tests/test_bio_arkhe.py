@@ -59,6 +59,8 @@ def test_genome_personalities():
     # Force gradient
     class MockField:
         def get_gradient(self, pos): return np.array([1.0, 0.0, 0.0])
+        def get_local_gradient(self, pos): return self.get_gradient(pos)
+        def get_signal_at(self, pos): return 1.0
 
     a_fast.sense_and_act(MockField(), {})
     a_slow.sense_and_act(MockField(), {})
