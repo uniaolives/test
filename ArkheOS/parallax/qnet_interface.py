@@ -1,46 +1,114 @@
-# parallax/qnet_interface.py
+# parallax/qnet_interface.py (VERSÃO COMPLETA)
 import ctypes
 import os
-import logging
+from typing import Optional
 
-logger = logging.getLogger("Parallax.QNet")
+# Load library
+# Note: Path adjusted to point to ArkheOS/lib/libqnet.so
+_lib_path = os.path.join(os.path.dirname(__file__), "../lib/libqnet.so")
+try:
+    _libqnet = ctypes.CDLL(_lib_path)
+except OSError:
+    # Fallback for development if lib is not yet compiled
+    _libqnet = None
 
-class QNetInterface:
+if _libqnet:
+    # Define function signatures
+    _libqnet.qnet_init.argtypes = [ctypes.c_char_p]
+    _libqnet.qnet_init.restype = ctypes.c_int
+
+    _libqnet.qnet_send.argtypes = [ctypes.c_void_p, ctypes.c_size_t]
+    _libqnet.qnet_send.restype = ctypes.c_int
+
+    _libqnet.qnet_recv.argtypes = [ctypes.c_void_p, ctypes.c_size_t]
+    _libqnet.qnet_recv.restype = ctypes.c_int
+
+    _libqnet.qnet_close.argtypes = []
+    _libqnet.qnet_close.restype = None
+
+
+class QNetError(Exception):
+    """Exception raised for QNet errors"""
+    pass
+
+
+class QNet:
     """
-    Interface Python para a biblioteca de rede DPDK (libqnet).
-    Permite comunicação de ultra-baixa latência (<5us).
+    Python interface to DPDK-based ultra-low-latency networking.
+
+    Usage:
+        qnet = QNet()
+        qnet.send(b"Hello, DPDK!")
+        data = qnet.recv()
     """
-    def __init__(self):
-        self.lib = None
-        self._init_lib()
 
-    def _init_lib(self):
-        lib_path = "/opt/arkhe/lib/libqnet.so"
-        if os.path.exists(lib_path):
-            try:
-                self.lib = ctypes.CDLL(lib_path)
-                logger.info("✅ libqnet.so carregada.")
-            except Exception as e:
-                logger.error(f"Erro ao carregar libqnet.so: {e}")
-        else:
-            logger.warning("⚠️ libqnet.so não encontrada.")
+    def __init__(self, pci_addr: str = "0000:01:00.0"):
+        """Initialize DPDK networking"""
+        self._initialized = False
 
-    def initialize(self, args: list):
-        if not self.lib: return False
-        # Converte args para char**
-        ArgArray = ctypes.c_char_p * len(args)
-        c_args = ArgArray(*[arg.encode() for arg in args])
-        ret = self.lib.qnet_init(len(args), c_args)
-        return ret == 0
+        if _libqnet is None:
+            raise QNetError(f"libqnet.so not found at {_lib_path}")
 
-    def send(self, port_id: int, data: bytes):
-        if not self.lib: return False
-        return self.lib.qnet_send_packet(port_id, data, len(data)) == 0
+        ret = _libqnet.qnet_init(pci_addr.encode('utf-8'))
+        if ret != 0:
+            raise QNetError(f"Failed to initialize QNet (error {ret})")
 
-    def receive(self, port_id: int, max_len: int = 1500) -> bytes:
-        if not self.lib: return b""
-        buf = ctypes.create_string_buffer(max_len)
-        length = self.lib.qnet_recv_packet(port_id, buf, max_len)
-        if length > 0:
-            return buf.raw[:length]
-        return b""
+        self._initialized = True
+
+    def send(self, data: bytes) -> int:
+        """
+        Send data via DPDK.
+
+        Returns:
+            Number of bytes sent
+
+        Raises:
+            QNetError if send fails
+        """
+        if not self._initialized:
+            raise QNetError("QNet not initialized")
+
+        ret = _libqnet.qnet_send(data, len(data))
+        if ret < 0:
+            raise QNetError(f"Send failed (error {ret})")
+
+        return ret
+
+    def recv(self, max_len: int = 4096, timeout: Optional[float] = None) -> bytes:
+        """
+        Receive data (non-blocking).
+
+        Returns:
+            Received bytes (empty if nothing available)
+
+        Note:
+            timeout parameter is ignored (always non-blocking)
+        """
+        if not self._initialized:
+            raise QNetError("QNet not initialized")
+
+        buffer = ctypes.create_string_buffer(max_len)
+        ret = _libqnet.qnet_recv(buffer, max_len)
+
+        if ret < 0:
+            raise QNetError(f"Recv failed (error {ret})")
+
+        if ret == 0:
+            return b""
+
+        return buffer.raw[:ret]
+
+    def close(self):
+        """Cleanup DPDK resources"""
+        if self._initialized:
+            _libqnet.qnet_close()
+            self._initialized = False
+
+    def __del__(self):
+        self.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
