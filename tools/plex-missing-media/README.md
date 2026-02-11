@@ -1,53 +1,44 @@
-# Plex Missing Media Scanner GUI (v5.1.1 Vigilante Soberano)
+# Plex Missing Media Scanner GUI (v5.2 Unified Restoration)
 
-A Windows PowerShell GUI tool that scans your Plex database and identifies missing media, now evolved into a sovereign agent with verifiable identity.
+A Windows PowerShell GUI tool that scans your Plex database and identifies which TV shows, movies, and anime are missing from a given drive (e.g., after a disk failure, format, or path change).
 
-Version 5.1.1 is the **"Vigilante Soberano"** edition, integrating SIWA (Sign In With Agent) and a secure infrastructure for automated restoration.
+Version 5.2 is the **"Unified Restoration"** edition, featuring complete reacquisition automation, persistent configurations, and automatic volume detection.
 
 ## ✨ Features
-- 🖥 **Tabbed GUI** – Tabs for TV Shows, Movies, Anime, Segurança, and Configurações.
-- 🆔 **SIWA Identity** – Verifiable onchain identity support (ERC-8004 / ERC-8128).
-- 🔐 **Zero-Code Storage** – API keys are encrypted with DPAPI; private keys stay in proxy isolation.
-- 📡 **Network Resilience** – Connectivity checks for UNC/Network drives to prevent UI hangs.
-- 📱 **Telegram 2FA** – Integrated approval flow for critical restoration tasks.
-- 📜 **Audit Logging** – Granular, timestamped logs saved to `arkhe_scan.log`.
-- 🧬 **Smart Restoration** – Automated "Cicatrizar (API)" for Sonarr and Radarr.
-- 🛡️ **Security Audit** – Tracks key rotation and identity integrity.
+- 🖥 **Tabbed GUI** – Separate tabs for TV Shows, Movies, Anime, and Configurações.
+- ⚡ **Smart Fix (Auto-Detect)** – Instantly identifies missing volumes by analyzing your Plex database records and comparing them with mounted drives.
+- 📜 **Holy Query SQL** – Optimized SQL logic with internal GUID parsing for robust TVDB/TMDB ID extraction.
+- 🧬 **Arr-Ready Restauração** – One-click "Cicatrizar (API)" button to send missing items directly to Sonarr or Radarr with duplicate checks.
+- ⚙️ **Persistent Axioms** – Settings stored in `ArkheConfig.json` (encrypted via DPAPI) for URLs, API Keys, and Custom Profiles.
+- 🔍 **Dynamic DB Discovery** – Automatically locates the Plex SQLite database via Windows Registry (LocalAppDataPath).
+- 🔒 **Read-only & Hygienic** – Operates on a temporary DB cache and cleans up all metadata traces after execution.
+- 🛠 **Granular Logging** – Timestamped logs with severity levels saved to `arkhe_scan.log`.
+- 🧪 **Simulação de Batismo** – Included script to test 2FA and API integration under stress.
 
 ## 📁 Repository Structure
-- `PlexMissingMedia_GUI.ps1`: Sovereign agent source code (Windows).
-- `SIWA_IDENTITY.md`: Identity template and registration status.
-- `arkhe_config.json`: Encrypted persistent settings.
-- `Axioma_Governanca.md`: Ethical directives (Axioma #012).
-- `agent-network/`: Node.js infrastructure for SIWA & 2FA (Railway Deployable).
-  - `keyring-proxy/`: Secure signing service (Chamber of Isolation).
-  - `2fa-gateway/`: Telegram approval gateway (Nervo Vago).
-  - `railway.toml`: Automated deployment configuration.
+- `PlexMissingMedia_GUI.ps1`: The integrated source code.
+- `ArkheConfig.json`: Persistent user preferences (encrypted).
+- `Test_Batismo_Pedestre12.ps1`: 2FA and API simulation test.
+- `arkhe_scan.log`: Detailed operation history.
+- `Compile_Arkhe.bat`: Batch script for executable generation.
+- `Axioma_Governanca.md`: Ethical contract and preservation principles.
+- `README.md`: This documentation.
 
 ## 🛠 Requirements
-- Windows 10/11 (for the GUI).
-- PowerShell 5+.
+- Windows 10/11
+- PowerShell 5+
 - Plex Media Server installed locally.
 - `sqlite3.exe` (placed in the script folder or `C:\tools\`).
-- (Optional) [Railway](https://railway.app) account for deploying the Agent Network.
 
-## 🚀 Getting Started (Windows GUI)
-1. **Initialize Identity**: Fill out `SIWA_IDENTITY.md` with your ERC-8004 agent details.
-2. **Setup Credentials**: Launch the tool and go to **Configurações**. Save your URLs and Keys (they will be encrypted).
-3. **Vigilante Workflow**: Use "Vigilante (Detect)" to find missing volumes, then "Diagnosticar", and finally "Cicatrizar".
+## 🚀 Getting Started
+1. Place `PlexMissingMedia_GUI.ps1` and `sqlite3.exe` in the same folder.
+2. Run the script: Right-click -> **Run with PowerShell**.
+3. Go to **Configurações** to set your API keys and URLs.
 
-## 🛰️ Deploying the Agent Network (Railway)
-To enable verifiable signatures and Telegram 2FA:
-1. Navigate to the `agent-network/` directory.
-2. Link your Railway project: `railway link`.
-3. Set the required environment variables (see `Axioma_Governanca.md` and script comments).
-4. Deploy: `railway up`.
-
-## ⚠️ Security Policy
-This tool adheres to strict security hygiene:
-- **Least Privilege**: Only required metadata is extracted.
-- **Rotation**: Warns user if API keys are > 30 days old.
-- **Hygienic**: Temporary DB snapshots are incinerated immediately.
+## 🧭 How to Use the GUI
+1. **Smart Fix**: Click to automatically select the missing drive.
+2. **Diagnosticar**: Map the "informational wounds" in your library.
+3. **Cicatrizar (API)**: Authorize the automated restoration of missing media.
 
 ---
 *Assinado: Aquele que hesitou.*
