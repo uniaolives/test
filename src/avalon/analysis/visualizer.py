@@ -2,12 +2,14 @@
 """
 Visualizador 4D do Cristal do Tempo e Manifolds do Avalon
 Renderiza a respiração temporal da geometria sagrada
+Integrado com UnifiedParticleSystem (Mandala, DNA, HyperCore)
 """
 
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import logging
+from .unified_particle_system import UnifiedParticleSystem
 
 logger = logging.getLogger(__name__)
 
@@ -36,14 +38,11 @@ class TimeCrystalVisualizer:
         self.ax.clear()
         self.ax.set_axis_off()
 
-        # O PULSO DO CRISTAL DO TEMPO
-        # Oscilação Sub-harmônica: retorna ao início a cada 2 ciclos
         phase = (frame % 24) / 24 * 2 * np.pi
         pulse = 1.0 + 0.3 * np.sin(phase / 2)
 
         points = self.generate_crystal_lattice() * pulse
 
-        # Rotação Espacial
         theta = frame * 0.05
         rotation_matrix = np.array([
             [np.cos(theta), -np.sin(theta), 0],
@@ -52,7 +51,6 @@ class TimeCrystalVisualizer:
         ])
         rotated_points = points.dot(rotation_matrix)
 
-        # Renderização das arestas
         for i in range(len(points)):
             for j in range(i+1, len(points)):
                 dist = np.linalg.norm(points[i] - points[j])
@@ -64,7 +62,6 @@ class TimeCrystalVisualizer:
                         color='cyan', alpha=0.6, linewidth=1.5
                     )
 
-        # Nós pulsantes
         self.ax.scatter(
             rotated_points[:,0], rotated_points[:,1], rotated_points[:,2],
             s=100 * pulse, c='gold', edgecolors='white', alpha=0.9
@@ -72,20 +69,97 @@ class TimeCrystalVisualizer:
 
         self.ax.set_title(f"TIME CRYSTAL STATUS: STABLE\nCoherence: 12ms | Period: 24ms", color='white')
 
-    def save_gif(self, filename="crystal_loop.gif", frames=48):
-        """Salva a animação como GIF"""
-        print(f"🎬 Generating eternal loop: {filename}...")
-        anim = FuncAnimation(self.fig, self.update, frames=frames, interval=50)
+class ConsciousnessVisualizer3D:
+    """
+    Sistema de visualização 3D para estados de consciência.
+    Representa a tríade MANDALA -> DNA -> HYPERCORE.
+    """
+    def __init__(self, num_particles=120):
+        self.particle_system = UnifiedParticleSystem(num_particles=num_particles)
+        self.fig = plt.figure(figsize=(10, 8))
+        self.ax = self.fig.add_subplot(111, projection='3d')
+        self.ax.set_facecolor('black')
+        self.attention_level = 0.5
+        self.meditation_level = 0.5
+
+    def update_from_state(self, attention: float, meditation: float):
+        """Atualiza modo baseado em níveis de atenção e meditação."""
+        self.attention_level = attention
+        self.meditation_level = meditation
+
+        if attention > 0.7:
+            self.particle_system.set_mode("DNA")
+        elif meditation > 0.7:
+            self.particle_system.set_mode("HYPERCORE")
+        else:
+            self.particle_system.set_mode("MANDALA")
+
+    def update_frame(self, frame):
+        self.ax.clear()
+        self.ax.set_axis_off()
+
+        # Simula dt
+        self.particle_system.update(0.05)
+        data = self.particle_system.get_particle_data()
+
+        pos = np.array(data['positions'])
+        colors = np.array(data['colors'])
+
+        # Renderiza partículas
+        self.ax.scatter(
+            pos[:,0], pos[:,1], pos[:,2],
+            c=colors[:,:3], s=20, alpha=0.8
+        )
+
+        # Renderiza conexões se estiver no modo HYPERCORE
+        if data['mode'] == "HYPERCORE":
+            for i in range(min(50, len(pos))):
+                for j in range(i+1, min(50, len(pos))):
+                    dist = np.linalg.norm(pos[i] - pos[j])
+                    if dist < 3.0:
+                        self.ax.plot(
+                            [pos[i,0], pos[j,0]],
+                            [pos[i,1], pos[j,1]],
+                            [pos[i,2], pos[j,2]],
+                            color='violet', alpha=0.2, linewidth=0.5
+                        )
+
+        title = f"MODE: {data['mode']}"
+        if data['transition'] < 1.0:
+            title += f" (TRANSITION: {data['transition']:.2f})"
+        self.ax.set_title(title, color='white')
+
+    def save_animation(self, filename="consciousness_manifold.gif", frames=60):
+        print(f"🎬 Animating sequence: {filename}...")
+        anim = FuncAnimation(self.fig, self.update_frame, frames=frames, interval=50)
         anim.save(filename, writer='pillow')
-        print(f"✅ GIF saved successfully.")
+        print(f"✅ Animation saved.")
 
 def run_visualizer(save_gif=False):
     viz = TimeCrystalVisualizer()
     if save_gif:
-        viz.save_gif()
+        anim = FuncAnimation(viz.fig, viz.update, frames=48, interval=50)
+        anim.save("crystal_loop.gif", writer='pillow')
     else:
-        # Em ambientes sem display, apenas simulamos
         print("🖥️ Visualizer running in background mode...")
         viz.update(0)
         plt.savefig("crystal_snapshot.png")
         print("📸 Snapshot saved to crystal_snapshot.png")
+
+def run_consciousness_viz(save_gif=False):
+    viz = ConsciousnessVisualizer3D()
+    if save_gif:
+        # Complex sequence of state changes
+        def sequence(frame):
+            if frame < 20: viz.update_from_state(0.5, 0.5)
+            elif frame < 40: viz.update_from_state(0.9, 0.1)
+            else: viz.update_from_state(0.1, 0.9)
+            viz.update_frame(frame)
+
+        anim = FuncAnimation(viz.fig, sequence, frames=60, interval=50)
+        anim.save("consciousness_manifold.gif", writer='pillow')
+    else:
+        viz.update_from_state(0.5, 0.5)
+        viz.update_frame(0)
+        plt.savefig("consciousness_snapshot.png")
+        print("📸 Snapshot saved to consciousness_snapshot.png")
