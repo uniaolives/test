@@ -14,12 +14,9 @@ function Get-PlexDatabasePath {
 
     if (Test-Path $RegistryPath) {
         $CustomPath = Get-ItemProperty -Path $RegistryPath -Name $ValueName -ErrorAction SilentlyContinue
-
         if ($CustomPath -and $CustomPath.$ValueName) {
             $FinalPath = Join-Path $CustomPath.$ValueName $DefaultDbSubPath
-            if (Test-Path $FinalPath) {
-                return $FinalPath
-            }
+            if (Test-Path $FinalPath) { return $FinalPath }
         }
     }
     return $DefaultPath
@@ -34,26 +31,10 @@ if (-not (Test-Path $defaultSqlitePath)) {
 $tempDbPath = "$env:TEMP\plex_missing_media_temp.db"
 $defaultOutDir = [System.IO.Path]::Combine($env:USERPROFILE, "Documents")
 
-# --- Helper: GUID Parsing ---
-function Get-CleanID($RawGuid) {
-    if ($null -eq $RawGuid -or $RawGuid -eq "") { return "" }
-    # Handles: com.plexapp.agents.thetvdb://75978?lang=en
-    # Handles: plex://show/5d77682676839a001f6ec9a6
-    # Handles: tvdb://12345
-    if ($RawGuid -like "*://*") {
-        $parts = $RawGuid -split '://'
-        if ($parts.Count -gt 1) {
-            $idPart = $parts[1].Split('?')[0]
-            return $idPart
-        }
-    }
-    return $RawGuid
-}
-
 # --- Main Form ---
 $form = New-Object Windows.Forms.Form
-$form.Text = "Plex Missing Media Scanner (v2.0 Arr-Ready)"
-$form.Size = New-Object Drawing.Size(850, 700)
+$form.Text = "Plex Missing Media Scanner (v3.0 Holy Query Edition)"
+$form.Size = New-Object Drawing.Size(900, 750)
 $form.StartPosition = "CenterScreen"
 
 $tabControl = New-Object Windows.Forms.TabControl
@@ -66,10 +47,10 @@ $infoPanel.Height = 30
 $form.Controls.Add($infoPanel)
 
 $lblStatus = New-Object Windows.Forms.Label
-$lblStatus.Text = "Source of Truth: $defaultPlexDbPath"
+$lblStatus.Text = "Linfócito de Integridade apontado para: $defaultPlexDbPath"
 $lblStatus.AutoSize = $true
 $lblStatus.Location = New-Object Drawing.Point(5, 5)
-$lblStatus.ForeColor = [Drawing.Color]::Gray
+$lblStatus.ForeColor = [Drawing.Color]::DarkCyan
 $infoPanel.Controls.Add($lblStatus)
 
 # --- Tab Creation ---
@@ -83,7 +64,7 @@ function Create-Tab($tabName, $libraryType) {
     $tab.Controls.Add($panel)
 
     $lblDrive = New-Object Windows.Forms.Label
-    $lblDrive.Text = "Lost Drive/Path (e.g. F:\):"
+    $lblDrive.Text = "Volume Perdido (ex: F:\):"
     $lblDrive.Location = New-Object Drawing.Point(10, 10)
     $lblDrive.AutoSize = $true
     $panel.Controls.Add($lblDrive)
@@ -95,35 +76,36 @@ function Create-Tab($tabName, $libraryType) {
     $panel.Controls.Add($txtDrive)
 
     $lblCsv = New-Object Windows.Forms.Label
-    $lblCsv.Text = "Output CSV Path:"
+    $lblCsv.Text = "Receita de Restauração (CSV):"
     $lblCsv.Location = New-Object Drawing.Point(10, 40)
     $lblCsv.AutoSize = $true
     $panel.Controls.Add($lblCsv)
 
     $txtCsv = New-Object Windows.Forms.TextBox
-    $txtCsv.Text = Join-Path $defaultOutDir "PlexMissing_$($tabName)_ArrReady.csv"
+    $txtCsv.Text = Join-Path $defaultOutDir "PlexMissing_$($tabName)_HolyScan.csv"
     $txtCsv.Location = New-Object Drawing.Point(150, 40)
     $txtCsv.Width = 450
     $panel.Controls.Add($txtCsv)
 
     $btnScan = New-Object Windows.Forms.Button
-    $btnScan.Text = "Scan for Missing"
+    $btnScan.Text = "Iniciar Diagnóstico"
     $btnScan.Location = New-Object Drawing.Point(10, 75)
-    $btnScan.Width = 140
+    $btnScan.Width = 150
+    $btnScan.BackColor = [Drawing.Color]::AliceBlue
     $panel.Controls.Add($btnScan)
 
     $logBox = New-Object Windows.Forms.RichTextBox
     $logBox.Location = New-Object Drawing.Point(5, 135)
-    $logBox.Width = 380
-    $logBox.Height = 450
+    $logBox.Width = 420
+    $logBox.Height = 500
     $logBox.Anchor = "Top, Left, Bottom"
     $logBox.ReadOnly = $true
     $tab.Controls.Add($logBox)
 
     $summaryBox = New-Object Windows.Forms.RichTextBox
-    $summaryBox.Location = New-Object Drawing.Point(395, 135)
-    $summaryBox.Width = 430
-    $summaryBox.Height = 450
+    $summaryBox.Location = New-Object Drawing.Point(430, 135)
+    $summaryBox.Width = 445
+    $summaryBox.Height = 500
     $summaryBox.Anchor = "Top, Left, Right, Bottom"
     $summaryBox.ReadOnly = $true
     $tab.Controls.Add($summaryBox)
@@ -149,94 +131,141 @@ function Run-Scan($TabName, $LibraryType, $Drive, $CsvPath, $LogBox, $SummaryBox
     $LogBox.Clear()
     $SummaryBox.Clear()
 
-    Update-Log $LogBox "Linfócito de Integridade apontado para: $defaultPlexDbPath`n" [Drawing.Color]::Cyan
+    Update-Log $LogBox "Iniciando Diagnóstico Arkhe(n)...`n" [Drawing.Color]::DarkBlue
 
     if (-not (Test-Path $defaultSqlitePath)) {
-        Update-Log $LogBox "ERROR: sqlite3.exe not found at $defaultSqlitePath`n" [Drawing.Color]::Red
+        Update-Log $LogBox "ERRO: sqlite3.exe não localizado em $defaultSqlitePath`n" [Drawing.Color]::Red
         return
     }
 
     if (-not (Test-Path $defaultPlexDbPath)) {
-        Update-Log $LogBox "ERROR: Plex Database not found at $defaultPlexDbPath`n" [Drawing.Color]::Red
+        Update-Log $LogBox "ERRO: Banco de dados não localizado.`n" [Drawing.Color]::Red
         return
     }
 
-    Update-Log $LogBox "Câmara de Isolamento: Criando cache temporário...`n"
+    Update-Log $LogBox "Câmara de Isolamento: Criando cache de transação...`n" [Drawing.Color]::DarkCyan
     try {
         Copy-Item $defaultPlexDbPath $tempDbPath -Force -ErrorAction Stop
     } catch {
-        Update-Log $LogBox "ERROR: Failed to copy database: $($_.Exception.Message)`n" [Drawing.Color]::Red
+        Update-Log $LogBox "ERRO: Falha ao isolar o banco: $($_.Exception.Message)`n" [Drawing.Color]::Red
         return
     }
 
-    Update-Log $LogBox "Querying metadata (Arr-Ready)...`n"
+    Update-Log $LogBox "Executando Query Sagrada ($LibraryType)...`n"
 
     $query = ""
     if ($LibraryType -eq "Movie") {
-        $query = "SELECT mi.title, mi.year, mi.guid, mp.file FROM metadata_items mi JOIN media_items m_item ON mi.id = m_item.metadata_item_id JOIN media_parts mp ON m_item.id = mp.media_item_id WHERE mi.metadata_type = 1;"
+        $query = @"
+        SELECT
+            md.title AS MovieTitle,
+            md.year AS Year,
+            CASE
+                WHEN md.guid LIKE '%themoviedb://%' THEN REPLACE(SUBSTR(md.guid, INSTR(md.guid, 'themoviedb://') + 13), '?lang=pt', '')
+                WHEN md.guid LIKE '%tmdb://%' THEN REPLACE(SUBSTR(md.guid, INSTR(md.guid, 'tmdb://') + 7), '?lang=pt', '')
+                ELSE md.guid
+            END AS TmdbId,
+            mp.file AS FilePath
+        FROM metadata_items AS md
+        JOIN media_items AS mi ON md.id = mi.metadata_item_id
+        JOIN media_parts AS mp ON mi.id = mp.media_item_id
+        WHERE md.metadata_type = 1 AND md.deleted_at IS NULL AND mp.file IS NOT NULL;
+"@
     } else {
-        $query = "SELECT show.title, show.year, show.guid, season.[index], mp.file, lib.name FROM metadata_items show JOIN metadata_items season ON season.parent_id = show.id JOIN metadata_items episode ON episode.parent_id = season.id JOIN media_items m_item ON episode.id = m_item.metadata_item_id JOIN media_parts mp ON m_item.id = mp.media_item_id JOIN library_sections lib ON show.library_section_id = lib.id WHERE show.metadata_type = 2 AND season.metadata_type = 3 AND episode.metadata_type = 4;"
+        $query = @"
+        WITH series_guids AS (
+            SELECT
+                id, title, year, library_section_id,
+                CASE
+                    WHEN guid LIKE '%thetvdb://%' THEN REPLACE(SUBSTR(guid, INSTR(guid, 'thetvdb://') + 10), '?lang=pt', '')
+                    WHEN guid LIKE '%tvdb://%' THEN REPLACE(SUBSTR(guid, INSTR(guid, 'tvdb://') + 7), '?lang=pt', '')
+                    ELSE guid
+                END AS tvdb_id
+            FROM metadata_items
+            WHERE metadata_type = 2 AND deleted_at IS NULL
+        )
+        SELECT
+            sg.title AS SeriesTitle,
+            sg.year AS Year,
+            sg.tvdb_id AS TvdbId,
+            ep.parent_index AS SeasonNumber,
+            ep."index" AS EpisodeNumber,
+            mp.file AS FilePath,
+            lib.name AS LibName
+        FROM metadata_items AS ep
+        JOIN series_guids AS sg ON ep.parent_id = sg.id
+        JOIN media_items AS mi ON ep.id = mi.metadata_item_id
+        JOIN media_parts AS mp ON mi.id = mp.media_item_id
+        JOIN library_sections AS lib ON sg.library_section_id = lib.id
+        WHERE ep.metadata_type = 4 AND ep.deleted_at IS NULL AND mp.file IS NOT NULL;
+"@
     }
 
-    $results = & $defaultSqlitePath $tempDbPath $query "-separator" "|"
+    $results = & $defaultSqlitePath $tempDbPath $query "-separator" "|" "-header"
 
-    if ($null -eq $results -or $results.Count -eq 0) {
-        Update-Log $LogBox "No results found.`n"
+    if ($null -eq $results -or $results.Count -le 1) {
+        Update-Log $LogBox "Nenhum dado retornado pela query.`n"
         Remove-Item $tempDbPath -ErrorAction SilentlyContinue
         return
     }
 
+    # Header is in $results[0]
+    $data = $results | Select-Object -Skip 1
+
     $missingList = New-Object System.Collections.Generic.List[PSObject]
     $totalOnDrive = 0
 
-    Update-Log $LogBox "Mapeando feridas informacionais...`n"
+    Update-Log $LogBox "Mapeando feridas informacionais no volume $Drive...`n"
 
     $counter = 0
-    foreach ($line in $results) {
+    foreach ($line in $data) {
         if ([string]::IsNullOrWhiteSpace($line)) { continue }
         $parts = $line -split '\|'
 
-        $file = ""
         if ($LibraryType -eq "Movie") {
             if ($parts.Count -lt 4) { continue }
-            $file = $parts[3]
+            $filePath = $parts[3]
+            if ($filePath.StartsWith($Drive, [System.StringComparison]::OrdinalIgnoreCase)) {
+                $totalOnDrive++
+                if (-not (Test-Path $filePath)) {
+                    $missingList.Add([PSCustomObject]@{ Title = $parts[0]; Year = $parts[1]; TmdbId = $parts[2]; File = $filePath })
+                }
+            }
         } else {
-            if ($parts.Count -lt 6) { continue }
-            $file = $parts[4]
-            $libName = $parts[5]
+            if ($parts.Count -lt 7) { continue }
+            $filePath = $parts[5]
+            $libName = $parts[6]
             $isAnimeLib = $libName -match "Anime"
             if ($TabName -eq "Anime" -and -not $isAnimeLib) { continue }
             if ($TabName -eq "TV Shows" -and $isAnimeLib) { continue }
-        }
 
-        if ($file.StartsWith($Drive, [System.StringComparison]::OrdinalIgnoreCase)) {
-            $totalOnDrive++
-            $counter++
-            if ($counter % 100 -eq 0) { Update-Log $LogBox "Checking item $counter...`r" }
-
-            if (-not (Test-Path $file)) {
-                if ($LibraryType -eq "Movie") {
-                    $missingList.Add([PSCustomObject]@{ Title = $parts[0]; Year = $parts[1]; Guid = $parts[2]; File = $file })
-                } else {
-                    $missingList.Add([PSCustomObject]@{ Title = $parts[0]; Year = $parts[1]; Guid = $parts[2]; Season = $parts[3]; File = $file })
+            if ($filePath.StartsWith($Drive, [System.StringComparison]::OrdinalIgnoreCase)) {
+                $totalOnDrive++
+                if (-not (Test-Path $filePath)) {
+                    $missingList.Add([PSCustomObject]@{ Title = $parts[0]; Year = $parts[1]; TvdbId = $parts[2]; Season = $parts[3]; Episode = $parts[4]; File = $filePath })
                 }
             }
         }
+
+        $counter++
+        if ($counter % 100 -eq 0) { Update-Log $LogBox "Processados $counter itens...`r" }
     }
 
     $lossSeverity = 0
     if ($totalOnDrive -gt 0) { $lossSeverity = $missingList.Count / $totalOnDrive }
 
-    Update-Log $LogBox "`nScan finished. Severidade de Perda (Φ): {0:P2}`n" -f $lossSeverity
+    Update-Log $LogBox "`nDiagnóstico Finalizado. Severidade (Φ): {0:P2}`n" -f $lossSeverity
 
-    if ($lossSeverity -eq 1.0) {
-        Update-Log $LogBox "⚠️ ALERTA: MORTE DE UNIDADE (Φ=100%). O volume $Drive pode estar offline.`n" [Drawing.Color]::OrangeRed
-    } elseif ($lossSeverity -gt 0.3) {
-        Update-Log $LogBox "⚠️ ALERTA: CORRUPÇÃO DE SETOR (Φ > 30%). Grande volume de dados ausentes.`n" [Drawing.Color]::Orange
+    # Severity Thresholds (Índice de Colapso de Volume)
+    if ($lossSeverity -ge 0.3) {
+        Update-Log $LogBox "⚠️ ALERTA: MORTE DE UNIDADE (Severidade Φ ≥ 30%). Braço mecânico ou conexão física comprometida.`n" [Drawing.Color]::Red
+    } elseif ($lossSeverity -ge 0.1) {
+        Update-Log $LogBox "⚠️ ALERTA: CORRUPÇÃO DE SETOR (10% ≤ Φ < 30%). Investigue a saúde do drive.`n" [Drawing.Color]::Orange
+    } elseif ($lossSeverity -gt 0) {
+        Update-Log $LogBox "ℹ️ AVISO: DESGASTE NATURAL (Φ < 10%). Arquivos movidos ou deletados manualmente.`n" [Drawing.Color]::Goldenrod
     }
 
     if ($missingList.Count -gt 0) {
-        Update-Log $LogBox "Gerando receita de restauração em $CsvPath...`n"
+        Update-Log $LogBox "Gerando Receita de Restauração em $CsvPath...`n" [Drawing.Color]::DarkGreen
 
         try {
             if ($LibraryType -eq "Movie") {
@@ -245,30 +274,30 @@ function Run-Scan($TabName, $LibraryType, $Drive, $CsvPath, $LogBox, $SummaryBox
                     [PSCustomObject]@{
                         Title    = $_.Name
                         Year     = $first.Year
-                        TmdbId   = Get-CleanID $first.Guid
+                        TmdbId   = $first.TmdbId
                         Severity = "{0:P2}" -f $lossSeverity
                         LostRoot = $Drive
                     }
                 }
                 $exportData | Export-Csv -Path $CsvPath -NoTypeInformation -Delimiter "," -Encoding UTF8
 
-                $SummaryBox.AppendText("MISSING MOVIES:`n")
+                $SummaryBox.AppendText("FILMES AUSENTES:`n")
                 foreach ($item in $exportData) { $SummaryBox.AppendText("- $($item.Title) ($($item.Year))`n") }
             } else {
                 $grouped = $missingList | Group-Object Title | Sort-Object Name
                 $csvData = New-Object System.Collections.Generic.List[PSObject]
 
-                $SummaryBox.AppendText("MISSING SERIES:`n")
+                $SummaryBox.AppendText("SÉRIES AUSENTES:`n")
                 foreach ($group in $grouped) {
                     $first = $group.Group[0]
                     $seasons = $group.Group | Select-Object -ExpandProperty Season -Unique | Sort-Object {[int]$_}
-                    $seasonStr = $seasons -join ", "
-                    $SummaryBox.AppendText("- $($group.Name) Seasons $seasonStr missing`n")
+                    $seasonStr = $seasons -join ","
+                    $SummaryBox.AppendText("- $($group.Name) (Temp: $seasonStr)`n")
 
                     $csvData.Add([PSCustomObject]@{
                         Title    = $group.Name
                         Year     = $first.Year
-                        TvdbId   = Get-CleanID $first.Guid
+                        TvdbId   = $first.TvdbId
                         Seasons  = $seasonStr
                         Severity = "{0:P2}" -f $lossSeverity
                         LostRoot = $Drive
@@ -276,16 +305,16 @@ function Run-Scan($TabName, $LibraryType, $Drive, $CsvPath, $LogBox, $SummaryBox
                 }
                 $csvData | Export-Csv -Path $CsvPath -NoTypeInformation -Delimiter "," -Encoding UTF8
             }
-            Update-Log $LogBox "Protocolo de Higiene: Limpando rastros...`n"
+            Update-Log $LogBox "Protocolo de Higiene: Limpando rastro de metadados...`n" [Drawing.Color]::Gray
         } catch {
-            Update-Log $LogBox "ERROR: Failed to write CSV: $($_.Exception.Message)`n" [Drawing.Color]::Red
+            Update-Log $LogBox "ERRO ao exportar CSV: $($_.Exception.Message)`n" [Drawing.Color]::Red
         }
     } else {
-        Update-Log $LogBox "Nenhuma ferida detectada neste drive. Paz de Fase mantida.`n" [Drawing.Color]::Green
+        Update-Log $LogBox "Nenhuma ferida informacional detectada. Paz de Fase mantida.`n" [Drawing.Color]::DarkGreen
     }
 
     Remove-Item $tempDbPath -Force -ErrorAction SilentlyContinue
-    Update-Log $LogBox "Higiene Completa. Φ = 1.000`n" [Drawing.Color]::DarkGray
+    Update-Log $LogBox "Higiene Completa. Φ = 1.000`n" [Drawing.Color]::DarkSlateGray
 }
 
 # --- Tabs ---
@@ -293,6 +322,6 @@ $tabControl.TabPages.Add((Create-Tab "TV Shows" "TV"))
 $tabControl.TabPages.Add((Create-Tab "Movies" "Movie"))
 $tabControl.TabPages.Add((Create-Tab "Anime" "TV"))
 
-# --- Run ---
-Write-Host "Arkhe(n) Restoration Module: Online"
+# --- Initialization ---
+Write-Host "Módulo de Restauração Arkhe(n) v3.0: Online"
 $form.ShowDialog() | Out-Null
