@@ -17,7 +17,7 @@
 #define NCCL_CHECK(cmd) do {                                 \
     ncclResult_t r = cmd;                                    \
     if (r != ncclSuccess) {                                  \
-        printf("NCCL failure %s:%d '%s'\n",                 \
+        printf("NCCL failure %s:%d '%s'\\n",                 \
                __FILE__, __LINE__, ncclGetErrorString(r));   \
         return -1;                                          \
     } } while(0)
@@ -44,7 +44,8 @@ static int world_size = 1;
 
 __global__ void prepare_bell_state_kernel(COMPLEX_TYPE* state, int type) {
     const float inv_sqrt2 = 0.70710678f;
-    int idx = thread_size * blockIdx.x + threadIdx.x; // Not used here as we run 1 thread
+    // Fix: replaced thread_size with blockDim.x
+    // int idx = blockDim.x * blockIdx.x + threadIdx.x;
 
     for (int i = 0; i < STATE_VECTOR_SIZE; i++) {
         state[i] = make_cuFloatComplex(0.0f, 0.0f);
@@ -65,7 +66,6 @@ __global__ void prepare_bell_state_kernel(COMPLEX_TYPE* state, int type) {
     }
 }
 
-// Simplified measurement
 __device__ int measure_and_collapse(COMPLEX_TYPE* state, curandState* rand_state) {
     float r = curand_uniform(rand_state);
     float cum = 0.0f;
@@ -110,7 +110,6 @@ int qhttp_dist_init(int num_agents, int rank, int size, ncclUniqueId* nccl_id) {
         h_agents[i].remote_agent_id = -1;
         h_agents[i].bell_type = 0;
 
-        // Init to |0>
         COMPLEX_TYPE h_state[STATE_VECTOR_SIZE];
         memset(h_state, 0, sizeof(h_state));
         h_state[0] = make_cuFloatComplex(1.0f, 0.0f);

@@ -27,7 +27,7 @@ services:
     image: arkhe-quantum:node-v1
     container_name: arkhe-q1
     hostname: arkhe-q1
-    command: python -m src.main --mode=quantum --node-id=q1 --controller=http://parallax-controller:8080 --qhttp-gateway=http://qhttp-gateway:7070
+    command: python -m src.main --mode=worker --node-id=q1 --controller=http://parallax-controller:8080 --qhttp-gateway=http://qhttp-gateway:7070
     environment:
       - PARALLAX_NODE_ID=q1
       - QHTTP_NODE_ID=q1
@@ -40,6 +40,23 @@ services:
       - arkhe-net
     ports:
       - "8101:8000"
+
+  qhttp-viz:
+    build:
+      context: .
+      dockerfile: Dockerfile.viz
+    image: arkhe-viz:v1
+    container_name: arkhe-viz
+    command: python qhttp/viz/server.py
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - qhttp-gateway
+    networks:
+      - qhttp-net
 
 networks:
   qhttp-net:

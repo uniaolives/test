@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Arkhe(n) Quantum Viz</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; color: #0f0; font-family: monospace; }
+        #info { position: absolute; top: 10px; left: 10px; pointer-events: none; z-index: 10; }
+        #status { color: #0ff; }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="info">
+        <h1>⚛️ Arkhe(n) Quantum Observer</h1>
+        <div id="status">Connecting...</div>
+        <div id="metrics">Active Pairs: 0</div>
+    </div>
+    <script type="module" src="./js/main.js"></script>
+</body>
+</html>

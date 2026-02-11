@@ -1,59 +1,33 @@
 # Dockerfile.parallax
-# Arkhe(n) OS Hybrid Distributed Image (Parallax + QHTTP)
-
 FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
 
-# Argumentos
-ARG PARALLAX_VERSION=0.2.0
-
-# Metadados
-LABEL org.opencontainers.image.title="Arkhe(n) OS × Parallax Quantum"
-LABEL org.opencontainers.image.description="Biological Operating System with Distributed Quantum Entanglement"
-
-# Instalação de dependências do sistema e NCCL
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    python3.11 python3.11-dev python3-pip \
-    git curl wget \
-    libgl1-mesa-glx libglib2.0-0 \
-    libssl-dev libffi-dev \
-    # RDMA e NCCL para comunicação multi-nó
-    libnccl2 libnccl-dev \
-    ibverbs-providers librdmacm-dev \
+    build-essential python3.11 python3.11-dev python3-pip \
+    git curl wget libgl1-mesa-glx libglib2.0-0 \
+    libnccl2 libnccl-dev ibverbs-providers librdmacm-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Configura Python
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
 
 WORKDIR /opt/arkhe
-
-# Copia e instala dependências
 COPY requirements.parallax.txt .
 RUN pip install --no-cache-dir -r requirements.parallax.txt
+RUN pip install --no-cache-dir pycuda cupy-cuda12x nvidia-nccl-cu12 msgpack
 
-# Copia código fonte
 COPY src/ /opt/arkhe/src/
 COPY parallax/ /opt/arkhe/parallax/
+COPY cuda/ /opt/arkhe/cuda/
+COPY qhttp/ /opt/arkhe/qhttp/
 
-# Cria diretórios e compila libqhttp_dist
-RUN mkdir -p /opt/arkhe/data /opt/arkhe/logs /opt/arkhe/lib \
-    /dev/shm/arkhe_field
+RUN mkdir -p /opt/arkhe/lib
+# Compilação Q-Shield
+RUN nvcc -arch=sm_80 --shared -Xcompiler -fPIC -o /opt/arkhe/lib/libqec.so /opt/arkhe/cuda/qec_kernels.cu
+# Compilação qhttp distribuído
+RUN nvcc -arch=sm_80 --shared -Xcompiler -fPIC -lnccl -o /opt/arkhe/lib/libqhttp_dist.so /opt/arkhe/parallax/qhttp_gpu_distributed.cu
+# Compilação Grover distribuído
+RUN nvcc -arch=sm_80 --shared -Xcompiler -fPIC -lnccl -o /opt/arkhe/lib/libgrover.so /opt/arkhe/cuda/grover_kernels.cu
 
-# Compilação da biblioteca CUDA distribuída
-RUN nvcc -arch=sm_80 -O3 -lnccl -lcublas -lcusolver -lcurand \
-    -o /opt/arkhe/lib/libqhttp_dist.so --shared /opt/arkhe/parallax/qhttp_gpu_distributed.cu
-
-# Variáveis de ambiente
 ENV PYTHONPATH=/opt/arkhe
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/arkhe/lib
-ENV PARALLAX_ENABLED=true
-ENV PARALLAX_CONTROLLER_URL=http://parallax-controller:8080
-
-# NCCL Optimizations
-ENV NCCL_IB_DISABLE=1
-ENV NCCL_SOCKET_IFNAME=eth0
-ENV NCCL_DEBUG=WARN
-
-EXPOSE 8000 8001 8080 9090
 
 ENTRYPOINT ["python", "-m", "src.main"]
