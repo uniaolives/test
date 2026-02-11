@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-ARKHE(N) BOOTLOADER v2.0-PARALLAX
-Suporte a modos: standalone | worker | controller
+ARKHE(N) BOOTLOADER v2.0-PARALLAX-QUANTUM
+Suporte a modos: standalone | worker | controller | quantum
 """
 
 import argparse
@@ -108,23 +108,24 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Arkhe(n) Core OS", lifespan=lifespan)
 
 @app.get("/", response_class=HTMLResponse)
-async def root(): return "<h1>🧬 Arkhe(n) Core OS v2.0</h1><p>Status: OPERACIONAL</p>"
+async def root(): return "<h1>🧬 Arkhe(n) Core OS v2.0-Q</h1><p>Status: OPERACIONAL</p>"
 
 @app.get("/health")
 async def health(): return {"status": "healthy", "uptime": time.time() - kernel.stats['start_time']}
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Arkhe(n) Core OS')
-    parser.add_argument('--mode', choices=['standalone', 'worker', 'controller'], default='standalone')
+    parser.add_argument('--mode', choices=['standalone', 'worker', 'controller', 'quantum'], default='standalone')
     parser.add_argument('--node-id', default='auto')
     parser.add_argument('--controller', default='http://parallax-controller:8080')
+    parser.add_argument('--qhttp-gateway', default='http://qhttp-gateway:7070')
     parser.add_argument('--agents', type=int, default=150)
     return parser.parse_args()
 
 async def run_worker(args):
     logger.info(f"🖥️  Starting WORKER mode ({args.node_id})")
     if PARALLAX_LOADED:
-        client = ParallaxNodeClient(args.node_id, args.controller, None, None) # Simulation/Field added after boot
+        client = ParallaxNodeClient(args.node_id, args.controller, None, None)
         await kernel.boot(num_agents=args.agents, parallax_client=client)
         client.simulation = kernel.simulation
         client.field = kernel.field
@@ -134,6 +135,11 @@ async def run_worker(args):
             threading.Thread(target=lambda: kernel.mcp.run(transport="sse", port=8001), daemon=True).start()
         uvicorn.run(app, host="0.0.0.0", port=8000)
     else: logger.error("Parallax not found")
+
+async def run_quantum_node(args):
+    logger.info(f"⚛️  Starting QUANTUM mode ({args.node_id})")
+    # Quantum node is a specialized worker
+    await run_worker(args)
 
 async def run_controller():
     from parallax.controller import app as controller_app
@@ -149,4 +155,5 @@ if __name__ == "__main__":
     args = parse_args()
     if args.mode == 'controller': asyncio.run(run_controller())
     elif args.mode == 'worker': asyncio.run(run_worker(args))
+    elif args.mode == 'quantum': asyncio.run(run_quantum_node(args))
     else: asyncio.run(run_standalone())
