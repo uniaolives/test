@@ -1,0 +1,57 @@
+# Dockerfile.parallax
+# Imagem Arkhe(n) com Parallax SDK (simulado) para clustering distribuído
+
+FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
+
+# Argumentos de build
+ARG PARALLAX_VERSION=0.2.0
+
+# Metadados
+LABEL org.opencontainers.image.title="Arkhe(n) × Parallax"
+LABEL org.opencontainers.image.description="Sistema Biológico Distribuído"
+LABEL parallax.enabled="true"
+LABEL parallax.version="${PARALLAX_VERSION}"
+
+# Instala dependências do sistema
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    python3.11 python3.11-dev python3-pip \
+    git curl wget \
+    libgl1-mesa-glx libglib2.0-0 \
+    libssl-dev libffi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configura Python
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
+
+WORKDIR /opt/arkhe
+
+# Copia e instala dependências
+COPY requirements.parallax.txt .
+RUN pip install --no-cache-dir -r requirements.parallax.txt
+
+# Copia código fonte
+COPY src/ /opt/arkhe/src/
+COPY parallax/ /opt/arkhe/parallax/
+
+# Cria diretórios
+RUN mkdir -p /opt/arkhe/data /opt/arkhe/logs \
+    /dev/shm/arkhe_field
+
+# Variáveis de ambiente Parallax
+ENV PARALLAX_ENABLED=true
+ENV PARALLAX_NODE_ID=auto
+ENV PARALLAX_CONTROLLER_URL=http://parallax-controller:8080
+ENV PARALLAX_RDMA_ENABLED=false
+ENV PARALLAX_HALO_SIZE=5
+
+# Variáveis Arkhe(n)
+ENV ARKHE_MODE=parallax
+ENV ARKHE_FIELD_PATH=/dev/shm/arkhe_field/morphogenetic.bin
+ENV MCP_HOST=0.0.0.0
+ENV MCP_PORT=8000
+ENV PYTHONPATH=/opt/arkhe
+
+EXPOSE 8000 8080 9090
+
+ENTRYPOINT ["python", "-m", "src.main"]
