@@ -1,75 +1,81 @@
 # src/biogenesis/morphogenetic_field.py
+import cupy as cp
+from cupyx.scipy.ndimage import laplace
 import numpy as np
-try:
-    import cupy as cp
-    from cupyx.scipy.ndimage import laplace
-    HAS_GPU = True
-except ImportError:
-    HAS_GPU = False
 
 class MorphogeneticField:
     """
     Turing-complete reaction-diffusion system acting as
     shared memory for agent coordination.
-    Suporta CPU e GPU (via CuPy).
+    GPU-accelerated via Gray-Scott dynamics.
     """
 
     def __init__(self, shape: tuple = (100, 100, 100), diffusion_rates: tuple = (0.1, 0.05)):
         self.shape = shape
-        self.Da, self.Db = diffusion_rates
-        self.f = 0.055
-        self.k = 0.062
-        self.decay_rate = 0.96
+        self.Da, self.Db = diffusion_rates  # Diffusion rates for activator/inhibitor
 
-        if HAS_GPU:
-            self.A = cp.random.random(shape, dtype=cp.float32) * 0.1 + 0.5
-            self.B = cp.random.random(shape, dtype=cp.float32) * 0.1 + 0.25
-        else:
-            self.grid = np.zeros(shape, dtype=np.float32) # Fallback for old code
-            self.A = np.random.random(shape, dtype=np.float32) * 0.1 + 0.5
-            self.B = np.random.random(shape, dtype=np.float32) * 0.1 + 0.25
+        # Field concentrations (stored in GPU memory)
+        self.A = cp.random.random(shape, dtype=cp.float32) * 0.1 + 0.5  # Activator
+        self.B = cp.random.random(shape, dtype=cp.float32) * 0.1 + 0.25  # Inhibitor
+
+        # Reaction parameters (Gray-Scott model)
+        self.f = 0.055  # Feed rate
+        self.k = 0.062  # Kill rate
 
     def step(self, dt: float = 1.0):
-        if HAS_GPU:
-            lapA = laplace(self.A, mode='wrap')
-            lapB = laplace(self.B, mode='wrap')
-            reaction = self.A * self.B ** 2
-            self.A += (self.Da * lapA - reaction + self.f * (1 - self.A)) * dt
-            self.B += (self.Db * lapB + reaction - (self.f + self.k) * self.B) * dt
-            cp.clip(self.A, 0, 1, out=self.A)
-            cp.clip(self.B, 0, 1, out=self.B)
-        else:
-            # CPU fallback (simplified)
-            self.diffuse_and_decay()
+        """
+        Evolve field one timestep using Gray-Scott reaction-diffusion.
+        """
+        # Laplacian for diffusion
+        laplace_A = laplace(self.A, mode='wrap')
+        laplace_B = laplace(self.B, mode='wrap')
 
-    def diffuse_and_decay(self):
-        # Old CPU logic for compatibility
-        if hasattr(self, 'grid'):
-            neighbors = (
-                np.roll(self.grid, 1, axis=0) + np.roll(self.grid, -1, axis=0) +
-                np.roll(self.grid, 1, axis=1) + np.roll(self.grid, -1, axis=1) +
-                np.roll(self.grid, 1, axis=2) + np.roll(self.grid, -1, axis=2)
-            )
-            self.grid = (self.grid * (1 - 0.6) + neighbors * 0.1) * self.decay_rate
+        # Reaction terms
+        reaction = self.A * self.B ** 2
+
+        # Update equations
+        dA = self.Da * laplace_A - reaction + self.f * (1 - self.A)
+        dB = self.Db * laplace_B + reaction - (self.f + self.k) * self.B
+
+        self.A += dA * dt
+        self.B += dB * dt
+
+        # Clamp to valid range
+        cp.clip(self.A, 0, 1, out=self.A)
+        cp.clip(self.B, 0, 1, out=self.B)
 
     def add_signal(self, x, y, z, strength):
+        """Inject signal (nutrient) into the field."""
         ix, iy, iz = int(x)%self.shape[0], int(y)%self.shape[1], int(z)%self.shape[2]
-        if HAS_GPU:
-            self.A[ix, iy, iz] += strength
-        else:
-            if hasattr(self, 'grid'):
-                self.grid[ix, iy, iz] += strength
+        self.A[ix, iy, iz] += strength
 
     def get_signal_at(self, x, y, z):
+        """Sample signal strength."""
         ix, iy, iz = int(x)%self.shape[0], int(y)%self.shape[1], int(z)%self.shape[2]
-        if HAS_GPU:
-            return float(self.A[ix, iy, iz])
-        else:
-            if hasattr(self, 'grid'):
-                return float(self.grid[ix, iy, iz])
-            return 0.0
+        return float(self.A[ix, iy, iz])
 
-    def get_gradient(self, x, y, z):
-        ix, iy, iz = int(x)%self.shape[0], int(y)%self.shape[1], int(z)%self.shape[2]
-        # Simplified gradient
-        return np.random.randn(3).astype(np.float32) * 0.1
+    def inject_signal(self, position: tuple, strength: float, radius: int = 5):
+        """
+        Inject perturbation at specific position (agent action).
+        """
+        x, y, z = position
+        x, y, z = int(x) % self.shape[0], int(y) % self.shape[1], int(z) % self.shape[2]
+
+        # Create spherical perturbation
+        grid_x, grid_y, grid_z = cp.ogrid[:self.shape[0], :self.shape[1], :self.shape[2]]
+        dist_sq = (grid_x - x)**2 + (grid_y - y)**2 + (grid_z - z)**2
+        mask = dist_sq <= radius**2
+        self.A[mask] += strength * (1 - cp.sqrt(dist_sq[mask]) / radius)
+
+    def get_gradient(self, x, y, z) -> cp.ndarray:
+        """
+        Sample morphogen gradient at position (agent perception).
+        """
+        ix, iy, iz = int(x) % self.shape[0], int(y) % self.shape[1], int(z) % self.shape[2]
+
+        # Compute local gradient
+        grad_x = (self.A[(ix+1)%self.shape[0], iy, iz] - self.A[(ix-1)%self.shape[0], iy, iz]) / 2
+        grad_y = (self.A[ix, (iy+1)%self.shape[1], iz] - self.A[ix, (iy-1)%self.shape[1], iz]) / 2
+        grad_z = (self.A[ix, iy, (iz+1)%self.shape[2]] - self.A[ix, iy, (iz-1)%self.shape[2]]) / 2
+
+        return cp.array([grad_x, grad_y, grad_z])

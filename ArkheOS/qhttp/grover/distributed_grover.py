@@ -1,11 +1,11 @@
-# qhttp/grover_distributed.py
+# qhttp/grover/distributed_grover.py
 import cupy as cp
 import nccl
 import asyncio
-import json
 from typing import List, Callable, Optional
 import redis.asyncio as aioredis
 import numpy as np
+import json
 
 class DistributedGrover:
     """
@@ -22,9 +22,7 @@ class DistributedGrover:
         self.local_N = 2 ** local_qubits
 
         # NCCL communicator
-        # In a real DGX setup, we would initialize this properly with ncclUniqueId
-        # For this implementation, we assume a mock or pre-initialized communicator
-        self.comm = None
+        self.comm = nccl.NcclCommunicator(num_nodes, node_id)
 
         # State vector (distributed)
         # Each node holds 2^local_qubits amplitudes
@@ -93,20 +91,15 @@ class DistributedGrover:
         local_avg = cp.mean(self.state)
 
         # AllReduce to get global average
-        if self.comm:
-            global_avg = cp.empty_like(local_avg)
-            self.comm.allReduce(local_avg, global_avg, nccl.NCCL_SUM)
-            global_avg /= self.num_nodes
-        else:
-            # Mock behavior if NCCL is not available
-            global_avg = local_avg
+        global_avg = cp.empty_like(local_avg)
+        self.comm.allReduce(local_avg.data.ptr, global_avg.data.ptr, 1, nccl.NCCL_FLOAT, nccl.NCCL_SUM, cp.cuda.Stream.null.ptr)
+        global_avg /= self.num_nodes
 
         # Reflection about average: 2|avg><avg| - I
         self.state = 2 * global_avg - self.state
 
     def _global_index(self, local_idx: int) -> int:
         """Convert local index to global index"""
-        # Extract numeric part of node_id (e.g., 'q1' -> 1)
         import re
         match = re.search(r'(\d+)', self.node_id)
         node_rank = int(match.group(1)) - 1 if match else 0
