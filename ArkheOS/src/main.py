@@ -49,35 +49,31 @@ handler = colorlog.StreamHandler()
 handler.setFormatter(colorlog.ColoredFormatter(
     '%(log_color)s[%(asctime)s] %(levelname)s: %(message)s',
     datefmt='%H:%M:%S',
-    log_colors={
-        'DEBUG': 'cyan', 'INFO': 'green', 'WARNING': 'yellow', 'ERROR': 'red', 'CRITICAL': 'red,bg_white',
-    }
+    log_colors={'DEBUG': 'cyan', 'INFO': 'green', 'WARNING': 'yellow', 'ERROR': 'red', 'CRITICAL': 'red,bg_white'}
 ))
 logger = colorlog.getLogger('ArkheBoot')
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 class ArkheKernel:
-    """Núcleo do sistema operacional Arkhe(n)"""
     def __init__(self):
         self.running = False
         self.simulation = None
         self.field = None
         self.mcp = None
+        self.parallax_client = None
         self.stats = {'start_time': time.time(), 'updates': 0}
 
-    async def boot(self, num_agents=150):
+    async def boot(self, num_agents=150, parallax_client=None):
         logger.info("🚀 Arkhe(n) Kernel Booting...")
+        self.parallax_client = parallax_client
         if SharedFieldManager:
             self.field = SharedFieldManager()
             await self.field.initialize()
-
         if BIOGENESIS_LOADED and BioGenesisEngine:
             self.simulation = BioGenesisEngine(num_agents=num_agents)
-            logger.info(f"✅ Bio-Genesis v3.0 active with {len(self.simulation.agents)} agents")
             if create_mcp_server:
-                self.mcp = create_mcp_server(self)
-
+                self.mcp = create_mcp_server(self, self.parallax_client)
         self.running = True
         return True
 
@@ -90,10 +86,8 @@ class ArkheKernel:
                 self.stats['updates'] += 1
                 if self.field and hasattr(self.simulation, 'field'):
                     self.field.update_field(self.simulation.field.grid)
-            except Exception as e:
-                logger.error(f"Sim error: {e}")
-            elapsed = time.perf_counter() - start_time
-            await asyncio.sleep(max(0, 0.1 - elapsed))
+            except Exception as e: logger.error(f"Sim error: {e}")
+            await asyncio.sleep(max(0, 0.1 - (time.perf_counter() - start_time)))
 
     async def shutdown(self):
         self.running = False
@@ -114,91 +108,45 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Arkhe(n) Core OS", lifespan=lifespan)
 
 @app.get("/", response_class=HTMLResponse)
-async def root():
-    return "<h1>🧬 Arkhe(n) Core OS v2.0</h1><p>Status: OPERACIONAL</p>"
+async def root(): return "<h1>🧬 Arkhe(n) Core OS v2.0</h1><p>Status: OPERACIONAL</p>"
 
 @app.get("/health")
-async def health():
-    return {"status": "healthy", "uptime": time.time() - kernel.stats['start_time']}
+async def health(): return {"status": "healthy", "uptime": time.time() - kernel.stats['start_time']}
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Arkhe(n) Core OS')
-    parser.add_argument('--mode', choices=['standalone', 'worker', 'controller'],
-                       default='standalone', help='Operating mode')
-    parser.add_argument('--node-id', default='auto', help='Node ID (worker mode)')
-    parser.add_argument('--controller', default='http://parallax-controller:8080',
-                       help='Controller URL (worker mode)')
-    parser.add_argument('--agents', type=int, default=150, help='Initial population')
+    parser.add_argument('--mode', choices=['standalone', 'worker', 'controller'], default='standalone')
+    parser.add_argument('--node-id', default='auto')
+    parser.add_argument('--controller', default='http://parallax-controller:8080')
+    parser.add_argument('--agents', type=int, default=150)
     return parser.parse_args()
 
 async def run_worker(args):
-    logger.info(f"🖥️  Starting WORKER mode (node {args.node_id})")
-    await kernel.boot(num_agents=args.agents)
-
+    logger.info(f"🖥️  Starting WORKER mode ({args.node_id})")
     if PARALLAX_LOADED:
-        client = ParallaxNodeClient(
-            node_id=args.node_id,
-            controller_url=args.controller,
-            simulation=kernel.simulation,
-            field=kernel.field
-        )
+        client = ParallaxNodeClient(args.node_id, args.controller, None, None) # Simulation/Field added after boot
+        await kernel.boot(num_agents=args.agents, parallax_client=client)
+        client.simulation = kernel.simulation
+        client.field = kernel.field
         await client.connect()
         sim_task = asyncio.create_task(kernel.simulation_loop())
-
-        # Start local status server in thread
-        config = uvicorn.Config(app, host="0.0.0.0", port=8000)
-        server = uvicorn.Server(config)
-        loop = asyncio.get_event_loop()
-        server_task = loop.create_task(server.serve())
-
-        # MCP loop (FastMCP run blocks, so we run it in a thread if possible)
         if kernel.mcp:
-            def run_mcp_local():
-                kernel.mcp.run(transport="sse", port=8001)
-            threading.Thread(target=run_mcp_local, daemon=True).start()
-
-        try:
-            while client.running:
-                await asyncio.sleep(1)
-        except (KeyboardInterrupt, asyncio.CancelledError):
-            pass
-        finally:
-            await client.disconnect()
-            kernel.running = False
-            await sim_task
-            await kernel.shutdown()
-    else:
-        logger.error("❌ Parallax modules not found. Cannot start worker.")
+            threading.Thread(target=lambda: kernel.mcp.run(transport="sse", port=8001), daemon=True).start()
+        uvicorn.run(app, host="0.0.0.0", port=8000)
+    else: logger.error("Parallax not found")
 
 async def run_controller():
-    logger.info("🎛️  Starting CONTROLLER mode")
     from parallax.controller import app as controller_app
-    config = uvicorn.Config(controller_app, host="0.0.0.0", port=8080)
-    server = uvicorn.Server(config)
-    await server.serve()
+    uvicorn.run(controller_app, host="0.0.0.0", port=8080)
 
 async def run_standalone():
-    logger.info("🧬 Starting STANDALONE mode")
+    await kernel.boot()
     if kernel.mcp:
-        def run_mcp_local():
-            kernel.mcp.run(transport="sse", port=8001)
-        threading.Thread(target=run_mcp_local, daemon=True).start()
-
-    config = uvicorn.Config(app, host="0.0.0.0", port=8000)
-    server = uvicorn.Server(config)
-    await server.serve()
-
-async def entrypoint():
-    args = parse_args()
-    if args.mode == 'controller':
-        await run_controller()
-    elif args.mode == 'worker':
-        await run_worker(args)
-    else:
-        await run_standalone()
+        threading.Thread(target=lambda: kernel.mcp.run(transport="sse", port=8001), daemon=True).start()
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(entrypoint())
-    except KeyboardInterrupt:
-        pass
+    args = parse_args()
+    if args.mode == 'controller': asyncio.run(run_controller())
+    elif args.mode == 'worker': asyncio.run(run_worker(args))
+    else: asyncio.run(run_standalone())

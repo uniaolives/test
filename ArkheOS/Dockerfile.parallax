@@ -1,24 +1,25 @@
 # Dockerfile.parallax
-# Imagem Arkhe(n) com Parallax SDK (simulado) para clustering distribuído
+# Arkhe(n) OS Hybrid Distributed Image (Parallax + QHTTP)
 
 FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
 
-# Argumentos de build
+# Argumentos
 ARG PARALLAX_VERSION=0.2.0
 
 # Metadados
-LABEL org.opencontainers.image.title="Arkhe(n) × Parallax"
-LABEL org.opencontainers.image.description="Sistema Biológico Distribuído"
-LABEL parallax.enabled="true"
-LABEL parallax.version="${PARALLAX_VERSION}"
+LABEL org.opencontainers.image.title="Arkhe(n) OS × Parallax Quantum"
+LABEL org.opencontainers.image.description="Biological Operating System with Distributed Quantum Entanglement"
 
-# Instala dependências do sistema
+# Instalação de dependências do sistema e NCCL
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     python3.11 python3.11-dev python3-pip \
     git curl wget \
     libgl1-mesa-glx libglib2.0-0 \
     libssl-dev libffi-dev \
+    # RDMA e NCCL para comunicação multi-nó
+    libnccl2 libnccl-dev \
+    ibverbs-providers librdmacm-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Configura Python
@@ -34,24 +35,25 @@ RUN pip install --no-cache-dir -r requirements.parallax.txt
 COPY src/ /opt/arkhe/src/
 COPY parallax/ /opt/arkhe/parallax/
 
-# Cria diretórios
-RUN mkdir -p /opt/arkhe/data /opt/arkhe/logs \
+# Cria diretórios e compila libqhttp_dist
+RUN mkdir -p /opt/arkhe/data /opt/arkhe/logs /opt/arkhe/lib \
     /dev/shm/arkhe_field
 
-# Variáveis de ambiente Parallax
-ENV PARALLAX_ENABLED=true
-ENV PARALLAX_NODE_ID=auto
-ENV PARALLAX_CONTROLLER_URL=http://parallax-controller:8080
-ENV PARALLAX_RDMA_ENABLED=false
-ENV PARALLAX_HALO_SIZE=5
+# Compilação da biblioteca CUDA distribuída
+RUN nvcc -arch=sm_80 -O3 -lnccl -lcublas -lcusolver -lcurand \
+    -o /opt/arkhe/lib/libqhttp_dist.so --shared /opt/arkhe/parallax/qhttp_gpu_distributed.cu
 
-# Variáveis Arkhe(n)
-ENV ARKHE_MODE=parallax
-ENV ARKHE_FIELD_PATH=/dev/shm/arkhe_field/morphogenetic.bin
-ENV MCP_HOST=0.0.0.0
-ENV MCP_PORT=8000
+# Variáveis de ambiente
 ENV PYTHONPATH=/opt/arkhe
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/arkhe/lib
+ENV PARALLAX_ENABLED=true
+ENV PARALLAX_CONTROLLER_URL=http://parallax-controller:8080
 
-EXPOSE 8000 8080 9090
+# NCCL Optimizations
+ENV NCCL_IB_DISABLE=1
+ENV NCCL_SOCKET_IFNAME=eth0
+ENV NCCL_DEBUG=WARN
+
+EXPOSE 8000 8001 8080 9090
 
 ENTRYPOINT ["python", "-m", "src.main"]

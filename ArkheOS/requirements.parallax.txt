@@ -1,5 +1,5 @@
 # requirements.parallax.txt
-# Dependências base + Parallax/Gradient
+# Dependências base + Parallax + Distributed Quantum
 
 # Core
 numpy==1.26.4
@@ -16,18 +16,12 @@ python-dotenv==1.0.0
 colorlog>=6.8.0
 prometheus-client>=0.19.0
 
-# Parallax / Distributed Computing
-# parallax-core>=0.2.0
-# parallax-nvidia>=0.2.0
-
-# Alternativas para funcionalidade similar
-ray[default]>=2.9.0
+# Distributed Computing
 zmq>=25.1.2
 redis>=5.0.1
 hiredis>=2.2.0
 aiohttp>=3.9.1
-
-# Comunicação
-pyzmq>=25.1.2
 msgpack>=1.0.7
-protobuf>=4.25.0
+
+# Distributed Quantum (NCCL)
+nvidia-nccl-cu12>=2.19.3
