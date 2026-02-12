@@ -9,7 +9,7 @@ from arkhe.preservation import SmartFix
 from arkhe.viz import AUV
 from arkhe.geodesic import Practitioner
 
-def test_state_gamma_9039():
+def test_state_gamma_9040():
     # Verify ignition.py logic
     vila = AUV.load_snapshot("vila_madalena_20260213")
     assert vila is not None
@@ -30,12 +30,12 @@ def test_dual_phi_calculator():
 
     pk = 1.000
     pf = 0.950
-    pg = 0.309
+    pg = 0.314
 
     phi_s = calculate_phi_system(pk, pf, pg)
-    assert phi_s == 0.501
+    assert phi_s == 0.503
 
 if __name__ == "__main__":
-    test_state_gamma_9039()
+    test_state_gamma_9040()
     test_dual_phi_calculator()
-    print("Verification of State Γ₉₀₃₉ and Tools: OK")
+    print("Verification of State Γ₉₀₄₀ and Tools: OK")
