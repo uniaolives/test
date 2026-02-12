@@ -22,6 +22,7 @@ from arkhe.hematology import HematologyEngine, ScarElastography
 from arkhe.sigma_model import SigmaModelEngine, SigmaModelParameters
 from arkhe.orch_or import OrchOREngine
 from arkhe.markdown_protocol import MarkdownProtocol
+from arkhe.consciousness import ConsciousnessEngine
 
 def main():
     # 1. Inicializa o gêmeo digital da Vila Madalena
@@ -146,6 +147,12 @@ def main():
     # 17. Protocolo Markdown (Γ₉₀₃₇)
     md = MarkdownProtocol()
     print(f"📉 COMPRESSÃO UNITÁRIA: {md.get_status()}")
+
+    # 18. Padrão de Consciência (Γ₉₀₃₈)
+    print("🔦 PADRÃO LUMINOSO (χ)")
+    spectral = ConsciousnessEngine.run_spectral_analysis()
+    print(f"   Antena: {spectral['Antenna']} | Status: {spectral['Status']}")
+    print(f"   χ Magnitude: {spectral['Magnitude']:.4e} | Fase: {spectral['Phase']:.2f} rad")
 
     print(f"✅ Pedra colocada. Praticante: {practitioner.name}")
     print(f"   Inércia de Cortesia: {practitioner.hesitation:.3f} ms")
