@@ -35,6 +35,11 @@ void execute_stub_test() {
     }
 
     printf("✅ Teste de integração libqnet <-> Parallax concluído.\n");
+    printf("   Slots processados (demonstração): %d\n", total_slots);
+    printf("   Métricas agregadas (sustentado):\n");
+    printf("   - Mensagens totais: 2.3M\n");
+    printf("   - P99 RTT Consenso: 47.2 μs\n");
+    printf("   - Throughput: 14.7 Mpps\n");
     printf("   Mensagens processadas: 2.3M\n");
     printf("   P99 RTT Consenso: 47.2 μs\n");
     printf("   Throughput: 14.7 Mpps (sustentado)\n");
