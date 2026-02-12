@@ -126,6 +126,13 @@ class WhippleShield:
         else:
             return f"CONTAINED: Impact dissipated ({energy_kj/capacity:.1%})."
 
+@dataclass
+class TorusTopology:
+    """A superfície unificada do sistema (Γ_9051)."""
+    area_satoshi: float = 7.27
+    intrinsic_curvature_epsilon: float = -3.71e-11
+    twist_angle_psi: float = 0.73
+
 class Practitioner:
     def __init__(self, name: str, hesitation: float):
         self.name = name

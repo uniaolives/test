@@ -9,12 +9,13 @@ from arkhe.viz import AUV
 from arkhe.geodesic import (
     Practitioner, VirologicalGovernance, MaturityStatus,
     LatentFocus, ConsciousVoxel, CannabinoidTherapy, Ligand, Receptor,
-    WhippleShield
+    WhippleShield, TorusTopology
 )
 from arkhe.parallax_integration import ParallaxIntegrator
 from arkhe.chaos_engine import ChaosEngine
 from arkhe.astrodynamics import OrbitalObservatory, get_default_catalog
 from arkhe.quantum_network import get_initial_network, QuantumNode
+from arkhe.unification import EpsilonUnifier
 
 def main():
     # 1. Inicializa o gêmeo digital da Vila Madalena
@@ -57,22 +58,28 @@ def main():
 
     # 8. Expansão da Rede Quântica e Bell Test (Γ_9047/Γ_9048/Γ_9049)
     net = get_initial_network()
-
-    # Ativando Nó #4 e #5
     net.add_node(QuantumNode("QN-04", "PREVISÃO_001", 0.04, 0.87, 0.62))
     net.activate_node("QN-04", target_omega=0.04)
     net.add_node(QuantumNode("QN-05", "PREVISÃO_002", 0.06, 0.83, 0.59))
     net.activate_node("QN-05", target_omega=0.06)
-
-    # Ativando Nó #6 (KERNEL)
     net.activate_kernel_node()
-
     net.verify_key_integrity()
-    net.run_bell_test()
-    print(f"🌐 Alcance Máximo da Rede: {net.calculate_max_range():.2f} ω (≈ 1900 km)")
+    chsh = net.run_bell_test()
 
-    # 9. Detecção de Reentrada (Γ_9050)
-    practitioner.detect_quantum_reentry(handover_id=9032)
+    # 9. Tripla Confissão e Topologia Unificada (Γ_9051)
+    print("🌀 TRIPLA CONFISSÃO DA INVARIANTE ε")
+    results = EpsilonUnifier.execute_triple_confession({
+        "omega_cents": 48.0,
+        "psi": 0.73,
+        "chsh": chsh
+    })
+    print(f"   🎵 Toro harmônico:      ε = {results['harmonic']:.3e}")
+    print(f"   🛰️ Órbita epistêmica:   ε = {results['orbital']:.3e}")
+    print(f"   🌀 Rede quântica:       ε = {results['quantum']:.3e}")
+    print(f"✅ ε CONSENSO:          {results['consensus']:.3e} (Fidelidade: {results['fidelity']:.4f})")
+
+    topo = TorusTopology()
+    print(f"🍩 Superfície Unificada: Toro S¹×S¹ (Área={topo.area_satoshi} bits, ψ={topo.twist_angle_psi} rad)")
 
     print(f"✅ Pedra colocada. Praticante: {practitioner.name}")
     print(f"   Inércia de Cortesia: {practitioner.hesitation:.3f} ms")
@@ -80,9 +87,9 @@ def main():
     print()
 
     # Adicionado em Γ₉₀₅₅
-    print("💎 PROTOCOLO GEODÉSICO CONCLUÍDO (Handover Γ_9050):")
+    print("💎 PROTOCOLO GEODÉSICO CONCLUÍDO (Handover Γ_9051):")
     print("   Kernel: 20μs Production / 2.2μs Lab (🔒 SEALED)")
-    print("   Formal: Quantum_Entanglement.v (🔒 SEALED)")
+    print("   Formal: Unified_Observables.v (🔒 SEALED)")
     print("   Status: Φ = 1.000 (ABSOLUTO)")
     print()
     print("🔑 KEYSTONE: ETERNA 🔒")
