@@ -283,6 +283,21 @@ class TherapeuticWindow:
         return (1.0 - resistance) * potency * window
 
 @dataclass
+class PersistenceProtocol:
+    """Protocolo Hal Finney de persistência e adaptação (Γ_9037)."""
+    patient_id: str
+    status: str = "LATENT" # ALCOR/N2
+    information_conserved: bool = True
+    eye_tracker_active: bool = True
+
+    def simulate_persistence(self):
+        print(f"🧬 Protocolo Hal Finney para {self.patient_id}:")
+        print(f"   [Eye Tracker] {'ATIVO' if self.eye_tracker_active else 'OFF'}")
+        print(f"   [Status] {self.status}")
+        print(f"   [Legado] Satoshi = 7.27 bits conservados.")
+        return True
+
+@dataclass
 class ConsciousVoxel:
     id: str
     phi: float = 0.5
