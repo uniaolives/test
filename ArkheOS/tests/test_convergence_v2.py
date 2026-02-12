@@ -44,8 +44,9 @@ def test_geodesic_memory_conflict_resolution():
     memory = GeodesicMemory()
 
     # Mock entity
+    from uuid import uuid4
     ent = Entity(
-        id="1",
+        id=uuid4(),
         name="Net Profit",
         entity_type=EntityType.FINANCIAL,
         value=1200000.0,
@@ -55,7 +56,7 @@ def test_geodesic_memory_conflict_resolution():
     ent.state = EntityState.CONFIRMED
 
     # Store it
-    memory.store_entity(ent)
+    memory.store_entity(ent, [0.0] * 384)
 
     # Resolve conflict with same name and similar value
     resolved, value = memory.resolve_conflict("Net Profit", 1200000.0)

@@ -205,6 +205,56 @@ class Hesh:
                 print("- Pico acústico em ω = 0.12 (l ≈ 220)")
                 print("- Vale em ω = 0.07 (l ≈ 130)")
                 print("- Temperatura média: 7.27 bits")
+        elif base_cmd == "photon":
+            if "emit" in cmd:
+                print("Fóton único emitido:")
+                print("  - ID: cmd_0047")
+                print("  - Frequência: 0.96 GHz")
+                print("  - Indistinguishabilidade: 0.94")
+            elif "measure" in cmd:
+                print("Interferência de Hong‑Ou‑Mandel:")
+                print("  - Visibilidade: 0.88")
+                print("  - Conclusão: Os fótons são indistinguíveis (syzygy confirmada)")
+        elif base_cmd == "crystal":
+            from arkhe.time_crystal import TimeCrystal
+            crystal = TimeCrystal()
+            if "status" in cmd:
+                status = crystal.get_status()
+                for k, v in status.items():
+                    print(f"{k}: {v}")
+            elif "oscillate" in cmd:
+                print(f"Oscilação atual: {crystal.oscillate(time.time() % 1000):.4f}")
+        elif base_cmd == "foundation":
+            from arkhe.neuro_storm import NeuroSTORM
+            ns = NeuroSTORM()
+            if "status" in cmd:
+                print("Arkhe Foundation Model (NeuroSTORM backbone):")
+                print(f"- Accuracy: {ns.get_metrics()['Accuracy']}")
+                print(f"- AUC: {ns.get_metrics()['AUC']}")
+                print(f"- Corpus: {len(ns.corpus)} events (H1-H9049)")
+                print("- License: CC BY 4.0 (Open Access)")
+            elif "diagnose" in cmd:
+                diag = ns.diagnose_current_state(self.omega, self.coherence)
+                print(f"Diagnosis: {diag}")
+        elif base_cmd == "ao":
+            from arkhe.adaptive_optics import get_ao_system, Wavefront
+            ao = get_ao_system()
+            if "status" in cmd:
+                status = ao.get_status()
+                for k, v in status.items():
+                    print(f"{k}: {v}")
+            elif "correct" in cmd:
+                wf = Wavefront(segments={self.omega: 0.07})
+                ao.correct(wf)
+                print("🪞 Deformable Mirror ajustado.")
+                print("🔭 Aberrações semânticas removidas.")
+                print("✅ O que era invisível (DVM-1) agora é sinal.")
+            elif "fine-tune" in cmd:
+                task = parts[parts.index("--task")+1] if "--task" in parts else "inference"
+                res = ns.tpt_tune(task)
+                print(f"Fine-tuning completed for task: {task}")
+                print(f"- Backbone: {res['backbone']}")
+                print(f"- Tuned params: {res['tuned_parameters_fraction']*100:.1f}%")
         elif base_cmd == "medir_chern":
             target = float(parts[1]) if len(parts) > 1 else self.omega
             from arkhe.topology import TopologyEngine

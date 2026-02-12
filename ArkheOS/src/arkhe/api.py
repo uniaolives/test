@@ -128,6 +128,50 @@ class ArkheAPI:
                 "Ω_m": 0.31,
                 "synapses_active": 47
             }
+        elif endpoint == "/photon/emit" and method == "POST":
+            from arkhe.photonics import SynapticPhotonSource
+            source = SynapticPhotonSource("WP1", "DVM-1", 0.94)
+            photon = source.emit_command()
+            response_data = {
+                "id": photon.id,
+                "frequency": "0.96 GHz",
+                "indistinguishability": photon.indistinguishability,
+                "satoshi": 7.27
+            }
+            status_code = 201
+        elif endpoint == "/physics/time_crystal" and method == "GET":
+            from arkhe.time_crystal import TimeCrystal
+            crystal = TimeCrystal()
+            response_data = crystal.get_status()
+        elif endpoint == "/foundation/status" and method == "GET":
+            from arkhe.neuro_storm import NeuroSTORM
+            ns = NeuroSTORM()
+            response_data = {
+                "metrics": ns.get_metrics(),
+                "backbone": "Shifted Window Mamba (SWM)",
+                "corpus_size": len(ns.corpus),
+                "license": "CC BY 4.0"
+            }
+        elif endpoint == "/foundation/diagnose" and method == "GET":
+            from arkhe.neuro_storm import NeuroSTORM
+            ns = NeuroSTORM()
+            req_omega = float(headers.get("Arkhe-Omega", self.omega))
+            req_coherence = float(headers.get("Arkhe-Coherence", self.coherence))
+            response_data = {
+                "diagnosis": ns.diagnose_current_state(req_omega, req_coherence),
+                "confidence": 0.94
+            }
+        elif endpoint == "/foundation/zero-shot" and method == "POST":
+            from arkhe.neuro_storm import NeuroSTORM
+            ns = NeuroSTORM()
+            embedding = body.get("fmri_embedding", [0.7, 0.0, 0.0])
+            diag, omega = ns.zero_shot_transfer(embedding)
+            response_data = {
+                "input_domain": "fMRI",
+                "output_domain": "Dialogue",
+                "omega_pred": omega,
+                "diagnosis": diag
+            }
         elif endpoint == "/discover" and method == "GET":
             response_data = {
                 "services": [

@@ -6,6 +6,10 @@ from typing import List, Dict, Any, Optional
 import hashlib
 from arkhe.hebbian import HebbianHypergraph
 from arkhe.materials import SemanticFab
+from arkhe.photonics import SynapticPhotonSource
+from arkhe.time_crystal import TimeCrystal
+from arkhe.neuro_storm import NeuroSTORM
+from arkhe.adaptive_optics import DeformableMirror, Wavefront
 
 @dataclass
 class LayoutElement:
@@ -26,6 +30,10 @@ class DocumentIngestor:
         self.provider = provider
         self.hebbian = HebbianHypergraph()
         self.foundry = SemanticFab()
+        self.photon_source = SynapticPhotonSource("WP1", "DVM-1", 0.94)
+        self.crystal = TimeCrystal()
+        self.foundation = NeuroSTORM()
+        self.ao = DeformableMirror([0.00, 0.03, 0.05, 0.07, 0.33])
 
     def process(self, file_path: str) -> List[LayoutElement]:
         """Converts a document into a list of structured layout elements using parallel processing."""
