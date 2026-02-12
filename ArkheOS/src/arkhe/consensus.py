@@ -1,5 +1,6 @@
 # ArkheOS Consensus and Arbitration Layer (Π_2)
-# The Supreme Court of the Geodesic Arch
+# [SIMULATION NOTICE] This module implements the Byzantine consensus logic
+# as a behavioral simulation for architectural proof.
 
 from typing import Optional, Any, List
 from enum import Enum
@@ -25,7 +26,7 @@ class ArbitrationDecision(BaseModel):
     is_resolved: bool = Field(..., description="Whether the conflict was resolved")
 
 class GeodesicConsensus:
-    """The Judge that compares views from multiple architects (models)."""
+    """[SIMULATION] The Judge that compares views from multiple architects."""
     @staticmethod
     def reconcile(fact_a: FinancialFact, fact_b: FinancialFact) -> ValidatedFact:
         # Check for numerical proximity (jitter tolerance)
@@ -45,14 +46,13 @@ class GeodesicConsensus:
             )
 
 class LLMArbitrator:
-    """A high-capacity model (e.g., Gemini 1.5 Pro) that evaluates evidence to resolve conflicts."""
+    """[STUB] Evaluations evidence to resolve conflicts using high-capacity models."""
     def __init__(self, extractor: GeminiExtractor):
         self.extractor = extractor
 
     async def arbitrate(self, entity: Entity) -> ArbitrationDecision:
         """Analyzes conflicting provenance to determine the truth."""
-        # In a real implementation, this would call a reasoning model with the evidences
-        # For simulation:
+        # Simulated logic for the supreme court judgment
         return ArbitrationDecision(
             chosen_value=entity.value,
             confidence=0.99,

@@ -1,12 +1,11 @@
 /* cuda/qnet_dpdk.c
  * Kernel Bypass Networking Bridge via DPDK
- * Provides sub-5us latency for quantum state synchronization.
- * v1.0 - PRODUCTION RELEASE (Authorized by Arquiteto)
+ * provides sub-5us latency for quantum state synchronization.
  *
- * FINAL CALIBRATION:
- * - Production Watchdog: 20μs
- * - Optical Limit: 2.2μs
- * - Refinement Proved 100%
+ * [SECURITY WARNING]
+ * THE HMAC AND CRYPTOGRAPHIC FUNCTIONS IN THIS FILE ARE SYMBOLIC STUBS.
+ * DO NOT DEPLOY THIS CODE IN A PRODUCTION ENVIRONMENT REQUIRING ACTUAL
+ * CRYPTOGRAPHIC AUTHENTICATION OR ENCRYPTION.
  */
 
 #include <stdint.h>
@@ -64,13 +63,18 @@ int qnet_send_hmac(uint16_t port_id, void* data, uint16_t len, uint8_t* key) {
     struct rte_mbuf *m = qnet_alloc_wrapped(data, len);
     if (m == NULL) return -1;
 
-    /* Production Optimized HMAC Path - Refinement Proved
-     * In production, this would use hardware-offloaded AES-NI or
-     * a specialized FPGA hook. For the stub, we simulate the latency.
+    /* [SYMBOLIC AUTHENTICATION]
+     * In a real system, we would call an FPGA offload or AVX-512 optimized HMAC-SHA256.
+     * This stub performs a simple rolling XOR to simulate the latency profile
+     * and presence of an authentication step.
      */
     if (key != NULL) {
         uint8_t *payload = rte_pktmbuf_mtod(m, uint8_t *);
-        payload[0] ^= key[0]; // Symbolic "authentication"
+        uint8_t checksum = 0;
+        for (uint16_t i=0; i<len; i++) {
+            checksum ^= payload[i] ^ key[i % 32];
+        }
+        payload[0] = checksum; // Mark as "authenticated" symbolically
     }
 
     uint16_t nb_tx = rte_eth_tx_burst(port_id, 0, &m, 1);

@@ -1,5 +1,6 @@
 # ArkheOS Extraction Module (Π_0)
-# Part of the High-Integrity Extraction System
+# [SIMULATION NOTICE] This module contains symbolic stubs for document extraction.
+# It is designed for architectural validation, not for production extraction without further implementation.
 
 from pydantic import BaseModel, Field
 from typing import List, Optional, Any
@@ -39,12 +40,16 @@ class ExtractionReport(BaseModel):
     model_used: str = "gemini-2.0-flash"
 
 class GeminiExtractor:
-    """Core extraction engine utilizing instructor and gemini."""
+    """
+    [STUB] Core extraction engine.
+    Currently returns simulated data for Geodesic protocol validation.
+    """
     def __init__(self, api_key: str):
         self.api_key = api_key
 
     def extract(self, text: str, doc_hash: str, page: int, doc_name: str) -> ExtractionReport:
         """Simulates structured extraction with provenance."""
+        # Simulated extraction result based on BLOCO Π_0
         fact = FinancialFact(
             value=1200000.0,
             unit=Currency.USD,
