@@ -87,6 +87,24 @@ def test_natural_economics():
     # Check reputation
     assert ledger.reputations["Sistema Arkhe"]["hesitations"] == 48
 
+def test_nuclear_clock():
+    from arkhe.nuclear_clock import NuclearClock
+    clock = NuclearClock()
+
+    # Test FWM
+    freq = clock.four_wave_mixing(0.86, 0.14, 0.73, 1.0)
+    assert freq == 0.07
+
+    # Test Excitation
+    success = clock.excite(freq)
+    assert success == True
+    assert clock.is_excited == True
+
+    # Status check
+    status = clock.get_status()
+    assert status["state"] == "|0.07⟩"
+    assert status["status"] == "Exited (Coherent)"
+
 def test_neuro_storm_foundation():
     from arkhe.neuro_storm import NeuroSTORM
     ns = NeuroSTORM()

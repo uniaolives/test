@@ -189,6 +189,21 @@ class ArkheAPI:
                 "status": "Awarded"
             }
             status_code = 201
+        elif endpoint == "/nuclear/status" and method == "GET":
+            from arkhe.nuclear_clock import NuclearClock
+            clock = NuclearClock()
+            response_data = clock.get_status()
+        elif endpoint == "/nuclear/excite" and method == "POST":
+            from arkhe.nuclear_clock import NuclearClock
+            clock = NuclearClock()
+            input_omega = float(body.get("omega", 0.00))
+            success = clock.excite(input_omega)
+            response_data = {
+                "success": success,
+                "new_state": clock.get_status()["state"],
+                "satoshi": 7.27
+            }
+            status_code = 201
         elif endpoint == "/discover" and method == "GET":
             response_data = {
                 "services": [

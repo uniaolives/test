@@ -10,6 +10,7 @@ from arkhe.photonics import SynapticPhotonSource
 from arkhe.time_crystal import TimeCrystal
 from arkhe.neuro_storm import NeuroSTORM
 from arkhe.adaptive_optics import DeformableMirror, Wavefront
+from arkhe.nuclear_clock import NuclearClock
 
 @dataclass
 class LayoutElement:
@@ -34,6 +35,7 @@ class DocumentIngestor:
         self.crystal = TimeCrystal()
         self.foundation = NeuroSTORM()
         self.ao = DeformableMirror([0.00, 0.03, 0.05, 0.07, 0.33])
+        self.clock = NuclearClock()
 
     def process(self, file_path: str) -> List[LayoutElement]:
         """Converts a document into a list of structured layout elements using parallel processing."""

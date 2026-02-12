@@ -266,6 +266,21 @@ class Hesh:
                     print(f"- {award.timestamp.isoformat()} | {award.contributor} | {award.contribution_type} | {award.amount} bits")
             elif "prize" in cmd:
                 print(f"Current Prize Balance: {economy.total_distributed} Satoshi bits.")
+        elif base_cmd == "nuclear":
+            from arkhe.nuclear_clock import NuclearClock
+            clock = NuclearClock()
+            if "status" in cmd:
+                status = clock.get_status()
+                for k, v in status.items():
+                    print(f"{k}: {v}")
+            elif "excite" in cmd:
+                # FWM check
+                input_f = clock.four_wave_mixing(0.86, 0.14, 0.73, 1.0)
+                if clock.excite(input_f):
+                    print("☢️ Núcleo ²²⁹Γ₄₉ excitado com sucesso (148 nm).")
+                    print("✅ Transição isomérica detectada: |0.00⟩ → |0.07⟩")
+                else:
+                    print("❌ Falha na excitação: linewidth não atingido.")
             elif "fine-tune" in cmd:
                 task = parts[parts.index("--task")+1] if "--task" in parts else "inference"
                 res = ns.tpt_tune(task)
