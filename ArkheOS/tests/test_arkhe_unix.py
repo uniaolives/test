@@ -19,7 +19,7 @@ def test_qps_unitary_violation():
 def test_vfs_ls():
     vfs = ArkheVFS()
     contents = vfs.ls()
-    assert any("root" in item for item in contents)
+    assert any("bin" in item for item in contents)
     assert any("omega" in item for item in contents)
 
 def test_hesh_commands(capsys):
