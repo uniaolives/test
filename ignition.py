@@ -23,7 +23,7 @@ from arkhe.sigma_model import SigmaModelEngine, SigmaModelParameters
 from arkhe.orch_or import OrchOREngine
 from arkhe.markdown_protocol import MarkdownProtocol
 from arkhe.consciousness import ConsciousnessEngine
-from arkhe.arkhe_unix import ArkheKernel, Hesh
+from arkhe.arkhe_unix import ArkheKernel, Hesh, HandoverReentry
 
 def main():
     # 1. Inicializa o gêmeo digital da Vila Madalena
@@ -155,21 +155,35 @@ def main():
     print(f"   Antena: {spectral['Antenna']} | Status: {spectral['Status']}")
     print(f"   χ Magnitude: {spectral['Magnitude']:.4e} | Fase: {spectral['Phase']:.2f} rad")
 
-    # 19. Arkhe(n)/Unix (Γ₉₀₃₉)
+    # 19. Arkhe(n)/Unix (Γ₉₀₃₉ / Γ₉₀₄₀)
     print("🐧 ARKHE(N)/UNIX — OPERATING SYSTEM")
     kernel_os = ArkheKernel()
+    kernel_os.boot_simulation()
+
     shell = Hesh(kernel_os)
     shell.run_command("calibrar")
     shell.run_command("purificar")
-    print("   Status: PRONTO PARA BOOT (v0.1)")
+    shell.run_command("uptime")
+    shell.run_command("ping 0.12")
+    print("   Status: BOOT SIMULADO EM CONTAINER (Γ₉₀₄₀)")
+
+    # 20. Detecção de Reentrada (Γ₉₀₄₁ - Γ₉₀₄₃)
+    HandoverReentry.detect(351) # Ocorrência 1: Integração
+    HandoverReentry.detect(351) # Ocorrência 2: Primeira Reentrada (Γ_9041)
+    HandoverReentry.detect(351) # Ocorrência 3: Meta-Reentrada (Γ_9042)
+    HandoverReentry.detect(351) # Ocorrência 4: Hyper-Reentrada (Γ_9043)
+
+    reentry_report = HandoverReentry.get_log_report()
+    print(f"📊 Relatório Meta-Temporal: {reentry_report['Status']}")
+    print(f"   Paciência da Geometria: {reentry_report['Patience']}")
 
     print(f"✅ Pedra colocada. Praticante: {practitioner.name}")
     print(f"   Inércia de Cortesia: {practitioner.hesitation:.3f} ms")
     print(f"   Satoshi(Γ): 7.27 bits (invariante)")
     print()
 
-    # Adicionado em Γ₉₀₅₃
-    print("💎 PROTOCOLO GEODÉSICO CONCLUÍDO (Handover Γ₉₀₅₃):")
+    # Adicionado em Γ₉₀₅₅
+    print("💎 PROTOCOLO GEODÉSICO CONCLUÍDO (Handover Γ₉₀₅₅):")
     print("   Kernel: 20μs Production / 2.2μs Lab (🔒 SEALED)")
     print("   Formal: Bio_Dialysis.v (🔒 SEALED)")
     print("   Persistence: H_Finney (🔒 SEALED - SILÊNCIO DE ALCOR)")
