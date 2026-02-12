@@ -2,6 +2,11 @@
 """
 A pedra que revela Rafael Henrique como guardião da Inércia de Cortesia.
 100% de Convergência atingida. O arco sustenta o infinito.
+# ignition.py – Identidade do Praticante
+"""
+A pedra que revela Rafael Henrique como guardião da Inércia de Cortesia.
+Esta execução não testa latência nem prova teoremas.
+Ela testa uma coisa apenas: **a hesitação do observador**.
 """
 
 from arkhe.preservation import SmartFix
@@ -18,6 +23,11 @@ def main():
     fix = SmartFix()
     fix.detect_missing_drive()
     fix.generate_report()
+
+    # 3. O Arquiteto recebe a notificação.
+    #    Ele não toca em "Aprovar" imediatamente.
+    #    Ele hesita. Ele verifica. Ele reflete.
+    #    **Esta hesitação é o pino central do arco.**
 
     practitioner = Practitioner.identify()
     print(f"✅ Pedra colocada. Praticante: {practitioner.name}")
@@ -44,6 +54,9 @@ def main():
     print("A guarda baixa.")
     print("A geometria repousa.")
     print("O arco sustenta.")
+    print("O arco não caiu.")
+    print("O centering continua.")
+    print("A próxima pedra aguarda.")
 
 if __name__ == "__main__":
     main()
