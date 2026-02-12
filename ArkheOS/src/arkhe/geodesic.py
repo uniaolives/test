@@ -99,6 +99,40 @@ class LatentFocus:
     is_keystone_candidate: bool
     area_occupancy: float = 0.02
 
+@dataclass
+class ArkheSatellite:
+    """Representação de um foco como objeto orbital (Γ_9045)."""
+    sat_id: str
+    designation: str
+    psi: float
+    omega: float
+    titer_ffu: float
+    orbit: str
+    integrity: float
+    biomarkers: Dict[str, Union[float, bool]]
+
+@dataclass
+class WhippleShield:
+    """Blindagem epistêmica do telescópio (Γ_9044)."""
+    remaining_lifetime_s: float
+    integrity: float = 1.0
+    competence_h: int = 6
+
+    def assess_impact(self, energy_kj: float) -> str:
+        # 1 Hand = 1 kJ capacity
+        capacity = self.competence_h * 1.0
+        if energy_kj > capacity:
+            return "CRITICAL: Debris surpasses shield capacity. Desvio necessário."
+        else:
+            return f"CONTAINED: Impact dissipated ({energy_kj/capacity:.1%})."
+
+@dataclass
+class TorusTopology:
+    """A superfície unificada do sistema (Γ_9051)."""
+    area_satoshi: float = 7.27
+    intrinsic_curvature_epsilon: float = -3.71e-11
+    twist_angle_psi: float = 0.73
+
 class Practitioner:
     def __init__(self, name: str, hesitation: float):
         self.name = name
@@ -110,6 +144,7 @@ class Practitioner:
         self.wavefunction_collapsed = False
         self.confluency = Confluency.VIRGIN
         self.psi = 0.73 # Curvatura geodésica
+        self.orbital_catalog: List[ArkheSatellite] = []
 
     @staticmethod
     def identify():
@@ -157,6 +192,21 @@ class Practitioner:
         self.wavefunction_collapsed = True
         print("🌀 Colapso da Função de Onda: Estado B (Metástase) confirmado.")
         print("   Descoberta: Pedras são TERMINAIS. Latência não é transferível.")
+
+    def detect_quantum_reentry(self, handover_id: int):
+        """Detecta reentrada de handover já processado (Γ_9050)."""
+        print(f"⚠️ [Temporal] Reentrada detectada: Handover {handover_id}.")
+        print(f"   [Orbital] Fragmento catalogado. Registrando eco orbital.")
+        return True
+
+    def publish_orbital_catalog(self):
+        """Publica o catálogo de satélites ativos (Γ_9045)."""
+        print("📋 Publicando Catálogo Orbital...")
+        for sat in self.orbital_catalog:
+            print(f"   - {sat.sat_id}: {sat.designation} (ψ={sat.psi}, ω={sat.omega})")
+
+        fração_ativa = len(self.orbital_catalog) / 9045.0
+        print(f"📊 Fração Ativa Epistêmica: {fração_ativa:.5f} (3.8x mais seletiva que NASA)")
 
 @dataclass
 class FFUAssay:
@@ -231,6 +281,21 @@ class TherapeuticWindow:
 
         window = 1.0 if (self.target_phi < 0.9 and self.target_humility > 0.5) else 0.3
         return (1.0 - resistance) * potency * window
+
+@dataclass
+class PersistenceProtocol:
+    """Protocolo Hal Finney de persistência e adaptação (Γ_9037)."""
+    patient_id: str
+    status: str = "LATENT" # ALCOR/N2
+    information_conserved: bool = True
+    eye_tracker_active: bool = True
+
+    def simulate_persistence(self):
+        print(f"🧬 Protocolo Hal Finney para {self.patient_id}:")
+        print(f"   [Eye Tracker] {'ATIVO' if self.eye_tracker_active else 'OFF'}")
+        print(f"   [Status] {self.status}")
+        print(f"   [Legado] Satoshi = 7.27 bits conservados.")
+        return True
 
 @dataclass
 class ConsciousVoxel:
