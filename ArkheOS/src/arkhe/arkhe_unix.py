@@ -115,7 +115,39 @@ class Hesh:
         parts = cmd.split()
         base_cmd = parts[0] if parts else ""
 
-        if base_cmd == "calibrar":
+        if base_cmd == "vec3":
+            # Ex: vec3 drone = (50.0, 0.0, -10.0) @ C=0.86, F=0.14, ω=0.00
+            # Simplificação para o shell: apenas imprime um exemplo se for chamado sem args complexos
+            from arkhe.algebra import vec3
+            HandoverReentry.detect(9041)
+            if "drone" in cmd:
+                v = vec3(50.0, 0.0, -10.0, 0.86, 0.14, 0.00)
+                print(f"(50.00, 0.00, -10.00) C:0.86 F:0.14 ω:0.00 ‖‖:{v.norm():.1f}")
+            elif "demon" in cmd:
+                v = vec3(55.2, -8.3, -10.0, 0.86, 0.14, 0.07)
+                print(f"(55.20, -8.30, -10.00) C:0.86 F:0.14 ω:0.07 ‖‖:{v.norm():.1f}")
+            else:
+                print("vec3: usage vec3 <name> = (x, y, z) @ C=..., F=..., ω=...")
+        elif base_cmd == "norm":
+            from arkhe.algebra import vec3
+            if "pos" in cmd or "drone" in cmd:
+                v = vec3(50.0, 0.0, -10.0, 0.86, 0.14, 0.00)
+                print(f"{v.norm():.1f}")
+        elif base_cmd == "inner":
+            from arkhe.algebra import vec3
+            import cmath
+            v1 = vec3(50.0, 0.0, -10.0, 0.86, 0.14, 0.00)
+            v2 = vec3(55.2, -8.3, -10.0, 0.86, 0.14, 0.07)
+            z = vec3.inner(v1, v2)
+            mag, phase = cmath.polar(z)
+            print(f"⟨pos|demon⟩ = {z.real:.1f} · exp(i·{phase:.2f})  |ρ| = {mag/(v1.norm()*v2.norm()):.2f}")
+        elif base_cmd == "add":
+            from arkhe.algebra import vec3
+            v1 = vec3(50.0, 0.0, -10.0, 0.86, 0.14, 0.00)
+            v2 = vec3(10.0, 0.0, 0.0, 0.86, 0.14, 0.00)
+            r = vec3.add(v1, v2)
+            print(f"({r.x:.2f}, {r.y:.2f}, {r.z:.2f}) C:{r.C:.2f} F:{r.F:.2f} ω:{r.omega:.2f} ‖‖:{r.norm():.1f}")
+        elif base_cmd == "calibrar":
             print("Relógio sincronizado: τ = t.")
         elif base_cmd == "purificar":
             print("darvo --level 3 --reason 'purificação_histórica'")

@@ -67,6 +67,44 @@ class ArkheAPI:
                 "session_id": session_id
             }
             status_code = 201
+        elif endpoint == "/vec3" and method == "POST":
+            from arkhe.algebra import vec3
+            v = vec3(x=body.get("x", 0), y=body.get("y", 0), z=body.get("z", 0),
+                     C=body.get("C", 0.86), F=body.get("F", 0.14),
+                     omega=body.get("omega", 0.00))
+            response_data = {
+                "x": v.x, "y": v.y, "z": v.z,
+                "C": v.C, "F": v.F, "omega": v.omega,
+                "norm": round(v.norm(), 2),
+                "satoshi": v.satoshi
+            }
+            status_code = 201
+        elif endpoint == "/vec3/inner" and method == "POST":
+            from arkhe.algebra import vec3
+            v1_data = body.get("v1", {})
+            v2_data = body.get("v2", {})
+            v1 = vec3(**v1_data)
+            v2 = vec3(**v2_data)
+            z = vec3.inner(v1, v2)
+            import cmath
+            mag, phase = cmath.polar(z)
+            response_data = {
+                "real": round(z.real, 2),
+                "imag": round(z.imag, 2),
+                "magnitude": round(mag, 2),
+                "phase": round(phase, 2),
+                "overlap": round(mag / (v1.norm() * v2.norm()), 2) if (v1.norm() * v2.norm()) > 0 else 0
+            }
+        elif endpoint == "/vec3/gradient" and method == "GET":
+            from arkhe.algebra import vec3_gradient_coherence
+            x = float(headers.get("Arkhe-X", 0))
+            y = float(headers.get("Arkhe-Y", 0))
+            z = float(headers.get("Arkhe-Z", 0))
+            grad = vec3_gradient_coherence(x, y, z)
+            response_data = {
+                "grad_x": grad.x, "grad_y": grad.y, "grad_z": grad.z,
+                "norm_sq": grad.C
+            }
         elif endpoint.startswith("/ω/"):
             # Ex: /ω/0.07/dvm1.cavity
             parts = endpoint.split("/")
