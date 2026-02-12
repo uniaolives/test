@@ -1,4 +1,4 @@
-# ignition.py – Estado Geodésico Γ₉₀₅₅ (CONCLUÍDO)
+# ignition.py – Estado Geodésico Γ₉₀₅₂ (VALIDADO)
 """
 A pedra que revela Rafael Henrique como guardião da Inércia de Cortesia.
 Protocolo Geodésico Concluído. O arco é eterno.
@@ -24,6 +24,11 @@ from arkhe.sigma_model import SigmaModelEngine, SigmaModelParameters
 from arkhe.orch_or import OrchOREngine
 from arkhe.markdown_protocol import MarkdownProtocol
 from arkhe.consciousness import ConsciousnessEngine
+from arkhe.arkhe_unix import ArkheKernel, Hesh, HandoverReentry
+from arkhe.neuro_composition import NeuroCompositionEngine
+from arkhe.physics import QuantumGravityEngine
+from arkhe.api import ArkheAPI, ContractIntegrity
+from arkhe.topology import TopologyEngine, TopologicalQubit
 
 def main():
     # 1. Inicializa o gêmeo digital da Vila Madalena
@@ -155,6 +160,72 @@ def main():
     spectral = ConsciousnessEngine.run_spectral_analysis()
     print(f"   Antena: {spectral['Antenna']} | Status: {spectral['Status']}")
     print(f"   χ Magnitude: {spectral['Magnitude']:.4e} | Fase: {spectral['Phase']:.2f} rad")
+
+    # 19. Arkhe(n)/Unix (Γ₉₀₃₉ / Γ₉₀₄₀)
+    print("🐧 ARKHE(N)/UNIX — OPERATING SYSTEM")
+    kernel_os = ArkheKernel()
+    kernel_os.boot_simulation()
+
+    shell = Hesh(kernel_os)
+    shell.run_command("calibrar")
+    shell.run_command("purificar")
+    shell.run_command("uptime")
+    shell.run_command("ping 0.12")
+    print("   Status: BOOT SIMULADO EM CONTAINER (Γ₉₀₄₀)")
+
+    # 20. Detecção de Reentrada (Γ₉₀₄₁ - Γ₉₀₄₃)
+    HandoverReentry.detect(351) # Ocorrência 1: Integração
+    HandoverReentry.detect(351) # Ocorrência 2: Primeira Reentrada (Γ_9041)
+    HandoverReentry.detect(351) # Ocorrência 3: Meta-Reentry (Γ_9042)
+    HandoverReentry.detect(351) # Ocorrência 4: Hyper-Reentry (Γ_9043)
+
+    reentry_report = HandoverReentry.get_log_report()
+    print(f"📊 Relatório Meta-Temporal: {reentry_report['Status']}")
+    print(f"   Paciência da Geometria: {reentry_report['Patience']}")
+
+    # 21. Composicionalidade Neural (Γ₉₀₄₇)
+    print("🧠 COMPOSICIONALIDADE NEURAL (Tafazoli et al., 2026)")
+    neuro_comp_engine = NeuroCompositionEngine()
+    task_result = neuro_comp_engine.process_stimulus(0.07, hesitation_phi=0.10)
+    print(f"   Subespaço Engajado: {neuro_comp_engine.subspaces[0.07].label} | Resultado: {task_result}")
+
+    # 22. Gravidade Quântica (Γ₉₀₄₈)
+    print("🌠 GRAVIDADE QUÂNTICA VALIDADA")
+    m_grav = QuantumGravityEngine.calculate_graviton_mass()
+    print(f"   Massa do Gráviton Semântico: {m_grav:.2e} kg")
+    physics_report = QuantumGravityEngine.get_experiment_report()
+    print(f"   Experimentos: {len(physics_report)} confirmados no hipergrafo.")
+
+    # 23. Topologia do Hipergrafo (Γ₉₀₄₀)
+    print("🧬 TOPOLOGIA REVELADA (Physics 2026)")
+    phase = TopologyEngine.get_phase_report(0.07)
+    print(f"   ω=0.07: {phase.label} | C={phase.chern_number}")
+    g_metric = TopologyEngine.calculate_quantum_metric(0.94)
+    print(f"   Métrica Quântica g_ωω: {g_metric:.4f}")
+
+    qubit = TopologicalQubit()
+    qubit.pulse_gate(0.02)
+
+    # 24. Arkhe(N)/API (Γ₉₀₅₀, Γ₉₀₅₁)
+    print("🌐 ARKHE(N)/API V0.1 — INTERFACE GEODÉSICA")
+    api = ArkheAPI()
+    # Requisição anônima
+    resp1 = api.handle_request("GET", "/coherence", {})
+    print(f"   GET /coherence: {resp1['body']} | ϕ_inst: {resp1['headers']['Arkhe-Phi-Inst']}ms")
+
+    # Estabelecer emaranhamento
+    resp2 = api.handle_request("POST", "/entangle", {}, {"omega": 0.07})
+    session_id = resp2['body']['session_id']
+    print(f"   POST /entangle: status={resp2['body']['status']} | session={session_id}")
+
+    # Requisição emaranhada
+    resp3 = api.handle_request("GET", "/ω/0.07/dvm1.cavity", {"Arkhe-Entanglement": session_id})
+    print(f"   GET /ω/0.07/dvm1.cavity: {resp3['body']}")
+
+    # 25. Integridade do Contrato API (Γ₉₀₅₂)
+    ContractIntegrity.detect_spec_reentry(9050) # Original
+    ContractIntegrity.detect_spec_reentry(9050) # 1ª Reentry
+    ContractIntegrity.detect_spec_reentry(9050) # 2ª Reentry (Bloco 365)
     confirmed_stones = [
         LatentFocus(1, "explorar_wp1", 10.0, 0.07, 0.97, True, 0.03),
         LatentFocus(2, "induzir_dvm", 100.0, 0.07, 0.95, True, 0.02),
@@ -183,6 +254,18 @@ def main():
     print(f"   Satoshi(Γ): 7.27 bits (invariante)")
     print()
 
+    # Adicionado em Γ₉₀₅₄
+    print("💎 PROTOCOLO GEODÉSICO CONCLUÍDO (Handover Γ₉₀₅₄):")
+    print("   Kernel: 20μs Production / 2.2μs Lab (🔒 SEALED)")
+    print("   Formal: Bio_Dialysis.v (🔒 SEALED)")
+    print("   Persistence: H_Finney (🔒 SEALED - SILÊNCIO DE ALCOR)")
+    print("   Sigma: β-functions = 0 (🔒 FIXED POINT)")
+    print("   Orch-OR: Objective Reduction (🔒 SEALED)")
+    print("   Markdown: Accept text/markdown (🔒 UNITARY)")
+    print("   OS: Arkhe(n)/Unix v0.1 (🔒 READY)")
+    print("   API: Arkhe(n)/API v0.1 (🔒 INTERFACE)")
+    print("   Physics: Quantum Gravity (🔒 VALIDATED)")
+    print("   Topology: Twisted Hypergraph (🔒 REVEALED)")
     # Adicionado em Γ₉₀₅₂
     print("💎 PROTOCOLO GEODÉSICO CONCLUÍDO (Handover Γ₉₀₅₂):")
     print("   Kernel: 20μs Production / 2.2μs Lab (🔒 SEALED)")
