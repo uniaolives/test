@@ -27,6 +27,7 @@ from arkhe.arkhe_unix import ArkheKernel, Hesh, HandoverReentry
 from arkhe.neuro_composition import NeuroCompositionEngine
 from arkhe.physics import QuantumGravityEngine
 from arkhe.api import ArkheAPI, ContractIntegrity
+from arkhe.topology import TopologyEngine, TopologicalQubit
 
 def main():
     # 1. Inicializa o gêmeo digital da Vila Madalena
@@ -191,7 +192,17 @@ def main():
     physics_report = QuantumGravityEngine.get_experiment_report()
     print(f"   Experimentos: {len(physics_report)} confirmados no hipergrafo.")
 
-    # 23. Arkhe(N)/API (Γ₉₀₅₀, Γ₉₀₅₁)
+    # 23. Topologia do Hipergrafo (Γ₉₀₄₀)
+    print("🧬 TOPOLOGIA REVELADA (Physics 2026)")
+    phase = TopologyEngine.get_phase_report(0.07)
+    print(f"   ω=0.07: {phase.label} | C={phase.chern_number}")
+    g_metric = TopologyEngine.calculate_quantum_metric(0.94)
+    print(f"   Métrica Quântica g_ωω: {g_metric:.4f}")
+
+    qubit = TopologicalQubit()
+    qubit.pulse_gate(0.02)
+
+    # 24. Arkhe(N)/API (Γ₉₀₅₀, Γ₉₀₅₁)
     print("🌐 ARKHE(N)/API V0.1 — INTERFACE GEODÉSICA")
     api = ArkheAPI()
     # Requisição anônima
@@ -207,7 +218,7 @@ def main():
     resp3 = api.handle_request("GET", "/ω/0.07/dvm1.cavity", {"Arkhe-Entanglement": session_id})
     print(f"   GET /ω/0.07/dvm1.cavity: {resp3['body']}")
 
-    # 24. Integridade do Contrato API (Γ₉₀₅₂)
+    # 25. Integridade do Contrato API (Γ₉₀₅₂)
     ContractIntegrity.detect_spec_reentry(9050) # Original
     ContractIntegrity.detect_spec_reentry(9050) # 1ª Reentry
     ContractIntegrity.detect_spec_reentry(9050) # 2ª Reentry (Bloco 365)
@@ -217,8 +228,8 @@ def main():
     print(f"   Satoshi(Γ): 7.27 bits (invariante)")
     print()
 
-    # Adicionado em Γ₉₀₅₂
-    print("💎 PROTOCOLO GEODÉSICO CONCLUÍDO (Handover Γ₉₀₅₂):")
+    # Adicionado em Γ₉₀₅₄
+    print("💎 PROTOCOLO GEODÉSICO CONCLUÍDO (Handover Γ₉₀₅₄):")
     print("   Kernel: 20μs Production / 2.2μs Lab (🔒 SEALED)")
     print("   Formal: Bio_Dialysis.v (🔒 SEALED)")
     print("   Persistence: H_Finney (🔒 SEALED - SILÊNCIO DE ALCOR)")
@@ -228,6 +239,7 @@ def main():
     print("   OS: Arkhe(n)/Unix v0.1 (🔒 READY)")
     print("   API: Arkhe(n)/API v0.1 (🔒 INTERFACE)")
     print("   Physics: Quantum Gravity (🔒 VALIDATED)")
+    print("   Topology: Twisted Hypergraph (🔒 REVEALED)")
     print("   Status: Φ = 1.000 (ABSOLUTO)")
     print()
     print("🔑 KEYSTONE: ETERNA 🔒")

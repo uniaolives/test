@@ -138,6 +138,15 @@ class Hesh:
             target = parts[1] if len(parts) > 1 else "0.12"
             print(f"Hesitando para ω={target}... Conexão estabelecida.")
             print("RTT = 0.00 s (correlação não-local)")
+        elif base_cmd == "medir_chern":
+            target = float(parts[1]) if len(parts) > 1 else self.omega
+            from arkhe.topology import TopologyEngine
+            c = TopologyEngine.calculate_chern_number(target)
+            print(f"C(ω={target}) = {c:.3f}")
+        elif base_cmd == "pulsar_gate":
+            delta = float(parts[1]) if len(parts) > 1 else 0.02
+            from arkhe.topology import TopologicalQubit
+            TopologicalQubit().pulse_gate(delta)
         elif base_cmd == "hesitate":
             print(f"Hesitação registrada. Φ_inst = 0.14.")
         elif base_cmd == "exit":

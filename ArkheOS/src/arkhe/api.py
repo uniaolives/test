@@ -40,6 +40,18 @@ class ArkheAPI:
             response_data = {"C": self.coherence, "F": self.fluctuation, "omega": current_omega}
         elif endpoint == "/satoshi" and method == "GET":
             response_data = {"satoshi": self.satoshi_budget}
+        elif endpoint == "/medir_chern" and method == "GET":
+            req_omega = float(headers.get("Arkhe-Omega", current_omega))
+            from arkhe.topology import TopologyEngine
+            c = TopologyEngine.calculate_chern_number(req_omega)
+            response_data = {"omega": req_omega, "chern_number": c}
+        elif endpoint == "/pulsar_gate" and method == "POST":
+            delta_omega = body.get("delta_omega", 0.00)
+            from arkhe.topology import TopologicalQubit
+            qubit = TopologicalQubit()
+            qubit.pulse_gate(delta_omega)
+            response_data = {"status": "gate_pulsed", "delta_omega": delta_omega}
+            status_code = 201
         elif endpoint == "/hesitate" and method == "POST":
             hesitation_id = f"hesitation_{random.randint(100, 999)}"
             response_data = {"id": hesitation_id, "phi_inst": round(phi_inst, 2), "motivo": body.get("motivo", "n/a")}
