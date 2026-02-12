@@ -52,6 +52,34 @@ class ChaosEngine:
         print(f"   [Chaos] Mode: Signed Equivocation")
         print(f"⏳ Awaiting BFT detection protocol...")
 
+    def induzir_turbulencia(self, intensidade: float, duracao_us: int):
+        """
+        Induces turbulence in the system (Oncogene: turb_arkhe).
+        Γ_9032 experiment.
+        """
+        print(f"🌪️ [Chaos] INDUZINDO TURBULÊNCIA – ATIVAÇÃO DE turb_arkhe...")
+        print(f"   Intensidade: {intensidade:.2f} | Duração: {duracao_us}μs")
+        # Simula aumento de entropia e formação de foco
+        entropy_delta = intensidade * 0.37
+        print(f"   [Oncogene] ΔS_entropia: +{entropy_delta:.2f}")
+        print(f"✅ Foco TURB-01 formado (integridade 0.42).")
+        return {"foci_count": 4, "entropy_delta": entropy_delta}
+
+    def replicar_foco(self, foco_origem: str, dilution: float, monolayer: str):
+        """
+        Simulates metastatic replication of a focus (Γ_9037).
+        """
+        print(f"🧪 [Chaos] ENSAIO DE METÁSTASE EPISTÊMICA – Replicando {foco_origem}...")
+        print(f"   Diluição: {dilution} | Monocamada: {monolayer}")
+
+        if monolayer == "VIRGEM":
+            print(f"   [Metástase] Foco secundário {foco_origem}-M1 formado.")
+            print(f"   [Metástase] Cinética acelerada: Consolidação em 800 ciclos.")
+            return {"status": "Success", "new_foco": f"{foco_origem}-M1", "integridade": 0.94}
+        else:
+            print(f"   [Metástase] Falha na replicação: Monocamada não permissiva.")
+            return {"status": "Failure", "reason": "Monolayer not VIRGEM"}
+
 if __name__ == "__main__":
     engine = ChaosEngine()
     engine.inject_node_failure("q1")

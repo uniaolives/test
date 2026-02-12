@@ -4,6 +4,8 @@
 from dataclasses import dataclass, field
 from typing import List, Dict, Any, Optional
 import hashlib
+from arkhe.hebbian import HebbianHypergraph
+from arkhe.materials import SemanticFab
 
 @dataclass
 class LayoutElement:
@@ -22,28 +24,45 @@ class DocumentIngestor:
     """
     def __init__(self, provider="local"):
         self.provider = provider
+        self.hebbian = HebbianHypergraph()
+        self.foundry = SemanticFab()
 
     def process(self, file_path: str) -> List[LayoutElement]:
-        """Converts a document into a list of structured layout elements."""
+        """Converts a document into a list of structured layout elements using parallel processing."""
+        import concurrent.futures
+        import random
+
         elements = []
-        if self.provider == "local":
-            # Simulation of local structural parsing using pdfplumber logic
-            # In a real scenario, this would iterate through words and tables
-            elements.append(LayoutElement(
-                id="p1_w1",
-                type="word",
-                text="Profit",
-                bbox=[100, 400, 150, 420],
-                page=1
-            ))
-            elements.append(LayoutElement(
-                id="p1_t1",
-                type="table",
-                text="Income Statement Table",
-                bbox=[50, 300, 500, 600],
-                page=1,
-                metadata={"rows": 10, "cols": 5}
-            ))
+        pages = [1, 2, 3] # Simulated pages
+
+        def process_page(page_num):
+            """Simulates processing a single page with error handling."""
+            try:
+                # Simulate potential OCR failure
+                if random.random() < 0.05:
+                    raise Exception(f"OCR Error on page {page_num}: Timeout")
+
+                # Page processing logic
+                page_elements = [
+                    LayoutElement(
+                        id=f"p{page_num}_w1",
+                        type="word",
+                        text="Fact",
+                        bbox=[100, 100 * page_num, 150, 100 * page_num + 20],
+                        page=page_num
+                    )
+                ]
+                return page_elements
+            except Exception as e:
+                print(f"⚠️ [Kernel Error] Failed to process page {page_num}: {e}")
+                return []
+
+        # Parallel Chunk Processing (Π_5)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+            future_to_page = {executor.submit(process_page, p): p for p in pages}
+            for future in concurrent.futures.as_completed(future_to_page):
+                elements.extend(future.result())
+
         return elements
 
 class AnchorResolver:
