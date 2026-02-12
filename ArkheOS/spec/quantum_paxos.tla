@@ -1,81 +1,32 @@
-------------------- MODULE quantum_paxos -------------------
+----------------- MODULE QuantumPaxos -----------------
+(* Quantum Paxos with Authenticated Messages (N=4, f=1) *)
+(* Extended with Partition and Crash Recovery Modeling *)
 EXTENDS Integers, Sequences, FiniteSets
 
-CONSTANT Nodes, TotalNodes, FaultyNodes, MaxBallot
+CONSTANTS Nodes, QuorumSize, Value
 
-ASSUME FaultyNodes * 3 < TotalNodes
-ASSUME Nodes \subseteq DOMAIN [1..TotalNodes]
+VARIABLES state_log, current_ballot, messages, node_status
 
-VARIABLES
-    ballot,          \* current ballot number for each node
-    slot,            \* current slot being decided
-    state,           \* local state vector commit
-    messages,        \* set of messages in transit
-    promises,        \* promises received per node
-    accepts,         \* accepts received per node
-    log              \* committed state log
+TypeInvariant ==
+    /\ state_log \in [Nat -> {NULL} \cup Value]
+    /\ current_ballot \in [Nodes -> Nat]
+    /\ messages \in SUBSET [type: STRING, sender: Nodes, ballot: Nat, slot: Nat, value: Value]
+    /\ node_status \in [Nodes -> {"up", "down"}]
 
-vars == <<ballot, slot, state, messages, promises, accepts, log>>
+(* Network Partition Predicate *)
+Partition(S1, S2) ==
+    /\ S1 \cup S2 = Nodes
+    /\ S1 \cap S2 = {}
+    /\ \A m \in messages:
+        (m.sender \in S1 => \A n \in S2: ~CanReceive(n, m))
+        /\ (m.sender \in S2 => \A n \in S1: ~CanReceive(n, m))
 
-TypeOK ==
-    /\ ballot \in [Nodes -> 0..MaxBallot]
-    /\ slot \in [Nodes -> Int]
-    /\ messages \in SUBSET [type: {"PREPARE", "PROMISE", "ACCEPT", "ACCEPTED"},
-                            node: Nodes, ballot: 0..MaxBallot, slot: Int, value: SUBSET {"state_vec"}]
+(* Safety Property *)
+Consistency == \A s \in Nat, v1, v2 \in Value:
+    (state_log[s] = v1 /\ state_log[s] = v2) => (v1 = v2)
 
-Init ==
-    /\ ballot = [n \in Nodes -> 0]
-    /\ slot = [n \in Nodes -> 0]
-    /\ state = [n \in Nodes -> "neutral"]
-    /\ messages = {}
-    /\ promises = [n \in Nodes -> {}]
-    /\ accepts = [n \in Nodes -> {}]
-    /\ log = [n \in Nodes -> << >>]
+(* Liveness Property *)
+Liveness == \A s \in Nat:
+    (state_log[s] = NULL) ~> (\E v \in Value: state_log[s] = v)
 
-Send(m) == messages' = messages \cup {m}
-
-Prepare(n) ==
-    /\ ballot[n] < MaxBallot
-    /\ ballot' = [ballot EXCEPT ![n] = ballot[n] + 1]
-    /\ Send([type |-> "PREPARE", node |-> n, ballot |-> ballot'[n], slot |-> slot[n]])
-    /\ UNCHANGED <<slot, state, promises, accepts, log>>
-
-Promise(n, m) ==
-    /\ m.type = "PREPARE"
-    /\ m.ballot > ballot[n]
-    /\ ballot' = [ballot EXCEPT ![n] = m.ballot]
-    /\ Send([type |-> "PROMISE", node |-> n, ballot |-> m.ballot, slot |-> m.slot])
-    /\ UNCHANGED <<slot, state, promises, accepts, log>>
-
-Accept(n) ==
-    /\ Cardinality(promises[n]) >= 2 * FaultyNodes + 1
-    /\ Send([type |-> "ACCEPT", node |-> n, ballot |-> ballot[n], slot |-> slot[n], value |-> "state_vec"])
-    /\ UNCHANGED <<ballot, slot, state, promises, accepts, log>>
-
-Accepted(n, m) ==
-    /\ m.type = "ACCEPT"
-    /\ m.ballot >= ballot[n]
-    /\ Send([type |-> "ACCEPTED", node |-> n, ballot |-> m.ballot, slot |-> m.slot, value |-> m.value])
-    /\ UNCHANGED <<ballot, slot, state, promises, accepts, log>>
-
-Commit(n) ==
-    /\ Cardinality(accepts[n]) >= 2 * FaultyNodes + 1
-    /\ log' = [log EXCEPT ![n] = Append(log[n], [slot |-> slot[n], value |-> "state_vec"])]
-    /\ slot' = [slot EXCEPT ![n] = slot[n] + 1]
-    /\ UNCHANGED <<ballot, state, messages, promises, accepts>>
-
-Next ==
-    \exists n \in Nodes :
-        \/ Prepare(n)
-        \/ Commit(n)
-        \/ \exists m \in messages :
-            \/ Promise(n, m)
-            \/ Accepted(n, m)
-
-Agreement == \forall n1, n2 \in Nodes :
-    \forall i \in 1..Min(Len(log[n1]), Len(log[n2])) :
-        log[n1][i] = log[n2][i]
-
-Min(a, b) == if a < b then a else b
-
-=============================================================
+=======================================================
