@@ -172,6 +172,23 @@ class ArkheAPI:
                 "omega_pred": omega,
                 "diagnosis": diag
             }
+        elif endpoint == "/ledger/status" and method == "GET":
+            from arkhe.economics import get_natural_economy
+            economy = get_natural_economy()
+            response_data = economy.get_status()
+        elif endpoint == "/ledger/award" and method == "POST":
+            from arkhe.economics import get_natural_economy
+            economy = get_natural_economy()
+            name = body.get("contributor", "Sistema Arkhe")
+            contrib = body.get("contribution", "Generic Solving")
+            award = economy.award_contributor(name, contrib)
+            response_data = {
+                "id": str(award.id),
+                "contributor": award.contributor,
+                "amount": award.amount,
+                "status": "Awarded"
+            }
+            status_code = 201
         elif endpoint == "/discover" and method == "GET":
             response_data = {
                 "services": [

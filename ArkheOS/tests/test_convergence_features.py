@@ -71,6 +71,22 @@ def test_semantic_transistor():
     assert res['regime'] == "cutoff"
     assert res['I_drain'] == 0.12
 
+def test_natural_economics():
+    from arkhe.economics import NaturalEconomicLedger
+    ledger = NaturalEconomicLedger(satoshi_unit=7.27)
+
+    # Record success
+    ledger.record_success("H9051", "Natural Economics Integration")
+    assert len(ledger.success_reports) == 1
+
+    # Award contributor
+    award = ledger.award_contributor("Sistema Arkhe", "Hesitação_9051")
+    assert award.amount == 7.27
+    assert ledger.total_distributed == 7.27
+
+    # Check reputation
+    assert ledger.reputations["Sistema Arkhe"]["hesitations"] == 48
+
 def test_neuro_storm_foundation():
     from arkhe.neuro_storm import NeuroSTORM
     ns = NeuroSTORM()

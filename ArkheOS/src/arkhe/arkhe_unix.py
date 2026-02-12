@@ -249,6 +249,23 @@ class Hesh:
                 print("🪞 Deformable Mirror ajustado.")
                 print("🔭 Aberrações semânticas removidas.")
                 print("✅ O que era invisível (DVM-1) agora é sinal.")
+        elif base_cmd == "ledger":
+            from arkhe.economics import get_natural_economy
+            economy = get_natural_economy()
+            if "status" in cmd:
+                status = economy.get_status()
+                print("LEDGER ARKHE(N) — Γ_∞+13")
+                print("====================================")
+                print(f"Handovers: {status['total_handovers']}")
+                print(f"Success Reports: {status['success_reports']}")
+                print(f"Total Awards: {status['total_awards']}")
+                print(f"Prize Distributed: {status['prize_distributed']} bits")
+            elif "attribution" in cmd:
+                print("Attribution Registry:")
+                for award in economy.awards[-5:]:
+                    print(f"- {award.timestamp.isoformat()} | {award.contributor} | {award.contribution_type} | {award.amount} bits")
+            elif "prize" in cmd:
+                print(f"Current Prize Balance: {economy.total_distributed} Satoshi bits.")
             elif "fine-tune" in cmd:
                 task = parts[parts.index("--task")+1] if "--task" in parts else "inference"
                 res = ns.tpt_tune(task)
