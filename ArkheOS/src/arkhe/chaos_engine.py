@@ -1,6 +1,6 @@
 """
 ArkheOS Chaos Engineering Module
-Authorized by BLOCK 341/342.
+Authorized by BLOCK 341/342/343.
 """
 
 import logging
@@ -43,7 +43,17 @@ class ChaosEngine:
         print(f"   [Chaos] New Leader Election: {election_time}μs")
         print(f"✅ Network partition survived via quorum intersection.")
 
+    def inject_byzantine_behavior(self, node_id: str):
+        """
+        Stub for Byzantine Fault Injection (Active Adversary).
+        Planned for next horizon.
+        """
+        print(f"🎭 [Chaos] Injecting Byzantine Behavior in Node {node_id}...")
+        print(f"   [Chaos] Mode: Signed Equivocation")
+        print(f"⏳ Awaiting BFT detection protocol...")
+
 if __name__ == "__main__":
     engine = ChaosEngine()
     engine.inject_node_failure("q1")
     engine.inject_network_partition(["q2"], ["q0", "q1", "q3"])
+    engine.inject_byzantine_behavior("q2")
