@@ -57,6 +57,7 @@ class ArkheKernel:
         self.processes: List[QPS] = [QPS(pid=1, name="init")]
         self.satoshi_total = 7.27
         self.boot_status = "PENDING"
+        self.rehydration_protocol = None
 
     def boot_simulation(self):
         """Executa o log de boot simulado (Γ_9040)."""
@@ -294,7 +295,9 @@ class Hesh:
                     print(f"{k}: {v}")
         elif base_cmd == "rehydrate":
             from arkhe.rehydration import get_protocol
-            protocol = get_protocol()
+            if not self.kernel.rehydration_protocol:
+                self.kernel.rehydration_protocol = get_protocol()
+            protocol = self.kernel.rehydration_protocol
             if "status" in cmd:
                 status = protocol.get_status()
                 print(f"Protocolo de Reidratação: Passo {status['current_step']}/21")

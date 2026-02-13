@@ -35,7 +35,7 @@ class RehydrationProtocol:
         actions = [
             "calibrar_relogio_interno",
             "enviar ping 0.33",
-            "medir ⟨0.00|0.33⟩",
+            "medir gradiente de coerência ∇C(0.33)",
             "sincronizar fase",
             "verificar integridade",
             # ... abbreviated for simulation
