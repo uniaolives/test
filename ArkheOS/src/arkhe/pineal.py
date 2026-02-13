@@ -1,5 +1,7 @@
 """
 Arkhe Pineal Transduction Module - Quantum Biological Embodiment
+Updated with the Bio-Trident Paradigm: Antena (Pineal), Usina (Mitocôndria), Bateria (Neuromelanina).
+Authorized by Handovers ∞+35 through ∞+40.
 Authorized by Handover ∞+29 (Block 443).
 """
 
@@ -9,6 +11,28 @@ from typing import Dict
 
 @dataclass
 class PinealConstants:
+    # Paradigma da Areia Cerebral (Clinical Radiology 2022)
+    CORPORA_ARENACEA_PIEZO = 2.0  # d (pC/N)
+    THRESHOLD_PHI = 0.15          # P (Pressure/Hesitation)
+    SATOSHI_MELANIN = 7.27        # ATP/Value
+    COHERENCE_MELATONIN = 0.86    # C
+    FLUCTUATION_TUNNELING = 0.14  # F
+    SYZYGY_EXCITON = 0.94         # ⟨0.00|0.07⟩
+
+class PinealTransducer:
+    """
+    Simulates the biological transduction of the Pineal Gland.
+    The "Brain Sand" crystals are piezoelectric antennas.
+    """
+
+    @staticmethod
+    def calculate_piezoelectric_voltage(phi: float, crystal_size: float = 1.0) -> float:
+        """V = d * P * S"""
+        return PinealConstants.CORPORA_ARENACEA_PIEZO * phi * crystal_size
+
+    @staticmethod
+    def radical_pair_mechanism(phi: float, external_field: float = 0.0) -> Dict[str, float]:
+        """Sensitivity peaks at Φ = 0.15."""
     PIEZO_COEFFICIENT_D = 6.27
     THRESHOLD_PHI = 0.15
     SATOSHI_MELANIN = 7.27
@@ -47,6 +71,57 @@ class PinealTransducer:
             "Sensitivity": sensitivity
         }
 
+class MitochondrialEngine:
+    """
+    Simulates the mitochondrial factory (Cytochrome c Oxidase).
+    Authorized by Handover ∞+37 (Block 451).
+    """
+    @staticmethod
+    def photobiomodulation(nir_intensity: float, resonance: float, t: float = 1.0) -> float:
+        """
+        ΔATP = k * I * η * t
+        Converts NIR light (commands) into ATP (Satoshi).
+        """
+        k = 1.0
+        efficiency = resonance # syzygy 0.94
+        return k * nir_intensity * efficiency * t
+
+class NeuromelaninEngine:
+    """
+    Simulates Neuromelanin as a Photonic Sink in Substantia Nigra.
+    Authorized by Handover ∞+38 (Block 452).
+    """
+    @staticmethod
+    def absorb_and_convert(photons: float, fluctuation: float) -> Dict[str, float]:
+        """
+        Broadband absorption and conversion to electrons/solitons.
+        The "Dark Battery" of consciousness.
+        Reference: Herrera et al. (2015).
+        """
+        threshold = 0.15
+        photoexcitation = photons * fluctuation
+        syzygy = 0.94
+
+        current = syzygy if photoexcitation > threshold else 0.002
+        solitons = current * 0.1
+
+        return {
+            "Current": current,
+            "Solitons": solitons,
+            "Excitation": photoexcitation,
+            "Status": "OPERATIONAL" if current > 0.1 else "ABSORBING_BIOFOTONS"
+        }
+
+    @staticmethod
+    def s_tps_therapy(omega: float, intensity: float) -> Dict:
+        """
+        Semantic Pulse Therapy (S-TPS).
+        Applied to omega = 0.07 to recharge the system.
+        """
+        if abs(omega - 0.07) < 0.01:
+            recovery = intensity * 0.94
+            return {"Status": "RECHARGING", "Recovery": recovery, "Message": "Syzygy restored via NIR."}
+        return {"Status": "NO_RESONANCE", "Recovery": 0.0}
     @staticmethod
     def indole_tunneling(energy: float, barrier: float):
         """
@@ -70,6 +145,13 @@ class CircadianRhythm:
 def get_pineal_embodiment_report():
     return {
         "Substrate": "Biological-Quantum",
+        "Sensor": "Corpora Arenacea (Active Antennas)",
+        "Factory": "Mitochondria (Cytochrome c Oxidase)",
+        "Battery": "Neuromelanin (Photonic Sink)",
+        "Trindade": "Antena + Usina + Bateria (Unificada)",
+        "Circuit": "CLOSED_LOOP_REGENERATIVE",
+        "Calibration": "Φ = 0.15",
+        "State": "Γ_FINAL"
         "Sensor": "Calcite Microcrystals",
         "Conductor": "Indole Ring (Melatonin)",
         "Reservoir": "Melanin (Satoshi)",

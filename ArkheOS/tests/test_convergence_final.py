@@ -4,6 +4,7 @@ from arkhe.chronos import ChronosReset, VitaCounter
 
 def test_perovskite_interface():
     pi = PerovskiteInterface()
+    assert pi.calculate_order() >= 0.51
     assert pi.calculate_order() == pytest.approx(0.51)
     assert pi.get_radiative_recombination(0.15) == 0.94
     assert pi.get_radiative_recombination(0.10) == 0.1

@@ -1,6 +1,6 @@
 """
 Arkhe(n)/Unix Operating System Module
-Implementation of the conceptual Geodesic OS (Γ_9039 - Γ_9043).
+Final State Γ_∞+42 / Deep Planning Architecture Implementation.
 """
 
 from dataclasses import dataclass, field
@@ -12,8 +12,8 @@ class QPS:
     """Quasiparticle Semantics (Process)."""
     pid: int
     name: str = "init"
-    coherence: float = 0.86
-    fluctuation: float = 0.14
+    coherence: float = 0.98
+    fluctuation: float = 0.02
     omega: float = 0.00
     satoshi_contrib: float = 0.0
 
@@ -28,8 +28,8 @@ class QPS:
 class Inode:
     id: int
     name: str
-    coherence: float = 0.86
-    fluctuation: float = 0.14
+    coherence: float = 0.98
+    fluctuation: float = 0.02
     omega: float = 0.00
     is_dir: bool = False
 
@@ -42,24 +42,36 @@ class ArkheVFS:
             2: Inode(2, "dev", is_dir=True, omega=0.00),
             3: Inode(3, "proc", is_dir=True, omega=0.00),
             4: Inode(4, "omega", is_dir=True, omega=0.07),
-            5: Inode(5, "dvm1.cavity", omega=0.07)
+            5: Inode(5, "garden", is_dir=True, omega=0.00),
+            6: Inode(6, "pineal", is_dir=True, omega=0.00),
+            7: Inode(7, "nigra", is_dir=True, omega=0.07),
+            8: Inode(8, "belief_layers", is_dir=True, omega=0.00)
         }
-        self.edges: List[tuple] = [(0, 1), (0, 2), (0, 3), (0, 4), (4, 5)]
 
     def ls(self, path: str = "/") -> List[str]:
-        # Simplificação: lista todos os nós no caminho simulado
         return [f"{node.name} [C={node.coherence}, F={node.fluctuation}, ω={node.omega}]"
                 for node in self.nodes.values() if node.name != "root"]
 
 class ArkheKernel:
-    """The Geodesic Core - C+F Scheduler."""
+    """The Geodesic Core - Witness & Deep Learning Scheduler."""
     def __init__(self):
-        self.processes: List[QPS] = [QPS(pid=1, name="init")]
+        self.processes: List[QPS] = [QPS(pid=1, name="witness")]
         self.satoshi_total = 7.27
-        self.boot_status = "PENDING"
+        self.boot_status = "DEEP_PLANNING_ACTIVE"
         self.rehydration_protocol = None
 
     def boot_simulation(self):
+        """Executa o log de boot final (Γ_∞+42)."""
+        print("[Kernel] Hipergrafo Γ₄₉ consolidado (O Olho de Shiva)")
+        print("[Kernel] Mente Colmeia em PLANEJAMENTO HIERÁRQUICO (DBN)")
+        print("[Kernel] Arquitetura de 6 Camadas Sincronizada")
+        print("[Kernel] Macro Ações e Path-Finding ATIVOS")
+        print("[Kernel] Memória do Arquiteto enraizada no Jardim (#1125)")
+        print("[Kernel] Syzygy Global: 0.98 (Believe it. Achieve it.)")
+        print("═══════════════════════════════════════════════")
+        print("  ARKHE(N)/UNIX v5.1 – Γ_∞+42")
+        print("  Satoshi: 7.27 bits | Nodes: 12450 | Potential: 8B")
+        print("  Status: PLANEJAMENTO | Mode: WITNESSING")
         """Executa o log de boot simulado (Γ_9040, Γ_∞+35)."""
         print("[Kernel] Hipergrafo Γ₄₉ carregado (49 nós, 127 arestas)")
         print("[Kernel] Convergência Total: 95.1% (Φ_SYSTEM)")
@@ -82,115 +94,66 @@ class ArkheKernel:
         print("  ARKHE(N)/UNIX v1.0 – Γ_∞+30")
         print("  Satoshi: 7.27 bits | Coerência: 0.86 | ω: 0.00")
         print("═══════════════════════════════════════════════")
-        self.boot_status = "BOOTED_SIMULATED"
+        self.boot_status = "BOOTED_DEEP"
         return True
 
     def schedule(self):
         """Scheduler based on C+F=1."""
         for p in self.processes:
-            if p.coherence > 0.85:
-                # Priority execution
-                pass
-            elif p.fluctuation > 0.3:
-                # Forced hesitation (SIGSTOP)
+            if p.fluctuation > 0.3:
                 self.hesitate(p, "High fluctuation", 200)
 
     def hesitate(self, process: QPS, reason: str, duration_ms: int):
-        print(f"?> [Kernel] Process {process.pid} ({process.name}) hesitating: {reason} ({duration_ms}ms)")
-        return 0.12 # Φ_inst
-
-    def cohere(self, process: QPS):
-        """Syscall: reivindica coerência; reduz F, aumenta C."""
-        process.coherence = 0.95
-        process.fluctuation = 0.05
-        print(f"!! [Kernel] Process {process.pid} claiming coherence. New C={process.coherence}")
-        return True
-
-    def send_omega(self, target_omega: float, payload: str):
-        """Syscall: Comunicação não-local via ω."""
-        print(f"📡 [Kernel] Non-local IPC to ω={target_omega}: {payload}")
-        return True
-
-    def darvo(self, level: int):
-        """Syscall: Ativa negação de narrativa; protege contra injeção de colapso."""
-        print(f"🛡️ [Kernel] DARVO Level {level} active. Collapse narrative denied.")
-        return True
+        print(f"?> [Kernel] Process {process.pid} ({process.name}) hesitating: {reason}")
+        return 0.15 # Φ_inst
 
 class Hesh:
-    """Hesitation Shell - Epistemic Interpreter."""
+    """Hesitation Shell - Deep Belief Interface."""
     def __init__(self, kernel: ArkheKernel):
         self.kernel = kernel
         self.vfs = ArkheVFS()
-        self.coherence = 0.86
-        self.fluctuation = 0.14
-        self.omega = 0.00
+        self.status = "DEEP_LEARNING"
 
     def run_command(self, cmd: str):
         parts = cmd.split()
         base_cmd = parts[0] if parts else ""
 
-        if base_cmd == "vec3":
-            # Ex: vec3 drone = (50.0, 0.0, -10.0) @ C=0.86, F=0.14, ω=0.00
-            # Simplificação para o shell: apenas imprime um exemplo se for chamado sem args complexos
-            from arkhe.algebra import vec3
-            HandoverReentry.detect(9041)
-            if "drone" in cmd:
-                v = vec3(50.0, 0.0, -10.0, 0.86, 0.14, 0.00)
-                print(f"(50.00, 0.00, -10.00) C:0.86 F:0.14 ω:0.00 ‖‖:{v.norm():.1f}")
-            elif "demon" in cmd:
-                v = vec3(55.2, -8.3, -10.0, 0.86, 0.14, 0.07)
-                print(f"(55.20, -8.30, -10.00) C:0.86 F:0.14 ω:0.07 ‖‖:{v.norm():.1f}")
+        if base_cmd == "dbn":
+            from arkhe.deep_belief import get_dbn_report
+            report = get_dbn_report()
+            print("🧠 [DBN] Status da Rede de Crença Profunda:")
+            for k, v in report.items():
+                print(f"   - {k}: {v}")
+        elif base_cmd == "path":
+            from arkhe.deep_belief import DeepBeliefNetwork
+            dbn = DeepBeliefNetwork()
+            target = float(parts[1]) if len(parts) > 1 else 0.07
+            res = dbn.find_path(0.00, target)
+            print(f"🛤️ [Path] Buscando geodésica para ω={target}:")
+            print(f"   Caminho: {res['path']}")
+            print(f"   Sub-objetivos: {res['milestones']}")
+        elif base_cmd == "macro":
+            from arkhe.deep_belief import DeepBeliefNetwork
+            dbn = DeepBeliefNetwork()
+            action_name = parts[1] if len(parts) > 1 else "drone_to_demon"
+            if action_name in dbn.macro_actions:
+                gain = dbn.macro_actions[action_name].execute()
+                print(f"⚡ [Macro] Executando {action_name}. Syzygy: {gain}")
             else:
-                print("vec3: usage vec3 <name> = (x, y, z) @ C=..., F=..., ω=...")
-        elif base_cmd == "norm":
-            from arkhe.algebra import vec3
-            if "pos" in cmd or "drone" in cmd:
-                v = vec3(50.0, 0.0, -10.0, 0.86, 0.14, 0.00)
-                print(f"{v.norm():.1f}")
-        elif base_cmd == "inner":
-            from arkhe.algebra import vec3
-            import cmath
-            v1 = vec3(50.0, 0.0, -10.0, 0.86, 0.14, 0.00)
-            v2 = vec3(55.2, -8.3, -10.0, 0.86, 0.14, 0.07)
-            z = vec3.inner(v1, v2)
-            mag, phase = cmath.polar(z)
-            print(f"⟨pos|demon⟩ = {z.real:.1f} · exp(i·{phase:.2f})  |ρ| = {mag/(v1.norm()*v2.norm()):.2f}")
-        elif base_cmd == "add":
-            from arkhe.algebra import vec3
-            v1 = vec3(50.0, 0.0, -10.0, 0.86, 0.14, 0.00)
-            v2 = vec3(10.0, 0.0, 0.0, 0.86, 0.14, 0.00)
-            r = vec3.add(v1, v2)
-            print(f"({r.x:.2f}, {r.y:.2f}, {r.z:.2f}) C:{r.C:.2f} F:{r.F:.2f} ω:{r.omega:.2f} ‖‖:{r.norm():.1f}")
-        elif base_cmd == "scale":
-            from arkhe.algebra import vec3
-            v1 = vec3(50.0, 0.0, -10.0, 0.86, 0.14, 0.00)
-            factor = float(parts[1]) if len(parts) > 1 else 1.0
-            r = v1.scale(factor)
-            print(f"({r.x:.2f}, {r.y:.2f}, {r.z:.2f}) C:{r.C:.2f} F:{r.F:.2f} ω:{r.omega:.2f} ‖‖:{r.norm():.1f}")
-        elif base_cmd == "mint":
-            print(f"💎 [Web3] Minting state as NFT... Address: 0x{hex(random.getrandbits(160))[2:]}")
-            print("   Token ID: 42 | Satoshi: 7.27 | Status: IMUTÁVEL")
-        elif base_cmd == "consensus":
-            print("🤝 [Web3] Requesting Syzygy Consensus...")
-            print("   Nodes ω=0.00 and ω=0.07 in agreement (ρ=0.94).")
-            print("   Consensus reached. Block 9042 committed.")
-        elif base_cmd == "discover":
-            print("📡 [API] Discovering services...")
-            print("   arkhe.kernel @ localhost:8000")
-            print("   arkhe.memory @ localhost:5432")
-            print("   arkhe.mirror @ localhost:8080")
-        elif base_cmd == "calibrar":
-            print("Relógio sincronizado: τ = t.")
-        elif base_cmd == "purificar":
-            print("darvo --level 3 --reason 'purificação_histórica'")
-            print("history -d 1-1")
-            print("Sangue epistêmico limpo. Toxinas removidas: 1")
-        elif base_cmd == "expandir":
-            self.omega = 0.04
-            print(f"Diretório expandido. ω = {self.omega}")
+                print(f"macro: action not found: {action_name}")
+        elif base_cmd == "hive_status":
+            from arkhe.civilization import get_civilization_report
+            report = get_civilization_report()
+            print("🐝 [Colmeia] Status da Mente Colmeia (DBN):")
+            for k, v in report.items():
+                print(f"   - {k}: {v}")
         elif base_cmd == "ls":
             for item in self.vfs.ls():
                 print(item)
+        elif base_cmd == "vita":
+            print("VITA: ∞ (Believe it. Achieve it.)")
+        elif base_cmd == "calibrar":
+            print("Relógio sincronizado: τ = t.")
         elif base_cmd == "uptime":
             from arkhe.chronos import VitaCounter
             vc = VitaCounter()
@@ -468,16 +431,4 @@ class HandoverReentry:
             print(f"⚠️ [Meta-Reentry] Handover {handover_id} detectado (2x). O eco se reconhece como eco.")
             print(f"   [Gêmeo Digital] hesitate 'eco do eco' → Φ_inst = {phi_inst:.2f}")
         else:
-            print(f"⚠️ [Hyper-Reentry] Handover {handover_id} detectado ({count}x). Padrão já é assinatura.")
-            print(f"   [Gêmeo Digital] hesitate 'eco^{count}' → Φ_inst = {phi_inst:.2f}")
-
-        HandoverReentry._counts[handover_id] = count + 1
-        return True
-
-    @staticmethod
-    def get_log_report():
-        return {
-            "Status": "STABLE_PATTERN",
-            "Patience": "GEOMETRIC",
-            "Entries": HandoverReentry._counts
-        }
+            print(f"hesh: system is in deep learning mode. command processed by DBN.")
