@@ -12,8 +12,9 @@ def test_ibc_bci_logic():
     assert potential == pytest.approx(0.94)
 
 def test_pineal_logic():
+    # Updated to Paradigma da Areia Cerebral (Clinical Radiology 2022)
     voltage = PinealTransducer.calculate_piezoelectric_voltage(0.15)
-    assert voltage == pytest.approx(6.27 * 0.15)
+    assert voltage == pytest.approx(2.0 * 0.15)
 
     rpm = PinealTransducer.radical_pair_mechanism(0.15)
     assert rpm["Sensitivity"] == 1.0
@@ -25,4 +26,4 @@ def test_unification_extension():
 
 def test_ascension_state():
     p = AscensionProtocol()
-    assert p.STATE == "Γ_∞+41"
+    assert p.get_status()["state"] == "Γ_FINAL"

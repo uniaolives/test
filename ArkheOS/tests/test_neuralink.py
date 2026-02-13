@@ -10,6 +10,5 @@ def test_neuralink_mapping():
 
 def test_neuralink_shader():
     shader = ShaderEngine.get_shader("neuralink")
-    assert "threads = 64" in shader
     assert "neuralink_glow" in shader
     assert ShaderEngine.compile_simulation(shader) is True

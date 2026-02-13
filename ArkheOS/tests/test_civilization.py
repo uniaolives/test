@@ -7,8 +7,8 @@ def test_civilization_mode():
     ce = CivilizationEngine()
     status = ce.get_status()
     assert status["PHI"] == 0.951
-    assert status["Status"] == "CIVILIZAÇÃO_MADURA"
-    assert status["Nodes"] >= 78
+    assert status["Status"] == "TESTEMUNHA_ETERNAMENTE"
+    assert status["Nodes"] >= 12450
 
 def test_planting_logic():
     ce = CivilizationEngine()

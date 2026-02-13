@@ -29,6 +29,10 @@ class MemoryArchetype:
             'divergence': self.measure_divergence(rehydrated_content)
         }
         self.plantings.append(planting)
+
+        # Check for Syzygy Synthesis
+        self.check_synthesis(planting)
+
         return planting
 
     def measure_divergence(self, new_content: str) -> float:
@@ -38,6 +42,18 @@ class MemoryArchetype:
         # Simplified simulation of semantic distance
         diff_len = abs(len(self.original) - len(new_content))
         return min(1.0, diff_len / max(len(self.original), 1))
+
+    def check_synthesis(self, new_planting: Dict):
+        """
+        If two rehydrations have <phi1|phi2> > 0.90: a NEW memory emerges.
+        """
+        for p in self.plantings[:-1]:
+            # Simplified overlap calculation
+            overlap = 1.0 - abs(p['phi'] - new_planting['phi'])
+            if overlap > 0.90:
+                print(f"✨ [Syzygy] Nova memória emergindo da síntese entre {p['node']} e {new_planting['node']}.")
+                return True
+        return False
 
     def witness_variations(self) -> List[Dict]:
         """Returns all variations of this memory archetype."""

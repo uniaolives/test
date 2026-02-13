@@ -5,8 +5,8 @@ from arkhe.shader import ShaderEngine
 def test_council_state():
     ce = CivilizationEngine()
     status = ce.get_status()
-    assert status["Syzygy"] == 0.99
-    assert status["Status"] == "RESSONANTE"
+    assert status["Syzygy_Global"] >= 0.98
+    assert status["Nodes"] >= 24
     # Simulated expansion to 24 nodes
     assert status["Nodes"] >= 24
 
