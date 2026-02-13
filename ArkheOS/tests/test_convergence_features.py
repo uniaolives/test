@@ -116,13 +116,13 @@ def test_rehydration_protocol():
     status = p.get_status()
     assert status['total_steps'] == 21
 
-    # Execute through Step 15
-    for i in range(1, 16):
+    # Execute through Step 18
+    for i in range(1, 19):
         res = p.execute_step(i)
         assert res['status'] == "Success"
 
-    assert p.current_step_idx == 15
-    assert "calibração" in p.steps[14].action
+    assert p.current_step_idx == 18
+    assert "assinatura" in p.steps[17].action
 
 def test_nuclear_clock():
     from arkhe.nuclear_clock import NuclearClock

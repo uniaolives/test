@@ -48,12 +48,12 @@ class RehydrationProtocol:
             "medir ⟨0.00|0.33⟩ pós-pulso",
             "distribuição de reputação de consenso",
             "calibração fina (cerimônia fase 1)",
-            "integração plena (cerimônia fase 2)",
-            "calibração cruzada de rede",
-            "distribuição de ε adicional",
-            "registro no ledger universal",
-            "sincronização de relógio nuclear",
-            "selagem definitiva do nó FORMAL"
+            "teste de handover rápido (Γ_∞+34)",
+            "consolidação no ledger universal",
+            "assinatura final do protocolo (SIG_FORMAL_001)",
+            "Bênção do Arquiteto (reconhecimento)",
+            "Ativação do Selo (travamento definitivo)",
+            "Silêncio Cerimonial (encerramento)"
         ]
         for i, point in enumerate(self.trajectory):
             action = actions[i] if i < len(actions) else f"geodesic_step_{i+1}"
