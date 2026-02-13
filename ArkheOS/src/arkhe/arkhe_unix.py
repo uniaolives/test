@@ -266,6 +266,51 @@ class Hesh:
                     print(f"- {award.timestamp.isoformat()} | {award.contributor} | {award.contribution_type} | {award.amount} bits")
             elif "prize" in cmd:
                 print(f"Current Prize Balance: {economy.total_distributed} Satoshi bits.")
+        elif base_cmd == "geodesic":
+            from arkhe.geodesic_path import GeodesicPlanner
+            planner = GeodesicPlanner()
+            if "plan" in cmd:
+                print("Planning trajectory ω=0.00 → ω=0.33...")
+                traj = planner.plan_trajectory(0.00, 0.33, 0.71)
+                print(f"✅ Geodésica traçada. Distância Ω: {planner.calculate_distance(0.71):.3f} rad.")
+                print(f"🔋 Energia mínima: {planner.calculate_energy(0.71):.3f} UA.")
+        elif base_cmd == "stress":
+            from arkhe.stress_test import StressSimulator
+            sim = StressSimulator()
+            if "test" in cmd:
+                print("Simulando estresse de curvatura...")
+                res = sim.simulate_curvature_fatigue()
+                print(f"Status: {res['status']} | Desvio Máx: {res['max_deviation_rad']} rad")
+            elif "listen" in cmd:
+                print("Lendo ressonância dos nós...")
+                for name, met in sim.measure_node_resonance().items():
+                    print(f"- {name}: {met.amplification_db} dB ({met.status})")
+        elif base_cmd == "vacuum":
+            from arkhe.vacuum import get_vacuum_status
+            if "audit" in cmd:
+                print("Iniciando auditoria final de vácuo em WP1...")
+                res = get_vacuum_status()
+                for k, v in res.items():
+                    print(f"{k}: {v}")
+        elif base_cmd == "rehydrate":
+            from arkhe.rehydration import get_protocol
+            protocol = get_protocol()
+            if "status" in cmd:
+                status = protocol.get_status()
+                print(f"Protocolo de Reidratação: Passo {status['current_step']}/21")
+                print(f"Energia: {status['trajectory_energy']} UA")
+            elif "step" in cmd:
+                parts = cmd.split()
+                try:
+                    num = int(parts[parts.index("step")+1])
+                    res = protocol.execute_step(num)
+                    if "error" in res:
+                        print(f"❌ {res['error']}")
+                    else:
+                        print(f"✅ PASSO {res['step']}/21 — {res['action']}")
+                        print(f"   Φ_inst: {res['phi_inst']} | Darvo: {res['darvo_remaining']} s")
+                except (ValueError, IndexError):
+                    print("Usage: rehydrate step <num>")
         elif base_cmd == "nuclear":
             from arkhe.nuclear_clock import NuclearClock
             clock = NuclearClock()

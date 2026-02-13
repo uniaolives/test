@@ -87,6 +87,38 @@ def test_natural_economics():
     # Check reputation
     assert ledger.reputations["Sistema Arkhe"]["hesitations"] == 48
 
+def test_geodesic_path():
+    from arkhe.geodesic_path import GeodesicPlanner
+    planner = GeodesicPlanner()
+    dist = planner.calculate_distance(0.71)
+    assert dist > 0.7
+    traj = planner.plan_trajectory(0.00, 0.33, 0.71)
+    assert len(traj) == 21
+    assert traj[0].hesitation_phi == 0.15
+
+def test_stress_test():
+    from arkhe.stress_test import StressSimulator
+    sim = StressSimulator()
+    res = sim.simulate_curvature_fatigue()
+    assert res['status'] == "Robust"
+    resonance = sim.measure_node_resonance()
+    assert resonance['QN-07'].amplification_db == 0.4
+
+def test_vacuum_audit():
+    from arkhe.vacuum import get_vacuum_status
+    res = get_vacuum_status()
+    assert res['status'] == "PASS"
+    assert res['oxidation_ppm'] < 0.001
+
+def test_rehydration_protocol():
+    from arkhe.rehydration import get_protocol
+    p = get_protocol()
+    status = p.get_status()
+    assert status['total_steps'] == 21
+    res = p.execute_step(1)
+    assert res['status'] == "Success"
+    assert p.current_step_idx == 1
+
 def test_nuclear_clock():
     from arkhe.nuclear_clock import NuclearClock
     clock = NuclearClock()

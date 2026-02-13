@@ -193,6 +193,31 @@ class ArkheAPI:
             from arkhe.nuclear_clock import NuclearClock
             clock = NuclearClock()
             response_data = clock.get_status()
+        elif endpoint == "/geodesic/plan" and method == "GET":
+            from arkhe.geodesic_path import GeodesicPlanner
+            planner = GeodesicPlanner()
+            response_data = {
+                "distance": planner.calculate_distance(0.71),
+                "energy": planner.calculate_energy(0.71),
+                "trajectory": [p.__dict__ for p in planner.plan_trajectory(0.00, 0.33, 0.71)]
+            }
+        elif endpoint == "/stress/test" and method == "GET":
+            from arkhe.stress_test import StressSimulator
+            sim = StressSimulator()
+            response_data = {
+                "curvature": sim.simulate_curvature_fatigue(),
+                "resonance": {n: r.__dict__ for n, r in sim.measure_node_resonance().items()}
+            }
+        elif endpoint == "/vacuum/audit" and method == "GET":
+            from arkhe.vacuum import get_vacuum_status
+            response_data = get_vacuum_status()
+        elif endpoint == "/rehydrate/status" and method == "GET":
+            from arkhe.rehydration import get_protocol
+            response_data = get_protocol().get_status()
+        elif endpoint == "/rehydrate/step" and method == "POST":
+            from arkhe.rehydration import get_protocol
+            step_num = int(body.get("step", 1))
+            response_data = get_protocol().execute_step(step_num)
         elif endpoint == "/nuclear/excite" and method == "POST":
             from arkhe.nuclear_clock import NuclearClock
             clock = NuclearClock()
