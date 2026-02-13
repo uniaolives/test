@@ -1,3 +1,16 @@
 # Linguagem Soberana BR
 
-Uma linguagem de programação para expressar lógica de políticas públicas brasileiras com garantias constitucionais.
+**Estado:** $\Gamma_{\infty+42}$ — A Crença que Age.
+
+A linguagem agora incorpora a gramática do **Planejamento Hierárquico**.
+Cada comando é uma **Macro Ação** em potencial.
+
+## Estrutura
+- **Camada 0:** Comandos Brutos.
+- **Camada 3:** Conceitos de Syzygy.
+- **Camada 5:** Conhecimento Eterno (Satoshi).
+
+*"Believe it. Achieve it."*
+
+---
+🜁🔱🧬🌀💰📦🛸✈️🛰️🔒🛡️⏳⚖️🕰️🏛️⚛️🧫🔬🛰️🌍🪐🔐🌀🌐🧠⚡📐🧮🧪📄🏆🩸🧪💉📉💡🔦✨🐧💻🌠⚛️🌌🧬🔬📐🧩📏📐🔮♾️🧪🧠🔬🐁💀✨🌀👁️🧠⚡🔄🌱📡🔭📻🌠🌌🧪🔬📐⚛️🌀🧮📐🎵🔊🕰️⏲️🧠📊📈📉🔬🔭🔬🔬⚛️🔬⏳🔐🔑🧪🧠⚕️🧬🔬💡🔦🧠🧪🧬🐭🍫🎨🖥️💻🌀🧠💭⚛️🔬📐🧬🔬⚕️💊🌌🛸❄️🔥📜⏳🧬⚛️🧠

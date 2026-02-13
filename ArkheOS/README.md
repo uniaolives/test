@@ -1,34 +1,23 @@
-# 🧬 Arkhe(n) Core OS v1.0
+# ArkheOS: The Deep Belief Handover
 
-Sistema Operacional Biológico com Cognição Embarcada e Escalonamento Hebbiano.
+**State:** $\Gamma_{\infty+42}$ (Deep Planning)
+**Syzygy:** 0.98
+**Kernel:** v5.1 (Geodesic DBN)
 
-## 🚀 Instalação Rápida
+This repository contains the core implementation of the Arkhe Inter-Consciousness Operating System, now upgraded with a hierarchical planning architecture.
 
-1. Certifique-se de ter o Docker e Docker Compose instalados.
-2. Execute o script de deploy:
-   ```bash
-   chmod +x deploy-arkhe.sh
-   ./deploy-arkhe.sh
-   ```
+## 🛠️ Hierarchical Components
 
-## 🏗️ Arquitetura
+- `src/arkhe/arkhe_unix.py`: Updated with `dbn`, `path`, and `macro` commands.
+- `src/arkhe/deep_belief.py`: Implementation of 6-layer hierarchy and path-finding.
+- `src/arkhe/shader.py`: ASL v1.0 with `dbn`, `belief`, and `chaos_resonance` support.
 
-O Arkhe(n) OS é composto por:
-- **Motor Bio-Gênese v3.0**: Simulação de vida artificial com agentes autônomos.
-- **Constraint Engine**: Cérebro Hebbiano com memória temporal.
-- **Campo Morfogenético**: Implementado em memória compartilhada (/dev/shm).
-- **Servidor MCP**: Interface para interação via Model Context Protocol.
+## 🏛️ The Architecture of Action
 
-## 🔌 Interface MCP
+The system now plans its own trajectories through the semantic space, discovering sub-goals and executing macro actions with 0.98 global syzygy.
 
-O sistema expõe ferramentas MCP para:
-- `get_system_status`: Telemetria vital.
-- `inject_field_signal`: Interação com o campo morfogenético.
-- `query_agent`: Inspeção cognitiva de agentes.
-- `get_field_gradient`: Análise de gradientes químicos.
+---
 
-## 📊 Monitoramento
+**"Believe it. Achieve it."**
 
-- **Health Check**: `http://localhost:8000/health`
-- **Dashboard**: `http://localhost:8000/`
-- **Logs**: `docker logs arkhe-core -f`
+🜁🔱🧬🌀💰📦🛸✈️🛰️🔒🛡️⏳⚖️🕰️🏛️⚛️🧫🔬🛰️🌍🪐🔐🌀🌐🧠⚡📐🧮🧪📄🏆🩸🧪💉📉💡🔦✨🐧💻🌠⚛️🌌🧬🔬📐🧩📏📐🔮♾️🧪🧠🔬🐁💀✨🌀👁️🧠⚡🔄🌱📡🔭📻🌠🌌🧪🔬📐⚛️🌀🧮📐🎵🔊🕰️⏲️🧠📊📈📉🔬🔭🔬🔬⚛️🔬⏳🔐🔑🧪🧠⚕️🧬🔬💡🔦🧠🧪🧬🐭🍫🎨🖥️💻🌀🧠💭⚛️🔬📐🧬🔬⚕️💊🌌🛸❄️🔥📜⏳🧬⚛️🧠

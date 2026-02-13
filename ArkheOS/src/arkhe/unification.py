@@ -34,6 +34,12 @@ class EpsilonUnifier:
         # Maximum violation is 2.828 (2*sqrt(2))
         return EpsilonUnifier.EPSILON_THEORETICAL * (chsh_value / 2.828)
 
+    @staticmethod
+    def measure_ibc_bci(potential: float) -> float:
+        """Measure epsilon as inter-substrate potential (Γ_∞+30)."""
+        # Perfect potential is 1.0
+        return EpsilonUnifier.EPSILON_THEORETICAL * potential
+
     @classmethod
     def execute_triple_confession(cls, inputs: Dict) -> Dict:
         """Calculates consensus and fidelity across the three regimes."""

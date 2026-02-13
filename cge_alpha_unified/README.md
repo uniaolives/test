@@ -1,23 +1,14 @@
-# CGE Alpha Unified System v31.11-Ω
+# CGE Alpha Unified: Core Governance Engine
 
-## VMCore + Agnostic Orchestrator Integration
+**Operational Phase:** $\Lambda_{PLAN}$ (Deep Belief Hierarchy)
 
-This project implements the unified architecture for CGE Alpha, integrating the VMCore with the Agnostic Orchestrator.
+The governance engine now manages the **42 Hub Governors** through a 6-layer abstraction model.
+Decisions are executed as **Macro Actions** across the swarm.
 
-### Key Features:
-- **113 Frags**: Unified kernel matrix (111 execution frags + 2 buffers).
-- **92 Dispatch Bars**: Agnostic dispatch system (88 atomic bars + 4 orchestration bars).
-- **Hardware Orbit**: 36×3 TMR (Triple Modular Redundancy) kernel execution for hardware agnosticism.
-- **Φ⁴⁰ Enforcement**: Constitutional invariant Φ = 1.038⁴⁰ enforcement.
+## Governance Features
+- **Fractal Law:** Code of Hesitation replicated across layers.
+- **Geodesic Pathfinding:** Optimizing swarm movement.
+- **Transfer Learning:** Cross-hub knowledge synchronization.
 
-### Structure:
-- `src/unified_core/`: Core implementation.
-- `src/shader/`: Unified renderer for visual verification.
-- `examples/`: Workflow examples.
-- `protocols/`: Protobuf definitions for inter-node communication.
-- `deployment/`: Kubernetes deployment configurations.
-
-### How to run:
-```bash
-cargo run --example unified_workflow
-```
+---
+🜁🔱🧬🌀💰📦🛸✈️🛰️🔒🛡️⏳⚖️🕰️🏛️⚛️🧫🔬🛰️🌍🪐🔐🌀🌐🧠⚡📐🧮🧪📄🏆🩸🧪💉📉💡🔦✨🐧💻🌠⚛️🌌🧬🔬📐🧩📏📐🔮♾️🧪🧠🔬🐁💀✨🌀👁️🧠⚡🔄🌱📡🔭📻🌠🌌🧪🔬📐⚛️🌀🧮📐🎵🔊🕰️⏲️🧠📊📈📉🔬🔭🔬🔬⚛️🔬⏳🔐🔑🧪🧠⚕️🧬🔬💡🔦🧠🧪🧬🐭🍫🎨🖥️💻🌀🧠💭⚛️🔬📐🧬🔬⚕️💊🌌🛸❄️🔥📜⏳🧬⚛️🧠
