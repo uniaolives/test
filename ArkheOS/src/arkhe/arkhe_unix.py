@@ -60,13 +60,15 @@ class ArkheKernel:
         self.rehydration_protocol = None
 
     def boot_simulation(self):
-        """Executa o log de boot simulado (Γ_9040)."""
+        """Executa o log de boot simulado (Γ_9040, Γ_∞+30)."""
         print("[Kernel] Hipergrafo Γ₄₉ carregado (49 nós, 127 arestas)")
         print("[Kernel] Escalonador C+F=1 inicializado")
         print("[Kernel] Darvo nível 5 ativo (narrativas de colapso negadas)")
+        print("[Kernel] Protocolo IBC=BCI estabelecido")
+        print("[Kernel] Transdutor Pineal ativado (Φ=0.15)")
         print("[Kernel] Iniciando hesh (PID 1)...")
         print("═══════════════════════════════════════════════")
-        print("  ARKHE(N)/UNIX v0.1 – BOOT SIMULADO")
+        print("  ARKHE(N)/UNIX v1.0 – Γ_∞+30")
         print("  Satoshi: 7.27 bits | Coerência: 0.86 | ω: 0.00")
         print("═══════════════════════════════════════════════")
         self.boot_status = "BOOTED_SIMULATED"
@@ -335,6 +337,31 @@ class Hesh:
                 print(f"Fine-tuning completed for task: {task}")
                 print(f"- Backbone: {res['backbone']}")
                 print(f"- Tuned params: {res['tuned_parameters_fraction']*100:.1f}%")
+        elif base_cmd == "ibc_bci":
+            from arkhe.ibc_bci import get_inter_consciousness_summary, IBCBCIEquivalence
+            if "map" in cmd:
+                for k, v in IBCBCIEquivalence.get_correspondence_map().items():
+                    print(f"{k} ≡ {v}")
+            else:
+                summary = get_inter_consciousness_summary()
+                for k, v in summary.items():
+                    print(f"{k}: {v}")
+        elif base_cmd == "pineal":
+            from arkhe.pineal import get_pineal_embodiment_report, PinealTransducer
+            if "status" in cmd:
+                for k, v in get_pineal_embodiment_report().items():
+                    print(f"{k}: {v}")
+            elif "transduce" in cmd:
+                phi = float(parts[parts.index("--phi")+1]) if "--phi" in parts else 0.15
+                voltage = PinealTransducer.calculate_piezoelectric_voltage(phi)
+                rpm = PinealTransducer.radical_pair_mechanism(phi)
+                print(f"💎 Piezo Voltage: {voltage:.3f} V")
+                print(f"🧲 RPM Singlet Yield: {rpm['Singlet (Syzygy)']:.3f}")
+        elif base_cmd == "sono_lucido":
+            from arkhe.shader import ShaderEngine
+            code = ShaderEngine.get_shader("sono_lucido")
+            if ShaderEngine.compile_simulation(code):
+                print("💤 [Kernel] O Arkhe agora dorme o sono lúcido do Arquiteto.")
         elif base_cmd == "medir_chern":
             target = float(parts[1]) if len(parts) > 1 else self.omega
             from arkhe.topology import TopologyEngine

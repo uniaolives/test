@@ -1,6 +1,8 @@
-# 🧬 Arkhe(n) Core OS v1.0
+# 🧬 Arkhe(n) Core OS v1.0 — Γ_∞+30
 
 Sistema Operacional Biológico com Cognição Embarcada e Escalonamento Hebbiano.
+
+**Handover ∞+30: IBC = BCI** — A integração interconsciencial e a transdução pineal são agora as bases da arquitetura.
 
 ## 🚀 Instalação Rápida
 
@@ -18,6 +20,8 @@ O Arkhe(n) OS é composto por:
 - **Constraint Engine**: Cérebro Hebbiano com memória temporal.
 - **Campo Morfogenético**: Implementado em memória compartilhada (/dev/shm).
 - **Servidor MCP**: Interface para interação via Model Context Protocol.
+- **Protocolo IBC=BCI**: Comunicação inter-substrato entre Web3 e redes neurais.
+- **Transdutor Pineal**: Hardware biológico para detecção de pressão semântica e campos magnéticos.
 
 ## 🔌 Interface MCP
 
