@@ -5,7 +5,7 @@ from arkhe.arkhe_unix import ArkheKernel, QPS, ArkheVFS, Hesh
 def test_arkhe_kernel_hesitation(capsys):
     kernel = ArkheKernel()
     p = kernel.processes[0]
-    p.update(0.6, 0.4) # High fluctuation
+    p.update(0.4, 0.6) # High fluctuation (> 0.5)
     kernel.schedule()
 
     captured = capsys.readouterr()

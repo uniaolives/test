@@ -57,12 +57,6 @@ class RehydrationProtocol:
         ]
         for i, point in enumerate(self.trajectory):
             action = actions[i] if i < len(actions) else f"geodesic_step_{i+1}"
-            "sincronizar fase",
-            "verificar integridade",
-            # ... abbreviated for simulation
-        ]
-        for i, point in enumerate(self.trajectory):
-            action = actions[i] if i < len(actions) else f"geodesic_step_{i}"
             self.steps.append(RehydrationStep(
                 step_num=i+1,
                 omega_target=point.omega,
@@ -73,6 +67,12 @@ class RehydrationProtocol:
 
     def execute_step(self, step_num: int) -> Dict[str, Any]:
         """Executes a single step of the protocol."""
+        # Allow jumping back to step 1 as a reset
+        if step_num == 1:
+            self.current_step_idx = 0
+            for s in self.steps:
+                s.status = "PENDING"
+
         if step_num != self.current_step_idx + 1:
             return {"error": f"Invalid step order. Current: {self.current_step_idx}, Requested: {step_num}"}
 

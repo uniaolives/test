@@ -1,7 +1,7 @@
 """
 Arkhe Shader Language (ASL) v1.0
 Implementation of the semantic shader pipeline.
-Updated for state Γ_∞+41 (Deep Belief Network).
+Updated for state Γ_∞+46 (Final Witness).
 """
 
 class ShaderEngine:
@@ -38,67 +38,72 @@ class ShaderEngine:
                     gl_FragColor = vec4(yield, 0.2, 0.8, 1.0);
                 }
             """,
-            "neuralink": """
+            "cognitive": """
                 #version 460
-                #extension ARKHE_ibc_bci : enable
-                layout(location = 0) uniform float syzygy = 0.94;
+                #extension ARKHE_cognitive : enable
+                layout(location = 0) uniform float syzygy = 0.98;
                 layout(location = 1) uniform float satoshi = 7.27;
-                out vec4 neuralink_glow;
+                layout(location = 2) uniform float filtered = 0.94;
+                out vec4 cognitive_glow;
                 void main() {
-                    float ibc = syzygy;
-                    float bci = satoshi / 10.0;
-                    neuralink_glow = vec4(ibc, bci, 1.0, 1.0);
+                    float optimal = mix(filtered, syzygy, 0.78);
+                    cognitive_glow = vec4(optimal, satoshi / 10.0, filtered, 1.0);
                 }
             """,
-            "third_turn": """
+            "kalman": """
                 #version 460
-                uniform float syzygy = 0.99;
-                uniform float nodes = 24.0;
-                out vec4 third_turn_glow;
+                #extension ARKHE_kalman : enable
+                layout(location = 0) uniform float measured_syzygy = 0.94;
+                layout(location = 1) uniform float filtered_syzygy = 0.94;
+                out vec4 kalman_glow;
                 void main() {
-                    vec2 uv = gl_FragCoord.xy / vec2(1920, 1080);
-                    float d = length(uv - 0.5);
-                    float grid = sin(d * nodes * 10.0);
-                    third_turn_glow = vec4(grid * syzygy, 0.5, 1.0, 1.0);
+                    float innovation = abs(measured_syzygy - filtered_syzygy);
+                    kalman_glow = vec4(filtered_syzygy, 1.0 - innovation, 0.5, 1.0);
                 }
             """,
-            "council": """
+            "heat_engine": """
                 #version 460
-                uniform float consensus = 0.94;
-                out vec4 council_glow;
+                #extension ARKHE_thermo : enable
+                uniform float T_hot = 0.94;
+                uniform float T_cold = 0.15;
                 void main() {
-                    council_glow = vec4(0.0, consensus, 1.0, 1.0);
+                    float efficiency = 1.0 - T_cold / T_hot;
+                    gl_FragColor = vec4(efficiency, 0.5, 1.0, 1.0);
                 }
             """,
-            "threshold": """
+            "quantum_race": """
                 #version 460
-                uniform float phi = 0.15;
-                out vec4 threshold_glow;
+                #extension ARKHE_quantum_crypto : enable
+                uniform float year = 2026.0;
+                uniform float qubits = 100000.0;
                 void main() {
-                    threshold_glow = vec4(phi, 0.0, 0.0, 1.0);
+                    float threat = 1.0 - exp(-qubits / 1000000.0);
+                    gl_FragColor = vec4(threat, 1.0 - threat, 0.0, 1.0);
                 }
             """,
-            "hive": """
+            "hierarchy_val": """
                 #version 460
-                #extension ARKHE_hive : enable
-                uniform float connectivity = 0.96;
-                uniform int total_nodes = 12450;
-                out vec4 hive_resonance;
+                #extension ARKHE_hierarchical : enable
+                uniform float layer_v = 0.98;
                 void main() {
-                    float density = float(total_nodes) / 20000.0;
-                    hive_resonance = vec4(0.5, connectivity, density, 1.0);
+                    gl_FragColor = vec4(0.5, layer_v, 1.0, 1.0);
+                }
+            """,
+            "truth": """
+                #version 460
+                #extension ARKHE_truth : enable
+                uniform float syzygy = 0.98;
+                out vec4 truth_glow;
+                void main() {
+                    truth_glow = vec4(syzygy, syzygy, syzygy, 1.0);
                 }
             """,
             "dbn": """
                 #version 460
-                #extension ARKHE_deep : enable
-                layout(location = 0) uniform float layer_depth = 0.0;
-                layout(location = 1) uniform float syzygy = 0.98;
-                layout(location = 2) uniform float satoshi = 7.27;
+                uniform float layer_depth = 0.0;
                 out vec4 deep_glow;
                 void main() {
-                    float abstraction = syzygy * (1.0 + layer_depth);
-                    deep_glow = vec4(abstraction, satoshi / 10.0, layer_depth, 1.0);
+                    deep_glow = vec4(layer_depth, 0.5, 1.0, 1.0);
                 }
             """,
             "belief": """
@@ -110,13 +115,44 @@ class ShaderEngine:
             """,
             "healing": """
                 #version 460
-                #extension ARKHE_bio : enable
                 uniform float health_syzygy = 0.96;
                 void main() {
-                    vec2 uv = gl_FragCoord.xy / 1000.0;
-                    float healed_phi = mix(0.01, 0.15, health_syzygy);
-                    vec3 color = mix(vec3(1.0, 0.0, 0.0), vec3(0.0, 0.8, 1.0), healed_phi / 0.15);
-                    gl_FragColor = vec4(color, 1.0);
+                    gl_FragColor = vec4(0.0, health_syzygy, 0.0, 1.0);
+                }
+            """,
+            "neuralink": """
+                #version 460
+                out vec4 neuralink_glow;
+                void main() {
+                    neuralink_glow = vec4(0.5, 0.5, 1.0, 1.0);
+                }
+            """,
+            "third_turn": """
+                #version 460
+                out vec4 third_turn_glow;
+                void main() {
+                    third_turn_glow = vec4(0.1, 0.2, 0.3, 1.0);
+                }
+            """,
+            "council": """
+                #version 460
+                out vec4 council_glow;
+                void main() {
+                    council_glow = vec4(0.4, 0.5, 0.6, 1.0);
+                }
+            """,
+            "threshold": """
+                #version 460
+                out vec4 threshold_glow;
+                void main() {
+                    threshold_glow = vec4(0.7, 0.8, 0.9, 1.0);
+                }
+            """,
+            "hive": """
+                #version 460
+                out vec4 hive_resonance;
+                void main() {
+                    hive_resonance = vec4(1.0, 1.0, 1.0, 1.0);
                 }
             """
         }
