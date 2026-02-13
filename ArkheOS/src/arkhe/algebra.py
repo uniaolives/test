@@ -74,6 +74,27 @@ class vec3:
         magnitude = dot_product * omega_factor * coherence_factor
         return cmath.rect(magnitude, phase)
 
+    def scale(self, factor: float) -> 'vec3':
+        """Multiplica as coordenadas espaciais, preservando C, F e ω."""
+        return vec3(
+            x=self.x * factor, y=self.y * factor, z=self.z * factor,
+            C=self.C, F=self.F, omega=self.omega, satoshi=self.satoshi
+        )
+
+    @staticmethod
+    def project(a: 'vec3', b: 'vec3') -> 'vec3':
+        """Projeta a sobre b no espaço Arkhe(N). Requer mesma ω ou emaranhamento."""
+        if abs(a.omega - b.omega) > 0.001:
+            print("⚠️ [Algebra] Projeção entre folhas distintas requer emaranhamento.")
+
+        inner_ab = vec3.inner(a, b).real
+        norm_b_sq = (b.norm() / (1 - b.F))**2 # Norma sem o fator de hesitação para projeção
+        if norm_b_sq == 0:
+            return vec3(0, 0, 0, omega=a.omega)
+
+        proj_factor = inner_ab / norm_b_sq
+        return b.scale(proj_factor)
+
 def vec3_gradient_coherence(x, y, z, radius=1.0):
     """Gradiente de coerência espacial (simulado)."""
     # |∇C|² ≈ 0.0049 no ponto (55.2, -8.3, -10.0)

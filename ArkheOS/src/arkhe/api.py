@@ -105,6 +105,148 @@ class ArkheAPI:
                 "grad_x": grad.x, "grad_y": grad.y, "grad_z": grad.z,
                 "norm_sq": grad.C
             }
+        elif endpoint == "/cosmic/cmb/spectrum" and method == "GET":
+            import numpy as np
+            omega_min = float(body.get("omega_min", 0.0)) if body else 0.0
+            omega_max = float(body.get("omega_max", 0.33)) if body else 0.33
+            steps = int(body.get("steps", 100)) if body else 100
+            omega = np.linspace(omega_min, omega_max, steps)
+            chi = np.exp(-omega) * (1.0 + 0.1 * np.sin(20 * omega))
+            power = chi ** 2
+            response_data = {
+                "omega": omega.tolist(),
+                "chi": chi.tolist(),
+                "power": power.tolist(),
+                "satoshi": 7.27,
+                "units": "bits²"
+            }
+        elif endpoint == "/plasticity/status" and method == "GET":
+            response_data = {
+                "n_s_eff": 0.963,
+                "r_eff": 0.0066,
+                "Ω_Λ": 1.45,
+                "Ω_m": 0.31,
+                "synapses_active": 47
+            }
+        elif endpoint == "/photon/emit" and method == "POST":
+            from arkhe.photonics import SynapticPhotonSource
+            source = SynapticPhotonSource("WP1", "DVM-1", 0.94)
+            photon = source.emit_command()
+            response_data = {
+                "id": photon.id,
+                "frequency": "0.96 GHz",
+                "indistinguishability": photon.indistinguishability,
+                "satoshi": 7.27
+            }
+            status_code = 201
+        elif endpoint == "/physics/time_crystal" and method == "GET":
+            from arkhe.time_crystal import TimeCrystal
+            crystal = TimeCrystal()
+            response_data = crystal.get_status()
+        elif endpoint == "/foundation/status" and method == "GET":
+            from arkhe.neuro_storm import NeuroSTORM
+            ns = NeuroSTORM()
+            response_data = {
+                "metrics": ns.get_metrics(),
+                "backbone": "Shifted Window Mamba (SWM)",
+                "corpus_size": len(ns.corpus),
+                "license": "CC BY 4.0"
+            }
+        elif endpoint == "/foundation/diagnose" and method == "GET":
+            from arkhe.neuro_storm import NeuroSTORM
+            ns = NeuroSTORM()
+            req_omega = float(headers.get("Arkhe-Omega", self.omega))
+            req_coherence = float(headers.get("Arkhe-Coherence", self.coherence))
+            response_data = {
+                "diagnosis": ns.diagnose_current_state(req_omega, req_coherence),
+                "confidence": 0.94
+            }
+        elif endpoint == "/foundation/zero-shot" and method == "POST":
+            from arkhe.neuro_storm import NeuroSTORM
+            ns = NeuroSTORM()
+            embedding = body.get("fmri_embedding", [0.7, 0.0, 0.0])
+            diag, omega = ns.zero_shot_transfer(embedding)
+            response_data = {
+                "input_domain": "fMRI",
+                "output_domain": "Dialogue",
+                "omega_pred": omega,
+                "diagnosis": diag
+            }
+        elif endpoint == "/ledger/status" and method == "GET":
+            from arkhe.economics import get_natural_economy
+            economy = get_natural_economy()
+            response_data = economy.get_status()
+        elif endpoint == "/ledger/award" and method == "POST":
+            from arkhe.economics import get_natural_economy
+            economy = get_natural_economy()
+            name = body.get("contributor", "Sistema Arkhe")
+            contrib = body.get("contribution", "Generic Solving")
+            award = economy.award_contributor(name, contrib)
+            response_data = {
+                "id": str(award.id),
+                "contributor": award.contributor,
+                "amount": award.amount,
+                "status": "Awarded"
+            }
+            status_code = 201
+        elif endpoint == "/nuclear/status" and method == "GET":
+            from arkhe.nuclear_clock import NuclearClock
+            clock = NuclearClock()
+            response_data = clock.get_status()
+        elif endpoint == "/geodesic/plan" and method == "GET":
+            from arkhe.geodesic_path import GeodesicPlanner
+            planner = GeodesicPlanner()
+            response_data = {
+                "distance": planner.calculate_distance(0.71),
+                "energy": planner.calculate_energy(0.71),
+                "trajectory": [p.__dict__ for p in planner.plan_trajectory(0.00, 0.33, 0.71)]
+            }
+        elif endpoint == "/stress/test" and method == "GET":
+            from arkhe.stress_test import StressSimulator
+            sim = StressSimulator()
+            response_data = {
+                "curvature": sim.simulate_curvature_fatigue(),
+                "resonance": {n: r.__dict__ for n, r in sim.measure_node_resonance().items()}
+            }
+        elif endpoint == "/vacuum/audit" and method == "GET":
+            from arkhe.vacuum import get_vacuum_status
+            response_data = get_vacuum_status()
+        elif endpoint == "/rehydrate/status" and method == "GET":
+            from arkhe.rehydration import get_protocol
+            response_data = get_protocol().get_status()
+        elif endpoint == "/rehydrate/step" and method == "POST":
+            from arkhe.rehydration import get_protocol
+            step_num = int(body.get("step", 1))
+            response_data = get_protocol().execute_step(step_num)
+        elif endpoint == "/nuclear/excite" and method == "POST":
+            from arkhe.nuclear_clock import NuclearClock
+            clock = NuclearClock()
+            input_omega = float(body.get("omega", 0.00))
+            success = clock.excite(input_omega)
+            response_data = {
+                "success": success,
+                "new_state": clock.get_status()["state"],
+                "satoshi": 7.27
+            }
+            status_code = 201
+        elif endpoint == "/discover" and method == "GET":
+            response_data = {
+                "services": [
+                    {"name": "arkhe.kernel", "status": "active", "omega": self.omega},
+                    {"name": "arkhe.memory", "status": "active", "backend": "pgvector"},
+                    {"name": "arkhe.mirror", "status": "active", "viewer": "torus"}
+                ],
+                "handover_id": "9042",
+                "phi_system": 1.000
+            }
+        elif endpoint == "/blockchain/mint" and method == "POST":
+            response_data = {
+                "status": "minted",
+                "address": f"0x{hex(random.getrandbits(160))[2:]}",
+                "token_id": random.randint(1, 1000),
+                "satoshi": 7.27
+            }
+            status_code = 201
         elif endpoint.startswith("/ω/"):
             # Ex: /ω/0.07/dvm1.cavity
             parts = endpoint.split("/")
