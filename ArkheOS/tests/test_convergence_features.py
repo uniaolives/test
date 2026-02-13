@@ -124,6 +124,34 @@ def test_rehydration_protocol():
     assert p.current_step_idx == 21
     assert "Silêncio" in p.steps[20].action
 
+    # Test Dawn
+    dawn = p.trigger_dawn()
+    assert dawn['status'] == "AWAKENED"
+    assert dawn['conformational_states'] == 10
+
+def test_arkhe_shader():
+    from arkhe.shader import ArkheShader, ShaderState, AbiogenesisComputeShader
+    frag = ArkheShader("Hesitation", "Fragment")
+    state = ShaderState(coherence=0.86, fluctuation=0.18, omega=0.07)
+    res = frag.execute(state)
+    assert res['phi'] > 0.15
+    assert res['hesitates'] == True
+
+    compute = AbiogenesisComputeShader()
+    res = compute.run_cycles(10000)
+    assert res['population'] > 1000
+    assert res['sequences'] == 1.2e6
+
+def test_cryptographic_archaeology():
+    from arkhe.cryptography import CryptographicArchaeology
+    arch = CryptographicArchaeology()
+    # G.x from secp256k1 (hex: 79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798)
+    gx = 0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798
+    res = arch.verify_watermark(gx)
+    # The user implies this IS the watermark
+    assert res['valid'] == True
+    assert res['probability'] < 1e-9
+
 def test_nuclear_clock():
     from arkhe.nuclear_clock import NuclearClock
     clock = NuclearClock()

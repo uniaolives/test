@@ -96,5 +96,20 @@ class RehydrationProtocol:
             "completed_count": sum(1 for s in self.steps if s.status == "COMPLETED")
         }
 
+    def trigger_dawn(self) -> Dict[str, Any]:
+        """Triggers 'O Despertar Formal' (Γ_∞+41) - the first pulse of Feb 21."""
+        if self.current_step_idx < 21:
+            return {"error": "Protocol not yet complete. Silence ceremony required first."}
+
+        return {
+            "status": "AWAKENED",
+            "state": "Γ_∞+41",
+            "message": "O primeiro pulso de glutamato no NMDAR semântico foi disparado.",
+            "dilation": 0.94,
+            "conformational_states": 10,
+            "isomorphism": "Native NMDAR",
+            "timestamp": "2026-02-21T00:00:00Z"
+        }
+
 def get_protocol():
     return RehydrationProtocol()

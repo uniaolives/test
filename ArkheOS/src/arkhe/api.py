@@ -218,6 +218,98 @@ class ArkheAPI:
             from arkhe.rehydration import get_protocol
             step_num = int(body.get("step", 1))
             response_data = get_protocol().execute_step(step_num)
+        elif endpoint == "/rehydrate/dawn" and method == "POST":
+            from arkhe.rehydration import get_protocol
+            response_data = get_protocol().trigger_dawn()
+        elif endpoint == "/prompt" and method == "POST":
+            from arkhe.coupling_language import get_coupling_interpreter
+            prompt_text = body.get("prompt", "")
+            response_data = get_coupling_interpreter().resolve_prompt(prompt_text)
+        elif endpoint == "/archeology/dig" and method == "POST":
+            from arkhe.coupling_language import get_archeology
+            block_id = int(body.get("block_id", 0))
+            response_data = get_archeology().dig(block_id)
+        elif endpoint == "/coupling/complete" and method == "POST":
+            from arkhe.coupling_language import get_archeology
+            block_id = int(body.get("block_id", 0))
+            predicate = body.get("predicate", "")
+            response_data = get_archeology().complete_sentence(block_id, predicate)
+        elif endpoint == "/council/handshake" and method == "POST":
+            from arkhe.coupling_language import get_council
+            ledger_block = int(body.get("ledger_block", 9066))
+            response_data = get_council().perform_handshake(ledger_block)
+        elif endpoint == "/torus/morning_flight" and method == "POST":
+            from arkhe.coupling_language import get_torus_mapper
+            response_data = get_torus_mapper().morning_flight()
+        elif endpoint == "/torus/complete_lap" and method == "POST":
+            from arkhe.coupling_language import get_torus_mapper
+            lap = int(body.get("lap", 1))
+            response_data = get_torus_mapper().complete_lap(lap)
+        elif endpoint == "/alcor/sync" and method == "POST":
+            from arkhe.resonance import get_alcor_sync
+            response_data = get_alcor_sync().perform_sync()
+        elif endpoint == "/threshold/status" and method == "GET":
+            from arkhe.resonance import get_threshold_monitor
+            response_data = get_threshold_monitor().get_status()
+        elif endpoint == "/threshold/update" and method == "POST":
+            from arkhe.resonance import get_threshold_monitor
+            steps = int(body.get("steps", 1))
+            response_data = get_threshold_monitor().update_coherence(steps)
+        elif endpoint == "/threshold/option" and method == "POST":
+            from arkhe.resonance import get_threshold_monitor
+            opt = body.get("option", "B")
+            response_data = get_threshold_monitor().execute_option(opt)
+        elif endpoint == "/dream/weave" and method == "POST":
+            from arkhe.resonance import get_dream_weaver
+            response_data = get_dream_weaver().weave()
+        elif endpoint == "/final/unity" and method == "POST":
+            from arkhe.resonance import get_final_unity
+            sentence = body.get("sentence", "")
+            response_data = get_final_unity().achieve_unity(sentence)
+        elif endpoint == "/abiogenesis/simulate" and method == "POST":
+            from arkhe.abiogenesis import get_abiogenesis
+            cycles = int(body.get("cycles", 100))
+            response_data = get_abiogenesis().run_selection_simulation(cycles)
+        elif endpoint == "/abiogenesis/parallel" and method == "POST":
+            from arkhe.abiogenesis import get_abiogenesis
+            block = body.get("block", "H7")
+            response_data = get_abiogenesis().parallel_coupling(block)
+        elif endpoint == "/optics/jarvis/illumination" and method == "POST":
+            from arkhe.optics import get_jarvis_sensor
+            mode = body.get("mode", "scanless")
+            irradiance = float(body.get("irradiance", 0.6))
+            response_data = get_jarvis_sensor().apply_illumination(mode, irradiance)
+        elif endpoint == "/optics/jarvis/detect" and method == "POST":
+            from arkhe.optics import get_jarvis_sensor
+            voltage = float(body.get("voltage", 0.74))
+            response_data = get_jarvis_sensor().detect_action_potential(voltage)
+        elif endpoint == "/optics/jarvis/connectome" and method == "POST":
+            from arkhe.optics import get_connectome
+            response_data = get_connectome().map_connectivity()
+        elif endpoint == "/circuit/run" and method == "POST":
+            from arkhe.circuits import get_contextual_circuit
+            omega = float(body.get("omega", 0.00))
+            response_data = get_contextual_circuit().run_handover(omega)
+        elif endpoint == "/circuit/status" and method == "GET":
+            from arkhe.circuits import get_contextual_circuit
+            circuit = get_contextual_circuit()
+            response_data = {
+                "pdyn_expression": circuit.dls.pdyn_expression,
+                "omega_calibrated": circuit.dls.omega_calibrated,
+                "history_size": len(circuit.dhpc.archive)
+            }
+        elif endpoint == "/proteomics/receptor" and method == "GET":
+            from arkhe.proteomics import get_native_receptor
+            receptor = get_native_receptor()
+            response_data = {
+                "subunits": {k: v.__dict__ for k, v in receptor.subunits.items()},
+                "pore_dilation": receptor.pore_dilation,
+                "diversity": receptor.get_conformational_diversity()
+            }
+        elif endpoint == "/neuromotor/cascade" and method == "POST":
+            from arkhe.neuromotor import CalciumCascade
+            source = body.get("source", "DVM-1")
+            response_data = CalciumCascade().propagate(source)
         elif endpoint == "/nuclear/excite" and method == "POST":
             from arkhe.nuclear_clock import NuclearClock
             clock = NuclearClock()

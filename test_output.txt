@@ -1,0 +1,31 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0
+rootdir: /app
+configfile: pyproject.toml
+plugins: asyncio-1.3.0, anyio-4.12.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 19 items
+
+ArkheOS/tests/test_proteomics.py ...                                     [ 15%]
+ArkheOS/tests/test_convergence_features.py ................              [100%]
+
+=============================== warnings summary ===============================
+ArkheOS/tests/test_convergence_features.py::test_semantic_memory_integration
+  /app/ArkheOS/tests/test_convergence_features.py:39: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    last_seen=datetime.utcnow(),
+
+ArkheOS/tests/test_convergence_features.py::test_natural_economics
+  /app/ArkheOS/src/arkhe/economics.py:47: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    report = PrizeReport(id=report_id, success_description=description, timestamp=datetime.utcnow())
+
+ArkheOS/tests/test_convergence_features.py::test_natural_economics
+  /app/ArkheOS/src/arkhe/economics.py:57: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    timestamp=datetime.utcnow()
+
+ArkheOS/tests/test_convergence_features.py::test_photonics
+ArkheOS/tests/test_convergence_features.py::test_photonics
+  /app/ArkheOS/src/arkhe/photonics.py:34: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    timestamp=datetime.utcnow().isoformat()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 19 passed, 5 warnings in 0.44s ========================

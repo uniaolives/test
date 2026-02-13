@@ -1,24 +1,58 @@
 ============================= test session starts ==============================
-platform linux -- Python 3.12.3, pytest-9.0.2, pluggy-1.6.0
-rootdir: /app
-collected 1 item / 1 error
-
-______________________ ERROR collecting tests/test_cds.py ______________________
-ImportError while importing test module '/app/tests/test_cds.py'.
-Hint: make sure your test modules/packages have valid Python names.
-Traceback:
-/usr/lib/python3.12/importlib/__init__.py:90: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-tests/test_cds.py:3: in <module>
-    import numpy as np
-E   ModuleNotFoundError: No module named 'numpy'
-ERROR tests/test_cds.py
-!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
 platform linux -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0
 rootdir: /app
-collected 3 items
+configfile: pyproject.toml
+plugins: asyncio-1.3.0, anyio-4.12.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 18 items
 
-tests/test_cds.py ..                                                     [ 66%]
-tests/test_universal_one.py .                                            [100%]
+ArkheOS/tests/test_coupling_language.py ........FF..                     [ 66%]
+ArkheOS/tests/test_proteomics.py ......                                  [100%]
 
+=================================== FAILURES ===================================
+____________________________ test_threshold_monitor ____________________________
+
+    def test_threshold_monitor():
+        from arkhe.resonance import get_threshold_monitor
+        monitor = get_threshold_monitor()
+
+        # Check status
+        status = monitor.get_status()
+        assert status['coherence'] == 0.9412
+        assert status['state'] == "Γ_0.10"
+
+        # Update coherence
+        new_status = monitor.update_coherence(2)
+        # 0.9412 + 0.0028 * 2 = 0.9468
+        assert new_status['coherence'] == 0.9468
+
+        # Execute option
+        res_opt = monitor.execute_option("A")
+>       assert res_opt['status'] == "INITIATED"
+E       AssertionError: assert 'WAITING' == 'INITIATED'
+E
+E         - INITIATED
+E         + WAITING
+
+ArkheOS/tests/test_coupling_language.py:114: AssertionError
+_________________________ test_api_threshold_endpoints _________________________
+
+    def test_api_threshold_endpoints():
+        api = ArkheAPI()
+
+        # Status
+        res_s = api.handle_request("GET", "/threshold/status", {})
+        assert res_s['status'] == 200
+        assert res_s['body']['coherence'] == 0.9412
+
+        # Option B
+        res_b = api.handle_request("POST", "/threshold/option", {}, {"option": "B"})
+        assert res_b['status'] == 200
+>       assert "orgânico" in res_b['body']['message']
+E       AssertionError: assert 'orgânico' in 'Um último micro-pulso para acolher.'
+
+ArkheOS/tests/test_coupling_language.py:128: AssertionError
+=========================== short test summary info ============================
+FAILED ArkheOS/tests/test_coupling_language.py::test_threshold_monitor - Asse...
+FAILED ArkheOS/tests/test_coupling_language.py::test_api_threshold_endpoints
+========================= 2 failed, 16 passed in 0.18s =========================

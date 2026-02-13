@@ -1,0 +1,67 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0
+rootdir: /app
+configfile: pyproject.toml
+plugins: asyncio-1.3.0, anyio-4.12.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 73 items
+
+ArkheOS/tests/test_abiogenesis.py ....                                   [  5%]
+ArkheOS/tests/test_algebra.py ....                                       [ 10%]
+ArkheOS/tests/test_api_physics.py ....                                   [ 16%]
+ArkheOS/tests/test_arkhe_unix.py ....                                    [ 21%]
+ArkheOS/tests/test_bio_dialysis.py ...                                   [ 26%]
+ArkheOS/tests/test_circuits.py F..                                       [ 30%]
+ArkheOS/tests/test_convergence_features.py ..............                [ 49%]
+ArkheOS/tests/test_convergence_v2.py ...                                 [ 53%]
+ArkheOS/tests/test_coupling_language.py ............                     [ 69%]
+ArkheOS/tests/test_neuro_composition.py ...                              [ 73%]
+ArkheOS/tests/test_new_tracks.py .....                                   [ 80%]
+ArkheOS/tests/test_optics.py ....                                        [ 86%]
+ArkheOS/tests/test_proteomics.py ......                                  [ 94%]
+ArkheOS/tests/test_topology.py ....                                      [100%]
+
+=================================== FAILURES ===================================
+_________________________ test_contextual_circuit_run __________________________
+
+    def test_contextual_circuit_run():
+        circuit = get_contextual_circuit()
+
+        # Run in reinforced context (omega=0.07)
+        res_plus = circuit.run_handover(0.07)
+        assert res_plus['omega'] == 0.07
+        assert res_plus['hesitation_phi'] > 0.15 # Calibrated increase
+        assert res_plus['syzygy_snr'] == 0.94
+>       assert res_plus['action']['status'] == "SUPPRESSED"
+E       AssertionError: assert 'EXECUTED' == 'SUPPRESSED'
+E
+E         - SUPPRESSED
+E         + EXECUTED
+
+ArkheOS/tests/test_circuits.py:14: AssertionError
+=============================== warnings summary ===============================
+ArkheOS/tests/test_convergence_features.py::test_semantic_memory_integration
+  /app/ArkheOS/tests/test_convergence_features.py:39: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    last_seen=datetime.utcnow(),
+
+ArkheOS/tests/test_convergence_features.py::test_natural_economics
+  /app/ArkheOS/src/arkhe/economics.py:47: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    report = PrizeReport(id=report_id, success_description=description, timestamp=datetime.utcnow())
+
+ArkheOS/tests/test_convergence_features.py::test_natural_economics
+  /app/ArkheOS/src/arkhe/economics.py:57: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    timestamp=datetime.utcnow()
+
+ArkheOS/tests/test_convergence_features.py::test_photonics
+ArkheOS/tests/test_convergence_features.py::test_photonics
+  /app/ArkheOS/src/arkhe/photonics.py:34: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    timestamp=datetime.utcnow().isoformat()
+
+ArkheOS/tests/test_convergence_v2.py::test_geodesic_memory_conflict_resolution
+  /app/ArkheOS/tests/test_convergence_v2.py:54: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    last_seen=datetime.utcnow()
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED ArkheOS/tests/test_circuits.py::test_contextual_circuit_run - Assertio...
+=================== 1 failed, 72 passed, 6 warnings in 0.72s ===================
