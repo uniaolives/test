@@ -1,0 +1,57 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Arkhe(N) Torus Map</title>
+        <style>body { margin: 0; overflow: hidden; } canvas { display: block; }</style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    </head>
+    <body>
+        <script>
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            const nodes = [{"id_num": 1, "omega": 0.07, "coherence": 0.94}];
+
+            // Torus parameters
+            const R = 5; // Major radius
+            const r = 2; // Minor radius
+
+            // Geometry
+            const torusGeo = new THREE.TorusGeometry(R, r, 32, 100);
+            const torusMat = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true, transparent: true, opacity: 0.1 });
+            const torus = new THREE.Mesh(torusGeo, torusMat);
+            scene.add(torus);
+
+            // Add nodes
+            nodes.forEach(n => {
+                // Map omega (0..0.33) to theta, and some other coordinate to phi
+                const theta = n.omega * Math.PI * 6; // major angle
+                const phi = (n.id_num % 7) / 7 * Math.PI * 2; // minor angle
+
+                const x = (R + r * Math.cos(phi)) * Math.cos(theta);
+                const y = (R + r * Math.cos(phi)) * Math.sin(theta);
+                const z = r * Math.sin(phi);
+
+                const dotGeo = new THREE.SphereGeometry(0.1, 8, 8);
+                const dotMat = new THREE.MeshBasicMaterial({ color: n.coherence > 0.9 ? 0x00ff00 : 0x0000ff });
+                const dot = new THREE.Mesh(dotGeo, dotMat);
+                dot.position.set(x, y, z);
+                scene.add(dot);
+            });
+
+            camera.position.z = 15;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                torus.rotation.x += 0.005;
+                torus.rotation.y += 0.005;
+                renderer.render(scene, camera);
+            }
+            animate();
+        </script>
+    </body>
+    </html>
