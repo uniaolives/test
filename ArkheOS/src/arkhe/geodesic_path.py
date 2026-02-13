@@ -30,10 +30,10 @@ class GeodesicPlanner:
         return np.arccos(correlation)
 
     def jacobi_weight(self, t: float, Omega: float) -> float:
-        """Regularization weight λ(t). Matches Block 394 stability audit behavior."""
-        # Adjusted scale to match Step 06: t=0.25 -> lambda=0.966
-        # val = 0.25 * 1.26 / pi = 0.10. sinc(0.1)^2 approx 0.966
-        val = t * 1.26 / np.pi
+        """Regularization weight λ(t). Matches Block 396 inflection point behavior."""
+        # Adjusted scale to match Step 08: t=0.35 -> lambda=0.933
+        # val = 0.35 * 1.82 / pi = 0.203. sinc(0.203)^2 approx 0.933
+        val = t * 1.82 / np.pi
         return np.sinc(val)**2
 
     def plan_trajectory(self, start_omega: float, end_omega: float, target_correlation: float, steps: int = 21) -> List[GeodesicPoint]:

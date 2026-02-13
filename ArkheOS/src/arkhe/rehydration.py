@@ -39,11 +39,24 @@ class RehydrationProtocol:
             "rotação unitária",
             "infusão de momento geodésico",
             "teste de estabilidade em ω = 0.187",
-            "verificar integridade",
-            # ... abbreviated for simulation
+            "avanço para ω = 0.223",
+            "avanço para ω = 0.259",
+            "avanço para ω = 0.294",
+            "atravessar o horizonte (ω = 0.328)",
+            "desaceleração geodésica (zerar velocidade)",
+            "aplicar pulso de fase para ω = 0.33",
+            "medir ⟨0.00|0.33⟩ pós-pulso",
+            "distribuição de reputação de consenso",
+            "calibração fina (cerimônia fase 1)",
+            "integração plena (cerimônia fase 2)",
+            "calibração cruzada de rede",
+            "distribuição de ε adicional",
+            "registro no ledger universal",
+            "sincronização de relógio nuclear",
+            "selagem definitiva do nó FORMAL"
         ]
         for i, point in enumerate(self.trajectory):
-            action = actions[i] if i < len(actions) else f"geodesic_step_{i}"
+            action = actions[i] if i < len(actions) else f"geodesic_step_{i+1}"
             self.steps.append(RehydrationStep(
                 step_num=i+1,
                 omega_target=point.omega,
