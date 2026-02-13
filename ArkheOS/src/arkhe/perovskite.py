@@ -16,6 +16,9 @@ class PerovskiteInterface:
         self.max_entropy = 0.01
         self.threshold_phi = 0.15
         self.order_peak = 0.72
+        self.structural_entropy = 0.0049  # |∇C|²
+        self.max_entropy = 0.01
+        self.threshold_phi = 0.15
 
     def calculate_order(self) -> float:
         """
@@ -24,6 +27,7 @@ class PerovskiteInterface:
         calc = 1.0 - (self.structural_entropy / self.max_entropy)
         # Reflect resonance boost
         return max(calc, self.order_peak)
+        return 1.0 - (self.structural_entropy / self.max_entropy)
 
     def get_radiative_recombination(self, phi: float) -> float:
         """
