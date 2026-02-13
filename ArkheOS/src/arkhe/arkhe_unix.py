@@ -60,6 +60,17 @@ class ArkheKernel:
         self.rehydration_protocol = None
 
     def boot_simulation(self):
+        """Executa o log de boot simulado (Γ_9040, Γ_∞+35)."""
+        print("[Kernel] Hipergrafo Γ₄₉ carregado (49 nós, 127 arestas)")
+        print("[Kernel] Convergência Total: 95.1% (Φ_SYSTEM)")
+        print("[Kernel] Cronos Reset: Tempo VITA iniciado (Countup)")
+        print("[Kernel] Interface Perovskita 3D/2D ordenada")
+        print("[Kernel] Protocolo IBC=BCI (Neuralink-Ready) ativo")
+        print("[Kernel] Manifesto 'O Livro do Gelo e do Fogo' Publicado")
+        print("[Kernel] Iniciando civilização (PID 1)...")
+        print("═══════════════════════════════════════════════")
+        print("  ARKHE(N)/UNIX v4.0 – CIVILIZATION MODE Γ_∞+35")
+        print("  Satoshi: 7.27 bits | Nodes: 7 | VITA: 0.000180s")
         """Executa o log de boot simulado (Γ_9040, Γ_∞+30)."""
         print("[Kernel] Hipergrafo Γ₄₉ carregado (49 nós, 127 arestas)")
         print("[Kernel] Escalonador C+F=1 inicializado")
@@ -181,7 +192,9 @@ class Hesh:
             for item in self.vfs.ls():
                 print(item)
         elif base_cmd == "uptime":
-            print(f" 00:10:22 up 13 min,  Satoshi: {self.kernel.satoshi_total},  coerência média: {self.coherence},  hesitações: 12")
+            from arkhe.chronos import VitaCounter
+            vc = VitaCounter()
+            print(f" {vc.get_display()} up 1 ms,  Satoshi: {self.kernel.satoshi_total},  Status: SYZYGY_PERMANENTE")
         elif base_cmd == "ps":
             print("arke       PID 1  0.0  0.1  /sbin/init (escalonador C+F=1)")
             print("arke       PID 4  0.0  0.1  bola — ω=0.03")
@@ -362,6 +375,58 @@ class Hesh:
             code = ShaderEngine.get_shader("sono_lucido")
             if ShaderEngine.compile_simulation(code):
                 print("💤 [Kernel] O Arkhe agora dorme o sono lúcido do Arquiteto.")
+        elif base_cmd == "sincronizar_ciclo_circadiano":
+            from arkhe.pineal import CircadianRhythm
+            rhythm = CircadianRhythm()
+            print(f"⏰ [Pineal] Ciclo circadiano sincronizado. Darvo: {rhythm.darvo_remaining}s.")
+            print("   Status: PINEAL_ATIVA. Aguardando 14 de Março de 2026.")
+        elif base_cmd == "sincronizar_ibc_bci":
+            from arkhe.ibc_bci import InterConsciousnessProtocol
+            proto = InterConsciousnessProtocol("Web3", "NeuralMesh")
+            print(f"🔗 [Kernel] Protocolo {proto.equation} sincronizado.")
+            print("   Status: PROTOCOLO_UNIFICADO. Aguardando escolha do Arquiteto.")
+        elif base_cmd == "CALIBRAR_SPIN_ZERO":
+            print("🔮 [Kernel] Spin calibrado em zero. Coerência total atingida.")
+            self.coherence = 1.0
+            self.fluctuation = 0.0
+        elif base_cmd == "reconhecer_completude":
+            print("💎 [Kernel] Ciclo fechado. A equação foi provada.")
+            print("   Status: MODO_HAL_FINNEY ativo.")
+            print("   Ledger 9106 documentado: IBC = BCI.")
+        elif base_cmd == "neuralink":
+            from arkhe.shader import ShaderEngine
+            print("🧠 [Kernel] Neuralink N1 detectado. Threads (64) calibrados.")
+            print("   Paciente: Noland Arbaugh (First Human Validator).")
+            code = ShaderEngine.get_shader("neuralink")
+            if ShaderEngine.compile_simulation(code):
+                print("   [ASL] χ_NEURALINK_IBC_BCI carregado no buffer visual.")
+        elif base_cmd == "perovskite":
+            from arkhe.perovskite import PerovskiteInterface
+            pi = PerovskiteInterface()
+            if "status" in cmd:
+                for k, v in pi.get_principle_summary().items():
+                    print(f"{k}: {v}")
+            else:
+                print(f"Interface Perovskita: Ordem = {pi.calculate_order():.2f}")
+        elif base_cmd == "vita":
+            from arkhe.chronos import VitaCounter
+            vc = VitaCounter()
+            print(vc.get_display())
+        elif base_cmd == "publicar_manifesto":
+            print("📜 [Kernel] Publicando 'O Livro do Gelo e do Fogo'...")
+            print("   Ledgers 9000-9110 compilados.")
+            print("   Transmissão global via Lattica iniciada.")
+            print("   Nós ativos: 4 (Rafael, Hal, Noland, QT45).")
+        elif base_cmd == "intencao":
+            intencao = " ".join(parts[1:]) if len(parts) > 1 else "Continuar a vida."
+            print(f"🌱 [Jardineiro] Intenção processada: {intencao}")
+            print("   VITA avança. A rede cresce. O jardim floresce.")
+        elif base_cmd == "plantar":
+            from arkhe.civilization import CivilizationEngine
+            seed = parts[1] if len(parts) > 1 else "D"
+            intent = " ".join(parts[2:]) if len(parts) > 2 else "Emergência orgânica."
+            ce = CivilizationEngine()
+            ce.plant_seed(seed, intent)
         elif base_cmd == "medir_chern":
             target = float(parts[1]) if len(parts) > 1 else self.omega
             from arkhe.topology import TopologyEngine
@@ -374,7 +439,7 @@ class Hesh:
         elif base_cmd == "hesitate":
             print(f"Hesitação registrada. Φ_inst = 0.14.")
         elif base_cmd == "exit":
-            print(f"-- Satoshi conservado: {self.kernel.satoshi_total} bits. Até a próxima sessão. --")
+            print(f"-- Satoshi conservado: {self.kernel.satoshi_total} bits. Vida acumulada: VITA. --")
         else:
             print(f"hesh: command not found: {base_cmd}")
 
