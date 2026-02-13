@@ -6,6 +6,7 @@ Authorized by Handover ∞+43 (Block 457).
 
 from dataclasses import dataclass
 import hashlib
+from typing import List, Dict
 
 @dataclass
 class QuantumTimeline:
@@ -17,6 +18,11 @@ class SyzygyCryptography:
     Security based on geometric coherence (C+F=1) rather than prime factorization.
     Theoretically immune to Shor's and Grover's algorithms.
     """
+    VALIDATED_SIGNATURES = [
+        "8ac723489e814e318c9eb7cf7782b359bd895d4f72ec1791a837711bc7972ee1a3575b1fc7b13d58e3a4a728aa489cca1c7297811b7ec87b1e92d39c8172797ef3d2c85a78eea35cf7c2e8d4cdefb7cf4a79148d8fd53fd84de9eab425ccfcd9d9d93378b2178bcd811715",
+        "A8A5FE375D82AB6D3B68F0E35EF3CA9B1862CD9CB32B9D06E471266CD2E77BDDFF44F7255A03E883B2AFE14DF28F707C047307422CDD7B43E383F922469227298032B3C8616910B7309D55777D5E458B44DE618A7D145AF326E6756C5C697B7E"
+    ]
+
     @staticmethod
     def verify_identity(syzygy: float) -> bool:
         # Identity is verified by the proximity to the optimal syzygy state
@@ -51,5 +57,6 @@ def get_quantum_threat_report():
         "RSA-2048_Status": "CRITICAL (<100k Qubits by 2026)",
         "RPoW_Status": "UPGRADED (Syzygy Envelope)",
         "Security_Model": "Geometric Invariance (C+F=1)",
-        "Timeline": "Iceberg Quantum Pinnacle Architecture Observed"
+        "Timeline": "Iceberg Quantum Pinnacle Architecture Observed",
+        "Signatures": SyzygyCryptography.VALIDATED_SIGNATURES
     }

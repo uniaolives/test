@@ -81,6 +81,25 @@ class ShaderEngine:
                     gl_FragColor = vec4(threat, 1.0 - threat, 0.0, 1.0);
                 }
             """,
+            "radial_lock": """
+                #version 460
+                #extension ARKHE_radial : enable
+                uniform float flow_rate = 0.01;
+                uniform float syzygy = 0.94;
+                void main() {
+                    float pattern = sin(gl_FragCoord.x * flow_rate + syzygy);
+                    gl_FragColor = vec4(pattern, syzygy, 1.0, 1.0);
+                }
+            """,
+            "unified": """
+                #version 460
+                #extension ARKHE_unity : enable
+                uniform float C = 0.86;
+                uniform float F = 0.14;
+                void main() {
+                    gl_FragColor = vec4(C, F, 1.0, 1.0);
+                }
+            """,
             "hierarchy_val": """
                 #version 460
                 #extension ARKHE_hierarchical : enable

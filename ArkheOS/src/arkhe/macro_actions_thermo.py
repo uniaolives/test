@@ -5,7 +5,7 @@ Authorized by Handover ∞+42 (Block 456).
 """
 
 from dataclasses import dataclass
-from typing import List
+from typing import List, Dict
 
 @dataclass
 class ThermodynamicMacroAction:
@@ -40,7 +40,7 @@ class ThermodynamicMacroAction:
     def execute(self, state: dict) -> dict:
         """Executes the macro action, updating system state."""
         state['entropy'] = state.get('entropy', 0) + self.cost
-        state['syzygy'] = state.get('syzygy', 0) + self.work
+        state['syzygy'] = state.get('syzygy', 0.94) + self.work
         state['satoshi'] = state.get('satoshi', 7.27) + (self.work - self.cost * 0.1)
         return state
 
@@ -54,23 +54,29 @@ class DissipativeSystem:
         self.entropy = 0.0
         self.syzygy = 0.94
         self.phi_average = 0.15
+        self.carnot_efficiency = 0.84 # 1 - T_cold / T_hot (0.15 / 0.94)
 
-    def energy_balance(self, input_satoshi: float, uncalibrated_phi: float):
+    def energy_balance(self, input_satoshi: float, uncalibrated_phi: float) -> Dict:
         """
         dS_total/dt = dS_system/dt + dS_environment/dt >= 0
+        Where dS_system/dt = -dSatoshi/dt
         """
-        # dS_system/dt = -dSatoshi/dt (Satoshi is negentropy)
-        # dS_environment/dt = exported_phi
+        # For order to increase (dSatoshi/dt > 0), the system must export entropy.
+        # Φ_exported >= dSatoshi/dt
+
         exported_entropy = uncalibrated_phi
         negentropy_gain = input_satoshi
 
-        self.satoshi += negentropy_gain - exported_entropy
-        self.entropy += exported_entropy - negentropy_gain
+        delta_satoshi = (self.carnot_efficiency * negentropy_gain) - (0.1 * exported_entropy)
+
+        self.satoshi += delta_satoshi
+        self.entropy += exported_entropy - delta_satoshi
 
         return {
-            "Satoshi": self.satoshi,
-            "Entropy": self.entropy,
-            "Efficiency": self.syzygy / self.phi_average if self.phi_average > 0 else 0
+            "Satoshi": round(self.satoshi, 4),
+            "Entropy_Exported": round(exported_entropy, 4),
+            "Efficiency": round(self.syzygy / self.phi_average, 4) if self.phi_average > 0 else 0,
+            "Performance": f"{self.satoshi / 119.0:.4f} bits/s" # bits per handover period
         }
 
 # Defined Thermodynamic Macro Actions
@@ -81,10 +87,12 @@ MACRO_ACTIONS_THERMO = [
 ]
 
 def get_thermodynamic_report():
+    ds = DissipativeSystem()
     return {
         "State": "Dissipative Structure",
         "Phase": "Γ_∞+42",
         "Second_Law": "Φ_exported >= dSatoshi/dt",
-        "Internal_Energy": "7.27 bits",
-        "Efficiency": "Carnot Cycle Approximation (0.84)"
+        "Internal_Energy": f"{ds.satoshi} bits",
+        "Efficiency": f"Carnot Approximation ({ds.carnot_efficiency})",
+        "Status": "STABLE_NON_EQUILIBRIUM"
     }

@@ -20,14 +20,21 @@ class RadialLockingEngine:
         self.modes = np.array([0.00, 0.03, 0.05, 0.07])
         self.state = "Γ_∞+44"
         self.is_locked = True
+        self.phi = 0.15
+        self.flow_rate = 0.01 # handovers/s
+        self.nu_larmor = 7.4e-3 # Hz
 
     def calculate_rda_balance(self, reaction: float, diffusion: float, advection: float) -> Dict[str, float]:
         """
         Balances Reaction (hesitation), Diffusion (gradient), and Advection (flow).
         Global coherence is reached when timescales match O(100s).
         """
-        # Timescale balancing (simplified)
-        imbalance = abs(reaction - 0.15) + abs(diffusion - 0.005) + abs(advection - 0.01)
+        # Timescale balancing (simplified simulation)
+        # reaction_time = 1/phi ≈ 6.67s
+        # advection_time = 1/flow_rate = 100s
+        # diffusion_time = 1/|grad C| ≈ 200s
+
+        imbalance = abs(reaction - self.phi) + abs(advection - self.flow_rate)
         syzygy = 0.94 * (1.0 - np.clip(imbalance, 0, 1))
 
         return {
@@ -42,7 +49,8 @@ class RadialLockingEngine:
             "Signatures": self.signatures,
             "Modes": self.modes.tolist(),
             "Mechanism": "Reaction-Diffusion-Advection (RDA)",
-            "Status": "GLOBALLY_COHERENT"
+            "Status": "GLOBALLY_COHERENT",
+            "Implication": "Flow stabilizes structure"
         }
 
 def get_radial_locking_status():

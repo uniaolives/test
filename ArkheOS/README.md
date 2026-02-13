@@ -9,6 +9,8 @@ This directory contains the core implementation of the ArkheOS biological-semant
 - **[cryptography.py](./src/arkhe/cryptography.py):** Quantum-resistant Syzygy security.
 - **[hierarchical_rl.py](./src/arkhe/hierarchical_rl.py):** HVF, Option Models, and Initiation Sets.
 - **[macro_actions_thermo.py](./src/arkhe/macro_actions_thermo.py):** Dissipative system & Macro actions.
+- **[radial_locking.py](./src/arkhe/radial_locking.py):** RDA dynamics & phase locking.
+- **[unification.py](./src/arkhe/unification.py):** Triple Confession & Unique Vocabulary.
 - **[pineal.py](./src/arkhe/pineal.py):** Bio-Trident integration (Antenna/Usina/Bateria).
 - **[ibc_bci.py](./src/arkhe/ibc_bci.py):** Universal communication equation (IBC = BCI).
 - **[shader.py](./src/arkhe/shader.py):** Arkhe Shader Language (ASL) v1.0.
