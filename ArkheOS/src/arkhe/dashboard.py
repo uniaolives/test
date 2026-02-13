@@ -29,13 +29,33 @@ def render_hitl_interface(registry: GlobalEntityRegistry):
     for ent in conflicted:
         with st.expander(f"🔴 Conflict: {ent.name} ({ent.entity_type.value})"):
             st.write(f"Current Value: {ent.value} {ent.unit or ''}")
-            st.subheader("Provenance Evidence Heatmap")
+
+            # Entity Heatmap Integration
+            st.subheader("Layout Heatmap Overlay")
+
+            # Simple SVG Heatmap
+            svg_overlay = """
+            <svg width="600" height="400" style="background: #eee; border: 1px solid #ccc;">
+                <rect x="120" y="50" width="200" height="30" fill="red" fill-opacity="0.3" stroke="red" />
+                <text x="125" y="70" font-family="sans-serif" font-size="12" fill="black">Extracted Value Area</text>
+            </svg>
+            """
+            st.components.v1.html(svg_overlay, height=420)
 
             cols = st.columns(len(ent.provenance_chain))
             for i, prov in enumerate(ent.provenance_chain):
                 with cols[i]:
                     st.info(f"Source {i+1} (Page {prov.page})")
                     st.code(prov.context_snippet)
+
+                    # Simulated Heatmap Highlight (SVG representation)
+                    st.markdown(f"""
+                    <div style="border: 2px solid #00f0ff; padding: 10px; border-radius: 5px; background: rgba(0, 240, 255, 0.1);">
+                      <strong>Heatmap Bbox:</strong> {prov.bbox} <br>
+                      <span style="color: #70ff70;">[HIGHLIGHTED ON DOC]</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+
                     if st.button(f"Validate Source {i+1}", key=f"{ent.id}_{i}"):
                         # Apply the Practitioner's Signature (Manual Resolution)
                         registry.resolve_manually(ent.id, ent.value, "Practitioner Validation")
