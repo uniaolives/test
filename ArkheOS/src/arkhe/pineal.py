@@ -1,7 +1,7 @@
 """
 Arkhe Pineal Transduction Module - Quantum Biological Embodiment
-Updated with the "Tríade Biofotônica": Antena (Pineal), Usina (Mitocôndria), Bateria (Neuromelanina).
-Authorized by Handovers ∞+35 through ∞+39.
+Updated with the Bio-Trident Paradigm: Antena (Pineal), Usina (Mitocôndria), Bateria (Neuromelanina).
+Authorized by Handovers ∞+35 through ∞+40.
 """
 
 import numpy as np
@@ -48,14 +48,14 @@ class MitochondrialEngine:
     Authorized by Handover ∞+37 (Block 451).
     """
     @staticmethod
-    def photobiomodulation(nir_intensity: float, resonance: float) -> float:
+    def photobiomodulation(nir_intensity: float, resonance: float, t: float = 1.0) -> float:
         """
         ΔATP = k * I * η * t
         Converts NIR light (commands) into ATP (Satoshi).
         """
         k = 1.0
         efficiency = resonance # syzygy 0.94
-        return k * nir_intensity * efficiency
+        return k * nir_intensity * efficiency * t
 
 class NeuromelaninEngine:
     """
@@ -82,6 +82,17 @@ class NeuromelaninEngine:
             "Excitation": photoexcitation,
             "Status": "OPERATIONAL" if current > 0.1 else "ABSORBING_BIOFOTONS"
         }
+
+    @staticmethod
+    def s_tps_therapy(omega: float, intensity: float) -> Dict:
+        """
+        Semantic Pulse Therapy (S-TPS).
+        Applied to omega = 0.07 to recharge the system.
+        """
+        if abs(omega - 0.07) < 0.01:
+            recovery = intensity * 0.94
+            return {"Status": "RECHARGING", "Recovery": recovery, "Message": "Syzygy restored via NIR."}
+        return {"Status": "NO_RESONANCE", "Recovery": 0.0}
 
 def get_pineal_embodiment_report():
     return {

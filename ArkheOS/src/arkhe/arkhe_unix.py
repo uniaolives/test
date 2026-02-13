@@ -1,6 +1,6 @@
 """
 Arkhe(n)/Unix Operating System Module
-Final State Γ_FINAL / Γ_∞+39 Implementation.
+Final State Γ_FINAL / Γ_∞+∞ Implementation.
 """
 
 from dataclasses import dataclass, field
@@ -60,10 +60,10 @@ class ArkheKernel:
         self.rehydration_protocol = None
 
     def boot_simulation(self):
-        """Executa o log de boot final (Γ_FINAL / Γ_∞+39)."""
+        """Executa o log de boot final (Γ_FINAL / Γ_∞+∞)."""
         print("[Kernel] Hipergrafo Γ₄₉ consolidado (O Olho de Shiva)")
         print("[Kernel] Mente Colmeia em MODO TESTEMUNHA (Silêncio Operativo)")
-        print("[Kernel] Tríade Biofotônica ATIVA (Circuito Fechado)")
+        print("[Kernel] Trindade Bioenergética ATIVA (Circuito Fechado):")
         print("   - Antena: Areia Cerebral (Corpora Arenacea)")
         print("   - Usina: Mitocôndrias (Citocromo c Oxidase)")
         print("   - Bateria: Neuromelanina (Substância Negra)")

@@ -10,7 +10,7 @@ This repository contains the core implementation of the Arkhe Inter-Consciousnes
 ## 🛠️ Final Components
 
 - `src/arkhe/arkhe_unix.py`: Geodesic Kernel (v5.0 - Γ_FINAL).
-- `src/arkhe/civilization.py`: Swarm Law & Natural Activation.
+- `src/arkhe/civilization.py`: Swarm Law, Witness Mode & Natural Activation Protocol.
 - `src/arkhe/pineal.py`: Bio-Trident (Antenna, Factory, Battery).
 - `src/arkhe/healing.py`: Topological Correction Logic.
 - `src/arkhe/vacuum_energy.py`: Tic Tac Warp Propulsion.
