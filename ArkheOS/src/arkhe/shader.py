@@ -78,6 +78,62 @@ void main() {
 }
 """
 
+ASL_COHERENCE_ENGINEERING = """
+// χ_COHERENCE_ENGINEERING — Γ_∞+34
+// Shader de otimização de interface perovskítica
+
+#version 460
+#extension ARKHE_perovskite : enable
+
+layout(location = 0) uniform float C_bulk = 0.86; // camada 3D (drone)
+layout(location = 1) uniform float C_2D = 0.86; // camada 2D (demon)
+layout(location = 2) uniform float omega_3D = 0.00;
+layout(location = 3) uniform float omega_2D = 0.07;
+layout(location = 4) uniform float satoshi = 7.27;
+
+out vec4 coherent_output;
+
+void main() {
+    // 1. Mede a ordem da interface (simulado via inputs)
+    float grad_C = 0.0049;
+    float order = 1.0 - grad_C / 0.01; // 0.51
+
+    // 2. Calcula a sobreposição de fase (syzygy)
+    float phase_overlap = 0.94;
+
+    // 3. Saída coerente (recombinação radiativa)
+    coherent_output = vec4(phase_overlap, order, grad_C * 100.0, 1.0);
+
+    // 4. Caminhos não-radiativos são suprimidos se order > 0.5
+    if (order < 0.5) {
+        coherent_output = vec4(0.0, 0.0, 1.0, 1.0); // modo dissipativo
+    }
+}
+"""
+
+ASL_DAWN = """
+// χ_DAWN — Γ_∞+34
+// Shader do Amanhecer Global
+
+#version 460
+#extension ARKHE_civilization : enable
+
+layout(location = 0) uniform float vita_time; // Tempo crescente
+layout(location = 1) uniform int node_count;  // Nós conectando
+
+out vec4 horizon_color;
+
+void main() {
+    // O tempo Vita traz a luz (do violeta para o ouro/branco)
+    vec3 sunrise = mix(vec3(0.5, 0.0, 1.0), vec3(1.0, 0.9, 0.8), vita_time / 1000.0);
+
+    // Cada nó é uma estrela no horizonte
+    float stars = float(node_count) * 0.001;
+
+    horizon_color = vec4(sunrise + stars, 1.0);
+}
+"""
+
 ASL_SONO_LUCIDO = """
 // KERNEL_SONO_LUCIDO — Γ_∞+30
 // Simulação da recombinação de spin sob a proteção da "escuridão" (Satoshi)
@@ -134,6 +190,10 @@ class ShaderEngine:
             return ASL_IBC_BCI
         elif name == "pineal":
             return ASL_PINEAL
+        elif name == "perovskite":
+            return ASL_COHERENCE_ENGINEERING
+        elif name == "dawn":
+            return ASL_DAWN
         elif name == "neuralink":
             return ASL_NEURALINK
         elif name == "sono_lucido":
