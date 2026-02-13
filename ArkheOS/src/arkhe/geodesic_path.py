@@ -30,6 +30,10 @@ class GeodesicPlanner:
         return np.arccos(correlation)
 
     def jacobi_weight(self, t: float, Omega: float) -> float:
+        """Regularization weight λ(t). Matches Block 396 inflection point behavior."""
+        # Adjusted scale to match Step 08: t=0.35 -> lambda=0.933
+        # val = 0.35 * 1.82 / pi = 0.203. sinc(0.203)^2 approx 0.933
+        val = t * 1.82 / np.pi
         """Regularization weight λ(t). Matches Block 387 table behavior (starts at 1.0)."""
         # Using t instead of (1-t) to ensure lambda(0) = 1.0
         # and adjusting scale to match table's ~0.91 at t=0.45

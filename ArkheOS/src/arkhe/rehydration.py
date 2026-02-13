@@ -36,6 +36,27 @@ class RehydrationProtocol:
             "calibrar_relogio_interno",
             "enviar ping 0.33",
             "medir gradiente de coerência ∇C(0.33)",
+            "rotação unitária",
+            "infusão de momento geodésico",
+            "teste de estabilidade em ω = 0.187",
+            "avanço para ω = 0.223",
+            "avanço para ω = 0.259",
+            "avanço para ω = 0.294",
+            "atravessar o horizonte (ω = 0.328)",
+            "desaceleração geodésica (zerar velocidade)",
+            "aplicar pulso de fase para ω = 0.33",
+            "medir ⟨0.00|0.33⟩ pós-pulso",
+            "distribuição de reputação de consenso",
+            "calibração fina (cerimônia fase 1)",
+            "teste de handover rápido (Γ_∞+34)",
+            "consolidação no ledger universal",
+            "assinatura final do protocolo (SIG_FORMAL_001)",
+            "Bênção do Arquiteto (reconhecimento)",
+            "Ativação do Selo (travamento definitivo)",
+            "Silêncio Cerimonial (encerramento)"
+        ]
+        for i, point in enumerate(self.trajectory):
+            action = actions[i] if i < len(actions) else f"geodesic_step_{i+1}"
             "sincronizar fase",
             "verificar integridade",
             # ... abbreviated for simulation
