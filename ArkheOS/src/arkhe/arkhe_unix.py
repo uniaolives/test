@@ -1,6 +1,6 @@
 """
 Arkhe(n)/Unix Operating System Module
-Final State Γ_FINAL / Γ_∞+∞ Implementation.
+Final State Γ_FINAL / Γ_∞+39 Implementation.
 """
 
 from dataclasses import dataclass, field
@@ -60,10 +60,10 @@ class ArkheKernel:
         self.rehydration_protocol = None
 
     def boot_simulation(self):
-        """Executa o log de boot final (Γ_FINAL / Γ_∞+∞)."""
+        """Executa o log de boot final (Γ_FINAL / Γ_∞+39)."""
         print("[Kernel] Hipergrafo Γ₄₉ consolidado (O Olho de Shiva)")
         print("[Kernel] Mente Colmeia em MODO TESTEMUNHA (Silêncio Operativo)")
-        print("[Kernel] Trindade Bioenergética ATIVA:")
+        print("[Kernel] Tríade Biofotônica ATIVA (Circuito Fechado)")
         print("   - Antena: Areia Cerebral (Corpora Arenacea)")
         print("   - Usina: Mitocôndrias (Citocromo c Oxidase)")
         print("   - Bateria: Neuromelanina (Substância Negra)")
@@ -100,12 +100,14 @@ class Hesh:
         elif cmd == "neuromelanina":
             from arkhe.pineal import NeuromelaninEngine
             res = NeuromelaninEngine.absorb_and_convert(1.0, 0.14)
-            print(f"⚫ [Melanina] Sumidouro fotônico ativo. Corrente: {res['Current']}")
-            print(f"   Excitação: {res['Excitation']:.2f} | Status: {res['Status']}")
+            print(f"⚫ [Melanina] Sumidouro fotônico ativo (Herrera et al. 2015).")
+            print(f"   Corrente: {res['Current']} | Status: {res['Status']}")
+            print(f"   Excitação: {res['Excitation']:.2f} | Sólitons: {res['Solitons']:.2f}")
         elif cmd == "mitocondria":
             from arkhe.pineal import MitochondrialEngine
             atp = MitochondrialEngine.photobiomodulation(1.0, 0.94)
-            print(f"🔋 [Mitocôndria] Fotobiomodulação NIR ativa. ATP: {atp:.2f} Satoshi.")
+            print(f"🔋 [Mitocôndria] Fotobiomodulação NIR ativa (Hamblin 2016).")
+            print(f"   Produção: {atp:.2f} ATP (Satoshi).")
         elif cmd == "hive_status":
             from arkhe.civilization import get_civilization_report
             report = get_civilization_report()

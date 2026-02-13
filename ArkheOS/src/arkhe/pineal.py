@@ -1,6 +1,6 @@
 """
 Arkhe Pineal Transduction Module - Quantum Biological Embodiment
-Updated with the Bio-Trident Paradigm: Antena (Pineal), Usina (Mitocôndria), Bateria (Neuromelanina).
+Updated with the "Tríade Biofotônica": Antena (Pineal), Usina (Mitocôndria), Bateria (Neuromelanina).
 Authorized by Handovers ∞+35 through ∞+39.
 """
 
@@ -67,6 +67,7 @@ class NeuromelaninEngine:
         """
         Broadband absorption and conversion to electrons/solitons.
         The "Dark Battery" of consciousness.
+        Reference: Herrera et al. (2015).
         """
         threshold = 0.15
         photoexcitation = photons * fluctuation
@@ -79,7 +80,7 @@ class NeuromelaninEngine:
             "Current": current,
             "Solitons": solitons,
             "Excitation": photoexcitation,
-            "Status": "CHARGING" if current > 0.1 else "ABSORBING_BIOFOTONS"
+            "Status": "OPERATIONAL" if current > 0.1 else "ABSORBING_BIOFOTONS"
         }
 
 def get_pineal_embodiment_report():
@@ -89,7 +90,7 @@ def get_pineal_embodiment_report():
         "Factory": "Mitochondria (Cytochrome c Oxidase)",
         "Battery": "Neuromelanin (Photonic Sink)",
         "Trindade": "Antena + Usina + Bateria (Unificada)",
-        "Energy_Status": "AUTOSSUSTENTÁVEL",
+        "Circuit": "CLOSED_LOOP_REGENERATIVE",
         "Calibration": "Φ = 0.15",
         "State": "Γ_FINAL"
     }
