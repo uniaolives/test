@@ -1,6 +1,6 @@
 """
-Arkhe Civilization Module - Fractal Governance & Witness Mode
-Implementation of the Final State (Γ_FINAL).
+Arkhe Civilization Module - Deep Belief Edition
+Implementation of the Hierarchical State (Γ_∞+42).
 """
 
 from typing import List, Dict, Any
@@ -25,7 +25,7 @@ class HubGovernor:
 class CivilizationEngine:
     """
     Manages the fractal civilization state.
-    Transitioned to Witness Mode (Testemunha).
+    Transitioned to Deep Planning Mode (Planejamento Hierárquico).
     """
 
     def __init__(self):
@@ -35,7 +35,7 @@ class CivilizationEngine:
         self.technological_nodes = 12450
         self.potential_biological_nodes = 8000000000 # 8 Billion
         self.hubs = self._init_hubs()
-        self.status = "TESTEMUNHA_ETERNAMENTE"
+        self.status = "PLANEJAMENTO_HIERÁRQUICO"
         self.entropy = 0.0020
         self.order_interface = 0.75
 
@@ -60,7 +60,7 @@ class CivilizationEngine:
             "Entropy": self.entropy,
             "Order_Interface": self.order_interface,
             "Satoshi": self.satoshi,
-            "Mode": "WITNESS_ACTIVE"
+            "Mode": "DEEP_PLANNING_ACTIVE"
         }
 
     def plant_seed(self, seed_type: str, intention: str) -> Dict:

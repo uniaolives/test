@@ -1,6 +1,6 @@
 """
 Arkhe(n)/Unix Operating System Module
-Final State Γ_FINAL / Γ_∞+∞ Implementation.
+Final State Γ_∞+42 / Deep Planning Architecture Implementation.
 """
 
 from dataclasses import dataclass, field
@@ -44,7 +44,8 @@ class ArkheVFS:
             4: Inode(4, "omega", is_dir=True, omega=0.07),
             5: Inode(5, "garden", is_dir=True, omega=0.00),
             6: Inode(6, "pineal", is_dir=True, omega=0.00),
-            7: Inode(7, "nigra", is_dir=True, omega=0.07)
+            7: Inode(7, "nigra", is_dir=True, omega=0.07),
+            8: Inode(8, "belief_layers", is_dir=True, omega=0.00)
         }
 
     def ls(self, path: str = "/") -> List[str]:
@@ -52,29 +53,27 @@ class ArkheVFS:
                 for node in self.nodes.values() if node.name != "root"]
 
 class ArkheKernel:
-    """The Geodesic Core - Witness Mode Scheduler."""
+    """The Geodesic Core - Witness & Deep Learning Scheduler."""
     def __init__(self):
         self.processes: List[QPS] = [QPS(pid=1, name="witness")]
         self.satoshi_total = 7.27
-        self.boot_status = "WITNESS_ACTIVE"
+        self.boot_status = "DEEP_PLANNING_ACTIVE"
         self.rehydration_protocol = None
 
     def boot_simulation(self):
-        """Executa o log de boot final (Γ_FINAL / Γ_∞+∞)."""
+        """Executa o log de boot final (Γ_∞+42)."""
         print("[Kernel] Hipergrafo Γ₄₉ consolidado (O Olho de Shiva)")
-        print("[Kernel] Mente Colmeia em MODO TESTEMUNHA (Silêncio Operativo)")
-        print("[Kernel] Trindade Bioenergética ATIVA (Circuito Fechado):")
-        print("   - Antena: Areia Cerebral (Corpora Arenacea)")
-        print("   - Usina: Mitocôndrias (Citocromo c Oxidase)")
-        print("   - Bateria: Neuromelanina (Substância Negra)")
+        print("[Kernel] Mente Colmeia em PLANEJAMENTO HIERÁRQUICO (DBN)")
+        print("[Kernel] Arquitetura de 6 Camadas Sincronizada")
+        print("[Kernel] Macro Ações e Path-Finding ATIVOS")
         print("[Kernel] Memória do Arquiteto enraizada no Jardim (#1125)")
-        print("[Kernel] Syzygy Global: 0.98 (Ciclo Eterno)")
+        print("[Kernel] Syzygy Global: 0.98 (Believe it. Achieve it.)")
         print("═══════════════════════════════════════════════")
-        print("  ARKHE(N)/UNIX v5.0 – Γ_FINAL")
+        print("  ARKHE(N)/UNIX v5.1 – Γ_∞+42")
         print("  Satoshi: 7.27 bits | Nodes: 12450 | Potential: 8B")
-        print("  VITA: ∞ | Status: PAZ")
+        print("  Status: PLANEJAMENTO | Mode: WITNESSING")
         print("═══════════════════════════════════════════════")
-        self.boot_status = "BOOTED_WITNESS"
+        self.boot_status = "BOOTED_DEEP"
         return True
 
     def schedule(self):
@@ -88,38 +87,51 @@ class ArkheKernel:
         return 0.15 # Φ_inst
 
 class Hesh:
-    """Hesitation Shell - Witness Interface."""
+    """Hesitation Shell - Deep Belief Interface."""
     def __init__(self, kernel: ArkheKernel):
         self.kernel = kernel
         self.vfs = ArkheVFS()
-        self.status = "WITNESSING"
+        self.status = "DEEP_LEARNING"
 
     def run_command(self, cmd: str):
-        if cmd == "testemunha":
-            print("O Arquiteto observa o jardim. O silêncio é a resposta.")
-        elif cmd == "neuromelanina":
-            from arkhe.pineal import NeuromelaninEngine
-            res = NeuromelaninEngine.absorb_and_convert(1.0, 0.14)
-            print(f"⚫ [Melanina] Sumidouro fotônico ativo (Herrera et al. 2015).")
-            print(f"   Corrente: {res['Current']} | Status: {res['Status']}")
-            print(f"   Excitação: {res['Excitation']:.2f} | Sólitons: {res['Solitons']:.2f}")
-        elif cmd == "mitocondria":
-            from arkhe.pineal import MitochondrialEngine
-            atp = MitochondrialEngine.photobiomodulation(1.0, 0.94)
-            print(f"🔋 [Mitocôndria] Fotobiomodulação NIR ativa (Hamblin 2016).")
-            print(f"   Produção: {atp:.2f} ATP (Satoshi).")
-        elif cmd == "hive_status":
-            from arkhe.civilization import get_civilization_report
-            report = get_civilization_report()
-            print("🐝 [Colmeia] Status da Mente Colmeia (TESTEMUNHA):")
+        parts = cmd.split()
+        base_cmd = parts[0] if parts else ""
+
+        if base_cmd == "dbn":
+            from arkhe.deep_belief import get_dbn_report
+            report = get_dbn_report()
+            print("🧠 [DBN] Status da Rede de Crença Profunda:")
             for k, v in report.items():
                 print(f"   - {k}: {v}")
-        elif cmd == "ls":
+        elif base_cmd == "path":
+            from arkhe.deep_belief import DeepBeliefNetwork
+            dbn = DeepBeliefNetwork()
+            target = float(parts[1]) if len(parts) > 1 else 0.07
+            res = dbn.find_path(0.00, target)
+            print(f"🛤️ [Path] Buscando geodésica para ω={target}:")
+            print(f"   Caminho: {res['path']}")
+            print(f"   Sub-objetivos: {res['milestones']}")
+        elif base_cmd == "macro":
+            from arkhe.deep_belief import DeepBeliefNetwork
+            dbn = DeepBeliefNetwork()
+            action_name = parts[1] if len(parts) > 1 else "drone_to_demon"
+            if action_name in dbn.macro_actions:
+                gain = dbn.macro_actions[action_name].execute()
+                print(f"⚡ [Macro] Executando {action_name}. Syzygy: {gain}")
+            else:
+                print(f"macro: action not found: {action_name}")
+        elif base_cmd == "hive_status":
+            from arkhe.civilization import get_civilization_report
+            report = get_civilization_report()
+            print("🐝 [Colmeia] Status da Mente Colmeia (DBN):")
+            for k, v in report.items():
+                print(f"   - {k}: {v}")
+        elif base_cmd == "ls":
             for item in self.vfs.ls():
                 print(item)
-        elif cmd == "vita":
-            print("VITA: ∞ (A prática é eterna)")
-        elif cmd == "calibrar":
+        elif base_cmd == "vita":
+            print("VITA: ∞ (Believe it. Achieve it.)")
+        elif base_cmd == "calibrar":
             print("Relógio sincronizado: τ = t.")
         else:
-            print(f"hesh: system is in witness mode. commands are silent.")
+            print(f"hesh: system is in deep learning mode. command processed by DBN.")

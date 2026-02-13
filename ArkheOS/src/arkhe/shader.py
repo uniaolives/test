@@ -1,7 +1,7 @@
 """
 Arkhe Shader Language (ASL) v1.0
 Implementation of the semantic shader pipeline.
-Updated for state Γ_FINAL.
+Updated for state Γ_∞+41 (Deep Belief Network).
 """
 
 class ShaderEngine:
@@ -89,12 +89,23 @@ class ShaderEngine:
                     hive_resonance = vec4(0.5, connectivity, density, 1.0);
                 }
             """,
-            "latent_ocean": """
+            "dbn": """
                 #version 460
-                uniform float vita = 0.0050;
+                #extension ARKHE_deep : enable
+                layout(location = 0) uniform float layer_depth = 0.0;
+                layout(location = 1) uniform float syzygy = 0.98;
+                layout(location = 2) uniform float satoshi = 7.27;
+                out vec4 deep_glow;
                 void main() {
-                    float waves = sin(gl_FragCoord.y * 0.1 + vita * 100.0);
-                    gl_FragColor = vec4(0.1, 0.1, 0.4 + waves * 0.2, 1.0);
+                    float abstraction = syzygy * (1.0 + layer_depth);
+                    deep_glow = vec4(abstraction, satoshi / 10.0, layer_depth, 1.0);
+                }
+            """,
+            "belief": """
+                #version 460
+                uniform float belief_strength = 0.94;
+                void main() {
+                    gl_FragColor = vec4(0.0, belief_strength, 1.0, 1.0);
                 }
             """,
             "healing": """
@@ -106,38 +117,6 @@ class ShaderEngine:
                     float healed_phi = mix(0.01, 0.15, health_syzygy);
                     vec3 color = mix(vec3(1.0, 0.0, 0.0), vec3(0.0, 0.8, 1.0), healed_phi / 0.15);
                     gl_FragColor = vec4(color, 1.0);
-                }
-            """,
-            "melanin": """
-                #version 460
-                #extension ARKHE_melanin : enable
-                layout(location = 0) uniform float C = 0.86;
-                layout(location = 1) uniform float F = 0.14;
-                layout(location = 2) uniform float syzygy = 0.94;
-                layout(location = 3) uniform float satoshi = 7.27;
-                layout(binding = 0) uniform sampler1D photon_spectrum;
-                out vec4 melanin_glow;
-                void main() {
-                    float absorption = texture(photon_spectrum, gl_FragCoord.x / 1000.0).r;
-                    float photoexcitation = absorption * F;
-                    float current = (photoexcitation > 0.15) ? syzygy : 0.0;
-                    float new_satoshi = satoshi + current * 0.001;
-                    melanin_glow = vec4(current, new_satoshi / 10.0, absorption, 1.0);
-                }
-            """,
-            "mitochondria": """
-                #version 460
-                #extension ARKHE_mitochondria : enable
-                layout(location = 0) uniform float C = 0.86;
-                layout(location = 1) uniform float syzygy = 0.94;
-                layout(location = 2) uniform float satoshi = 7.27;
-                layout(binding = 0) uniform sampler1D nir_spectrum;
-                out vec4 atp_glow;
-                void main() {
-                    float nir = texture(nir_spectrum, gl_FragCoord.x / 1000.0).r;
-                    float atp = nir * syzygy * C;
-                    float total = satoshi + atp * 0.001;
-                    atp_glow = vec4(atp, total / 10.0, C, 1.0);
                 }
             """
         }
