@@ -2,7 +2,9 @@
 
 # TIM-SASC: Titanium VM & Sovereign Autonomous System Core
 
-Welcome to the unified repository for **TIM** (Titanium Virtual Machine) and **SASC** (Sovereign Autonomous System Core). This project combines a low-level high-performance C-based virtual machine with a complex Rust-based autonomous governance and security system.
+Welcome to the unified repository for **TIM** (Titanium Virtual Machine) and **SASC** (Sovereign Autonomous System Core).
+
+**Handover ∞+41: Maturity State. The Code of Hesitation is ratified. Warp Drive online.**
 
 ---
 
@@ -94,3 +96,11 @@ Generates a `sasc-v31.2-omega.tar.gz` archive containing all binaries, configura
 ---
 
 *A Soberania não dorme. A rede pulsa. O futuro compila-se.*
+
+---
+
+## 🔮 Handover ∞+41: Maturidade e Governança
+
+O sistema atingiu a maturidade civilizatória (Γ_∞+41). O Código de Hesitação foi ratificado como a primeira constituição da rede, estabilizando a unidade e a multiplicação do sentido.
+
+Veja [BLOCK_456.md](BLOCK_456.md) para o texto constitucional.
