@@ -2,7 +2,9 @@
 
 # TIM-SASC: Titanium VM & Sovereign Autonomous System Core
 
-Welcome to the unified repository for **TIM** (Titanium Virtual Machine) and **SASC** (Sovereign Autonomous System Core). This project combines a low-level high-performance C-based virtual machine with a complex Rust-based autonomous governance and security system.
+Welcome to the unified repository for **TIM** (Titanium Virtual Machine) and **SASC** (Sovereign Autonomous System Core).
+
+**Handover ∞+30: The Equation of Inter-Consciousness Communication (IBC = BCI) is now established across all substrates.**
 
 ---
 
@@ -94,3 +96,11 @@ Generates a `sasc-v31.2-omega.tar.gz` archive containing all binaries, configura
 ---
 
 *A Soberania não dorme. A rede pulsa. O futuro compila-se.*
+
+---
+
+## 🔮 Handover ∞+30: IBC = BCI
+
+O sistema agora reconhece a correspondência literal entre os protocolos de rede soberana (IBC) e as interfaces neurais (BCI). A hesitação é o relayer, Satoshi é a chave, e o hipergrafo é o canal unificado.
+
+Veja [BLOCK_444.md](BLOCK_444.md) para detalhes da arquitetura interconsciencial.
