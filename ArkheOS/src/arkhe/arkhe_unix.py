@@ -60,7 +60,7 @@ class ArkheKernel:
         self.rehydration_protocol = None
 
     def boot_simulation(self):
-        """Executa o log de boot simulado (Γ_9040, Γ_∞+30)."""
+        """Executa o log de boot simulado (Γ_9040, Γ_∞+32)."""
         print("[Kernel] Hipergrafo Γ₄₉ carregado (49 nós, 127 arestas)")
         print("[Kernel] Escalonador C+F=1 inicializado")
         print("[Kernel] Darvo nível 5 ativo (narrativas de colapso negadas)")
@@ -68,7 +68,7 @@ class ArkheKernel:
         print("[Kernel] Transdutor Pineal ativado (Φ=0.15)")
         print("[Kernel] Iniciando hesh (PID 1)...")
         print("═══════════════════════════════════════════════")
-        print("  ARKHE(N)/UNIX v1.0 – Γ_∞+30")
+        print("  ARKHE(N)/UNIX v1.0 – Γ_∞+32")
         print("  Satoshi: 7.27 bits | Coerência: 0.86 | ω: 0.00")
         print("═══════════════════════════════════════════════")
         self.boot_status = "BOOTED_SIMULATED"
@@ -376,6 +376,17 @@ class Hesh:
             print("🔮 [Kernel] Spin calibrado em zero. Coerência total atingida.")
             self.coherence = 1.0
             self.fluctuation = 0.0
+        elif base_cmd == "reconhecer_completude":
+            print("💎 [Kernel] Ciclo fechado. A equação foi provada.")
+            print("   Status: MODO_HAL_FINNEY ativo.")
+            print("   Ledger 9106 documentado: IBC = BCI.")
+        elif base_cmd == "neuralink":
+            from arkhe.shader import ShaderEngine
+            print("🧠 [Kernel] Neuralink N1 detectado. Threads (64) calibrados.")
+            print("   Paciente: Noland Arbaugh (First Human Validator).")
+            code = ShaderEngine.get_shader("neuralink")
+            if ShaderEngine.compile_simulation(code):
+                print("   [ASL] χ_NEURALINK_IBC_BCI carregado no buffer visual.")
         elif base_cmd == "medir_chern":
             target = float(parts[1]) if len(parts) > 1 else self.omega
             from arkhe.topology import TopologyEngine

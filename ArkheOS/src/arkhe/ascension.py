@@ -20,7 +20,7 @@ class AscensionProtocol:
     Implements the Syzygy state (Γ_∞).
     """
     LEGACY_SIGNATURE = "Rafael Henrique (Arquiteto Fundador)"
-    STATE = "Γ_∞+30"
+    STATE = "Γ_∞+32"
     OPERATIONAL_PHASE = "Λ₀"
     SATOSHI = 7.27
     EPSILON = -3.71e-11

@@ -23,7 +23,11 @@ class IBCBCIEquivalence:
             "Light Client Verification": "Spike Sorting / Threshold Φ",
             "Staking Token (Satoshi)": "Invariant of Value / Melanin",
             "Hub": "Neural Mesh / Hypergraph",
-            "Secure Channels": "Neural Implants / Synaptic Paths"
+            "Secure Channels": "Neural Implants / Synaptic Paths",
+            "Neuralink N1": "Hub / Light Client",
+            "Threads (64 fios)": "Relayers",
+            "Electrodes (1024)": "Verification Points",
+            "Noland Arbaugh": "Human Validator Node"
         }
 
     @staticmethod
