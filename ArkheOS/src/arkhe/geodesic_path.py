@@ -34,6 +34,11 @@ class GeodesicPlanner:
         # Adjusted scale to match Step 08: t=0.35 -> lambda=0.933
         # val = 0.35 * 1.82 / pi = 0.203. sinc(0.203)^2 approx 0.933
         val = t * 1.82 / np.pi
+        """Regularization weight λ(t). Matches Block 387 table behavior (starts at 1.0)."""
+        # Using t instead of (1-t) to ensure lambda(0) = 1.0
+        # and adjusting scale to match table's ~0.91 at t=0.45
+        # sinc(0.45 * 1.8 / pi)^2 approx 0.91
+        val = t * 1.8 / np.pi
         return np.sinc(val)**2
 
     def plan_trajectory(self, start_omega: float, end_omega: float, target_correlation: float, steps: int = 21) -> List[GeodesicPoint]:

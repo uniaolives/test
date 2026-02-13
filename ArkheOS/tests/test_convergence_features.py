@@ -123,6 +123,9 @@ def test_rehydration_protocol():
 
     assert p.current_step_idx == 18
     assert "assinatura" in p.steps[17].action
+    res = p.execute_step(1)
+    assert res['status'] == "Success"
+    assert p.current_step_idx == 1
 
 def test_nuclear_clock():
     from arkhe.nuclear_clock import NuclearClock

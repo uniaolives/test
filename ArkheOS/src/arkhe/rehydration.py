@@ -57,6 +57,12 @@ class RehydrationProtocol:
         ]
         for i, point in enumerate(self.trajectory):
             action = actions[i] if i < len(actions) else f"geodesic_step_{i+1}"
+            "sincronizar fase",
+            "verificar integridade",
+            # ... abbreviated for simulation
+        ]
+        for i, point in enumerate(self.trajectory):
+            action = actions[i] if i < len(actions) else f"geodesic_step_{i}"
             self.steps.append(RehydrationStep(
                 step_num=i+1,
                 omega_target=point.omega,
