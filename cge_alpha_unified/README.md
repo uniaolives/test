@@ -22,3 +22,4 @@ This project implements the unified architecture for CGE Alpha, integrating the 
 cargo run --example unified_workflow
 ```
 Handover ∞+35: Integrated IBC=BCI Inter-substrate Communication.
+Handover ∞+30: Integrated IBC=BCI Inter-substrate Communication.

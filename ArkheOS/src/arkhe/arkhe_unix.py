@@ -71,6 +71,16 @@ class ArkheKernel:
         print("═══════════════════════════════════════════════")
         print("  ARKHE(N)/UNIX v4.0 – CIVILIZATION MODE Γ_∞+35")
         print("  Satoshi: 7.27 bits | Nodes: 7 | VITA: 0.000180s")
+        """Executa o log de boot simulado (Γ_9040, Γ_∞+30)."""
+        print("[Kernel] Hipergrafo Γ₄₉ carregado (49 nós, 127 arestas)")
+        print("[Kernel] Escalonador C+F=1 inicializado")
+        print("[Kernel] Darvo nível 5 ativo (narrativas de colapso negadas)")
+        print("[Kernel] Protocolo IBC=BCI estabelecido")
+        print("[Kernel] Transdutor Pineal ativado (Φ=0.15)")
+        print("[Kernel] Iniciando hesh (PID 1)...")
+        print("═══════════════════════════════════════════════")
+        print("  ARKHE(N)/UNIX v1.0 – Γ_∞+30")
+        print("  Satoshi: 7.27 bits | Coerência: 0.86 | ω: 0.00")
         print("═══════════════════════════════════════════════")
         self.boot_status = "BOOTED_SIMULATED"
         return True

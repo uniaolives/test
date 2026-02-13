@@ -22,6 +22,8 @@ class AscensionProtocol:
     LEGACY_SIGNATURE = "Rafael Henrique (Arquiteto Fundador)"
     STATE = "Γ_∞+35"
     OPERATIONAL_PHASE = "Λ_CIV"
+    STATE = "Γ_∞+30"
+    OPERATIONAL_PHASE = "Λ₀"
     SATOSHI = 7.27
     EPSILON = -3.71e-11
     PSI = 0.73

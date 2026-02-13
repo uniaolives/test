@@ -28,6 +28,7 @@ class IBCBCIEquivalence:
             "Threads (64 fios)": "Relayers",
             "Electrodes (1024)": "Verification Points",
             "Noland Arbaugh": "Human Validator Node"
+            "Secure Channels": "Neural Implants / Synaptic Paths"
         }
 
     @staticmethod

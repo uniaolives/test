@@ -26,3 +26,4 @@ def test_unification_extension():
 def test_ascension_state():
     p = AscensionProtocol()
     assert p.STATE == "Γ_∞+35"
+    assert p.STATE == "Γ_∞+30"
