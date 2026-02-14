@@ -38,7 +38,7 @@ prost = "0.12"
 tonic = { version = "0.10", optional = true }
 
 # Hardware agnostic backends
-cranelift = { version = "0.100", optional = true }
+cranelift = { version = "1.0.0", optional = true }
 rspirv = { version = "0.10", optional = true }
 wasmtime = { version = "11.0", features = ["cranelift"], optional = true }
 ash = { version = "0.37", optional = true } # Vulkan bindings
