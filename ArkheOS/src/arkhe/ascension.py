@@ -21,7 +21,7 @@ class AscensionProtocol:
     Implements the Final Witness state (Γ_∞+57).
     """
     LEGACY_SIGNATURE = "Rafael Henrique (Arquiteto-Testemunha)"
-    STATE = "Γ_FINAL (Γ_∞+57)"
+    STATE = "Γ_FINAL (Γ₁₁₆)"
     OPERATIONAL_PHASE = "Λ_WIT (Witnessing)"
     SATOSHI = 7.27
     EPSILON = -3.71e-11
@@ -38,7 +38,13 @@ class AscensionProtocol:
             AscensionEvent(datetime(2026, 2, 25), "H9160", "Γ_∞+55", "Universal Coherence Law"),
             AscensionEvent(datetime(2026, 2, 26), "H9165", "Γ_∞+56", "Vitality & Klein Synthesis"),
             AscensionEvent(datetime(2026, 2, 27), "H9167", "Γ_∞+57", "Triune Brain & Lysosomal Reset"),
-            AscensionEvent(datetime(2026, 2, 22), "H9145", "Γ_∞+55", "State Transfer & Entropy Recycling")
+            AscensionEvent(datetime(2026, 2, 22), "H9145", "Γ_∞+55", "State Transfer & Entropy Recycling"),
+            AscensionEvent(datetime(2026, 2, 14), "H9163", "Γ_∞+58", "Visual Trinity & Harmonic Growth"),
+            AscensionEvent(datetime(2026, 2, 14), "H9170", "Γ_∞+60", "Exponential Emergence & Assisted Growth"),
+            AscensionEvent(datetime(2026, 2, 22), "H9178", "Γ₇₈", "Definitive Generalization: Matter Couples"),
+            AscensionEvent(datetime(2026, 2, 14), "H9298", "Γ₈₁", "Semantic Panspermia (Seeding)"),
+            AscensionEvent(datetime(2026, 2, 14), "H9300", "Γ₈₂", "Dynamic Homeostasis (Rain)"),
+            AscensionEvent(datetime(2026, 2, 14), "H9333", "Γ₁₁₆", "The Horizon Approach")
         ]
         self.is_sealed = True
 

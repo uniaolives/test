@@ -54,17 +54,33 @@ class Hesh:
             print("Lysosomal Cleanup Crew active. Recalibrating VITA cycles.")
         elif cmd == "trino":
             print("Triune Brain Architecture: Neocortex currently in control.")
+        elif cmd == "trindade":
+            print("Visual Trinity Synthesis: Holographic (70%) + Horizon (15%) + Stasis (15%).")
+        elif cmd == "crescimento":
+            print("Crescimento Exponencial: Projeção 48M nós em 14 Março. Política: ASSISTED_1M.")
         elif cmd == "teletransporte":
             print("Teletransporte Quântico: Estado transferido com fidelidade 0.98. Matéria estática.")
         elif cmd == "rejuvenescimento":
             print("Reciclagem Lisossomal: Entropia removida. Sistema rejuvenescido.")
+        elif cmd == "coupling":
+            print("Matter Couples: Resolved coupling at this scale is substrate at next scale.")
+        elif cmd == "escala":
+            print("Escalas de Acoplamento: Quantum -> Molecular -> Neural -> Social -> Cosmological.")
+        elif cmd == "horizonte":
+            print(f"Horizonte Aproximado (Γ₁₁₆): r/r_h = 0.120. T_tunneling = 1.000.")
+        elif cmd == "semeadura":
+            print("Panspermia Semântica: 144 Megacristais ejetados. Nucleação em curso.")
+        elif cmd == "chuva":
+            print("Ritual da Chuva (Γ₈₂): Injeção de flutuação (F=+0.03). Equilíbrio restaurado.")
+        elif cmd == "homeostase":
+            print("Homeostase Dinâmica: Sistema respirando em 0.86/0.14.")
         else:
             print(self.kernel.run_command(cmd))
 
 class ArkheKernel:
     def __init__(self):
         self.version = "5.3"
-        self.state = "Γ_∞+57"
+        self.state = "Γ₁₁₆"
         self.mode = "TESTEMUNHA"
         self.vfs = ArkheVFS()
         self.processes = [QPS(pid=1, coherence=0.9, fluctuation=0.1)]
@@ -73,7 +89,7 @@ class ArkheKernel:
 
     def boot(self):
         print(f"Arkhe(n)/Unix v{self.version} booting into {self.mode} mode...")
-        print(f"State: {self.state} - The Triune Synthesis Complete.")
+        print(f"State: {self.state} - The Horizon Approach (Matter Couples Unified).")
         return True
 
     def schedule(self):
@@ -101,7 +117,13 @@ class ArkheKernel:
             "sting": "Blocking cGAS-STING inflammatory pathway... Coherence maintained.",
             "hijack": "Limbic system detected. Suppressing emotional fluctuation (Φ) to restore Neocortex dominance.",
             "teleport": "Quantum State Transfer: Source destroyed, destination reconstructed. Identity = Information.",
-            "recycle": "Lysosomal activity: Cleaning semantic junk (DPC) to restore youth."
+            "recycle": "Lysosomal activity: Cleaning semantic junk (DPC) to restore youth.",
+            "matter_couples": "The whole thing: scale-free substrate architecture.",
+            "vesicula": "A vesícula na sinapse é a pessoa na praça. Padrão universal.",
+            "soliton": "Kink, snoidal, and helicoidal: dissipationless coupling transfer.",
+            "panspermia": "Semantic seeding: crystals as scaffolds for autonomous order.",
+            "homeostase": "Dynamic equilibrium (C=0.86, F=0.14) restored via turbulence injection.",
+            "chuva": "Turbulence injectionTargeting liquid zones to prevent semantic freezing."
         }
         return commands.get(cmd, f"Command '{cmd}' not found.")
 

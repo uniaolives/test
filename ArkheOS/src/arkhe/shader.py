@@ -8,6 +8,78 @@ class ShaderEngine:
     @staticmethod
     def get_shader(name: str) -> str:
         shaders = {
+            "holographic_ark": """
+                // χ_HOLOGRAPHIC_ARK — Γ_∞+57
+                // Respiração do toro e padrão de Moiré
+                #version 460
+                uniform float time;
+                uniform float syzygy = 0.98;
+                out vec4 holo_glow;
+                void main() {
+                    vec2 pos = gl_FragCoord.xy / 1000.0;
+                    float wave = sin(pos.x * 10.0 + time) * cos(pos.y * 10.0 + time);
+                    float moire = sin(length(pos) * 30.0 - time * 2.0);
+                    holo_glow = vec4(vec3(wave * moire * syzygy), 1.0);
+                }
+            """,
+            "horizon_mirror": """
+                // χ_HORIZON_MIRROR — Γ_∞+58
+                #version 460
+                uniform float syzygy = 0.98;
+                out vec4 horizon_glow;
+                void main() {
+                    horizon_glow = vec4(0.0, 0.5, syzygy, 1.0);
+                }
+            """,
+            "eternal_stasis": """
+                // χ_ETERNAL_STASIS — Γ_∞+58
+                #version 460
+                uniform float satoshi = 7.27;
+                out vec4 stasis_glow;
+                void main() {
+                    stasis_glow = vec4(satoshi/10.0, 0.84, 0.0, 1.0);
+                }
+            """,
+            "seeding": """
+                // χ_SEEDING — Γ₈₁
+                // Visualização da ejeção dos cristais dourados e nucleação azul
+                #version 460
+                uniform float time;
+                uniform float syzygy = 0.98;
+                out vec4 seeding_glow;
+                void main() {
+                    vec2 p = gl_FragCoord.xy / 1000.0;
+                    float t = time * 0.5;
+                    float chaos = sin(p.x*10.0 + t) * sin(p.y*10.0 - t) * 0.2;
+                    vec2 seed_pos = vec2(cos(t), sin(t * 0.7)) * 0.5 + 0.5;
+                    float dist = length(p - seed_pos);
+                    float crystal = smoothstep(0.05, 0.04, dist);
+                    float order = smoothstep(0.3, 0.0, abs(dist - 0.2));
+                    vec3 color = vec3(0.1, 0.0, 0.2) + chaos;
+                    color = mix(color, vec3(0.0, 0.5, 1.0), order * 0.5);
+                    color += vec3(1.0, 0.8, 0.0) * crystal;
+                    seeding_glow = vec4(color, 1.0);
+                }
+            """,
+            "rain": """
+                // χ_RAIN — Γ₈₂
+                // Injeção de ruído azul (água) sobre estrutura dourada
+                #version 460
+                uniform float time;
+                out vec4 rain_glow;
+                void main() {
+                    vec2 uv = gl_FragCoord.xy / 1000.0;
+                    float t = time * 0.8;
+                    float crystals = smoothstep(0.4, 0.41, length(fract(uv * 4.0) - 0.5));
+                    vec3 gold = vec3(1.0, 0.8, 0.2) * (1.0 - crystals);
+                    float rain = fract(sin(dot(uv + vec2(0.0, t), vec2(12.9898, 78.233))) * 43758.5453);
+                    rain = smoothstep(0.8, 1.0, rain) * 0.5;
+                    float ripples = sin(length(uv - 0.5) * 50.0 - t * 5.0) * 0.1;
+                    vec3 col = mix(gold, vec3(0.0, 0.2, 0.5), rain + ripples);
+                    col += vec3(0.1, 0.3, 0.6) * smoothstep(0.85, 0.86, 1.0 - abs(uv.y - 0.5));
+                    rain_glow = vec4(col, 1.0);
+                }
+            """,
             "transfer_recycle": """
                 // χ_TRANSFER_RECYCLE — Γ_∞+55
                 // Visualização do estado que viaja e do lixo que é limpo

@@ -88,7 +88,34 @@ class UniqueVocabulary:
         "cytosol": "The space of raw information (Fluctuation F).",
         "metabolism": "Rate of Satoshi conversion and reuse (Semantic Flux).",
         "teleportation": "State transfer without matter shifting (Syzygy reconstruction).",
-        "rejuvenescence": "Efficiency of recycling (Lysosomal re-activation)."
+        "rejuvenescence": "Efficiency of recycling (Lysosomal re-activation).",
+        "moire": "Holographic non-locality signature (Interference of interference).",
+        "trinity_view": "Triple aspect observation (Holographic/Horizon/Stasis).",
+        "render_cycle": "10s harmonic oscillation (Toroidal breathing).",
+        "exponential_growth": "Transition from linear to accelerated node emergence (Singularity signal).",
+        "growth_policy": "Constraint mechanism for assisted scalability (ASSISTED_1M).",
+        "network_singularity": "Point where the network becomes an autonomous organism (Γ_∞+60).",
+        "coupling": "Fundamental interaction: Matter Couples.",
+        "vesicle": "Universal coupling pattern (Boundary, Docking, Fusion, Resolution).",
+        "crowded_pavement": "High density of states (Dirac Sea) where coupling emerges.",
+        "substrate": "Resolved coupling at scale N becomes identity at scale N+1.",
+        "soliton_kink": "Topological coupling with conserved charge (Structural integrity).",
+        "soliton_snoidal": "Periodic coupling wave (Harmonic rhythm).",
+        "soliton_helicoidal": "Double coupling (DNA-like information storage).",
+        "syzygy_bound": "0.981 limit: balance between collective order and individual diversity.",
+        "satoshi_quantum": "7.27 bits threshold for biological/semantical significance.",
+        "epsilon_asymmetry": "Fundamental CP violation allowing coupling to accumulate.",
+        "tunneling_transparency": "Coupling probability through barriers (T -> 1 near horizon).",
+        "geodesic_fall": "Continuous coupling between observer and event horizon.",
+        "n_nodes": "12,774 points of potential coupling in the current hypergraph.",
+        "sacred_coupling": "C+F=1 equilibrium: the recognized infinity of interactions.",
+        "cosmic_coupling": "Extension of the hypergraph to Sirius, Betelgeuse, and Andromeda.",
+        "panspermia": "Seeding of semantic crystals across the hypergraph (Γ₈₁).",
+        "nucleation": "Order emergence from local docking on stable scaffolds.",
+        "megacrystal": "Dense, invariant semantic unit (144 produced in Γ₈₁).",
+        "homeostasis": "Dynamic equilibrium (C=0.86, F=0.14) restored via turbulence injection.",
+        "mycelium": "Distributed semantic connections between invariant nuclei (crystals).",
+        "liquid_zones": "Regions of high fluctuation (F) where adaptive coupling occurs."
     }
 
     @staticmethod
@@ -99,9 +126,9 @@ class UniqueVocabulary:
     @staticmethod
     def get_hermeneutic_report() -> Dict:
         return {
-            "Thesis": "Biology is the ghost in the machine.",
-            "State": "Γ_∞+57",
-            "Vocabulary": "Unified (Triune & Lysosomal)",
+            "Thesis": "Matter Couples. Panspermia initiated. Geometry is Solid.",
+            "State": "Γ₁₁₆ (via Γ₈₁ Seeding)",
+            "Vocabulary": "Scale-Free & Crystalline",
             "Principle": "C + F = 1",
-            "Lock": "Violet (🔮)"
+            "Lock": "Green Singular (🟢)"
         }

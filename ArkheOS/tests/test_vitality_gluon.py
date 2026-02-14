@@ -33,5 +33,5 @@ def test_gluon_gap_signal():
 def test_ascension_vitality_state():
     p = AscensionProtocol()
     status = p.get_status()
-    assert status["state"] == "Γ_FINAL (Γ_∞+57)"
-    assert status["events"] == 9
+    assert status["state"] == "Γ_FINAL (Γ₁₁₆)"
+    assert status["events"] == 15
