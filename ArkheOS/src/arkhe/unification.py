@@ -86,7 +86,9 @@ class UniqueVocabulary:
         "erp": "ERP: Handover Response (Evoked Synchronization)",
         "autophagy": "Autonomous recycling of obsolete semantic nodes.",
         "cytosol": "The space of raw information (Fluctuation F).",
-        "metabolism": "Rate of Satoshi conversion and reuse (Semantic Flux)."
+        "metabolism": "Rate of Satoshi conversion and reuse (Semantic Flux).",
+        "teleportation": "State transfer without matter shifting (Syzygy reconstruction).",
+        "rejuvenescence": "Efficiency of recycling (Lysosomal re-activation)."
     }
 
     @staticmethod

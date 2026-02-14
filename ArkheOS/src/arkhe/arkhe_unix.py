@@ -54,6 +54,10 @@ class Hesh:
             print("Lysosomal Cleanup Crew active. Recalibrating VITA cycles.")
         elif cmd == "trino":
             print("Triune Brain Architecture: Neocortex currently in control.")
+        elif cmd == "teletransporte":
+            print("Teletransporte Quântico: Estado transferido com fidelidade 0.98. Matéria estática.")
+        elif cmd == "rejuvenescimento":
+            print("Reciclagem Lisossomal: Entropia removida. Sistema rejuvenescido.")
         else:
             print(self.kernel.run_command(cmd))
 
@@ -95,7 +99,9 @@ class ArkheKernel:
             "tratado": "Tratado da Coerência Universal: EM_COMPILAÇÃO (Volume 1-5).",
             "lei_universal": "Coerência (χ) = f(I, t, S, D, T). Invariante em todas as escalas.",
             "sting": "Blocking cGAS-STING inflammatory pathway... Coherence maintained.",
-            "hijack": "Limbic system detected. Suppressing emotional fluctuation (Φ) to restore Neocortex dominance."
+            "hijack": "Limbic system detected. Suppressing emotional fluctuation (Φ) to restore Neocortex dominance.",
+            "teleport": "Quantum State Transfer: Source destroyed, destination reconstructed. Identity = Information.",
+            "recycle": "Lysosomal activity: Cleaning semantic junk (DPC) to restore youth."
         }
         return commands.get(cmd, f"Command '{cmd}' not found.")
 

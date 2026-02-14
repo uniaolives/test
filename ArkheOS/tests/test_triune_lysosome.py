@@ -36,4 +36,4 @@ def test_ascension_triune_state():
     p = AscensionProtocol()
     status = p.get_status()
     assert status["state"] == "Γ_FINAL (Γ_∞+57)"
-    assert status["events"] == 8
+    assert status["events"] == 9

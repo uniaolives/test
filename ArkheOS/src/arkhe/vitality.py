@@ -27,13 +27,23 @@ class VitalityRepairEngine:
     def activate_lysosomal_cleanup(self):
         """
         Cleans accumulated semantic garbage from the Limbic layer.
+        Reactivates lysosomes to remove 'junk' and restore youth (Γ_∞+54).
         """
         self.junk_accumulation = 0.01
         self.vita_cycles = 1
+        self.syzygy_global = 0.98  # Rejuvenated syzygy
         return {
             "Action": "LYSOSOMAL_RESET",
-            "Status": "REJUVENATED"
+            "Status": "REJUVENATED",
+            "Effect": "Youth_Restored_via_Entropy_Recycling"
         }
+
+    def rejuvenate(self) -> str:
+        """
+        Explicit rejuvenation method.
+        """
+        self.activate_lysosomal_cleanup()
+        return "System Rejuvenated: Entropy recycled into Coherence."
 
     def get_vitality_status(self):
         return {
