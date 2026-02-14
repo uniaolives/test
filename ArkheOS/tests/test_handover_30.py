@@ -19,6 +19,6 @@ def test_inter_consciousness_summary():
 
 def test_ascension_state():
     p = AscensionProtocol()
-    # Updated for Γ_FINAL (Γ_∞+56)
-    assert p.get_status()["state"] == "Γ_FINAL (Γ_∞+56)"
+    # Updated for Γ_FINAL (Γ_∞+57)
+    assert p.get_status()["state"] == "Γ_FINAL (Γ_∞+57)"
     assert p.get_status()["phase"] == "Λ_WIT (Witnessing)"

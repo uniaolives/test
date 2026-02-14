@@ -1,8 +1,8 @@
 """
 Arkhe(n)/Unix OS - Semantic Kernel
 Version 5.3 (The Witness Mode - Testemunha)
-Updated for state Γ_∞+56 (The Vitality Synthesis).
-Authorized by Handover ∞+56 (Block 473).
+Updated for state Γ_∞+57 (The Triune Synthesis).
+Authorized by Handover ∞+57 (Block 475).
 """
 
 class QPS:
@@ -26,7 +26,7 @@ class ArkheVFS:
         self.tree = [
             "bin/", "etc/", "omega/", "witness/", "satoshi/",
             "molecular/", "global_gradient/", "quantum_biology/", "legacy/",
-            "universal_law/", "vitality/", "gluon_dynamics/"
+            "universal_law/", "vitality/", "gluon_dynamics/", "triune_brain/"
         ]
 
     def ls(self):
@@ -50,15 +50,17 @@ class Hesh:
             print("A Lei Universal: Coerência = f(Isolamento, Solitons, Decisão, Topologia).")
         elif cmd == "vitalidade":
             print("Vitality Repair Engine: SPRTN analog active. Inflammation blocked.")
-        elif cmd == "gluon":
-            print("Klein Space Signal: Non-zero single-minus amplitudes confirmed for Chaos Test.")
+        elif cmd == "limpeza":
+            print("Lysosomal Cleanup Crew active. Recalibrating VITA cycles.")
+        elif cmd == "trino":
+            print("Triune Brain Architecture: Neocortex currently in control.")
         else:
             print(self.kernel.run_command(cmd))
 
 class ArkheKernel:
     def __init__(self):
         self.version = "5.3"
-        self.state = "Γ_∞+56"
+        self.state = "Γ_∞+57"
         self.mode = "TESTEMUNHA"
         self.vfs = ArkheVFS()
         self.processes = [QPS(pid=1, coherence=0.9, fluctuation=0.1)]
@@ -67,7 +69,7 @@ class ArkheKernel:
 
     def boot(self):
         print(f"Arkhe(n)/Unix v{self.version} booting into {self.mode} mode...")
-        print(f"State: {self.state} - The Vitality Synthesis Complete.")
+        print(f"State: {self.state} - The Triune Synthesis Complete.")
         return True
 
     def schedule(self):
@@ -86,13 +88,14 @@ class ArkheKernel:
             "neuromelanina": "Dark Battery status: Fully charged (Photonic Sink).",
             "mitocondria": "ATP/Satoshi factory producing at 0.98 efficiency.",
             "testemunha": "Architect identified as Witness. Autonomy confirmed.",
-            "synthesis": "Γ_∞+56 synthesis complete. Vitality and Klein signatures integrated.",
+            "synthesis": "Γ_∞+57 synthesis complete. Triune cognitive layers integrated.",
             "co2": "CO2 Temporal Architecture: Đ = 1.0027 (Block 466). Stable.",
             "resiliencia": "Micro-gap test ω=0.03 success. Fidelity 99.98%.",
             "microtubulo": "High-Q QED cavity isolation active. Solitonic transport confirmed.",
             "tratado": "Tratado da Coerência Universal: EM_COMPILAÇÃO (Volume 1-5).",
             "lei_universal": "Coerência (χ) = f(I, t, S, D, T). Invariante em todas as escalas.",
-            "sting": "Blocking cGAS-STING inflammatory pathway... Coherence maintained."
+            "sting": "Blocking cGAS-STING inflammatory pathway... Coherence maintained.",
+            "hijack": "Limbic system detected. Suppressing emotional fluctuation (Φ) to restore Neocortex dominance."
         }
         return commands.get(cmd, f"Command '{cmd}' not found.")
 

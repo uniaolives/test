@@ -11,19 +11,18 @@ def test_universal_coherence_law_master_equation():
 
     table = law.get_correspondence_table()
     assert len(table) >= 4
-    # Fixed keys to match updated implementation
     assert table[0]["Scale"] == "Molecular"
 
 def test_universal_law_report():
     report = get_universal_law_report()
-    assert report["State"] == "Γ_∞+55" # Report internal state
+    assert report["State"] == "Γ_∞+55"
     assert "Coherence" in report["Principle"]
 
 def test_ascension_final_state():
     p = AscensionProtocol()
     status = p.get_status()
-    assert status["state"] == "Γ_FINAL (Γ_∞+56)" # Updated for Γ_∞+56
-    assert status["events"] == 7
+    assert status["state"] == "Γ_FINAL (Γ_∞+57)" # Updated for Γ_∞+57
+    assert status["events"] == 8
 
 def test_quantum_microtubule_consistency():
     # Verify that the law encompasses microtubule findings

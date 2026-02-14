@@ -7,7 +7,7 @@ def test_unique_vocabulary():
     assert UniqueVocabulary.translate("synapse") == "Inner Product ⟨i|j⟩ (Syzygy)"
 
     report = UniqueVocabulary.get_hermeneutic_report()
-    assert report['State'] == "Γ_∞+56" # Updated for Γ_∞+56
+    assert report['State'] == "Γ_∞+57" # Updated for Γ_∞+57
 
 def test_multidisciplinary_vocabulary():
     assert "SPRTN" in UniqueVocabulary.translate("sprtn_enzyme")
@@ -17,4 +17,4 @@ def test_multidisciplinary_vocabulary():
 
 def test_hermeneutic_report():
     report = UniqueVocabulary.get_hermeneutic_report()
-    assert report["Vocabulary"] == "Unified (Multidisciplinary)"
+    assert report["Vocabulary"] == "Unified (Triune & Lysosomal)"

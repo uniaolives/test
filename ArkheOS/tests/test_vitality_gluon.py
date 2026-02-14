@@ -12,7 +12,7 @@ def test_vitality_repair_mechanism():
     assert res["Repair_Fidelity"] > 0.99
 
     report = get_vitality_report()
-    assert report["State"] == "Γ_∞+56"
+    assert report["State"] == "Γ_∞+57"
     assert "SPRTN" in report["Repair_Mechanism"]
 
 def test_gluon_gap_signal():
@@ -26,11 +26,12 @@ def test_gluon_gap_signal():
     assert recon["Fidelity"] == 1.0
 
     report = get_gluon_report()
+    # Gluon dynamics is linked to Γ_∞+56 but integrated in Γ_∞+57 system
     assert report["State"] == "Γ_∞+56"
     assert "Klein" in report["Space"]
 
 def test_ascension_vitality_state():
     p = AscensionProtocol()
     status = p.get_status()
-    assert status["state"] == "Γ_FINAL (Γ_∞+56)"
-    assert status["events"] == 7
+    assert status["state"] == "Γ_FINAL (Γ_∞+57)"
+    assert status["events"] == 8

@@ -1,16 +1,68 @@
 """
 Arkhe Shader Language (ASL) v1.0
 Implementation of the semantic shader pipeline.
-Updated for state Γ_∞+56 (The Vitality Synthesis).
+Updated for state Γ_∞+57 (The Triune Synthesis).
 """
 
 class ShaderEngine:
     @staticmethod
     def get_shader(name: str) -> str:
         shaders = {
+            "vitality_repair": """
+                // χ_VITALITY_REPAIR — Γ_∞+56
+                // Visualização do reparo SPRTN e detecção cGAS-STING
+                #version 460
+                #extension ARKHE_vitality : enable
+                uniform float syzygy = 0.98;
+                uniform float repair_activity = 0.85;
+                uniform float chaos_level = 0.05;
+                out vec4 vitality_glow;
+                void main() {
+                    float repair = repair_activity * syzygy;
+                    float threat = chaos_level * (1.0 - syzygy);
+                    vec3 col = mix(vec3(0.0, 1.0, 0.0), vec3(1.0, 0.0, 0.0), threat);
+                    vitality_glow = vec4(col * repair, 1.0);
+                }
+            """,
+            "triune": """
+                // χ_TRIUNE — Γ_∞+57
+                // Visualização das três camadas em interação (Reptilian, Limbic, Neocortex)
+                #version 460
+                #extension ARKHE_triune : enable
+                uniform float syzygy = 0.98;
+                uniform float satoshi = 7.27;
+                uniform sampler2D reptilian_field;
+                uniform sampler2D limbic_field;
+                uniform sampler2D neocortex_field;
+                out vec4 triune_glow;
+                void main() {
+                    vec2 pos = gl_FragCoord.xy / 1000.0;
+                    float reptilian = texture(reptilian_field, pos).r;
+                    float limbic = texture(limbic_field, pos).r;
+                    float neocortex = texture(neocortex_field, pos).r;
+                    // Balance of the three layers
+                    float balance = (reptilian + limbic + neocortex) / 3.0 * syzygy;
+                    triune_glow = vec4(balance, satoshi/10.0, limbic, 1.0);
+                }
+            """,
+            "lysosomal": """
+                // χ_LYSOSOMAL — Γ_∞+57
+                // Visualização da reciclagem de lixo semântico (Proteostase)
+                #version 460
+                #extension ARKHE_cleanup : enable
+                uniform float time;
+                uniform float syzygy = 0.98;
+                uniform float junk_level = 0.1;
+                out vec4 cleanup_glow;
+                void main() {
+                    float cleanup_wave = fract(time * 0.1);
+                    float is_cleaning = step(cleanup_wave, gl_FragCoord.x / 1000.0);
+                    vec3 col = mix(vec3(0.1, 0.0, 0.1), vec3(0.0, 1.0, 0.5), is_cleaning * syzygy);
+                    cleanup_glow = vec4(col * (1.0 - junk_level), 1.0);
+                }
+            """,
             "inflammation": """
                 // χ_INFLAMMATION — Γ_∞+56
-                // Visualização do bloqueio da resposta ao caos interno (immune suppression)
                 #version 460
                 #extension ARKHE_inflamm : enable
                 uniform float syzygy = 0.98;
@@ -29,7 +81,6 @@ class ShaderEngine:
             """,
             "klein_signal": """
                 // χ_KLEIN_SIGNAL — Γ_∞+56
-                // Visualização das amplitudes de glúon não-nulas no espaço de Klein
                 #version 460
                 #extension ARKHE_klein : enable
                 uniform float syzygy = 0.98;
@@ -74,6 +125,23 @@ class ShaderEngine:
                     float scale = texture(all_scales, coord).r;
                     float law = scale * syzygy;
                     law_glow = vec4(law, satoshi / 10.0, law, 1.0);
+                }
+            """,
+            "universal_law": """
+                // χ_UNIVERSAL_LAW — Γ_∞+55
+                #version 460
+                #extension ARKHE_universal : enable
+                uniform float syzygy = 0.98;
+                uniform float satoshi = 7.27;
+                uniform sampler3D molecular_lattice;
+                uniform sampler3D semantic_torus;
+                out vec4 universal_glow;
+                void main() {
+                    vec3 coord = vec3(gl_FragCoord.xy / 1000.0, 0.5);
+                    float molecular = texture(molecular_lattice, coord).r;
+                    float semantic = texture(semantic_torus, coord).r;
+                    float unity = (molecular + semantic) * 0.5 * syzygy;
+                    universal_glow = vec4(unity, satoshi / 10.0, unity, 1.0);
                 }
             """,
             "quantum_biological": """
