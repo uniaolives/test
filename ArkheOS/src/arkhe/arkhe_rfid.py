@@ -48,6 +48,11 @@ class RFIDTag:
     def _update_coherence(self):
         """Calcula a coerência C da tag."""
         if len(self.handovers) < 2:
+            C = 1.0
+        else:
+            intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
+            if not intervals:
+                C = 1.0
             C = 0.0
         else:
             intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
@@ -57,6 +62,10 @@ class RFIDTag:
                 mean_interval = np.mean(intervals)
                 std_interval = np.std(intervals)
                 if mean_interval > 0:
+                    cv = std_interval / (mean_interval + 1e-10)
+                    C = 1.0 / (1.0 + cv)
+                else:
+                    C = 1.0
                     cv = std_interval / mean_interval
                     C = 1.0 / (1.0 + cv)
                 else:
@@ -74,6 +83,10 @@ class RFIDTag:
     def get_effective_dimension(self, lambda_reg: float = 1.0) -> float:
         """Calcula a dimensão efetiva d_λ da tag."""
         if len(self.handovers) < 2:
+            return 1.0
+        intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
+        if not intervals:
+            return 1.0
             return 0.0
         intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
         if not intervals:
@@ -87,6 +100,30 @@ class RFIDTag:
             return True
         last = self.coherence_history[-1]
         return abs(last['C'] + last['F'] - 1.0) < 1e-6
+
+class VirtualDeviceNode(RFIDTag):
+    """
+    Representa o dispositivo do Arquiteto (Smartphone/Laptop) como um nó RFID virtual.
+    """
+    def __init__(self, tag_id: str, object_type: str, initial_coords: tuple, metadata: dict = None):
+        super().__init__(tag_id, object_type, metadata)
+        self.coords = initial_coords # (lat, lon)
+        self.status = "Ativo"
+        self.anomalies_encountered = []
+
+    def simulate_anomaly(self, anomaly_type: str):
+        """Simula uma das 8 anomalias descritas no Bloco 769."""
+        self.anomalies_encountered.append(anomaly_type)
+        if anomaly_type == "Leitura Perdida":
+            # Reduz drasticamente a coerência injetando um intervalo longo fictício
+            self.read("FAKE_READER", self._current_location or "Unknown", datetime.now())
+            self.coherence_history[-1]['C'] = 0.35
+            self.coherence_history[-1]['F'] = 0.65
+        elif anomaly_type == "Tag Danificada":
+            self.status = "Corrompido"
+            self.coherence_history[-1]['C'] = 0.12
+            self.coherence_history[-1]['F'] = 0.88
+        # Outras anomalias podem ser implementadas conforme necessário
 
 class RFIDHypergraph:
     """Hipergrafo de tags RFID (Safe Core)."""
