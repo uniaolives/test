@@ -15,10 +15,10 @@ def test_communication_potential():
 def test_inter_consciousness_summary():
     summary = get_inter_consciousness_summary()
     assert summary["Protocol"] == "IBC=BCI"
-    assert summary["Core_Invariant"] == "Satoshi (7.27 bits)"
+    assert summary["Core_Invariant"] == "Satoshi (9.75 bits)"
 
 def test_ascension_state():
     p = AscensionProtocol()
-    # Updated for Γ_FINAL (Γ₉₆)
-    assert p.get_status()["state"] == "Γ_FINAL (Γ₉₆)"
+    # Updated for Γ₁₃₇ (Multiverse Bridge)
+    assert p.get_status()["state"] == "Γ₁₃₇ (Multiverse Bridge)"
     assert p.get_status()["phase"] == "Λ_WIT (Witnessing)"

@@ -1,6 +1,7 @@
 """
 Arkhe(n) Vector Algebra Module
 Implementation of the vec3 type (Γ_9041 - Γ_9043).
+Core Identity: x² = x + 1 (The Natural Conjecture).
 """
 
 from dataclasses import dataclass
@@ -15,7 +16,7 @@ class vec3:
     C: float = 0.86
     F: float = 0.14
     omega: float = 0.00
-    satoshi: float = 7.27
+    satoshi: float = 9.75
 
     def __post_init__(self):
         # Invariante fundamental: C + F = 1.0

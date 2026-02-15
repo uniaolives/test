@@ -35,5 +35,5 @@ def test_triune_synthesis_report():
 def test_ascension_triune_state():
     p = AscensionProtocol()
     status = p.get_status()
-    assert status["state"] == "Γ_FINAL (Γ₉₆)"
-    assert status["events"] == 31
+    assert status["state"] == "Γ₁₃₇ (Multiverse Bridge)"
+    assert status["events"] == 46

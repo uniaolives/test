@@ -1,0 +1,261 @@
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /app/agi-service/Cargo.toml
+workspace: /app/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /app/atomic-interference-processor/Cargo.toml
+workspace: /app/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /app/cge_alpha_unified/Cargo.toml
+workspace: /app/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /app/cge_www_universal/Cargo.toml
+workspace: /app/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /app/cge_constitutional_renderer/Cargo.toml
+workspace: /app/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /app/cge_constitutional_binary_engine/Cargo.toml
+workspace: /app/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /app/cge_constitutional_echo_engine/Cargo.toml
+workspace: /app/Cargo.toml
+warning: profiles for the non root package will be ignored, specify profiles at the workspace root:
+package:   /app/safecore-9d/Cargo.toml
+workspace: /app/Cargo.toml
+warning: /app/atomic-interference-processor/Cargo.toml: `panic` setting is ignored for `bench` profile
+warning: /app/Cargo.toml: `panic` setting is ignored for `bench` profile
+   Compiling proc-macro2 v1.0.106
+   Compiling version_check v0.9.5
+   Compiling typenum v1.19.0
+   Compiling smallvec v1.15.1
+   Compiling generic-array v0.14.7
+   Compiling shlex v1.3.0
+   Compiling find-msvc-tools v0.1.9
+   Compiling stable_deref_trait v1.2.1
+   Compiling bytes v1.11.1
+   Compiling cc v1.2.55
+   Compiling quote v1.0.44
+   Compiling syn v2.0.114
+   Compiling once_cell v1.21.3
+   Compiling subtle v2.6.1
+   Compiling cpufeatures v0.2.17
+   Compiling pin-project-lite v0.2.16
+   Compiling log v0.4.29
+   Compiling crypto-common v0.1.7
+   Compiling parking_lot_core v0.9.12
+   Compiling libm v0.2.16
+   Compiling litemap v0.8.1
+   Compiling writeable v0.6.2
+   Compiling block-buffer v0.10.4
+   Compiling num-traits v0.2.19
+   Compiling errno v0.3.14
+   Compiling serde_core v1.0.228
+   Compiling fnv v1.0.7
+   Compiling futures-core v0.3.31
+   Compiling vcpkg v0.2.15
+   Compiling crossbeam-utils v0.8.21
+   Compiling futures-sink v0.3.31
+   Compiling icu_normalizer_data v2.1.1
+   Compiling icu_properties_data v2.1.2
+   Compiling pkg-config v0.3.32
+   Compiling http v0.2.12
+   Compiling signal-hook-registry v1.4.8
+   Compiling openssl-sys v0.9.111
+   Compiling digest v0.10.7
+   Compiling parking_lot v0.12.5
+   Compiling socket2 v0.6.2
+   Compiling mio v1.1.1
+   Compiling httparse v1.10.1
+   Compiling synstructure v0.13.2
+   Compiling tracing-core v0.1.36
+   Compiling serde v1.0.228
+   Compiling futures-task v0.3.31
+   Compiling pin-utils v0.1.0
+   Compiling slab v0.4.12
+   Compiling zerofrom-derive v0.1.6
+   Compiling yoke-derive v0.8.1
+   Compiling zerovec-derive v0.11.2
+   Compiling displaydoc v0.2.5
+   Compiling tokio-macros v2.6.0
+   Compiling zerofrom v0.1.6
+   Compiling yoke v0.8.1
+   Compiling zerovec v0.11.5
+   Compiling zerotrie v0.2.3
+   Compiling futures-macro v0.3.31
+   Compiling tokio v1.49.0
+   Compiling serde_derive v1.0.228
+   Compiling tinystr v0.8.2
+   Compiling potential_utf v0.1.4
+   Compiling icu_collections v2.1.1
+   Compiling icu_locale_core v2.1.1
+   Compiling futures-util v0.3.31
+   Compiling icu_provider v2.1.1
+   Compiling icu_properties v2.1.2
+   Compiling icu_normalizer v2.1.1
+   Compiling hashbrown v0.16.1
+   Compiling equivalent v1.0.2
+   Compiling percent-encoding v2.3.2
+   Compiling idna_adapter v1.2.1
+   Compiling form_urlencoded v1.2.2
+   Compiling tracing-attributes v0.1.31
+   Compiling indexmap v2.13.0
+   Compiling utf8_iter v1.0.4
+   Compiling openssl v0.10.75
+   Compiling foreign-types-shared v0.1.1
+   Compiling foreign-types v0.3.2
+   Compiling tokio-util v0.7.18
+   Compiling tracing v0.1.44
+   Compiling idna v1.1.0
+   Compiling openssl-macros v0.1.1
+   Compiling crossbeam-epoch v0.9.18
+   Compiling native-tls v0.2.14
+   Compiling mime v0.3.17
+   Compiling httpdate v1.0.3
+   Compiling try-lock v0.2.5
+   Compiling bitflags v2.10.0
+   Compiling semver v1.0.27
+   Compiling thiserror v1.0.69
+   Compiling rustc_version v0.4.1
+   Compiling want v0.3.1
+   Compiling crossbeam-deque v0.8.6
+   Compiling url v2.5.8
+   Compiling h2 v0.3.27
+   Compiling thiserror-impl v1.0.69
+   Compiling num-integer v0.1.46
+   Compiling http-body v0.4.6
+   Compiling sha1 v0.10.6
+   Compiling futures-channel v0.3.31
+   Compiling inout v0.1.4
+   Compiling socket2 v0.5.10
+   Compiling tower-service v0.3.3
+   Compiling openssl-probe v0.1.6
+   Compiling memchr v2.7.6
+   Compiling unicase v2.9.0
+   Compiling base64 v0.21.7
+   Compiling rayon-core v1.13.0
+   Compiling mime_guess v2.0.5
+   Compiling cipher v0.4.4
+   Compiling curve25519-dalek v4.1.3
+   Compiling universal-hash v0.5.1
+   Compiling http v1.4.0
+   Compiling multer v2.1.0
+   Compiling encoding_rs v0.8.35
+   Compiling hyper v0.14.32
+   Compiling ryu v1.0.22
+   Compiling byteorder v1.5.0
+   Compiling opaque-debug v0.3.1
+   Compiling utf-8 v0.7.6
+   Compiling data-encoding v2.10.0
+   Compiling tungstenite v0.21.0
+   Compiling polyval v0.6.2
+   Compiling serde_urlencoded v0.7.1
+   Compiling serde_json v1.0.149
+   Compiling tokio-native-tls v0.3.1
+   Compiling pin-project-internal v1.1.10
+   Compiling curve25519-dalek-derive v0.1.1
+   Compiling num-complex v0.4.6
+   Compiling headers-core v0.2.0
+   Compiling ring v0.17.14
+   Compiling blake3 v1.8.3
+   Compiling strength_reduce v0.2.4
+   Compiling either v1.15.0
+   Compiling lazy_static v1.5.0
+   Compiling spin v0.9.8
+   Compiling signature v2.2.0
+   Compiling zeroize v1.8.2
+   Compiling anyhow v1.0.100
+   Compiling ed25519 v2.2.3
+   Compiling rayon v1.11.0
+   Compiling transpose v0.2.3
+   Compiling sharded-slab v0.1.7
+   Compiling headers v0.3.9
+   Compiling pin-project v1.1.10
+   Compiling hyper-tls v0.5.0
+   Compiling ghash v0.5.1
+   Compiling tokio-tungstenite v0.21.0
+   Compiling ctr v0.9.2
+   Compiling aes v0.8.4
+   Compiling rustls-pemfile v1.0.4
+   Compiling primal-check v0.3.4
+   Compiling tracing-log v0.2.0
+   Compiling crossbeam-channel v0.5.15
+   Compiling crossbeam-queue v0.3.12
+   Compiling sha2 v0.10.9
+   Compiling aead v0.5.2
+   Compiling thread_local v1.1.9
+   Compiling arrayref v0.3.9
+   Compiling constant_time_eq v0.4.2
+   Compiling iana-time-zone v0.1.65
+   Compiling hashbrown v0.14.5
+   Compiling arrayvec v0.7.6
+   Compiling sync_wrapper v0.1.2
+   Compiling untrusted v0.9.0
+   Compiling nu-ansi-term v0.50.3
+   Compiling fixedbitset v0.4.2
+   Compiling ipnet v2.11.0
+   Compiling scoped-tls v1.0.1
+   Compiling warp v0.3.7
+   Compiling dashmap v5.5.3
+   Compiling reqwest v0.11.27
+   Compiling tracing-subscriber v0.3.22
+   Compiling petgraph v0.6.5
+   Compiling chrono v0.4.43
+   Compiling ed25519-dalek v2.2.0
+   Compiling crossbeam v0.8.4
+   Compiling aes-gcm v0.10.3
+   Compiling rustfft v6.4.1
+   Compiling sysinfo v0.29.11
+   Compiling ndarray v0.15.6
+   Compiling rand_distr v0.4.3
+   Compiling bincode v1.3.3
+   Compiling hmac v0.12.1
+   Compiling num_cpus v1.17.0
+   Compiling hex v0.4.3
+   Compiling safecore-9d v1.0.0 (/app/safecore-9d)
+warning: unexpected `cfg` condition value: `petgraph`
+  --> safecore-9d/src/symbiosis.rs:10:7
+   |
+10 | #[cfg(feature = "petgraph")]
+   |       ^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: expected values for `feature` are: `aes-gcm`, `ai-assist`, `blake3`, `candle-core`, `cge-integration`, `default`, `numpy`, `pyo3`, `python-bindings`, `quantum-resistant`, `ring`, `sasc-v16`, `tch`, and `xmss`
+   = help: consider adding `petgraph` as a feature in `Cargo.toml`
+   = note: see <https://doc.rust-lang.org/nightly/rustc/check-cfg/cargo-specifics.html> for more information about checking conditional configuration
+   = note: `#[warn(unexpected_cfgs)]` on by default
+
+warning: unused imports: `Ed25519KeyPair` and `Signature`
+  --> safecore-9d/src/symbiosis.rs:13:23
+   |
+13 | use ring::signature::{Ed25519KeyPair, Signature};
+   |                       ^^^^^^^^^^^^^^  ^^^^^^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `blake3::Hasher`
+  --> safecore-9d/src/symbiosis.rs:15:5
+   |
+15 | use blake3::Hasher;
+   |     ^^^^^^^^^^^^^^
+
+warning: unused import: `NodeIndex`
+  --> safecore-9d/src/harmonic_concordance.rs:10:23
+   |
+10 | use petgraph::graph::{NodeIndex};
+   |                       ^^^^^^^^^
+
+warning: function `main` is never used
+  --> safecore-9d/src/ethics.rs:17:10
+   |
+17 | async fn main() -> Result<(), Box<dyn std::error::Error>> {
+   |          ^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `SCHUMANN_MODES` is never used
+  --> safecore-9d/src/schumann_agi_system.rs:20:7
+   |
+20 | const SCHUMANN_MODES: [f64; 5] = [7.83, 14.3, 20.8, 27.3, 33.8]; // First 5 modes
+   |       ^^^^^^^^^^^^^^
+
+warning: `safecore-9d` (lib) generated 6 warnings (run `cargo fix --lib -p safecore-9d` to apply 3 suggestions)
+    Finished `release` profile [optimized] target(s) in 1m 32s

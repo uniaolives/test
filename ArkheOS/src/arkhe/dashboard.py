@@ -2,74 +2,96 @@
 # The Identity Stone in Practice
 
 import streamlit as st
-from typing import List
+import json
+from typing import List, Dict
 from arkhe.registry import GlobalEntityRegistry, Entity, EntityState
 from arkhe.consensus import ValidatedFact, ConsensusStatus
 
 def render_hitl_interface(registry: GlobalEntityRegistry):
     """
     Renders the Human-In-The-Loop interface for conflict resolution.
-    This is the technical manifestation of the 'Hesitation' principle.
+    Enhanced with bi-directional bounding box highlighting.
     """
     st.set_page_config(page_title="Arkhe(N) Mirror", layout="wide")
     st.title("🔑 Arkhe(N) – Convergence Mirror")
 
-    # Calculate System Phi (Φ)
+    # Sidebar Metrics
     conflicted = [e for e in registry.entities.values() if e.state == EntityState.CONFLICTED]
     phi = 1.0 if not conflicted else 1.0 - (len(conflicted) / len(registry.entities))
 
     st.sidebar.metric("System Φ", f"{phi:.4f}")
-    st.sidebar.write("Satoshi Invariant: 7.27 bits")
+    st.sidebar.write("Satoshi Invariant: 9.75 bits")
 
-    if not conflicted:
-        st.success("Absolute Convergence Achieved (Φ = 1.0000). The arch is stable.")
-    else:
-        st.warning(f"Detected {len(conflicted)} points of tension in the Geodesic Arch.")
+    # Document Viewer with Overlays
+    st.subheader("Document Context & Extraction Verification")
 
-    for ent in conflicted:
-        with st.expander(f"🔴 Conflict: {ent.name} ({ent.entity_type.value})"):
-            st.write(f"Current Value: {ent.value} {ent.unit or ''}")
+    # State for highlighting
+    if "hovered_entity_id" not in st.session_state:
+        st.session_state.hovered_entity_id = None
 
-            # Entity Heatmap Integration
-            st.subheader("Layout Heatmap Overlay")
+    col_doc, col_list = st.columns([2, 1])
 
-            # Simple SVG Heatmap
-            svg_overlay = """
-            <svg width="600" height="400" style="background: #eee; border: 1px solid #ccc;">
-                <rect x="120" y="50" width="200" height="30" fill="red" fill-opacity="0.3" stroke="red" />
-                <text x="125" y="70" font-family="sans-serif" font-size="12" fill="black">Extracted Value Area</text>
-            </svg>
-            """
-            st.components.v1.html(svg_overlay, height=420)
+    with col_doc:
+        st.write("### Entity Bounding Box Overlay")
+        # Simulated SVG based on registry entities
+        svg_content = _generate_svg_overlay(registry.entities.values(), st.session_state.hovered_entity_id)
+        st.components.v1.html(svg_content, height=600)
 
-            cols = st.columns(len(ent.provenance_chain))
-            for i, prov in enumerate(ent.provenance_chain):
-                with cols[i]:
-                    st.info(f"Source {i+1} (Page {prov.page})")
-                    st.code(prov.context_snippet)
+    with col_list:
+        st.write("### Extraction Results")
+        for ent in registry.entities.values():
+            status_color = "red" if ent.state == EntityState.CONFLICTED else "green"
 
-                    # Simulated Heatmap Highlight (SVG representation)
-                    st.markdown(f"""
-                    <div style="border: 2px solid #00f0ff; padding: 10px; border-radius: 5px; background: rgba(0, 240, 255, 0.1);">
-                      <strong>Heatmap Bbox:</strong> {prov.bbox} <br>
-                      <span style="color: #70ff70;">[HIGHLIGHTED ON DOC]</span>
-                    </div>
-                    """, unsafe_allow_html=True)
+            # Hover detection simulation via button or simple div
+            container = st.container()
+            with container:
+                if st.button(f"{ent.name} [{ent.entity_type.value}]", key=f"btn_{ent.id}"):
+                    st.session_state.hovered_entity_id = str(ent.id)
 
-                    if st.button(f"Validate Source {i+1}", key=f"{ent.id}_{i}"):
-                        # Apply the Practitioner's Signature (Manual Resolution)
-                        registry.resolve_manually(ent.id, ent.value, "Practitioner Validation")
-                        st.success(f"Fact resolved as Source {i+1}. Recalculating Φ...")
-                        # In a real app, we would use st.rerun()
+                st.markdown(f"""
+                <div style="border: 1px solid {status_color}; padding: 10px; border-radius: 5px; margin-bottom: 5px;">
+                    <strong>Value:</strong> {ent.value} <br>
+                    <strong>Confidence:</strong> {ent.confidence:.2f}
+                </div>
+                """, unsafe_allow_html=True)
 
-    st.divider()
-    st.subheader("Operational Geometry")
-    st.write("Each node in the graph below represents a load-bearing extraction fact.")
-    # In a real implementation, this would use st.graphviz_chart or a d3.js component
-    st.info("Interactive Geodesic Graph - [PLACEHOLDER]")
+    # Conflict Resolution Section
+    if conflicted:
+        st.divider()
+        st.header("Resolve Tensions")
+        for ent in conflicted:
+            with st.expander(f"🔴 Conflict: {ent.name}"):
+                _render_conflict_resolver(ent, registry)
 
-if __name__ == "__main__":
-    # Sample execution logic for dashboard
-    if 'registry' not in st.session_state:
-        st.session_state.registry = GlobalEntityRegistry()
-    render_hitl_interface(st.session_state.registry)
+def _generate_svg_overlay(entities, hovered_id) -> str:
+    """Generates an SVG string representing the document with entity boxes."""
+    rects = []
+    for ent in entities:
+        # Use provenance to get bbox
+        if ent.provenance_chain:
+            bbox = ent.provenance_chain[0].bbox # [x0, y0, x1, y1]
+            color = "blue" if str(ent.id) == hovered_id else "rgba(255, 0, 0, 0.3)"
+            stroke = "blue" if str(ent.id) == hovered_id else "red"
+
+            rects.append(f"""
+            <rect x="{bbox[0]}" y="{bbox[1]}" width="{bbox[2]-bbox[0]}" height="{bbox[3]-bbox[1]}"
+                  fill="{color}" fill-opacity="0.3" stroke="{stroke}" stroke-width="2" />
+            <text x="{bbox[0]}" y="{bbox[1]-5}" font-family="sans-serif" font-size="10" fill="black">{ent.name}</text>
+            """)
+
+    return f"""
+    <svg width="100%" height="580" viewBox="0 0 800 600" style="background: #f0f0f0; border: 1px solid #ccc;">
+        <rect width="800" height="600" fill="white" />
+        {' '.join(rects)}
+    </svg>
+    """
+
+def _render_conflict_resolver(ent: Entity, registry: GlobalEntityRegistry):
+    cols = st.columns(len(ent.provenance_chain))
+    for i, prov in enumerate(ent.provenance_chain):
+        with cols[i]:
+            st.info(f"Source {i+1}")
+            st.code(prov.context_snippet)
+            if st.button(f"Accept Source {i+1}", key=f"res_{ent.id}_{i}"):
+                registry.resolve_manually(ent.id, ent.value, f"Practitioner selection: Source {i+1}")
+                st.success("Resolved!")

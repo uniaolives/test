@@ -1,6 +1,6 @@
 [package]
 name = "cge-www-universal"
-version = "31.11.0"
+version = "1.0.0"
 edition = "2021"
 authors = ["CGE Alpha Constitutional Architects"]
 license = "AGPL-3.0-or-later"

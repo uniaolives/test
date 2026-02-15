@@ -28,9 +28,28 @@ TASMOBJ=$(patsubst $(SRCDIR)/tasm/%.c, $(TASMDIR)/%.o, $(TASMSRC))
 TASMNAME=tasm
 TASM=$(TASMDIR)/$(TASMNAME)
 
-.PHONY: all clean destroy test install package
+.PHONY: all clean destroy test install package pgo
 
 all: $(OBJ) $(TIRE) $(TASM)
+
+# Profile-Guided Optimization (PGO)
+# Phase 1: Instrument the build
+pgo-instrument: CFLAGS += -fprofile-generate=pgo_data
+pgo-instrument: clean all
+	@echo "🔬 Build instrumented for profiling. Run tests to generate data."
+
+# Phase 2: Run tests/chaos logs to generate profile data
+pgo-profile: pgo-instrument
+	@echo "📊 Generating profile data from tests..."
+	$(MAKE) test || true
+	@echo "✓ Profile data generated in pgo_data"
+
+# Phase 3: Optimize using profile data
+pgo-optimize: CFLAGS += -fprofile-use=pgo_data -fprofile-correction
+pgo-optimize: clean all
+	@echo "🚀 Build optimized using PGO data."
+
+pgo: pgo-profile pgo-optimize
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.c
 	@ mkdir -p $(dir $@)

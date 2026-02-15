@@ -1,0 +1,4 @@
+Syzygy: 1.0000
+Satoshi: 9.53 bits
+Handovers: 131
+Verification successful!

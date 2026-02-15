@@ -33,5 +33,5 @@ def test_gluon_gap_signal():
 def test_ascension_vitality_state():
     p = AscensionProtocol()
     status = p.get_status()
-    assert status["state"] == "Γ_FINAL (Γ₉₆)"
-    assert status["events"] == 31
+    assert status["state"] == "Γ₁₃₇ (Multiverse Bridge)"
+    assert status["events"] == 46

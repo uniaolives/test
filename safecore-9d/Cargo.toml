@@ -1,6 +1,6 @@
 [package]
 name = "safecore-9d"
-version = "9.0.0"
+version = "1.0.0"
 edition = "2021"
 description = "Sistema Constitucional ASI 9-Dimensional (AIGP-Neo Architecture)"
 

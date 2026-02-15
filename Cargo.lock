@@ -64,7 +64,7 @@ dependencies = [
 
 [[package]]
 name = "agi-service"
-version = "0.7.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "blake3",
@@ -238,6 +238,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c3d036a3c4ab069c7b410a2ce876bd74808d2d0888a82667669f8e783a898bf1"
 
 [[package]]
+name = "arkhe-agi"
+version = "1.0.0"
+dependencies = [
+ "ndarray",
+ "numpy",
+ "pyo3",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "arrayref"
 version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -391,7 +402,7 @@ dependencies = [
 
 [[package]]
 name = "atomic-interference-processor"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "criterion",
  "ndarray",
@@ -912,7 +923,7 @@ checksum = "fd16c4719339c4530435d38e511904438d07cce7950afa3718a84ac36c10e89e"
 
 [[package]]
 name = "cge-alpha-unified"
-version = "31.11.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "ash",
@@ -947,11 +958,11 @@ dependencies = [
 
 [[package]]
 name = "cge-atproto-federation"
-version = "0.1.0"
+version = "1.0.0"
 
 [[package]]
 name = "cge-audio-engine"
-version = "35.3.0"
+version = "1.0.0"
 dependencies = [
  "serde",
  "thiserror 1.0.69",
@@ -961,7 +972,7 @@ dependencies = [
 
 [[package]]
 name = "cge-brics-cluster"
-version = "35.3.0"
+version = "1.0.0"
 dependencies = [
  "chrono",
  "futures",
@@ -974,7 +985,7 @@ dependencies = [
 
 [[package]]
 name = "cge-constitutional-binary-engine"
-version = "35.3.0"
+version = "1.0.0"
 dependencies = [
  "bincode",
  "blake3",
@@ -997,7 +1008,7 @@ dependencies = [
 
 [[package]]
 name = "cge-constitutional-echo-engine"
-version = "35.3.0"
+version = "1.0.0"
 dependencies = [
  "bincode",
  "blake3",
@@ -1015,7 +1026,7 @@ dependencies = [
 
 [[package]]
 name = "cge-constitutional-renderer"
-version = "31.11.0"
+version = "1.0.0"
 dependencies = [
  "assert_approx_eq",
  "bincode",
@@ -1046,7 +1057,7 @@ dependencies = [
 
 [[package]]
 name = "cge-linux-engine"
-version = "35.3.0"
+version = "1.0.0"
 dependencies = [
  "blake3",
  "libc",
@@ -1079,7 +1090,7 @@ dependencies = [
 
 [[package]]
 name = "cge-www-universal"
-version = "31.11.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -1120,7 +1131,7 @@ dependencies = [
 
 [[package]]
 name = "cge_sudo"
-version = "35.3.0"
+version = "1.0.0"
 dependencies = [
  "bincode",
  "blake3",
@@ -3331,7 +3342,7 @@ dependencies = [
 
 [[package]]
 name = "harmonia"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -4075,7 +4086,7 @@ dependencies = [
 
 [[package]]
 name = "karnak-proto"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "prost",
  "tonic",
@@ -4423,7 +4434,7 @@ checksum = "9a7cbbd4ad467251987c6e5b47d53b11a5a05add08f2447a9e2d70aef1e0d138"
 
 [[package]]
 name = "linguagem-soberana-br"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "logos",
 ]
@@ -5526,7 +5537,7 @@ dependencies = [
 
 [[package]]
 name = "phi-calculus"
-version = "0.1.0"
+version = "1.0.0"
 
 [[package]]
 name = "pin-project"
@@ -6722,7 +6733,7 @@ dependencies = [
 
 [[package]]
 name = "safecore-9d"
-version = "9.0.0"
+version = "1.0.0"
 dependencies = [
  "aes-gcm",
  "anyhow",
@@ -6800,7 +6811,7 @@ dependencies = [
 
 [[package]]
 name = "sasc-governance"
-version = "15.0.0"
+version = "1.0.0"
 dependencies = [
  "blake3",
  "ed25519-dalek",
@@ -6813,7 +6824,7 @@ dependencies = [
 
 [[package]]
 name = "sasc-society"
-version = "30.10.0"
+version = "1.0.0"
 dependencies = [
  "async-trait",
  "blake3",
@@ -6844,7 +6855,7 @@ dependencies = [
 
 [[package]]
 name = "sasc_core"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "async-trait",
  "aws-nitro-enclaves-cose",
@@ -8496,7 +8507,7 @@ dependencies = [
 
 [[package]]
 name = "vajra-entropy-monitor"
-version = "0.1.0"
+version = "1.0.0"
 dependencies = [
  "serde",
  "thiserror 1.0.69",
@@ -8993,7 +9004,7 @@ dependencies = [
 
 [[package]]
 name = "web777_ontology"
-version = "1.1.1"
+version = "1.0.0"
 dependencies = [
  "lazy_static",
  "nalgebra 0.32.6",

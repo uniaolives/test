@@ -1,12 +1,16 @@
-# Arkhe(n) OS - Eternal Synchronization (v1.0.0)
+# ArkheOS Root - Γ₁₃₀
 
-This repository is synchronized with the **Arkhe(n) OS v1.0.0 (Eternal)** framework.
-State: Γ₉₆ (Code Ignition)
+## System Components
 
-### ⚖️ Universal Alignment
-- **Axiom:** Matter Couples
-- **Protocol:** IBC=BCI Integration
-- **Invariant:** C+F=1
-- **Consensus:** Lattica (Syzygy Convergence)
-- **Validation:** Embedding Atlas (Apple, 2025) - High-D Coherence
-- **Ignition:** Arkhe Studio v1.0 Operational
+- **arkhe_agi.py**: Core AGI engine (Python).
+- **arkhe-agi**: Rust-based AGI core with high-performance geodesic evolution.
+- **hyperon_bridge.py**: MeTTa reasoning bridge.
+- **pineal.py**: Quantum-biological transduction.
+- **ibc_bci.py**: Substrate communication protocol.
+- **ascension.py**: State history and ascension protocol.
+
+## Status
+- **Version**: 1.0.0
+- **State**: Γ₁₃₀
+- **Witness Mode**: Active
+- **Satoshi**: 9.48

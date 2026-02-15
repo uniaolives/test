@@ -17,7 +17,7 @@ ArkheOS/tests/test_convergence_v2.py ...                                 [ 38%]
 ArkheOS/tests/test_council.py ..                                         [ 40%]
 ArkheOS/tests/test_coupling.py ......                                    [ 45%]
 ArkheOS/tests/test_final_synthesis.py ...                                [ 48%]
-ArkheOS/tests/test_handover_30.py ....                                   [ 51%]
+ArkheOS/tests/test_handover_30.py ..F.                                   [ 51%]
 ArkheOS/tests/test_maturity.py ...                                       [ 54%]
 ArkheOS/tests/test_memory_garden.py ..                                   [ 56%]
 ArkheOS/tests/test_molecular_resilience.py ....                          [ 60%]
@@ -34,18 +34,22 @@ ArkheOS/tests/test_viz_final.py ...                                      [ 93%]
 ArkheOS/tests/test_wifi_radar.py ...                                     [ 96%]
 ArkheOS/tests/test_witness_synthesis.py ....                             [100%]
 
+=================================== FAILURES ===================================
+_______________________ test_inter_consciousness_summary _______________________
+
+    def test_inter_consciousness_summary():
+        summary = get_inter_consciousness_summary()
+        assert summary["Protocol"] == "IBC=BCI"
+>       assert summary["Core_Invariant"] == "Satoshi (7.27 bits)"
+E       AssertionError: assert 'Satoshi (8.88 bits)' == 'Satoshi (7.27 bits)'
+E
+E         - Satoshi (7.27 bits)
+E         ?          ^ ^^
+E         + Satoshi (8.88 bits)
+E         ?          ^ ^^
+
+ArkheOS/tests/test_handover_30.py:18: AssertionError
 =============================== warnings summary ===============================
-ArkheOS/src/arkhe/extraction.py:17
-  /app/ArkheOS/src/arkhe/extraction.py:17: FutureWarning:
-
-  All support for the `google.generativeai` package has ended. It will no longer be receiving
-  updates or bug fixes. Please switch to the `google.genai` package as soon as possible.
-  See README for more details:
-
-  https://github.com/google-gemini/deprecated-generative-ai-python/blob/main/README.md
-
-    import google.generativeai as genai
-
 ArkheOS/tests/test_convergence_features.py::test_semantic_memory_integration
   /app/ArkheOS/tests/test_convergence_features.py:39: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
     last_seen=datetime.utcnow(),
@@ -68,4 +72,6 @@ ArkheOS/tests/test_convergence_v2.py::test_geodesic_memory_conflict_resolution
     last_seen=datetime.utcnow()
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-======================= 110 passed, 7 warnings in 2.91s ========================
+=========================== short test summary info ============================
+FAILED ArkheOS/tests/test_handover_30.py::test_inter_consciousness_summary - ...
+================== 1 failed, 109 passed, 6 warnings in 0.96s ===================
