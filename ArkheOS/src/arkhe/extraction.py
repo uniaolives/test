@@ -10,11 +10,14 @@ from typing import List, Optional, Any, Dict, Type
 from enum import Enum
 import hashlib
 from datetime import datetime, timezone
+from .providers import GeminiProvider, OllamaProvider
+from .telemetry import Provider
 
 # Configure logging for telemetry
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ArkheExtraction")
 
+from .models import Currency, FinancialFact, ExtractionReport
 class Currency(str, Enum):
     USD = "USD"
     EUR = "EUR"
@@ -85,6 +88,12 @@ class BaseExtractor:
 class GeminiExtractor(BaseExtractor):
     def __init__(self, api_key: str):
         super().__init__(model_name="gemini-2.0-flash")
+        self.provider = GeminiProvider(api_key=api_key)
+
+    async def _call_llm_internal(self, prompt: str) -> str:
+        # Pass model_used in context for simulation support in BaseLLMProvider
+        res = await self.provider.generate(prompt, context={"model_used": self.model_name}, validate_output=False)
+        return res.get("content")
         self.api_key = api_key
 
     async def _call_llm_internal(self, prompt: str) -> str:
@@ -96,6 +105,12 @@ class GeminiExtractor(BaseExtractor):
 class OllamaExtractor(BaseExtractor):
     def __init__(self, base_url: str = "http://localhost:11434"):
         super().__init__(model_name="llama3")
+        self.provider = OllamaProvider(base_url=base_url)
+
+    async def _call_llm_internal(self, prompt: str) -> str:
+        # Pass model_used in context for simulation support in BaseLLMProvider
+        res = await self.provider.generate(prompt, context={"model_used": self.model_name}, validate_output=False)
+        return res.get("content")
         self.base_url = base_url
 
     async def _call_llm_internal(self, prompt: str) -> str:
