@@ -14,6 +14,9 @@ from arkhe.arkhe_zrsis import ZrSiSSimulation
 from arkhe.time_node import GNSSSatellite, Stratum1Server
 from arkhe.abundance import AbundanceMetric, AbundanceFlywheel
 from arkhe.gpt_c_model import ArkheGPTModel
+from arkhe.pi_analysis import PiAnalyzer, calc_pi_chudnovsky
+
+class TestArkheFramework(unittest.TestCase):
 
 class TestArkheFramework(unittest.TestCase):
 from arkhe.ucd import UCD, verify_conservation
@@ -62,6 +65,19 @@ class TestNewBlocks(unittest.TestCase):
 
     def test_gpt_training_sim(self):
         gpt = ArkheGPTModel(num_nodes=10)
+        for _ in range(5):
+            res = gpt.step()
+        self.assertAlmostEqual(res['C'] + res['F'], 1.0)
+
+    def test_pi_analysis(self):
+        pi_str = "1415926535" # First 10 digits after 3.
+        analyzer = PiAnalyzer(pi_str)
+        stats = analyzer.statistical_analysis()
+        self.assertGreater(stats['mean'], 0)
+        self.assertLessEqual(stats['C_global'] + stats['F_global'], 1.0000001)
+
+        pi_val = calc_pi_chudnovsky(20)
+        self.assertTrue(str(pi_val).startswith("3.14159"))
         # Verify initial state
         self.assertEqual(gpt.coherence, 0.0)
         # Perform steps

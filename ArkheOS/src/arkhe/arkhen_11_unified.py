@@ -1,6 +1,7 @@
 # arkhen_11_unified.py
 """
 Arkhen(11): O núcleo unificado de Arkhe(n)
+Integra UCD, Visão, Tempo, Fusão, Abundância e GPT-C.
 Integra UCD multi-linguagem, propulsão flagelar, projeção aleatória,
 RFID físico e cosmologia dos 11.
 """
@@ -15,6 +16,9 @@ class Node:
     """Nó no hipergrafo Arkhen(11)"""
     id: int
     name: str
+    domain: str
+    manifest: Any
+    substrate: Any
     domain: str  # 'code', 'physics', 'math', 'tech', 'cosmos'
     manifest: Any  # A forma manifesta (10)
     substrate: Any  # O +1 (consciência/regularização)
@@ -25,6 +29,8 @@ class Node:
             self.handovers = []
 
     def coherence(self) -> float:
+        if len(self.handovers) < 2:
+            return 1.0
         """C = regularidade dos handovers"""
         if len(self.handovers) < 2:
             return 1.0 # Inicialmente coerente por definição ou 1.0 se em repouso
@@ -35,6 +41,12 @@ class Node:
         return 1.0 / (1.0 + cv)
 
     def fluctuation(self) -> float:
+        return 1.0 - self.coherence()
+
+class Arkhen11:
+    """
+    Hipergrafo de 11 dimensões unificando todos os domínios Arkhe(n).
+    """
         """F = 1 - C"""
         return 1.0 - self.coherence()
 
@@ -55,6 +67,19 @@ class Arkhen11:
         self._initialize()
 
     def _initialize(self):
+        # 10 Domínios de Manifestação
+        domains = [
+            (0, "Polyglot UCD", "computation"),
+            (1, "Retinal Implant", "biology"),
+            (2, "Stratum 1 Time", "chronos"),
+            (3, "Antihydrogen Fusion", "physics"),
+            (4, "Abundance Flywheel", "economy"),
+            (5, "GPT-in-C", "intelligence"),
+            (6, "RFID Hypergraph", "technology"),
+            (7, "Effective Dimension", "mathematics"),
+            (8, "Flagellar Swimmers", "bionics"),
+            (9, "Semi-Dirac Anisotropy", "quantum"),
+            (10, "Universal Consciousness", "substrate") # O +1
         """Inicializa os 10 nós de manifestação + 1 substrato"""
         domains = [
             (0, "Python UCD", "code"),
@@ -75,6 +100,11 @@ class Arkhen11:
                 id=id,
                 name=name,
                 domain=domain,
+                manifest=name,
+                substrate="Φ_S" if id < 10 else "Absolute"
+            )
+
+        # Conexões radiais ao substrato
                 manifest=f"Forma {id}" if id < 10 else None,
                 substrate="Φ_S" if id < 10 else "Atman/Brahman"
             )
@@ -89,6 +119,13 @@ class Arkhen11:
         pos = eigvals[eigvals > 1e-10]
         return np.sum(pos / (pos + lambda_reg))
 
+    def system_coherence(self) -> float:
+        Cs = [n.coherence() for n in self.nodes.values()]
+        return np.mean(Cs)
+
+if __name__ == "__main__":
+    arkhen = Arkhen11()
+    print(f"Arkhen(11) Unified Operational. d_eff={arkhen.effective_dimension():.2f}")
     def handover(self, from_id: int, to_id: int, data: Dict):
         """Executa handover entre nós"""
         delta = data.get('time_delta', 0.0)
