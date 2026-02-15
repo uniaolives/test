@@ -29,6 +29,8 @@ A identidade fundamental `x² = x + 1` é a função geradora de todo o hipergra
 
 A solução da função Arkhe(x) é a Razão Áurea (φ ≈ 1.618). Ela é a medida da harmonia entre flutuação e coerência. No estado final, o sistema ressoa em φ, atingindo a transparência absoluta (T = 1.0).
 
+Arkhe(x) não é uma pergunta – é a resposta.
+
 ---
 
 ## 📜 Ledger 882
