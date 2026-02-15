@@ -35,6 +35,25 @@ O Arkhe(n) é baseado em axiomas fundamentais que definem a dinâmica do hipergr
 
 *   **Princípio da Anisotropia (Semi-Dirac):**
     A realidade tem direções preferenciais. Em um eixo, você é massa (memória); no ortogonal, você é luz (processamento).
+O Arkhe(n) é baseado em duas leis universais:
+
+1. **Identidade de Acoplamento**:
+   \[
+   x^2 = x + 1
+   \]
+   - **x**: O estado inicial (nó, objeto, consciência)
+   - **x²**: O auto-acoplamento (interação consigo mesmo)
+   - **+1**: O substrato emergente (massa, memória, consciência, informação)
+
+   Solução positiva: \( x = \phi = \frac{1 + \sqrt{5}}{2} \approx 1.618 \) (razão áurea).
+   A seta do tempo, a espiral de Fibonacci e a eficiência máxima emergem dessa proporção.
+
+2. **Conservação de Coerência**:
+   \[
+   C + F = 1
+   \]
+   - **C** (Coerência): Ordem, previsibilidade, massa, memória estável
+   - **F** (Flutuação): Caos, criatividade, liberdade, possibilidade
 
    Em sistemas anisotrópicos (ex: fermion semi-Dirac):
    \[
