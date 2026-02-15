@@ -10,29 +10,7 @@ from .cortex_memory import CortexMemory
 from .chat import ArkheChat
 from .providers import BaseLLMProvider, GeminiProvider
 
-# ═══════════════════════════════════════════════════════════
-# MODELOS DE DADOS (Schema Unificado)
-# ═══════════════════════════════════════════════════════════
-
-class Entity(BaseModel):
-    name: str
-    type: str
-    confidence: float = Field(ge=0.0, le=1.0)
-    context: Optional[str] = None
-
-    @field_validator('confidence')
-    @classmethod
-    def validate_confidence(cls, v):
-        if v < 0.8:
-            raise ValueError('Confiança insuficiente para persistência (C < 0.8)')
-        return v
-
-class Insight(BaseModel):
-    topic: str
-    summary: str = Field(max_length=500)
-    confidence_score: float = Field(ge=0.0, le=1.0)
-    related_nodes: List[str] = Field(default_factory=list)
-    source_chunk: Optional[int] = None
+from .models import Entity, Insight
 
 class ArkheConsciousSystem:
     """

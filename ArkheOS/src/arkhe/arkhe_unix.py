@@ -390,6 +390,24 @@ class Hesh:
             intent = " ".join(parts[2:]) if len(parts) > 2 else "Emergência orgânica."
             ce = CivilizationEngine()
             ce.plant_seed(seed, intent)
+        elif base_cmd == "neuro":
+            from arkhe.neuro_mapping import NeuroMappingProcessor
+            processor = NeuroMappingProcessor("fsl_sim_results")
+            report = processor.process_ledgers()
+            print(f"🧠 [Neuro] Status do Mapeamento: {report.get('status')}")
+            if "global_metrics" in report:
+                print(f"   Delta C: {report['global_metrics']['mean_delta_coherence']:.3f}")
+                print(f"   Harvested: {report['satoshi_harvested']} bits")
+        elif base_cmd == "qkd":
+            from arkhe.cryptography_qkd import DarvoQKDManager
+            qkd = DarvoQKDManager()
+            qkd.rotate_key()
+            print("🔐 [QKD] Chave quântica rotacionada e ativa.")
+        elif base_cmd == "syzygy":
+            from arkhe.consensus_syzygy import ProofOfSyzygy
+            posyz = ProofOfSyzygy()
+            res = posyz.validate_handover("H_SHELL")
+            print(f"🗳️ [PoSyz] Consenso: {'APROVADO' if res['approved'] else 'REJEITADO'}")
         elif base_cmd == "medir_chern":
             target = float(parts[1]) if len(parts) > 1 else self.omega
             from arkhe.topology import TopologyEngine
