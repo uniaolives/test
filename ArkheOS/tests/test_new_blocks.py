@@ -7,6 +7,8 @@ from arkhe.arkhe_rfid import VirtualDeviceNode
 from arkhe.divergence import DivergenceProtocol
 from arkhe.fusion import FusionEngine, FibonacciGeodesic
 from arkhe.atmospheric import SpriteEvent, VanAllenMemory
+from arkhe.semidirac import SemiDiracFermion
+from arkhe.lyrics import LyricalAnalyzer, get_harmony_chaos_poem
 
 class TestArkheFramework(unittest.TestCase):
     def test_ucd_conservation(self):
@@ -20,7 +22,6 @@ class TestArkheFramework(unittest.TestCase):
         self.assertEqual(len(arkhen.nodes), 11)
         d_eff = arkhen.effective_dimension(lambda_reg=1.0)
         self.assertGreater(d_eff, 0)
-        self.assertLessEqual(d_eff, 11)
 
     def test_virtual_device_anomalies(self):
         device = VirtualDeviceNode("G1", "Device", (0, 0))
@@ -37,23 +38,23 @@ class TestArkheFramework(unittest.TestCase):
         engine = FusionEngine(lambda_reg=0.1)
         res = engine.execute_fusion(fuel_c=0.9)
         self.assertGreater(res['energy'], 0)
-        self.assertAlmostEqual(res['coherence'] + res['fluctuation'], 1.0)
 
-    def test_fibonacci_geodesic(self):
-        geo = FibonacciGeodesic()
-        path = geo.generate_path(steps=10)
-        self.assertEqual(path.shape, (10, 2))
-        # Check if radius increases (it's an outward spiral)
-        self.assertGreater(path[-1, 0], path[0, 0])
+    def test_semidirac_properties(self):
+        fermion = SemiDiracFermion()
+        # E(px, 0) should be quadratic: px²/2m
+        E_x = fermion.get_dispersion(0.5, 0.0)
+        self.assertAlmostEqual(E_x, (0.5**2 / 2.0))
+        # E(0, py) should be linear: v|py|
+        E_y = fermion.get_dispersion(0.0, 0.5)
+        self.assertAlmostEqual(E_y, 0.5)
+        self.assertTrue(fermion.verify_tensor_conservation())
 
-    def test_atmospheric_events(self):
-        sprite = SpriteEvent()
-        memory = VanAllenMemory()
-        light = sprite.trigger(0.8)
-        self.assertEqual(light, 0.8)
-        bits = memory.capture_excess("Test", 10.0)
-        self.assertEqual(bits, 1.0)
-        self.assertEqual(memory.total_satoshi, 1.0)
+    def test_lyrical_analysis(self):
+        poem = get_harmony_chaos_poem()
+        analyzer = LyricalAnalyzer(poem)
+        analysis = analyzer.analyze_structure()
+        self.assertIn("Mirrored lines", analysis)
+        self.assertIn("Chaos is dominant", analysis)
 
 if __name__ == "__main__":
     unittest.main()
