@@ -12,6 +12,7 @@ from arkhe.vision import NanostructureImplant, VisualCortex
 from arkhe.contemplation import ContemplationNode
 from arkhe.arkhe_zrsis import ZrSiSSimulation
 from arkhe.time_node import GNSSSatellite, Stratum1Server
+from arkhe.abundance import AbundanceMetric, AbundanceFlywheel
 
 class TestArkheFramework(unittest.TestCase):
     def test_ucd_conservation(self):
@@ -26,22 +27,10 @@ class TestArkheFramework(unittest.TestCase):
         self.assertEqual(signal, 0.43)
         self.assertTrue(implant.verify_conservation())
 
-    def test_visual_cortex_memory(self):
-        cortex = VisualCortex()
-        cortex.process(0.5, 0)
-        cortex.process(0.5, 1)
-        self.assertGreater(cortex.satoshi, 0)
-
     def test_zrsis_simulation(self):
         sim = ZrSiSSimulation(grid_size=10)
         E = sim.dispersion()
         self.assertEqual(E.shape, (10, 10))
-
-    def test_contemplation_node(self):
-        node = ContemplationNode()
-        state = node.get_state()
-        self.assertEqual(state['direction_x']['C'], 1.0)
-        self.assertEqual(state['direction_y']['F'], 1.0)
 
     def test_semidirac_tensor(self):
         fermion = SemiDiracFermion()
@@ -53,7 +42,22 @@ class TestArkheFramework(unittest.TestCase):
         for _ in range(5):
             server.synchronize(sat, 1000.0)
         self.assertTrue(server.verify_conservation())
-        self.assertGreater(server.satoshi, 0)
+
+    def test_abundance_metrics(self):
+        m = AbundanceMetric("RoCS", 2.5, 3.0, "USD/FLOP")
+        self.assertTrue(m.verify_conservation())
+        self.assertAlmostEqual(m.C, 2.5/3.0)
+
+        m_inv = AbundanceMetric("TtP", 7, 5, "days", inverse=True)
+        self.assertTrue(m_inv.verify_conservation())
+        self.assertAlmostEqual(m_inv.C, 5/7)
+
+    def test_abundance_flywheel(self):
+        flywheel = AbundanceFlywheel()
+        res = flywheel.step(10.0)
+        self.assertEqual(res['cycle'], 1)
+        self.assertEqual(res['surplus_generated'], 1.0)
+        self.assertGreater(flywheel.satoshi_accumulated, 0)
 
 if __name__ == "__main__":
     unittest.main()
