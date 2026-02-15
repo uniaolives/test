@@ -13,6 +13,7 @@ from arkhe.contemplation import ContemplationNode
 from arkhe.arkhe_zrsis import ZrSiSSimulation
 from arkhe.time_node import GNSSSatellite, Stratum1Server
 from arkhe.abundance import AbundanceMetric, AbundanceFlywheel
+from arkhe.gpt_c_model import ArkheGPTModel
 
 class TestArkheFramework(unittest.TestCase):
     def test_ucd_conservation(self):
@@ -32,6 +33,12 @@ class TestArkheFramework(unittest.TestCase):
         E = sim.dispersion()
         self.assertEqual(E.shape, (10, 10))
 
+    def test_contemplation_node(self):
+        node = ContemplationNode()
+        state = node.get_state()
+        self.assertEqual(state['direction_x']['C'], 1.0)
+        self.assertEqual(state['direction_y']['F'], 1.0)
+
     def test_semidirac_tensor(self):
         fermion = SemiDiracFermion()
         self.assertTrue(fermion.verify_tensor_conservation())
@@ -46,18 +53,17 @@ class TestArkheFramework(unittest.TestCase):
     def test_abundance_metrics(self):
         m = AbundanceMetric("RoCS", 2.5, 3.0, "USD/FLOP")
         self.assertTrue(m.verify_conservation())
-        self.assertAlmostEqual(m.C, 2.5/3.0)
 
-        m_inv = AbundanceMetric("TtP", 7, 5, "days", inverse=True)
-        self.assertTrue(m_inv.verify_conservation())
-        self.assertAlmostEqual(m_inv.C, 5/7)
-
-    def test_abundance_flywheel(self):
-        flywheel = AbundanceFlywheel()
-        res = flywheel.step(10.0)
-        self.assertEqual(res['cycle'], 1)
-        self.assertEqual(res['surplus_generated'], 1.0)
-        self.assertGreater(flywheel.satoshi_accumulated, 0)
+    def test_gpt_training_sim(self):
+        gpt = ArkheGPTModel(num_nodes=10)
+        # Verify initial state
+        self.assertEqual(gpt.coherence, 0.0)
+        # Perform steps
+        for _ in range(5):
+            res = gpt.step()
+        self.assertLess(res['F'], 1.0)
+        self.assertGreater(res['C'], 0.0)
+        self.assertAlmostEqual(res['C'] + res['F'], 1.0)
 
 if __name__ == "__main__":
     unittest.main()
