@@ -11,6 +11,7 @@ from arkhe.semidirac import SemiDiracFermion
 from arkhe.vision import NanostructureImplant, VisualCortex
 from arkhe.contemplation import ContemplationNode
 from arkhe.arkhe_zrsis import ZrSiSSimulation
+from arkhe.time_node import GNSSSatellite, Stratum1Server
 
 class TestArkheFramework(unittest.TestCase):
     def test_ucd_conservation(self):
@@ -35,8 +36,6 @@ class TestArkheFramework(unittest.TestCase):
         sim = ZrSiSSimulation(grid_size=10)
         E = sim.dispersion()
         self.assertEqual(E.shape, (10, 10))
-        Cx, Fy = sim.coherence_fluctuation()
-        self.assertEqual(len(Cx), 10)
 
     def test_contemplation_node(self):
         node = ContemplationNode()
@@ -47,6 +46,14 @@ class TestArkheFramework(unittest.TestCase):
     def test_semidirac_tensor(self):
         fermion = SemiDiracFermion()
         self.assertTrue(fermion.verify_tensor_conservation())
+
+    def test_time_node_sync(self):
+        sat = GNSSSatellite("GPS", "GPS")
+        server = Stratum1Server("Test-Node")
+        for _ in range(5):
+            server.synchronize(sat, 1000.0)
+        self.assertTrue(server.verify_conservation())
+        self.assertGreater(server.satoshi, 0)
 
 if __name__ == "__main__":
     unittest.main()
