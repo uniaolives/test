@@ -43,6 +43,14 @@ class NeuroMappingProcessor:
             "breakthrough_nodes": breakthroughs,
             "satoshi_harvested": len(connectivity_df) * 0.15,
             "spectroscopy_signature": "χ_fMRI (Γ_∞+fMRI)"
+            "status": "MAPPED",
+            "global_metrics": {
+                "mean_delta_coherence": mean_delta_c,
+                "mean_delta_fluctuation": mean_delta_f,
+                "coherence_stabilization": 1.0 - abs(mean_delta_f)
+            },
+            "breakthrough_nodes": breakthroughs,
+            "satoshi_harvested": len(connectivity_df) * 0.15 # 0.15 bits por sujeito processado
         }
 
 if __name__ == "__main__":

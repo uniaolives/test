@@ -53,6 +53,11 @@ class RFIDTag:
             intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
             if not intervals:
                 C = 1.0
+            C = 0.0
+        else:
+            intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
+            if not intervals:
+                C = 0.0
             else:
                 mean_interval = np.mean(intervals)
                 std_interval = np.std(intervals)
@@ -61,6 +66,10 @@ class RFIDTag:
                     C = 1.0 / (1.0 + cv)
                 else:
                     C = 1.0
+                    cv = std_interval / mean_interval
+                    C = 1.0 / (1.0 + cv)
+                else:
+                    C = 0.0
 
         F = 1.0 - C
         self.coherence_history.append({
@@ -78,6 +87,10 @@ class RFIDTag:
         intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
         if not intervals:
             return 1.0
+            return 0.0
+        intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
+        if not intervals:
+            return 0.0
         eigenvalues = np.array(intervals) / np.mean(intervals)
         contributions = eigenvalues / (eigenvalues + lambda_reg)
         return np.sum(contributions)
@@ -133,3 +146,12 @@ class RFIDHypergraph:
         if location not in self.locations: self.locations[location] = []
         self.locations[location].append(tag_id)
         return handover
+
+if __name__ == "__main__":
+    hg = RFIDHypergraph()
+    t1 = RFIDTag("RFID_001", "Smartphone")
+    hg.add_tag(t1)
+    hg.register_reading("RFID_001", "R1", "Fábrica")
+    hg.register_reading("RFID_001", "R2", "CD", datetime.now())
+    print(f"Tag Coherence: {t1.coherence_history[-1]['C']}")
+    print(f"Conservation: {t1.verify_conservation()}")

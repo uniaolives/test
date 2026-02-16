@@ -18,6 +18,36 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ArkheExtraction")
 
 from .models import Currency, FinancialFact, ExtractionReport
+class Currency(str, Enum):
+    USD = "USD"
+    EUR = "EUR"
+    BRL = "BRL"
+    GBP = "GBP"
+
+class Provenance(BaseModel):
+    """The physical anchor of an extracted fact."""
+    doc_hash: str = Field(..., description="SHA256 of the source document")
+    page: int = Field(..., description="Page number (1-based)")
+    bbox: List[float] = Field(..., description="[x0, y0, x1, y1] coordinates")
+    context_snippet: str = Field(..., description="Text snippet surrounding the fact")
+    element_id: Optional[str] = Field(None, description="Link to the structural LayoutElement")
+    structural_context: Optional[str] = Field(None, description="e.g. 'Table 1, Row 5, Col 3'")
+    confidence: float = 0.95
+
+class FinancialFact(BaseModel):
+    """Structured financial data with geometric provenance."""
+    value: float = Field(..., description="Numerical value")
+    unit: Currency = Field(..., description="Currency unit")
+    description: str = Field(..., description="Short description of the fact")
+    confidence: float = Field(0.95, ge=0.0, le=1.0)
+    provenance: Optional[Provenance] = None
+
+class ExtractionReport(BaseModel):
+    """A complete block of extracted information."""
+    facts: List[FinancialFact]
+    document_name: str
+    extraction_timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
+    model_used: str
 
 class BaseExtractor:
     """Base class for all extraction engines with retry and telemetry."""
@@ -64,6 +94,13 @@ class GeminiExtractor(BaseExtractor):
         # Pass model_used in context for simulation support in BaseLLMProvider
         res = await self.provider.generate(prompt, context={"model_used": self.model_name}, validate_output=False)
         return res.get("content")
+        self.api_key = api_key
+
+    async def _call_llm_internal(self, prompt: str) -> str:
+        # Simulated API call for architectural validation
+        await asyncio.sleep(random.uniform(0.5, 1.5))
+        # Returning valid JSON for simulation
+        return '{"facts": [{"value": 1200000.0, "unit": "USD", "description": "simulated net profit"}], "document_name": "sim_doc", "model_used": "gemini-2.0-flash"}'
 
 class OllamaExtractor(BaseExtractor):
     def __init__(self, base_url: str = "http://localhost:11434"):
@@ -74,6 +111,12 @@ class OllamaExtractor(BaseExtractor):
         # Pass model_used in context for simulation support in BaseLLMProvider
         res = await self.provider.generate(prompt, context={"model_used": self.model_name}, validate_output=False)
         return res.get("content")
+        self.base_url = base_url
+
+    async def _call_llm_internal(self, prompt: str) -> str:
+        # Simulated Local LLM call
+        await asyncio.sleep(random.uniform(1.0, 3.0))
+        return '{"facts": [{"value": 50000.0, "unit": "BRL", "description": "simulated local expense"}], "document_name": "sim_doc", "model_used": "llama3"}'
 
 class LongDocumentProcessor:
     """Handles splitting long documents and reconciling state between parallel calls."""

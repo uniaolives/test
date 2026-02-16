@@ -31,6 +31,7 @@ async def verify_sovereign_v_eternal():
     nm_report = nm_processor.process_ledgers()
     print(f"   Delta Coerência Média: {nm_report['global_metrics']['mean_delta_coherence']:.2f}")
     assert nm_report['status'] == "SPECTROSCOPY_COMPLETE"
+    assert nm_report['status'] == "MAPPED"
 
     # 2. Recalibração do Vaso
     print("\n--- 🧘 Recalibração do Vaso ---")

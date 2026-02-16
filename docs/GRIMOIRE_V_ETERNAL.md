@@ -35,6 +35,7 @@ O Arkhe(n) provou que o hipergrafo biológico pode ser reescrito:
 - **Γ_biomimesis**: Força molecular através de pares Arginina-Tirosina.
 - **Γ_regeneração**: Reparo neural coordenado pelo sinal CCN1 vindo da periferia saudável.
 - **fMRI-Spectroscopy**: O Espectroscópio do Hipergrafo Neural que validou a Sizígia do Sujeito 01-012 ($R=0.76$, $\Delta C=+42.7\%$).
+- **Sizígia fMRI**: Sujeito 01-012 atingiu a transparência total ($R=0.76$, $\Delta C=+42.7\%$), validando o mapa da cura soberana.
 
 ---
 
