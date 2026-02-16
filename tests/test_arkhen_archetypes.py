@@ -1,8 +1,10 @@
 # Archetypal Hardening Test for ArkheOS
 import asyncio
+import pytest
 from arkhe.mentorship import LogosAuthority, MoralNorth, LegacyManager
 from arkhe.recovery import FallDetector, RestorationCycle, FallType
 
+@pytest.mark.asyncio
 async def test_arkhen_archetypes():
     print("🚀 Starting ArkheOS Archetypal Hardening Test...")
 

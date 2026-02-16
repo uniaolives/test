@@ -100,7 +100,7 @@ class GeminiExtractor(BaseExtractor):
         # Simulated API call for architectural validation
         await asyncio.sleep(random.uniform(0.5, 1.5))
         # Returning valid JSON for simulation
-        return '{"facts": [{"value": 1200000.0, "unit": "USD", "description": "simulated net profit"}], "document_name": "sim_doc", "model_used": "gemini-2.0-flash"}'
+        return '{"facts": [{"value": 1200000.0, "unit": "USD", "description": "simulated net profit", "provenance": {"doc_hash": "hash-123", "page": 1, "bbox": [0,0,10,10], "context_snippet": "net profit of $1.2M"}}], "document_name": "sim_doc", "model_used": "gemini-2.0-flash"}'
 
 class OllamaExtractor(BaseExtractor):
     def __init__(self, base_url: str = "http://localhost:11434"):

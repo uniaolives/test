@@ -16,6 +16,10 @@ def test_bio_agent_bonding():
     field = MorphogeneticField()
     all_agents = {0: agent1, 1: agent2}
 
+    # Force positive affinity by setting brain weights
+    agent1.brain.weights = np.array([1.0, 1.0, 1.0, 1.0])
+    agent1.brain.bias = 1.0
+
     # Try bonding
     agent1.sense_and_act(field, all_agents)
 

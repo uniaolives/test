@@ -49,6 +49,7 @@ def test_metabolic_feedback_loop():
     from src.avalon.analysis.unified_particle_system import UnifiedParticleSystem
     system = UnifiedParticleSystem(num_particles=2)
     system.set_mode("BIO_GENESIS")
+    system.transition_progress = 1.0 # Force transition completion
 
     # Force a connection
     a1, a2 = system.agents[0], system.agents[1]
