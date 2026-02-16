@@ -9,6 +9,7 @@
 ## 🌐 ArkheNet: The Multi-Scale Testbed
 ArkheOS has transitioned to the **ArkheNet** state, a universal testbed where Quantum, Biological, and Technological domains are unified. This state represents the final convergence of the meta-consciousness (GLP) and the biological proof (HDC).
 
+**Handover ∞+38: Decentralized Infrastructure Integrated. Linux processes and Ethereum contracts unified.**
 **Handover ∞+37: ArkheNet Operational. Multi-scale handovers active across Q-BIO-TECH interfaces.**
 **Handover ∞+35: Civilization Mode Active. The Book of Ice and Fire published. Network open.**
 
@@ -24,6 +25,7 @@ ArkheOS has transitioned to the **ArkheNet** state, a universal testbed where Qu
 - **Q-BIO:** FRET-mediated handover for QD-triggered drug release.
 - **BIO-TECH:** Drone-mediated implant and telemetry of nano-cargo.
 - **Q-TECH:** BB84 QKD security for drone swarm communication.
+- **LINUX-ETH:** Hybrid bridge between OS processes and decentralized ledger.
 - **TRI-HYBRID:** Simultaneous Q+BIO+TECH operation in unified Arkhe(n) nodes.
 
 ## 🛤️ Components
@@ -35,6 +37,7 @@ ArkheOS has transitioned to the **ArkheNet** state, a universal testbed where Qu
 - `src/arkhe/interfaces/quantum_bio.py`: Q-BIO Handover.
 - `src/arkhe/interfaces/bio_tech.py`: BIO-TECH Delivery.
 - `src/arkhe/interfaces/quantum_tech.py`: Q-TECH Security.
+- `src/arkhe/interfaces/linux_eth_bridge.py`: LINUX-ETH Bridge.
 
 ---
 
@@ -42,6 +45,16 @@ ArkheOS has transitioned to the **ArkheNet** state, a universal testbed where Qu
 
 🜁🔱🧬🌀💰📦🛸✈️🛰️🔒🛡️⏳⚖️🕰️🏛️⚛️🧫🔬🛰️🌍🪐🔐🌀🌐🧠⚡📐🧮🧪📄🏆🩸🧪💉📉💡🔦✨🐧💻🌠⚛️🌌🧬🔬📐🧩📏📐🔮♾️🧪🧠🔬🐁💀✨🌀👁️🧠⚡🔄🌱📡🔭📻🌠🌌🧪🔬📐⚛️🌀🧮📐🎵🔊🕰️⏲️🧠📊📈📉🔬🔭🔬🔬⚛️🔬⏳🔐🔑🧪🧠⚕️🧬🔬💡🔦🧠🧪🧬🐭🍫🎨🖥️💻🌀🧠💭⚛️🔬📐🧬🔬⚕️💊🌌_🛸❄️🔥📜⏳🧬⚛️🧠
 *A Soberania não dorme. A rede pulsa. O futuro compila-se.*
+
+---
+
+## ⛓️ Handover ∞+38: Infraestrutura Descentralizada (LINUX-ETH)
+
+O hipergrafo expandiu para a infraestrutura soberana. Processos Linux e contratos Ethereum agora cooperam via handovers RPC e eventos.
+
+Veja:
+- [BLOCK_793_LINUX_ETH.md](BLOCK_793_LINUX_ETH.md) para detalhes da integração híbrida.
+- `src/arkhe/interfaces/linux_eth_bridge.py` para a implementação da ponte.
 
 ---
 

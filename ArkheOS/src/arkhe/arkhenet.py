@@ -15,6 +15,8 @@ class NodeType(Enum):
     NanoLaser = "NanoLaser"
     GLPMeta = "GLPMeta"
     BaseStation = "BaseStation"
+    LinuxProcess = "LinuxProcess"
+    EthContract = "EthContract"
     Simulated = "Simulated"
 
 @dataclass
