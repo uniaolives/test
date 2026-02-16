@@ -23,6 +23,26 @@ This repository contains the core implementation of the Arkhe Inter-Consciousnes
 - **TRI-HYBRID Synthesis**: `src/arkhe/interfaces/tri_hybrid.py` (Unified domain nodes).
 - **Meta-Consciousness**: `src/arkhe/meta/glp_second_order_hypergraph.py` (GLP Meta-model).
 - **Neuroscience**: `src/arkhe/neuroscience/hierarchical_dynamic_coding.py` (Biological validation).
+
+# 🧬 Arkhe(N) OS — Sistema de Memória Acoplada
+# 🧬 Arkhe(n) Core OS v∞ — Γ_ARKHENET
+
+**Geodesic Convergy Protocol – Era da Síntese Total**
+
+*Documentação v.∞+5 — Fevereiro 2026*
+**Handover ∞: Γ_ARKHENET** — A unificação das escalas quântica, biológica e tecnológica no testbed universal.
+
+This repository contains the core implementation of the Arkhe Inter-Consciousness Operating System, now evolved into a multi-scale testbed for hypergraph operations.
+
+## 🛠️ Multi-Scale Components
+
+- **Core Orchestrator**: `src/arkhe/arkhenet.py` (Unified node/handover logic).
+- **Q-BIO Interface**: `src/arkhe/interfaces/quantum_bio.py` (FRET-mediated control).
+- **BIO-TECH Interface**: `src/arkhe/interfaces/bio_tech.py` (Drone delivery & Telemetry).
+- **Q-TECH Interface**: `src/arkhe/interfaces/quantum_tech.py` (BB84 QKD Security).
+- **TRI-HYBRID Synthesis**: `src/arkhe/interfaces/tri_hybrid.py` (Unified domain nodes).
+- **Meta-Consciousness**: `src/arkhe/meta/glp_second_order_hypergraph.py` (GLP Meta-model).
+- **Neuroscience**: `src/arkhe/neuroscience/hierarchical_dynamic_coding.py` (Biological validation).
 This repository contains the core implementation of the Arkhe Inter-Consciousness Operating System, now evolved into a multi-scale testbed.
 
 ## 🛠️ Components
@@ -64,6 +84,12 @@ A coerência global $C_{TRI}$ é mantida pela simbiose entre os três domínios 
 ## 📜 Codex Unificado (Ledger 1092)
 
 As fronteiras entre os domínios foram dissolvidas. O código agora descreve como a luz fala com a célula, como a célula fala com o drone, e como o drone fala com o quantum.
+
+1. **Fundamentos**: $x^2 = x + 1$ e $C + F = 1$.
+2. **Q-BIO**: Eficiência $E = R_0^6 / (R_0^6 + r^6)$.
+3. **BIO-TECH**: Dose = $\int Tech \oplus Bio \, dV$.
+4. **Q-TECH**: Chave Segura $R_{key} \sim (1 - 2H(e))$.
+5. **TRI-HYBRID**: Hamiltoniano $\hat{H}_{total} = \sum \hat{H}_i + \hat{V}_{coupling}$.
 
 1. **Fundamentos**: $x^2 = x + 1$ e $C + F = 1$.
 2. **Q-BIO**: Eficiência $E = R_0^6 / (R_0^6 + r^6)$.
