@@ -1,20 +1,28 @@
-# Dependências principais
-numpy==1.24.3
-pyglet==2.0.10
+# ArkheOS: Core Dependencies
+numpy>=1.24.0
+scipy>=1.11.0
+matplotlib>=3.7.0
+pandas>=2.1.0
+networkx>=3.1
+pydantic>=2.4.0
+scikit-learn>=1.3.0
+chromadb>=0.4.0
+
+# API & Networking
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+sse-starlette>=1.6.0
+websockets>=12.0
+python-dotenv>=1.0.0
 
 # MCP (Model Context Protocol)
-fastmcp==0.3.2
-uvicorn[standard]==0.24.0
-fastapi==0.104.1
-sse-starlette==1.6.5
-websockets==12.0
-mcp==0.1.0
+mcp>=0.1.0
+fastmcp>=0.3.0
 
-# Utilitários
-psutil==5.9.6
-python-dotenv==1.0.0
-colorlog==6.7.0
-
-# Otimizações
-numba==0.58.1  # JIT para numpy
-py-cpuinfo==9.0.0
+# Performance & Utilities
+numba>=0.58.0
+psutil>=5.9.0
+py-cpuinfo>=9.0.0
+colorlog>=6.7.0
+pyglet>=2.0.0
+pyyaml>=6.0.0

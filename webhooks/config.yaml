@@ -1,0 +1,24 @@
+# webhooks/config.yaml
+webhooks:
+  - id: "github_push"
+    endpoint: "/hooks/github"
+    secret_env: "GITHUB_WEBHOOK_SECRET"
+    action: "trigger_handover"
+    params:
+      mode: "automated"
+      priority: "high"
+
+  - id: "external_signal"
+    endpoint: "/hooks/signal"
+    secret_env: "SIGNAL_WEBHOOK_SECRET"
+    action: "synchronize_nodes"
+    params:
+      target: "all"
+      protocol: "ephaptic"
+
+  - id: "webhook_pulse"
+    endpoint: "/hooks/pulse"
+    action: "emit_vortex"
+    params:
+      charge: 1
+      mode: "resonant"
