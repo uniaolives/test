@@ -1,6 +1,6 @@
 """
-Arkhe(n) + RFID: Modelagem de Identidade Física no Hipergrafo.
-Cada tag RFID é um nó Γ_obj. Cada leitura é um handover.
+Arkhe(n) + RFID: Modelagem de Identidade Fisica no Hipergrafo.
+Cada tag RFID e um no Gamma_obj. Cada leitura e um handover.
 """
 
 import numpy as np
@@ -10,7 +10,7 @@ from typing import List, Dict, Optional
 
 class RFIDTag:
     """
-    Representa uma tag RFID como um nó no hipergrafo Arkhe.
+    Representa uma tag RFID como um no no hipergrafo Arkhe.
     """
     def __init__(self, tag_id: str, object_type: str, metadata: dict = None):
         self.tag_id = tag_id
@@ -46,27 +46,18 @@ class RFIDTag:
         return handover
 
     def _update_coherence(self):
-        """Calcula a coerência C da tag."""
+        """Calcula a coerencia C da tag."""
         if len(self.handovers) < 2:
             C = 1.0
         else:
             intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
             if not intervals:
                 C = 1.0
-            C = 0.0
-        else:
-            intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
-            if not intervals:
-                C = 0.0
             else:
                 mean_interval = np.mean(intervals)
                 std_interval = np.std(intervals)
                 if mean_interval > 0:
                     cv = std_interval / (mean_interval + 1e-10)
-                    C = 1.0 / (1.0 + cv)
-                else:
-                    C = 1.0
-                    cv = std_interval / mean_interval
                     C = 1.0 / (1.0 + cv)
                 else:
                     C = 0.0
@@ -81,17 +72,13 @@ class RFIDTag:
         return C, F
 
     def get_effective_dimension(self, lambda_reg: float = 1.0) -> float:
-        """Calcula a dimensão efetiva d_λ da tag."""
+        """Calcula a dimensao efetiva d_lambda da tag."""
         if len(self.handovers) < 2:
             return 1.0
         intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
         if not intervals:
-            return 1.0
             return 0.0
-        intervals = [h['delta_seconds'] for h in self.handovers[1:] if h['delta_seconds'] > 0]
-        if not intervals:
-            return 0.0
-        eigenvalues = np.array(intervals) / np.mean(intervals)
+        eigenvalues = np.array(intervals) / (np.mean(intervals) + 1e-10)
         contributions = eigenvalues / (eigenvalues + lambda_reg)
         return np.sum(contributions)
 
@@ -103,7 +90,7 @@ class RFIDTag:
 
 class VirtualDeviceNode(RFIDTag):
     """
-    Representa o dispositivo do Arquiteto (Smartphone/Laptop) como um nó RFID virtual.
+    Representa o dispositivo do Arquiteto (Smartphone/Laptop) como um no RFID virtual.
     """
     def __init__(self, tag_id: str, object_type: str, initial_coords: tuple, metadata: dict = None):
         super().__init__(tag_id, object_type, metadata)
@@ -115,15 +102,15 @@ class VirtualDeviceNode(RFIDTag):
         """Simula uma das 8 anomalias descritas no Bloco 769."""
         self.anomalies_encountered.append(anomaly_type)
         if anomaly_type == "Leitura Perdida":
-            # Reduz drasticamente a coerência injetando um intervalo longo fictício
             self.read("FAKE_READER", self._current_location or "Unknown", datetime.now())
-            self.coherence_history[-1]['C'] = 0.35
-            self.coherence_history[-1]['F'] = 0.65
+            if self.coherence_history:
+                self.coherence_history[-1]['C'] = 0.35
+                self.coherence_history[-1]['F'] = 0.65
         elif anomaly_type == "Tag Danificada":
             self.status = "Corrompido"
-            self.coherence_history[-1]['C'] = 0.12
-            self.coherence_history[-1]['F'] = 0.88
-        # Outras anomalias podem ser implementadas conforme necessário
+            if self.coherence_history:
+                self.coherence_history[-1]['C'] = 0.12
+                self.coherence_history[-1]['F'] = 0.88
 
 class RFIDHypergraph:
     """Hipergrafo de tags RFID (Safe Core)."""
@@ -137,7 +124,7 @@ class RFIDHypergraph:
 
     def register_reading(self, tag_id: str, reader_id: str, location: str, timestamp: datetime = None):
         if tag_id not in self.tags:
-            raise ValueError(f"Tag {tag_id} não encontrada")
+            raise ValueError(f"Tag {tag_id} nao encontrada")
         tag = self.tags[tag_id]
         handover = tag.read(reader_id, location, timestamp)
 
@@ -151,7 +138,7 @@ if __name__ == "__main__":
     hg = RFIDHypergraph()
     t1 = RFIDTag("RFID_001", "Smartphone")
     hg.add_tag(t1)
-    hg.register_reading("RFID_001", "R1", "Fábrica")
+    hg.register_reading("RFID_001", "R1", "Fabrica")
     hg.register_reading("RFID_001", "R2", "CD", datetime.now())
     print(f"Tag Coherence: {t1.coherence_history[-1]['C']}")
     print(f"Conservation: {t1.verify_conservation()}")
