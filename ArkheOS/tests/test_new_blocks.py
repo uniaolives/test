@@ -17,6 +17,14 @@ from arkhe.gpt_c_model import ArkheGPTModel
 from arkhe.pi_analysis import PiAnalyzer, calc_pi_chudnovsky
 
 class TestArkheFramework(unittest.TestCase):
+
+class TestArkheFramework(unittest.TestCase):
+from arkhe.ucd import UCD, verify_conservation
+from arkhe.projections import effective_dimension
+from arkhe.arkhen_11 import Arkhen11
+from arkhe.arkhe_rfid import RFIDTag
+
+class TestNewBlocks(unittest.TestCase):
     def test_ucd_conservation(self):
         data = np.random.rand(10, 5)
         ucd = UCD(data)
@@ -34,9 +42,22 @@ class TestArkheFramework(unittest.TestCase):
         E = sim.dispersion()
         self.assertEqual(E.shape, (10, 10))
 
+    def test_contemplation_node(self):
+        node = ContemplationNode()
+        state = node.get_state()
+        self.assertEqual(state['direction_x']['C'], 1.0)
+        self.assertEqual(state['direction_y']['F'], 1.0)
+
     def test_semidirac_tensor(self):
         fermion = SemiDiracFermion()
         self.assertTrue(fermion.verify_tensor_conservation())
+
+    def test_time_node_sync(self):
+        sat = GNSSSatellite("GPS", "GPS")
+        server = Stratum1Server("Test-Node")
+        for _ in range(5):
+            server.synchronize(sat, 1000.0)
+        self.assertTrue(server.verify_conservation())
 
     def test_abundance_metrics(self):
         m = AbundanceMetric("RoCS", 2.5, 3.0, "USD/FLOP")
@@ -57,6 +78,36 @@ class TestArkheFramework(unittest.TestCase):
 
         pi_val = calc_pi_chudnovsky(20)
         self.assertTrue(str(pi_val).startswith("3.14159"))
+        # Verify initial state
+        self.assertEqual(gpt.coherence, 0.0)
+        # Perform steps
+        for _ in range(5):
+            res = gpt.step()
+        self.assertLess(res['F'], 1.0)
+        self.assertGreater(res['C'], 0.0)
+        self.assertAlmostEqual(res['C'] + res['F'], 1.0)
+
+        self.assertAlmostEqual(res['C'] + res['F'], 1.0)
+
+    def test_effective_dimension(self):
+        F = np.eye(5)
+        d_eff, _ = effective_dimension(F, 1.0)
+        # tr(I * (I + I)^-1) = tr(0.5 * I) = 2.5
+        self.assertAlmostEqual(d_eff, 2.5)
+
+    def test_arkhen_11_coherence(self):
+        arkhen = Arkhen11()
+        C = arkhen.compute_coherence()
+        self.assertGreater(C, 0)
+        self.assertLessEqual(C, 1.0)
+
+    def test_rfid_conservation(self):
+        tag = RFIDTag("T1", "Object")
+        tag.read("R1", "L1")
+        import time
+        time.sleep(0.1)
+        tag.read("R2", "L2")
+        self.assertTrue(tag.verify_conservation())
 
 if __name__ == "__main__":
     unittest.main()
