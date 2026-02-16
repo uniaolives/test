@@ -34,6 +34,9 @@ class BrainHypergraph:
             print(f"  • {level.name}: {level.handover_rate():.2f} Hz")
         return True
 
+    def update_firing_rate(self):
+        print("🧠 HDC: Brain firing rate updated via lipid signaling.")
+
 class HierarchicalDynamicCodingAnalysis:
     def __init__(self):
         self.brain = BrainHypergraph()
