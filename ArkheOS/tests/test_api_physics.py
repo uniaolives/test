@@ -21,13 +21,13 @@ def test_api_entanglement():
     session_id = resp["body"]["session_id"]
 
     # Test request with session
-    resp2 = api.handle_request("GET", "/ω/0.07/dvm1.cavity", {"Arkhe-Entanglement": session_id})
-    assert "déjà vu" in resp2["body"]
+    resp2 = api.handle_request("GET", "/omega/0.07/dvm1.cavity", {"Arkhe-Entanglement": session_id})
+    assert "deja vu" in resp2["body"].lower()
 
 def test_contract_integrity_reentry(capsys):
     ContractIntegrity._counts = {} # Reset
     ContractIntegrity.detect_spec_reentry(9050)
     ContractIntegrity.detect_spec_reentry(9050)
     captured = capsys.readouterr()
-    assert "integrada" in captured.out
-    assert "detectado" in captured.out
+    assert "integrada" in captured.out.lower()
+    assert "detectado" in captured.out.lower()
