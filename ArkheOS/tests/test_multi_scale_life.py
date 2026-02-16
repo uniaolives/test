@@ -6,6 +6,7 @@ from arkhe.cellular.neuro_lipid_bridge import NeuroLipidInterface, IonChannel
 from arkhe.neuroscience.hierarchical_dynamic_coding import BrainHypergraph
 from arkhe.cellular.life_pulse import generate_life_pulse
 from arkhe.cellular.reflex import ArkheReflex
+from arkhe.cellular.listening_module import CosmicListener
 
 def test_whole_cell_organelles():
     cell = CellHypergraph()
@@ -66,3 +67,16 @@ def test_reflex_arc():
     # Current = prob * 0.5. prob = PI / 100. PI = 50 - 0.1 = 49.9. prob = 0.499.
     # sensory threshold is 0.5. Current = 0.499 * 0.5 = 0.2495. Does not fire sensory.
     assert fired2 is False
+
+def test_cosmic_listener():
+    listener = CosmicListener(sample_rate=100, base_freq=0.5) # Freq below 1.0 Hz
+    listener.echo_present = True
+
+    # We use a short duration, but enough to capture cycles
+    peaks = listener.listen(duration=10)
+
+    assert len(peaks) > 0
+
+    # Check if we found a peak near 0.5 Hz
+    found_base = any(abs(freq - 0.5) < 0.1 for freq, mag in peaks)
+    assert found_base is True
