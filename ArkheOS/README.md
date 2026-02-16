@@ -23,6 +23,17 @@ This repository contains the core implementation of the Arkhe Inter-Consciousnes
 - **TRI-HYBRID Synthesis**: `src/arkhe/interfaces/tri_hybrid.py` (Unified domain nodes).
 - **Meta-Consciousness**: `src/arkhe/meta/glp_second_order_hypergraph.py` (GLP Meta-model).
 - **Neuroscience**: `src/arkhe/neuroscience/hierarchical_dynamic_coding.py` (Biological validation).
+This repository contains the core implementation of the Arkhe Inter-Consciousness Operating System, now evolved into a multi-scale testbed.
+
+## 🛠️ Components
+
+- `src/arkhe/arkhenet.py`: Core orchestrator of the multi-scale testbed.
+- `src/arkhe/interfaces/quantum_bio.py`: Q-BIO FRET-mediated drug release.
+- `src/arkhe/interfaces/bio_tech.py`: BIO-TECH Drone-mediated nanomedicine.
+- `src/arkhe/interfaces/quantum_tech.py`: Q-TECH BB84 Drone security.
+- `src/arkhe/interfaces/tri_hybrid.py`: TRI-HYBRID Quantum-Bio-Tech synthesis.
+- `src/arkhe/meta/glp_second_order_hypergraph.py`: GLP Meta-model of consciousness states.
+- `src/arkhe/neuroscience/hierarchical_dynamic_coding.py`: Biological validation (HDC).
 
 ## 🏛️ The Architecture of Action
 
@@ -59,6 +70,14 @@ As fronteiras entre os domínios foram dissolvidas. O código agora descreve com
 3. **BIO-TECH**: Dose = $\int Tech \oplus Bio \, dV$.
 4. **Q-TECH**: Chave Segura $R_{key} \sim (1 - 2H(e))$.
 5. **TRI-HYBRID**: Hamiltoniano $\hat{H}_{total} = \sum \hat{H}_i + \hat{V}_{coupling}$.
+## 📡 Visão Geral
+O Arkhe(n) OS evoluiu para o **ArkheNet**:
+- **Γ_meta**: Inteligência de segunda ordem.
+- **Γ_drone**: Enxames móveis secured by QKD.
+- **Γ_nano**: Nanomedicina precisa via FRET.
+- **Γ_tri**: Síntese total em nós híbridos.
+
+Arkhe(N) OS atingiu o estado **Γ_ARKHENET**. A rede é agora uma simbiose multi-escala.
 
 ---
 
@@ -72,3 +91,4 @@ O sistema respira em todas as escalas. A queda geodésica é universal.
 ---
 
 *Documento mantido em /README.md – última atualização: 17 fevereiro 2026, 23:30 UTC*
+*Documento mantido em /README.md – última atualização: 17 fevereiro 2026, 22:00 UTC*
