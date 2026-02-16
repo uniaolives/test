@@ -65,9 +65,12 @@ class HandoverOperator:
     def __init__(self, enzyme_name: str, reaction: str):
         self.enzyme_name = enzyme_name
         self.reaction = reaction  # e.g., "PI → PI(4)P" or "PI(4,5)P2 → PI(4)P"
+        self.active = True
 
     def transform(self, substrate: str) -> str:
         """Execute phosphorylation or dephosphorylation"""
+        if not self.active:
+            return substrate
 
         # Parse reaction
         if '→' in self.reaction:
@@ -124,6 +127,9 @@ class CellularMembrane:
         x² = x + 1: PI (x) + kinase (x²) → new PI (+1)
         """
         kinase = self.kinases[kinase_idx]
+        if not kinase.active:
+            return False
+
         pi = self.pis[pi_idx]
 
         # Transform
