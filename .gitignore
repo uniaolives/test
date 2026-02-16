@@ -8,3 +8,6 @@ test_arkhe_memory/
 build/
 bin/
 *.log
+arkhe_core.log
+arkhe_ledger_test.txt
+__pycache__
