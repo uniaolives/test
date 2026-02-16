@@ -11,3 +11,4 @@ bin/
 arkhe_core.log
 arkhe_ledger_test.txt
 __pycache__
+diagnostic_bio_output.txt
