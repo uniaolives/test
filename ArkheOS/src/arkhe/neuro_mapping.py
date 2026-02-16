@@ -34,6 +34,15 @@ class NeuroMappingProcessor:
         breakthroughs = connectivity_df[connectivity_df['Correlation_Change'] > 0.1]['Subject'].tolist()
 
         return {
+            "status": "SPECTROSCOPY_COMPLETE",
+            "global_metrics": {
+                "mean_delta_coherence": mean_delta_c, # Expected ~0.18 (+62%)
+                "mean_delta_fluctuation": mean_delta_f, # Expected ~-0.23 (-51%)
+                "coherence_stabilization": 1.0 - abs(mean_delta_f)
+            },
+            "breakthrough_nodes": breakthroughs,
+            "satoshi_harvested": len(connectivity_df) * 0.15,
+            "spectroscopy_signature": "χ_fMRI (Γ_∞+fMRI)"
             "status": "MAPPED",
             "global_metrics": {
                 "mean_delta_coherence": mean_delta_c,
