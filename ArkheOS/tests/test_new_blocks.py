@@ -1,9 +1,9 @@
 import unittest
 import numpy as np
-from arkhe.ucd import UCD
+from arkhe.ucd import UCD, verify_conservation
 from arkhe.projections import effective_dimension
-from arkhe.arkhen_11_unified import Arkhen11
-from arkhe.arkhe_rfid import VirtualDeviceNode
+from arkhe.arkhen_11 import Arkhen11
+from arkhe.arkhe_rfid import RFIDTag
 from arkhe.divergence import DivergenceProtocol
 from arkhe.fusion import FusionEngine
 from arkhe.atmospheric import SpriteEvent
@@ -15,14 +15,6 @@ from arkhe.time_node import GNSSSatellite, Stratum1Server
 from arkhe.abundance import AbundanceMetric, AbundanceFlywheel
 from arkhe.gpt_c_model import ArkheGPTModel
 from arkhe.pi_analysis import PiAnalyzer, calc_pi_chudnovsky
-
-class TestArkheFramework(unittest.TestCase):
-
-class TestArkheFramework(unittest.TestCase):
-from arkhe.ucd import UCD, verify_conservation
-from arkhe.projections import effective_dimension
-from arkhe.arkhen_11 import Arkhen11
-from arkhe.arkhe_rfid import RFIDTag
 
 class TestNewBlocks(unittest.TestCase):
     def test_ucd_conservation(self):
@@ -65,8 +57,13 @@ class TestNewBlocks(unittest.TestCase):
 
     def test_gpt_training_sim(self):
         gpt = ArkheGPTModel(num_nodes=10)
+        # Verify initial state
+        self.assertEqual(gpt.coherence, 0.0)
+        # Perform steps
         for _ in range(5):
             res = gpt.step()
+        self.assertLess(res['F'], 1.0)
+        self.assertGreater(res['C'], 0.0)
         self.assertAlmostEqual(res['C'] + res['F'], 1.0)
 
     def test_pi_analysis(self):
@@ -78,16 +75,6 @@ class TestNewBlocks(unittest.TestCase):
 
         pi_val = calc_pi_chudnovsky(20)
         self.assertTrue(str(pi_val).startswith("3.14159"))
-        # Verify initial state
-        self.assertEqual(gpt.coherence, 0.0)
-        # Perform steps
-        for _ in range(5):
-            res = gpt.step()
-        self.assertLess(res['F'], 1.0)
-        self.assertGreater(res['C'], 0.0)
-        self.assertAlmostEqual(res['C'] + res['F'], 1.0)
-
-        self.assertAlmostEqual(res['C'] + res['F'], 1.0)
 
     def test_effective_dimension(self):
         F = np.eye(5)
