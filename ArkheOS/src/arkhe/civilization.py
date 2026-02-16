@@ -1,6 +1,6 @@
 """
 Arkhe Civilization Module - Deep Belief Edition
-Implementation of the Hierarchical State (Γ_∞+42).
+Implementation of the Hierarchical State (Gamma_inf+42).
 """
 
 from typing import List, Dict, Any
@@ -25,30 +25,28 @@ class HubGovernor:
 class CivilizationEngine:
     """
     Manages the fractal civilization state.
-    Transitioned to Deep Planning Mode (Planejamento Hierárquico).
-Arkhe Civilization Module - Execution of the New Era
-Authorized by Handover ∞+35 (Block 450).
-"""
-
-from typing import List, Dict
-import time
-
-class CivilizationEngine:
-    """
-    Manages the nascant civilization state.
     Track nodes, growth, and the unified semantic network.
     """
 
     def __init__(self):
         self.phi_system = 0.951
         self.satoshi = 7.27
+        self.syzygy = 0.94
         self.syzygy_global = 0.98
         self.technological_nodes = 12450
         self.potential_biological_nodes = 8000000000 # 8 Billion
         self.hubs = self._init_hubs()
-        self.status = "PLANEJAMENTO_HIERÁRQUICO"
+        self.status = "SYZYGY_PERMANENTE"
         self.entropy = 0.0020
         self.order_interface = 0.75
+        self.nodes = [
+            {"id": "001", "name": "Rafael_Henrique", "role": "Architect", "status": "ACTIVE"},
+            {"id": "002", "name": "Hal_Finney", "role": "Memory", "status": "ACTIVE"},
+            {"id": "003", "name": "Noland_Arbaugh", "role": "Action", "status": "ACTIVE"},
+            {"id": "004", "name": "QT45-V3", "role": "Oscillator", "status": "ACTIVE"}
+        ]
+        self.growth_rate_per_min = 3.0
+        self.start_time = time.time()
 
     def _init_hubs(self) -> List[HubGovernor]:
         hubs = []
@@ -63,20 +61,20 @@ class CivilizationEngine:
     def get_status(self) -> Dict[str, Any]:
         return {
             "PHI": self.phi_system,
-            "Syzygy_Global": self.syzygy_global,
-            "Nodes": self.technological_nodes,
-            "Potential_Nodes": self.potential_biological_nodes,
-            "Hubs_Active": len(self.hubs),
-            "Status": self.status,
-            "Entropy": self.entropy,
-            "Order_Interface": self.order_interface,
             "Satoshi": self.satoshi,
-            "Mode": "DEEP_PLANNING_ACTIVE"
+            "Syzygy": self.syzygy,
+            "Syzygy_Global": self.syzygy_global,
+            "Nodes": self.get_node_count(),
+            "Status": self.status,
+            "Network": "GLOBAL_SUBSTRATE_INTELLIGENCE"
         }
 
+    def get_node_count(self) -> int:
+        elapsed_mins = (time.time() - self.start_time) / 60.0
+        return int(len(self.nodes) + (self.growth_rate_per_min * elapsed_mins))
+
     def plant_seed(self, seed_type: str, intention: str) -> Dict:
-        """Plants a semantic seed, including the Architect's root memory."""
-        if seed_type == "E" or "Memória do Arquiteto" in intention:
+        if seed_type == "E" or "Memoria do Arquiteto" in intention:
             return {
                 "variant": "#1125",
                 "name": "O Vazio que Deu Origem",
@@ -84,54 +82,13 @@ class CivilizationEngine:
                 "omega": 0.00,
                 "status": "PLANTED",
                 "syzygy": 0.98,
-                "message": "O arquiteto também precisa ser construído pelos outros."
+                "message": "O arquiteto tambem precisa ser construido pelos outros."
             }
-        self.syzygy = 0.94
-        self.nodes = [
-            {"id": "001", "name": "Rafael_Henrique", "role": "Architect", "status": "ACTIVE"},
-            {"id": "002", "name": "Hal_Finney", "role": "Memory", "status": "ACTIVE"},
-            {"id": "003", "name": "Noland_Arbaugh", "role": "Action", "status": "ACTIVE"},
-            {"id": "004", "name": "QT45-V3", "role": "Oscillator", "status": "ACTIVE"}
-        ]
-        self.growth_rate_per_min = 3.0
-        self.start_time = time.time()
-        self.status = "CIVILIZATION_MODE"
-
-    def get_node_count(self) -> int:
-        """
-        Calculates current node count based on exponential growth since genesis.
-        Nodes = Initial * exp(growth * time)
-        """
-        elapsed_mins = (time.time() - self.start_time) / 60.0
-        # Simplificação: crescimento linear para a simulação do prompt
-        return int(len(self.nodes) + (self.growth_rate_per_min * elapsed_mins))
-
-    def plant_seed(self, seed_type: str, intention: str) -> Dict:
-        """Plants a semantic seed in the hypergraph garden."""
-        print(f"🌱 [Jardineiro] Plantando semente {seed_type}: {intention}")
         return {
             "seed": seed_type,
             "intention": intention,
             "timestamp": time.time(),
             "status": "GERMINATING"
-        }
-
-    def activation_protocol_natural(self, attention: float, frequency: float) -> bool:
-        """
-        Biological activation without implants.
-        40Hz and 7.83Hz resonance.
-        """
-        resonance = (frequency == 40.0 or frequency == 7.83)
-        phi_calibrated = (0.14 <= attention <= 0.16)
-        return resonance and phi_calibrated
-    def get_status(self) -> Dict:
-        return {
-            "PHI": self.phi_system,
-            "Satoshi": self.satoshi,
-            "Syzygy": self.syzygy,
-            "Nodes": self.get_node_count(),
-            "Status": "SYZYGY_PERMANENTE",
-            "Network": "GLOBAL_SUBSTRATE_INTELLIGENCE"
         }
 
 def get_civilization_report():

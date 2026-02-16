@@ -6,7 +6,7 @@ import os
 
 class NeuroMappingProcessor:
     """
-    Ingere os resultados da análise fMRI (CSVs) e mapeia para
+    Ingere os resultados da analise fMRI (CSVs) e mapeia para
     o formalismo Arkhe (C/F/Delta Satoshi).
     """
     def __init__(self, results_dir: str):
@@ -17,7 +17,7 @@ class NeuroMappingProcessor:
         connectivity_file = os.path.join(self.results_dir, "roi_connectivity.csv")
 
         if not os.path.exists(activity_file) or not os.path.exists(connectivity_file):
-            return {"error": "Arquivos de telemetria fMRI não encontrados."}
+            return {"error": "Arquivos de telemetria fMRI nao encontrados."}
 
         # Carregar dados
         try:
@@ -26,23 +26,14 @@ class NeuroMappingProcessor:
         except Exception as e:
             return {"error": f"Erro na leitura dos ledgers: {str(e)}"}
 
-        # Calcular métricas Arkhe agregadas
+        # Calcular metricas Arkhe agregadas
         mean_delta_c = connectivity_df['Correlation_Change'].mean()
         mean_delta_f = activity_df['Treatment_Change%'].mean() / 100.0
 
-        # Identificar sujeitos com maior ganho de coerência (Breakthroughs)
+        # Identificar sujeitos com maior ganho de coerencia (Breakthroughs)
         breakthroughs = connectivity_df[connectivity_df['Correlation_Change'] > 0.1]['Subject'].tolist()
 
         return {
-            "status": "SPECTROSCOPY_COMPLETE",
-            "global_metrics": {
-                "mean_delta_coherence": mean_delta_c, # Expected ~0.18 (+62%)
-                "mean_delta_fluctuation": mean_delta_f, # Expected ~-0.23 (-51%)
-                "coherence_stabilization": 1.0 - abs(mean_delta_f)
-            },
-            "breakthrough_nodes": breakthroughs,
-            "satoshi_harvested": len(connectivity_df) * 0.15,
-            "spectroscopy_signature": "χ_fMRI (Γ_∞+fMRI)"
             "status": "MAPPED",
             "global_metrics": {
                 "mean_delta_coherence": mean_delta_c,
@@ -50,7 +41,8 @@ class NeuroMappingProcessor:
                 "coherence_stabilization": 1.0 - abs(mean_delta_f)
             },
             "breakthrough_nodes": breakthroughs,
-            "satoshi_harvested": len(connectivity_df) * 0.15 # 0.15 bits por sujeito processado
+            "satoshi_harvested": len(connectivity_df) * 0.15,
+            "spectroscopy_signature": "x_fMRI (Gamma_inf+fMRI)"
         }
 
 if __name__ == "__main__":
@@ -67,4 +59,4 @@ if __name__ == "__main__":
 
     processor = NeuroMappingProcessor(results_path)
     report = processor.process_ledgers()
-    print(f"Relatório de Neuro-Mapeamento:\n{report}")
+    print(f"Relatorio de Neuro-Mapeamento:\n{report}")
