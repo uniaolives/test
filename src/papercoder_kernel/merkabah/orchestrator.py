@@ -89,6 +89,11 @@ class MERKABAH7:
                 return {'error': msg, 'status': 'BLOCKED'}
 
         # 0.2 Contextualização cósmica
+    async def minoan_neurotech_experiment(self, tablet_id, operator_profile, icecube_event=None, env_stimulus=None):
+        """
+        Experimento completo de convergência neuro-minoica, opcionalmente com contexto cósmico.
+        """
+        # 0. Contextualização cósmica
         if icecube_event:
             cosmic = AstrophysicalContext(icecube_event)
             operator_profile = cosmic.modulate_observer_state(operator_profile)
