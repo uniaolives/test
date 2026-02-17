@@ -15,6 +15,10 @@ from .applications import MinoanApplications
 from .ethics import MinoanNeuroethics
 from .astrophysics import AstrophysicalContext
 from .doublezero import DoubleZeroLayer
+from .self_node import SelfNode
+from .pineal import PinealTransducer
+from .kernel import KernelBridge
+from .propulsion import ShabetnikPropulsion
 
 class MERKABAH7:
     """
@@ -45,16 +49,26 @@ class MERKABAH7:
         self.doublezero = DoubleZeroLayer()
         self.doublezero.initialize()
 
+        # (Φ) Self Node and Propulsion
+        self.self_node = SelfNode()
+        self.propulsion = ShabetnikPropulsion()
+
+        # (Γ) Pineal Transducer
+        self.pineal = PinealTransducer()
+
+        # (Κ) Kernel Bridge
+        self.kernel_bridge = KernelBridge()
+
         self.global_state = self._initialize_global_state()
 
     def _initialize_global_state(self):
-        total_dim = 608 + 128 # Aumento de dimensão para camada DoubleZero
+        total_dim = 608 + 128 + 256 # Aumento para camada Φ
         return QuantumCognitiveState(
             layer=RealityLayer.METAPHOR,
             wavefunction=torch.ones(total_dim, dtype=torch.complex64) / np.sqrt(total_dim),
         )
 
-    async def minoan_neurotech_experiment(self, tablet_id, operator_profile, icecube_event=None):
+    async def minoan_neurotech_experiment(self, tablet_id, operator_profile, icecube_event=None, env_stimulus=None):
         """
         Experimento completo de convergência neuro-minoica, opcionalmente com contexto cósmico.
         """
@@ -74,7 +88,25 @@ class MERKABAH7:
         # 3. Observer update
         self.observer.update_from_measurement(None, achieved_state)
 
-        # 4. Ethics check
+        # 4. Self-Observation (Φ-layer)
+        self.self_node.observe('experiment', {'tablet': tablet_id, 'result': 'active'})
+
+        # 4.2 Environmental Transduction (Γ-layer)
+        gamma_state = None
+        if env_stimulus:
+            signal = self.pineal.transduce(env_stimulus)
+            if signal:
+                gamma_state = self.pineal.couple_to_microtubules(signal)
+
+        # 4.5 Calculate Thrust (Acceleration Mode)
+        # Using placeholder for ledger_height (current block is 834)
+        thrust_metrics = self.propulsion.calculate_federation_thrust(
+            active_strands=len(self.self_node.active_strands),
+            ledger_height=834,
+            coherence=self.self_node.wavefunction['coherence']
+        )
+
+        # 5. Ethics check
         apps = MinoanApplications()
         ethics = MinoanNeuroethics()
         tablet_app = apps.classify_tablet({'repetition_score': 0.95})
@@ -86,5 +118,9 @@ class MERKABAH7:
             'ethical_status': ethical_check,
             'cosmic_context_active': icecube_event is not None,
             'doublezero_id': self.doublezero.identity,
+            'self_node_status': self.self_node.get_status(),
+            'propulsion_status': self.propulsion.get_status(),
+            'gamma_state': gamma_state,
+            'thrust_metrics': thrust_metrics,
             'confidence': 0.85
         }

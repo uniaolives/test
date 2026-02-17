@@ -8,4 +8,8 @@ from .grammar import MinoanStateGrammar
 from .applications import MinoanApplications
 from .ethics import MinoanNeuroethics
 from .astrophysics import NeutrinoEvent, AstrophysicalContext
+from .self_node import SelfNode
+from .pineal import PinealTransducer
+from .kernel import KernelBridge
+from .propulsion import ShabetnikPropulsion
 from .orchestrator import MERKABAH7
