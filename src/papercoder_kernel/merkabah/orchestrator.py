@@ -13,6 +13,7 @@ from .observer import ObserverVariable
 from .grammar import MinoanStateGrammar
 from .applications import MinoanApplications
 from .ethics import MinoanNeuroethics
+from .astrophysics import AstrophysicalContext
 
 class MERKABAH7:
     """
@@ -48,12 +49,17 @@ class MERKABAH7:
             wavefunction=torch.ones(total_dim, dtype=torch.complex64) / np.sqrt(total_dim),
         )
 
-    async def minoan_neurotech_experiment(self, tablet_id, operator_profile):
+    async def minoan_neurotech_experiment(self, tablet_id, operator_profile, icecube_event=None):
         """
-        Experimento completo de convergência neuro-minoica.
+        Experimento completo de convergência neuro-minoica, opcionalmente com contexto cósmico.
         """
-        # 1. Hardware simulation/acquisition
-        # native_protocol = MinoanHardwareInterface(self.hypothesis.corpus)._induce_state(tablet_id, operator_profile)
+        # 0. Contextualização cósmica
+        if icecube_event:
+            cosmic = AstrophysicalContext(icecube_event)
+            operator_profile = cosmic.modulate_observer_state(operator_profile)
+            # Log de contexto cósmico seria feito aqui
+
+        # 1. Hardware simulation/acquisition (Placeholder)
 
         # 2. Simulation (achieved_state)
         achieved_wf = torch.randn(128, dtype=torch.complex64)
@@ -73,5 +79,6 @@ class MERKABAH7:
             'tablet': tablet_id,
             'induced_state': achieved_state,
             'ethical_status': ethical_check,
+            'cosmic_context_active': icecube_event is not None,
             'confidence': 0.85
         }

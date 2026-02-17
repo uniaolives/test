@@ -7,4 +7,5 @@ from .observer import ObserverVariable
 from .grammar import MinoanStateGrammar
 from .applications import MinoanApplications
 from .ethics import MinoanNeuroethics
+from .astrophysics import NeutrinoEvent, AstrophysicalContext
 from .orchestrator import MERKABAH7
