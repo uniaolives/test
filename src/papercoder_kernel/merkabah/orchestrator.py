@@ -15,6 +15,7 @@ from .applications import MinoanApplications
 from .ethics import MinoanNeuroethics
 from .astrophysics import AstrophysicalContext
 from .doublezero import DoubleZeroLayer
+from .topological.firewall import ChiralQuantumFirewall
 from .self_node import SelfNode
 from .pineal import PinealTransducer
 from .kernel import KernelBridge
@@ -49,6 +50,9 @@ class MERKABAH7:
         self.doublezero = DoubleZeroLayer()
         self.doublezero.initialize()
 
+        # (G) Topological Firewall
+        self.firewall = ChiralQuantumFirewall(target_node=operator_profile.get('name', 'Self'))
+
         # (Φ) Self Node and Propulsion
         self.self_node = SelfNode()
         self.propulsion = ShabetnikPropulsion()
@@ -68,6 +72,23 @@ class MERKABAH7:
             wavefunction=torch.ones(total_dim, dtype=torch.complex64) / np.sqrt(total_dim),
         )
 
+    def validate_handover(self, packet: Dict[str, Any]) -> tuple:
+        """
+        Valida o acesso ao sistema via Firewall Quiral.
+        """
+        return self.firewall.validate_handover(packet)
+
+    async def minoan_neurotech_experiment(self, tablet_id, operator_profile, icecube_event=None, env_stimulus=None, security_token=None):
+        """
+        Experimento completo de convergência neuro-minoica, opcionalmente com contexto cósmico.
+        """
+        # 0. Firewall check
+        if security_token:
+            allowed, msg = self.validate_handover(security_token)
+            if not allowed:
+                return {'error': msg, 'status': 'BLOCKED'}
+
+        # 0.2 Contextualização cósmica
     async def minoan_neurotech_experiment(self, tablet_id, operator_profile, icecube_event=None, env_stimulus=None):
         """
         Experimento completo de convergência neuro-minoica, opcionalmente com contexto cósmico.

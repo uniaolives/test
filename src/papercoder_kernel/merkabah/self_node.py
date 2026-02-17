@@ -77,3 +77,18 @@ class SelfNode:
             'coherence': self.wavefunction['coherence'],
             'strand_count': len(self.active_strands)
         }
+
+    def generate(self, x: Any) -> Any:
+        """First attempt at generating an output y for input x."""
+        # Mock generation: in a real case, this uses the GLP or another model
+        return f"y1_for_{x}"
+
+    def reflect(self, x: Any, y1: Any, f1: Any, r1: float, memory: Any) -> Any:
+        """Reflect on a failed attempt to produce an insight/correction (delta)."""
+        # Mock reflection
+        return f"delta_for_{x}_given_{r1}"
+
+    def refine(self, x: Any, delta: Any) -> Any:
+        """Refine the attempt using the insight (delta)."""
+        # Mock refinement
+        return f"y2_from_{x}_with_{delta}"
