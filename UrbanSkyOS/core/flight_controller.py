@@ -1,5 +1,6 @@
 """
 UrbanSkyOS Core Layer: Hard Real-Time Flight Controller (Refined)
+Implements adaptive flight parameters based on environment and safety.
 Implements IMU redundancy, cascaded PID, and Active Noise Reduction (ANR).
 """
 
@@ -26,6 +27,16 @@ class FlightController:
         self.rate_pid_z = PIDController(2.0, 0.01, 0.1)
 
         self.anr = NoiseReduction(num_motors)
+        self.current_area = "Commercial"
+        self.safety_score = 1.0
+
+    def get_imu_data(self):
+        return {"accel": [0,0,9.81], "gyro": [random.uniform(-0.01, 0.01) for _ in range(3)]}
+
+    def set_environment_context(self, area, safety):
+        self.current_area = area
+        self.safety_score = safety
+        self.anr.adapt_parameters(area, safety)
         self.active_imu_id = "IMU_1"
 
     def get_imu_data(self):
@@ -35,6 +46,7 @@ class FlightController:
     def control_step(self, T_des, att_error, dt=0.001):
         """
         Hard Real-Time Control Loop (1kHz).
+        """
         Maps desired thrust and attitude errors to optimal motor speeds.
         """
         # Rate PIDs (inner loop)
@@ -42,11 +54,14 @@ class FlightController:
         tau_y = self.rate_pid_y.update(att_error[1], dt)
         tau_z = self.rate_pid_z.update(att_error[2], dt)
 
+        # Optimal motor speeds under adaptive constraints
         # ANR Optimization
         motor_speeds = self.anr.optimize_rpms(T_des, tau_x, tau_y, tau_z)
 
         return motor_speeds
 
+# Alias for backward compatibility with DroneNode imports
+UrbanSkyOSNode = FlightController
 class UrbanSkyOSNode:
     def __init__(self, drone_id="URBAN_01"):
         self.drone_id = drone_id
