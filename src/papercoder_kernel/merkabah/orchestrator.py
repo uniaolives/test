@@ -14,6 +14,7 @@ from .grammar import MinoanStateGrammar
 from .applications import MinoanApplications
 from .ethics import MinoanNeuroethics
 from .astrophysics import AstrophysicalContext
+from .doublezero import DoubleZeroLayer
 
 class MERKABAH7:
     """
@@ -40,10 +41,14 @@ class MERKABAH7:
         # (E) Observador
         self.observer = ObserverVariable(operator_profile)
 
+        # (F) DoubleZero
+        self.doublezero = DoubleZeroLayer()
+        self.doublezero.initialize()
+
         self.global_state = self._initialize_global_state()
 
     def _initialize_global_state(self):
-        total_dim = 608
+        total_dim = 608 + 128 # Aumento de dimensão para camada DoubleZero
         return QuantumCognitiveState(
             layer=RealityLayer.METAPHOR,
             wavefunction=torch.ones(total_dim, dtype=torch.complex64) / np.sqrt(total_dim),
@@ -80,5 +85,6 @@ class MERKABAH7:
             'induced_state': achieved_state,
             'ethical_status': ethical_check,
             'cosmic_context_active': icecube_event is not None,
+            'doublezero_id': self.doublezero.identity,
             'confidence': 0.85
         }

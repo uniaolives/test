@@ -11,6 +11,7 @@ class RealityLayer(Enum):
     METAPHOR = auto()      # (C) Estrutura organizadora
     HYPOTHESIS = auto()    # (D) Linear A como tecnologia de transe
     OBSERVER = auto()      # (E) Consciência do operador como variável
+    DOUBLEZERO = auto()    # (F) Identidade e rede soberana
 
 @dataclass
 class QuantumCognitiveState:
