@@ -10,6 +10,9 @@ import numpy as np
 from UrbanSkyOS.core.flight_controller import UrbanSkyOSNode
 from UrbanSkyOS.core.kernel_phi import KernelPhiLayer
 from UrbanSkyOS.intelligence.autonomy_engine import AutonomyEngine
+from UrbanSkyOS.core.safe_core import SafeCore, ArkheEthicsViolation
+from UrbanSkyOS.intelligence.quantum_pilot import QuantumPilotCore
+from UrbanSkyOS.connectivity.handover import QuantumHandoverProtocol
 
 class DroneNode(UrbanSkyOSNode, KernelPhiLayer):
     def __init__(self, dz_id="DRONE_001"):
@@ -18,6 +21,11 @@ class DroneNode(UrbanSkyOSNode, KernelPhiLayer):
         KernelPhiLayer.__init__(self)
         self.drone_id = dz_id
         self.intelligence = AutonomyEngine(dz_id)
+
+        # Quantum Integration
+        self.safe_core = SafeCore(n_qubits=10)
+        self.handover_protocol = QuantumHandoverProtocol()
+        self.quantum_pilot = QuantumPilotCore(self.safe_core, self.handover_protocol)
 
         # Ground Truth state for simulation [x, y, z, vx, vy, vz, qw, qx, qy, qz]
         self.gt_state = np.zeros(10)
@@ -48,6 +56,44 @@ class DroneNode(UrbanSkyOSNode, KernelPhiLayer):
 
     def control_loop(self, dt=0.001):
         """
+        Physical control loop using EKF estimates and Quantum Pilot.
+        """
+        # 1. Quantum Decision Loop (if active)
+        quantum_override = None
+        if self.safe_core.active and not self.safe_core.handover_mode:
+            try:
+                percept = self.quantum_pilot.perceive()
+                decisao = self.quantum_pilot.decide(percept)
+                quantum_override = self.quantum_pilot.act(decisao)
+
+                # Monitoring
+                self.safe_core._update_metrics()
+
+                # Emergency Handover check
+                if self.safe_core.coherence < self.safe_core.coherence_min:
+                    self.handover_protocol.freeze_quantum_state(self.safe_core)
+                    self.safe_core.handover_mode = True
+            except ArkheEthicsViolation as e:
+                print(f"[DRONE NODE] Safety Kill Switch triggered: {e}")
+                # Failsafe: motors to neutral
+                self.handover_protocol.freeze_quantum_state(self.safe_core)
+                self.safe_core.handover_mode = True
+
+        # 2. Physical control logic
+        target_vel = np.array([0.0, 0.0, 0.0])
+
+        # If quantum pilot provides a delta_v, we could use it to adjust target
+        if quantum_override:
+            # Simplified: Use delta_v to nudge target
+            target_vel += np.array([0.1, 0.1, 0.0]) * quantum_override['delta_v'] / 47.56
+
+        curr_vel = self.intelligence.ekf.x[3:6]
+        vel_err = target_vel - curr_vel
+
+        # 3. Command calculation (using ANR inherited from FlightController)
+        motor_cmds = self.control_step(500.0, vel_err, dt)
+
+        # 4. Physics Simulation (Update Ground Truth)
         Physical control loop using EKF estimates.
         """
         # 1. Physical control logic
