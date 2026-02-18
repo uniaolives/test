@@ -1,44 +1,96 @@
 package keeper
 
 import (
+	"strings"
 	"testing"
 
-	"cosmossdk.io/math"
+	cosmosmath "cosmossdk.io/math"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"arkhend/x/baconian/types"
 )
 
-func TestFilter(t *testing.T) {
+func TestDetectIdols(t *testing.T) {
+	k := Keeper{}
+
+	// Caso 1: Idolum Theatri (Viés de confirmação)
 	observations := []types.Observation{
-		{Context: "A", Result: true, Intensity: math.LegacyNewDec(1)},
-		{Context: "B", Result: false, Intensity: math.LegacyNewDec(0)},
-		{Context: "C", Result: true, Intensity: math.LegacyNewDecWithPrec(5, 1)},
+		{Context: "wood oxygen spark", Result: true, Intensity: cosmosmath.LegacyNewDec(1), Validator: "v1"},
+		{Context: "paper oxygen flame", Result: true, Intensity: cosmosmath.LegacyNewDec(1), Validator: "v2"},
+		{Context: "gas oxygen spark", Result: true, Intensity: cosmosmath.LegacyNewDec(1), Validator: "v3"},
+		{Context: "wood oxygen spark", Result: true, Intensity: cosmosmath.LegacyNewDec(1), Validator: "v1"},
+		{Context: "paper oxygen flame", Result: true, Intensity: cosmosmath.LegacyNewDec(1), Validator: "v2"},
+		{Context: "gas oxygen spark", Result: true, Intensity: cosmosmath.LegacyNewDec(1), Validator: "v3"},
+		{Context: "wood oxygen spark", Result: true, Intensity: cosmosmath.LegacyNewDec(1), Validator: "v1"},
+		{Context: "paper oxygen flame", Result: true, Intensity: cosmosmath.LegacyNewDec(1), Validator: "v2"},
+		{Context: "gas oxygen spark", Result: true, Intensity: cosmosmath.LegacyNewDec(1), Validator: "v3"},
+		{Context: "wood oxygen spark", Result: true, Intensity: cosmosmath.LegacyNewDec(1), Validator: "v1"},
 	}
 
-	presence := filter(observations, func(o types.Observation) bool { return o.Result })
-	if len(presence) != 2 {
-		t.Errorf("Expected 2 presence observations, got %d", len(presence))
+	table := types.Table{
+		Phenomenon:   "combustion",
+		Presence:     observations,
+		Absence:      []types.Observation{},
+		ValidatorSet: []string{"v1", "v2", "v3"},
 	}
 
-	absence := filter(observations, func(o types.Observation) bool { return !o.Result })
-	if len(absence) != 1 {
-		t.Errorf("Expected 1 absence observation, got %d", len(absence))
+	idols := k.DetectIdols(sdk.Context{}, table)
+	foundTheatri := false
+	for _, idol := range idols {
+		if idol.Type == types.IdolumTheatri {
+			foundTheatri = true
+		}
+	}
+	if !foundTheatri {
+		t.Error("Esperado Idolum Theatri devido à falta de instâncias de ausência")
 	}
 
-	degrees := filter(observations, func(o types.Observation) bool { return o.Intensity.GT(math.LegacyZeroDec()) })
-	if len(degrees) != 2 {
-		t.Errorf("Expected 2 observations with intensity > 0, got %d", len(degrees))
+	// Caso 2: Idolum Tribus (Baixa diversidade)
+	table.ValidatorSet = []string{"v1"}
+	// Adiciona mais observações para passar de 20
+	for i := 0; i < 15; i++ {
+		observations = append(observations, types.Observation{Result: true, Validator: "v1"})
+	}
+	table.Presence = observations
+	idols = k.DetectIdols(sdk.Context{}, table)
+	foundTribus := false
+	for _, idol := range idols {
+		if idol.Type == types.IdolumTribus {
+			foundTribus = true
+		}
+	}
+	if !foundTribus {
+		t.Error("Esperado Idolum Tribus devido à baixa diversidade de validadores")
 	}
 }
 
-func TestFilterByNode(t *testing.T) {
-	observations := []types.Observation{
-		{Validator: "nodeA", Context: "A"},
-		{Validator: "nodeB", Context: "B"},
-		{Validator: "nodeA", Context: "C"},
+func TestInferLaw(t *testing.T) {
+	k := Keeper{}
+
+	presence := []types.Observation{
+		{Context: "wood oxygen spark", Result: true},
+		{Context: "paper oxygen flame", Result: true},
+	}
+	absence := []types.Observation{
+		{Context: "wood nitrogen spark", Result: false},
 	}
 
-	nodeAObs := filterByNode(observations, "nodeA")
-	if len(nodeAObs) != 2 {
-		t.Errorf("Expected 2 observations from nodeA, got %d", len(nodeAObs))
+	table := types.Table{
+		Phenomenon: "combustion",
+		Presence:   presence,
+		Absence:    absence,
 	}
+
+	law, confidence, _, _ := k.InferLaw(table)
+
+	if !contains(law, "oxygen") {
+		t.Errorf("Lei esperada conter 'oxygen', got: %s", law)
+	}
+
+	if confidence.IsZero() {
+		t.Error("Confiança não deve ser zero para dados consistentes")
+	}
+}
+
+func contains(s string, substr string) bool {
+	return strings.Contains(s, substr)
 }
