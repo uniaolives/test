@@ -2,6 +2,8 @@
 UrbanSkyOS - Urban Navigation Simulation (Refined)
 Tests integrated layers and modules in a virtual urban environment.
 Now utilizes MapTraceService for realistic trajectories.
+UrbanSkyOS - Urban Navigation Simulation
+Tests integrated layers and modules in a virtual urban environment.
 """
 
 import time
@@ -35,6 +37,16 @@ class UrbanNavigationSim:
             mission_path = self.map_trace.get_scaled_path(scale_factor=100)
             print(f"   Path loaded with {len(mission_path)} nodes.")
 
+    def run_scenario(self, duration_sec=1.0):
+        print(f"🌆 Starting Urban Navigation Scenario (Duration: {duration_sec}s)")
+        print(f"🛸 Fleet Size: {len(self.fleet.drones)} Drones | Sync: {self.sync.base_frequency}Hz")
+
+        # 1. Setup Environment: Add Restricted Zone
+        self.utm.geofence.update_zone("FIRE_INCIDENT_A", [[15, 15], [25, 15], [25, 25], [15, 25]], priority=10)
+
+        # 2. Inject Infrastructure Signals
+        self.fleet.inject_infrastructure_signal('TRAFFIC_SIGNAL', {'id': 'X-01', 'status': 'CAUTION'})
+
         start_time = time.time()
         last_cycle = start_time
 
@@ -55,6 +67,10 @@ class UrbanNavigationSim:
 
                  drone.handle_telemetry(imu_mock, gps_mock, lidar_data)
                  # Note: DroneNode inherits from FlightController (UrbanSkyOSNode)
+                 # Perception and Estimation
+                 drone.handle_telemetry(imu_mock, gps_mock, lidar_data)
+
+                 # Dynamic Context Adaptation
                  drone.set_environment_context("Residential", drone.gamma / 50.0)
 
             # B. COORDINATION: V2X & Fleet Consensus
@@ -65,6 +81,16 @@ class UrbanNavigationSim:
             if now_ms % 100 == 0:
                  avg_coh = np.mean([d["venus"].coherence for d in self.fleet.drones.values()])
                  print(f"[t={now_ms}ms] Fleet Coherence: {avg_coh:.3f}")
+            # C. MONITORING: UTM & Battery
+            now_ms = int((time.time() - start_time) * 1000)
+            if now_ms % 100 == 0:
+                 avg_coh = np.mean([d["venus"].coherence for d in self.fleet.drones.values()])
+                 autonomy = self.battery.estimate_autonomy(1.0, 5.0, "Residential")
+
+                 print(f"[t={now_ms}ms] Fleet Coherence: {avg_coh:.3f} | Drone_0 Autonomy: {autonomy:.1f}m")
+
+                 for d_id, data in self.fleet.drones.items():
+                      self.utm.sync(data["node"].intelligence.ekf.x[0:3])
 
             # Sync Loop
             actual_period = time.time() - last_cycle

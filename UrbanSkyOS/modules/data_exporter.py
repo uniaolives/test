@@ -2,6 +2,7 @@
 UrbanSkyOS Data Exporter
 Provides state data for monitoring and visualization components (e.g., D3.js).
 Includes RKHS metrics: coherence, kernel density, and uncertainty.
+Provides state data for monitoring and visualization components.
 """
 
 import json
@@ -44,6 +45,16 @@ class DataExporter:
             coherence = getattr(venus, 'coherence', 1.0)
 
             positions.append(pose)
+        current_time = time.time()
+
+        fleet_data = []
+        coherences = []
+
+        for d_id, data in fleet_manager.drones.items():
+            pose = data["node"].intelligence.ekf.x[0:3].tolist()
+            vel = data["node"].intelligence.ekf.x[3:6].tolist()
+            coherence = data["venus"].coherence
+
             coherences.append(coherence)
 
             drone_entry = {
@@ -75,6 +86,16 @@ class DataExporter:
             "fleet_size": len(fleet_data),
             "waypoint": getattr(fleet_manager, 'fleet_waypoint', [0,0,0]).tolist() if hasattr(fleet_manager, 'fleet_waypoint') else [0,0,0],
             "kernel_density": kernel_density
+                "uncertainty": np.trace(data["node"].intelligence.ekf.P[0:3, 0:3]),
+                "gamma": data["node"].gamma
+            }
+            fleet_data.append(drone_entry)
+
+        collective_state = {
+            "timestamp": current_time,
+            "avg_coherence": np.mean(coherences) if coherences else 0,
+            "fleet_size": len(fleet_data),
+            "waypoint": fleet_manager.fleet_waypoint.tolist()
         }
 
         full_state = {
@@ -86,6 +107,9 @@ class DataExporter:
         try:
             with open(self.output_file, 'w') as f:
                 json.dump(full_state, f, indent=2)
+        try:
+            with open(self.output_file, 'w') as f:
+                json.dump(full_state, f)
         except Exception as e:
             print(f"Export error: {e}")
 

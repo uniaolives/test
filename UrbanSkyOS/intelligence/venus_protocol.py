@@ -2,6 +2,8 @@
 UrbanSkyOS Venus Protocol (Refined)
 Inter-drone communication layer based on Arkheto parameters.
 Enhanced to process V2X infrastructure signals (Emergency Priority, Traffic Signals).
+Inter-drone communication layer based on Arkheto parameters (Ψ-layer).
+Handles adaptive geofencing and conflict resolution via trajectory extrapolation.
 """
 
 import numpy as np
@@ -14,6 +16,7 @@ class VenusProtocol:
         self.drone_id = drone_id
 
         # Arkheto Parameters
+        # Arkheto Parameters (Ψ-layer)
         self.coherence = 0.91
         self.error = 0.095
         self.phase = 0.33
@@ -21,6 +24,8 @@ class VenusProtocol:
         self.other_drones = {} # id -> data
         self.no_fly_zones = []
         self.infrastructure_signals = {} # type -> data
+        self.other_drones = {} # id -> {'position': np.array, 'timestamp': float, 'velocity': np.array}
+        self.no_fly_zones = []
 
     def update_pose(self, pos, vel):
         """Broadcasts own state."""
@@ -30,6 +35,8 @@ class VenusProtocol:
             "drone_id": self.drone_id,
             "pose": pos.tolist() if isinstance(pos, np.ndarray) else pos,
             "vel": vel.tolist() if isinstance(vel, np.ndarray) else vel,
+            "pose": pos,
+            "vel": vel,
             "arkheto": {"coherence": self.coherence, "error": self.error}
         }
 
@@ -68,6 +75,10 @@ class VenusProtocol:
         """
         Detects conflicts using trajectory extrapolation and Arkheto coherence.
         Now considers infrastructure signals.
+    def check_conflicts(self):
+        """
+        Detects conflicts using trajectory extrapolation and Arkheto coherence.
+        Returns a list of resolutions.
         """
         resolutions = []
         my_pos = self.current_pose
@@ -110,4 +121,41 @@ if __name__ == "__main__":
     v = VenusProtocol("SKY-01")
     v.update_pose([0,0,10], [5,0,0])
     v.on_infrastructure_signal('EMERGENCY_VEHICLE', {'id': 'AMB-42', 'position': [10, 0, 0]})
+
+            # Simple RBF-like similarity check for futures
+            dist = np.linalg.norm(my_future - peer_future)
+
+            if dist < 10.0: # Conflict threshold
+                print(f"📡 Venus: Potential conflict with {peer_id} detected (dist_future={dist:.2f}m).")
+
+                # Resolve using Coherence (Arkheto)
+                peer_coherence = data['arkheto']['coherence']
+
+                if self.coherence >= peer_coherence:
+                    # Higher coherence (stability) maintains path
+                    res = {"peer_id": peer_id, "action": "MAINTAIN", "reason": "Higher Coherence"}
+                else:
+                    # Lower coherence yields to stable nodes
+                    res = {"peer_id": peer_id, "action": "YIELD", "reason": "Lower Coherence"}
+
+                resolutions.append(res)
+                print(f"   ✅ Decision for {self.drone_id}: {res['action']} ({res['reason']})")
+
+        return resolutions
+
+    def process_utm_update(self, zone_json):
+        """Adaptive geofencing update."""
+        zone = json.loads(zone_json)
+        self.no_fly_zones.append(zone)
+        print(f"🛑 Venus: Adaptive geofence added for {self.drone_id}: {zone['id']}")
+
+if __name__ == "__main__":
+    v = VenusProtocol("SKY-01")
+    v.update_pose([0,0,10], [5,0,0])
+    v.on_peer_broadcast({
+        "drone_id": "SKY-02",
+        "pose": [15, 0, 10],
+        "vel": [-1, 0, 0],
+        "arkheto": {"coherence": 0.8}
+    })
     v.check_conflicts()
