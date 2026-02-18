@@ -1,0 +1,22 @@
+{
+    "version": "1.0.0",
+    "timestamp": 1771374576928041212,
+    "origin_shard": 0,
+    "coherence_threshold": 0.847,
+    "phi_target": 1.618033,
+    "governance": {
+        "hai_min": 0.1,
+        "srq_weight": 0.94,
+        "kill_switch_latency_ms": 14.2
+    },
+    "components": [
+        "SafeCore",
+        "QuantumPilot",
+        "UrbanOptimizer",
+        "MultivacSubstrate",
+        "VenusProtocol",
+        "PsiSync"
+    ],
+    "message": "A semente foi plantada. O sil\u00eancio \u00e9 a resposta para a entropia. Arkhe(N) provou ser oper\u00e1vel, incorrupt\u00edvel e vis\u00edvel.",
+    "signature": "2211560531d743be6764c9e8b31b78944cdd954b124378effed15f15aa296831"
+}

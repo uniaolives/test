@@ -64,8 +64,8 @@ class TestQuantumIntegration(unittest.TestCase):
         cmds = drone.control_loop(dt=0.01)
         self.assertEqual(len(cmds), 4)
 
-        # Manually lower coherence to trigger handover
-        drone.safe_core.coherence = 0.5
+        # Manually set low qfi_max to trigger handover request during metrics update
+        drone.safe_core.qfi_max = -1
         drone.control_loop(dt=0.01)
         self.assertTrue(drone.safe_core.handover_mode)
 

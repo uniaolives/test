@@ -10,6 +10,10 @@ class QuantumState:
     amplitudes: np.ndarray  # vetor de amplitudes (complexo)
     basis_labels: list      # rótulos dos estados base
 
+class ArkheEthicsViolation(Exception):
+    """Exception raised when an ethics violation is detected by SafeCore."""
+    pass
+
 class SafeCore:
     """
     Núcleo de Coerência Quântica (Safe Core).
@@ -47,6 +51,9 @@ class SafeCore:
         """
         Aplica uma porta quântica (simulada) e atualiza métricas.
         """
+        if not self.active:
+            return
+
         # Simulação simplificada: aplica operador unitário no estado
         # (em produção, seria enviado para hardware quântico)
         # Aqui apenas calculamos o novo estado e atualizamos métricas.
@@ -139,12 +146,7 @@ class SafeCore:
         self.quantum_state.amplitudes[0] = 1.0
         self.active = False
         self._record_metrics()
-        # In a real environment we might use sys.exit, but here we just deactivate.
-        # However, the requirement says "Emergency shutdown: quantum coherence critical"
-        # I will just set active to False and maybe raise an exception that the node can catch.
-        # The provided code says: raise SystemExit("Emergency shutdown: quantum coherence critical")
-        # I'll keep it as is, but maybe use a custom exception so the simulation doesn't just die.
-        # Actually, let's stick to the provided code but wrap it in the node.
+        raise ArkheEthicsViolation(reason)
 
     def handover_request(self, reason: str):
         """
@@ -164,3 +166,12 @@ class SafeCore:
         """Carrega um estado quântico externo (após handover)."""
         self.quantum_state = state
         self._update_metrics()
+
+    def validate_peer(self, peer_response: str) -> bool:
+        """
+        Valida se o peer é ético e coerente.
+        Simulação: verifica se o peer_response contém um token de coerência válido.
+        """
+        if "COHERENCE_OK" in peer_response:
+            return True
+        return False

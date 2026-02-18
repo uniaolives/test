@@ -8,7 +8,7 @@ import numpy as np
 from UrbanSkyOS.core.flight_controller import UrbanSkyOSNode
 from UrbanSkyOS.core.kernel_phi import KernelPhiLayer
 from UrbanSkyOS.intelligence.autonomy_engine import AutonomyEngine
-from UrbanSkyOS.core.safe_core import SafeCore
+from UrbanSkyOS.core.safe_core import SafeCore, ArkheEthicsViolation
 from UrbanSkyOS.intelligence.quantum_pilot import QuantumPilotCore
 from UrbanSkyOS.connectivity.handover import QuantumHandoverProtocol
 
@@ -59,15 +59,21 @@ class DroneNode(UrbanSkyOSNode, KernelPhiLayer):
         # 1. Quantum Decision Loop (if active)
         quantum_override = None
         if self.safe_core.active and not self.safe_core.handover_mode:
-            percept = self.quantum_pilot.perceive()
-            decisao = self.quantum_pilot.decide(percept)
-            quantum_override = self.quantum_pilot.act(decisao)
+            try:
+                percept = self.quantum_pilot.perceive()
+                decisao = self.quantum_pilot.decide(percept)
+                quantum_override = self.quantum_pilot.act(decisao)
 
-            # Monitoring
-            self.safe_core._update_metrics()
+                # Monitoring
+                self.safe_core._update_metrics()
 
-            # Emergency Handover check
-            if self.safe_core.coherence < self.safe_core.coherence_min:
+                # Emergency Handover check
+                if self.safe_core.coherence < self.safe_core.coherence_min:
+                    self.handover_protocol.freeze_quantum_state(self.safe_core)
+                    self.safe_core.handover_mode = True
+            except ArkheEthicsViolation as e:
+                print(f"[DRONE NODE] Safety Kill Switch triggered: {e}")
+                # Failsafe: motors to neutral
                 self.handover_protocol.freeze_quantum_state(self.safe_core)
                 self.safe_core.handover_mode = True
 
