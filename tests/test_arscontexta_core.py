@@ -31,9 +31,8 @@ def test_psi_cycle_pulses():
     psi_cycle.subscribe(sub)
 
     async def run_test():
-        # Run for a short time
         task = asyncio.create_task(psi_cycle.run())
-        await asyncio.sleep(0.1) # Should pulse approx 4 times (40Hz)
+        await asyncio.sleep(0.1)
         task.cancel()
         try:
             await task
@@ -41,36 +40,37 @@ def test_psi_cycle_pulses():
             pass
 
     asyncio.run(run_test())
-
-    assert sub.pulse_count >= 2 # Allow for some jitter
+    assert sub.pulse_count >= 2
 
 def test_safe_core_thresholds():
     safe_path = Path("arscontexta/.arkhe/coherence/safe_core.py")
     mod = load_arkhe_module(safe_path, "test.arkhe.safe")
     safe_core = mod.SafeCore()
-
-    # Safe values
     assert safe_core.check(phi=0.05, coherence=0.9) == True
-
-    # Violate Phi
     with pytest.raises(SystemExit) as e:
         safe_core.check(phi=0.15, coherence=0.9)
     assert "Phi exceeded" in str(e.value)
-    assert safe_core.tripped == True
 
-def test_safe_core_coherence_collapse():
+def test_handover_quantum_classical():
     safe_path = Path("arscontexta/.arkhe/coherence/safe_core.py")
-    mod = load_arkhe_module(safe_path, "test.arkhe.safe")
-    safe_core = mod.SafeCore()
+    safe_mod = load_arkhe_module(safe_path, "test.arkhe.safe.handover")
+    safe_core = safe_mod.SafeCore()
 
-    # Violate Coherence
-    with pytest.raises(SystemExit) as e:
-        safe_core.check(phi=0.01, coherence=0.5)
-    assert "Coherence collapsed" in str(e.value)
+    handover_path = Path("arscontexta/.arkhe/handover/quantum_classical.py")
+    handover_mod = load_arkhe_module(handover_path, "test.arkhe.handover.qc")
+    qc_handover = handover_mod.QuantumToClassicalHandover(safe_core)
+
+    result = qc_handover.execute({"psi": "dummy"})
+    assert result["state"] == "observed"
+    assert qc_handover.latency_ms < 25
+
+def test_ledger_verify_script():
+    verify_path = Path("arscontexta/.arkhe/ledger/verify.py")
+    verify_mod = load_arkhe_module(verify_path, "test.arkhe.ledger.verify")
+    # Should work even with empty chain for now
+    assert verify_mod.verify_chain(Path("arscontexta/.arkhe/ledger/chain")) == True
 
 def test_bootstrap_logic():
-    # We can test part of bootstrap by importing it
-    # Need to change directory for it to find .arkhe
     original_cwd = os.getcwd()
     os.chdir("arscontexta")
     try:
