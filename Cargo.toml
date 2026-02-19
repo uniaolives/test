@@ -21,6 +21,7 @@ members = [
     "mobile/ar",
     "web777_ontology", "aigmi", "safecore-9d", "harmonia",
     "asi-net/rust/asi-net-crate", "phase-5/bio_kernel",
+    "arkhe_omni_system/constitutive_rust",
 ]
 resolver = "2"
 
