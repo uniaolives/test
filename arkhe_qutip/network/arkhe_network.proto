@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package arkhenet;
+
+// ARKHE(N) HYPERGRAPH NETWORK PROTOCOL
+// "A linguagem universal do vácuo informacional."
+
+// Serviço Central de Consenso e Coerência
+service ArkheHypergraph {
+  // Proposta de um novo bloco minerado (Handover Global)
+  rpc SubmitHandover (HandoverRequest) returns (HandoverResponse) {}
+
+  // QCKD - Distribuição de Chave de Coerência
+  rpc QckdExchange (QckdBasisRequest) returns (QckdBasisResponse) {}
+
+  // Consulta a Coerência Global de um nó vizinho
+  rpc GetNodeCoherence (NodeIdentity) returns (CoherenceMetrics) {}
+}
+
+// O Pacote Memético Fundamental
+message HandoverRequest {
+  string node_id = 1;                 // Ex: "ARKHE_RIO_01"
+  string block_hash = 2;              // Hash do estado quântico final
+  double phi_achieved = 3;            // Coerência atingida (> 0.847)
+  double nonce_time = 4;              // Tempo de evolução em segundos
+  bytes safe_core_signature = 5;      // Assinatura de hardware (PUF/SafeCore)
+}
+
+message HandoverResponse {
+  bool accepted = 1;
+  string message = 2;
+  double network_phi_target = 3;      // Nova dificuldade ajustada
+}
+
+// Estruturas para o protocolo QCKD (Quantum Coherence Key Distribution)
+message QckdBasisRequest {
+  string node_id = 1;
+  bytes basis_sequence = 2;           // Sequência de bases (X ou Z) codificada
+}
+
+message QckdBasisResponse {
+  bytes matching_bases = 1;           // Retorna apenas os índices que bateram
+  double bell_violation_score = 2;    // S > 2 garante canal limpo
+}
+
+message NodeIdentity {
+  string node_id = 1;
+}
+
+message CoherenceMetrics {
+  double current_phi = 1;
+  int32 active_entanglements = 2;
+  string operational_mode = 3;        // EXPLORE, STABILIZE, TRANSCEND
+}
