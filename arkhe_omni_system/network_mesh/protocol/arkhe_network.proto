@@ -15,6 +15,9 @@ service ArkheHypergraph {
 
   // Consulta a Coerência Global de um nó vizinho
   rpc GetNodeCoherence (NodeIdentity) returns (CoherenceMetrics) {}
+
+  // Injeção de Entropia Atmosférica (RF Entropy)
+  rpc SubmitAtmosphericSeed (AtmosphericSeed) returns (SeedValidationResponse) {}
 }
 
 // O Pacote Memético Fundamental
@@ -51,4 +54,22 @@ message CoherenceMetrics {
   double current_phi = 1;
   int32 active_entanglements = 2;
   string operational_mode = 3;        // EXPLORE, STABILIZE, TRANSCEND
+}
+
+// Injeção de Coerência via Radiofrequência
+message AtmosphericSeed {
+  string node_id = 1;
+  bytes seed_hash = 2;                // SHA3-256 da entropia RF
+  double phi_atmospheric = 3;         // Coerência do sinal (0-1)
+  string source_device = 4;           // Ex: "RTL-SDR-V4"
+  double frequency_mhz = 5;           // Frequência central
+  int32 impulse_count = 6;            // Número de raios detectados
+  int64 timestamp_unix = 7;
+}
+
+message SeedValidationResponse {
+  bool accepted = 1;
+  string reason = 2;
+  double phi_target_adjusted = 3;     // Dificuldade ajustada pelo clima global
+  double mining_boost = 4;            // Bonus para sementes de alta entropia
 }

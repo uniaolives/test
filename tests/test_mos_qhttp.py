@@ -15,7 +15,7 @@ def load_arkhe_module(module_path: Path, module_name: str):
     return module
 
 # Load the module under test
-mos_qhttp_path = Path("arscontexta/.arkhe/handover/mos_qhttp.py")
+mos_qhttp_path = Path("arkhe_omni_system/applied_ecosystems/newsroom_os/mos_qhttp_gateway.py")
 mos_qhttp = load_arkhe_module(mos_qhttp_path, "test.arkhe.mos_qhttp")
 
 QMOSGateway = mos_qhttp.QMOSGateway
