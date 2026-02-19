@@ -11,6 +11,8 @@
 - **Coherence Metrics**: Advanced measures including Φ (integrated information)
 - **Visualization**: 2D plotting of quantum hypergraphs
 - **Chain Bridge**: Integration with Arkhe(N)Chain blockchain (mock)
+- **FPGA Emulation**: Hardware-in-the-loop simulation of noisy qubits (T1/T2)
+- **Distributed PoC**: Proof-of-Coherence network consensus simulator
 
 ---
 
@@ -44,6 +46,28 @@ from arkhe_qutip import create_ring_hypergraph
 # Create 5-node ring topology
 hg = create_ring_hypergraph(5)
 print(f"Global coherence: {hg.global_coherence:.4f}")
+```
+
+### FPGA and Network Emulation
+
+```python
+import asyncio
+from arkhe_qutip import ArkheNetworkNode, DistributedPoCConsensus
+
+async def run_testnet():
+    # Setup nodes
+    rio = ArkheNetworkNode("Rio", "Rio de Janeiro")
+    tokyo = ArkheNetworkNode("Tokyo", "Tokyo")
+
+    # Establish QCKD
+    await rio.qckd_handshake("Tokyo")
+
+    # Run consensus
+    consensus = DistributedPoCConsensus([rio, tokyo])
+    block = await consensus.start_cycle()
+    print(f"Block found by {block['node_id']}")
+
+asyncio.run(run_testnet())
 ```
 
 ---

@@ -15,8 +15,10 @@ from .coherence import (
 )
 from .visualization import plot_hypergraph, plot_coherence_trajectory
 from .chain_bridge import ArkheChainBridge
+from .fpga import FPGAQubitEmulator, ArkheFPGAMiner
+from .network import ArkheNetworkNode, DistributedPoCConsensus
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 
 __all__ = [
     "ArkheQobj",
@@ -33,4 +35,8 @@ __all__ = [
     "plot_hypergraph",
     "plot_coherence_trajectory",
     "ArkheChainBridge",
+    "FPGAQubitEmulator",
+    "ArkheFPGAMiner",
+    "ArkheNetworkNode",
+    "DistributedPoCConsensus",
 ]
