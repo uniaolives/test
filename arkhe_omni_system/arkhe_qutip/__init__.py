@@ -1,11 +1,11 @@
-# arkhe_qutip/__init__.py
+# arkhe_omni_system/arkhe_qutip/__init__.py
 """
-Arkhe-QuTiP: Quantum Hypergraph Toolbox
-Extension of QuTiP for quantum hypergraph structures with Arkhe(N) coherence tracking and handover mechanics.
+Arkhe-QuTiP: Quantum Hypergraph Toolbox (Omni-System Edition)
 """
 
-from .core import ArkheQobj, ArkheSolver, HandoverEvent
-from .hypergraph import QuantumHypergraph, Hyperedge, create_ring_hypergraph
+from .core import ArkheQobj, HandoverEvent
+from .solver import ArkheSolver
+from .hypergraph import QuantumHypergraph, create_ring_hypergraph
 from .coherence import (
     purity,
     von_neumann_entropy,
@@ -16,18 +16,16 @@ from .coherence import (
 from .visualization import plot_hypergraph, plot_coherence_trajectory
 from .chain_bridge import ArkheChainBridge
 from .fpga import FPGAQubitEmulator, ArkheFPGAMiner
-from .network import ArkheNetworkNode, DistributedPoCConsensus, ArkheHypergraphServicer, serve_arkhe_node
+from .consensus import DistributedPoCConsensus
+from .server import ArkheHypergraphServicer, serve_arkhe_node
 
 __version__ = "1.2.0"
-
-__version__ = "1.0.0"
 
 __all__ = [
     "ArkheQobj",
     "ArkheSolver",
     "HandoverEvent",
     "QuantumHypergraph",
-    "Hyperedge",
     "create_ring_hypergraph",
     "purity",
     "von_neumann_entropy",
@@ -39,7 +37,6 @@ __all__ = [
     "ArkheChainBridge",
     "FPGAQubitEmulator",
     "ArkheFPGAMiner",
-    "ArkheNetworkNode",
     "DistributedPoCConsensus",
     "ArkheHypergraphServicer",
     "serve_arkhe_node",
