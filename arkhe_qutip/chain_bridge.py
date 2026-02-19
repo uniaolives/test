@@ -56,6 +56,11 @@ class ArkheChainBridge:
         self.current_height += random.randint(5, 20)
 
         node_id = getattr(final_state, 'node_id', 'unknown-sim')
+    def record_simulation(self, psi_initial: Any, psi_final: Any, metadata: Optional[Dict[str, Any]] = None) -> HandoverRecord:
+        """Records a full quantum simulation result on the chain."""
+        self.current_height += random.randint(5, 20)
+
+        node_id = getattr(psi_final, 'node_id', 'unknown-sim')
         tx_data = f"sim-{node_id}-{time.time()}"
         tx_hash = hashlib.sha256(tx_data.encode()).hexdigest()
 

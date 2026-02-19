@@ -177,5 +177,7 @@ class ArkheSolver:
             history = getattr(rho0, 'history', [])
             node_id = getattr(rho0, 'node_id', str(uuid.uuid4()))
             result.arkhe_final_state = ArkheQobj(result.states[-1], history=history, node_id=node_id)
+            from .coherence import purity
+            result.coherence = [purity(s) for s in result.states]
 
         return result
