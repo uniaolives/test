@@ -46,7 +46,6 @@ class FlightController:
     def control_step(self, T_des, att_error, dt=0.001):
         """
         Hard Real-Time Control Loop (1kHz).
-        """
         Maps desired thrust and attitude errors to optimal motor speeds.
         """
         # Rate PIDs (inner loop)
@@ -62,24 +61,6 @@ class FlightController:
 
 # Alias for backward compatibility with DroneNode imports
 UrbanSkyOSNode = FlightController
-class UrbanSkyOSNode:
-    def __init__(self, drone_id="URBAN_01"):
-        self.drone_id = drone_id
-        self.fc = FlightController()
-        self.frame_count = 0
-
-    def control_loop(self, dt=0.001):
-        # 1. Read IMU
-        imu = self.fc.get_imu_data()
-
-        # 2. Control Step (simulated hover)
-        thrust_des = 500.0
-        att_error = [0.0 - imu['gyro'][0], 0.0 - imu['gyro'][1], 0.0 - imu['gyro'][2]]
-
-        motor_cmds = self.fc.control_step(thrust_des, att_error, dt)
-
-        self.frame_count += 1
-        return motor_cmds
 
 if __name__ == "__main__":
     node = UrbanSkyOSNode()
