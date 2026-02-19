@@ -2,6 +2,7 @@ import numpy as np
 import time
 from UrbanSkyOS.core.safe_core import SafeCore
 from UrbanSkyOS.connectivity.handover import QuantumHandoverProtocol
+from UrbanSkyOS.intelligence.hydrodynamic_propulsion import QuantumHydrodynamicEngine
 
 class IronstoneOpalSimulator:
     def measure_magnetic(self):
@@ -37,6 +38,9 @@ class QuantumPilotCore:
 
         # Propulsor U(1)-gravity (engenharia de métrica)
         self.propulsion = U1GravityDrive()
+
+        # Novo: Motor Hidrodinâmico Quântico (Madelung/Propulsão)
+        self.hydro_engine = QuantumHydrodynamicEngine(mass=1e-6)
 
     def perceive(self) -> np.ndarray:
         """
@@ -77,15 +81,31 @@ class QuantumPilotCore:
         action_superposition = self.qnn.process(perceptual_state)
         return action_superposition
 
-    def act(self, action_superposition: np.ndarray) -> dict:
+    def act(self, action_superposition: np.ndarray, use_hydro: bool = False) -> dict:
         """
-        Colapsa superposição e executa ação via propulsão U(1)-gravity.
+        Colapsa superposição e executa ação via propulsão U(1)-gravity ou Hidrodinâmica Quântica.
         """
         # Colapso para ação clássica (por exemplo, tomar a componente de maior magnitude)
         action = np.argmax(np.abs(action_superposition))
 
-        # Aplicar comando ao propulsor U(1)-gravity
-        delta_v = self.propulsion.fire_pulse(action)
+        delta_v = 0.0
+        force_q = 0.0
+
+        if use_hydro:
+            # Simular propulsão via motor hidrodinâmico (Madelung)
+            # Usamos a superposição para definir os parâmetros de modulação
+            freq = 1e4 + action * 100  # Modula frequência baseada na ação
+            result = self.hydro_engine.modulate_for_propulsion(
+                base_sigma=1e-6,
+                modulation_freq=freq,
+                modulation_amp=0.1,
+                duration=0.01
+            )
+            delta_v = result['total_momentum'] / 1.0  # Assumindo massa unitária para o drone
+            force_q = result['avg_force']
+        else:
+            # Aplicar comando ao propulsor U(1)-gravity tradicional
+            delta_v = self.propulsion.fire_pulse(action)
 
         # Registrar ação no Safe Core
         self.safe_core.apply_gate(np.eye(len(action_superposition)), [])
@@ -93,6 +113,7 @@ class QuantumPilotCore:
         return {
             'action': action,
             'delta_v': delta_v,
+            'hydro_force': force_q,
             'coherence': self.safe_core.coherence,
             'phi': self.safe_core.phi
         }
