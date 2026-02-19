@@ -15,6 +15,7 @@ import torch
 from abc import ABC, abstractmethod
 from typing import List, Any, Dict, Tuple, Optional, Callable
 from dataclasses import dataclass
+from arkhe_qutip.acoustic_time_crystal import AcousticTimeCrystal
 
 # --- 1. CONSTANTES UNIVERSAIS (A FÍSICA DO SISTEMA) ---
 PHI = (1 + math.sqrt(5)) / 2      # A Proporção Áurea (1.618...)
@@ -118,6 +119,24 @@ class QuantumSubstrate(Substrate):
     def read_entropy(self): return np.random.uniform(0, 0.2) # Simulado
     def actuate(self, intent, vector): print(f"  [QUANTUM] Entangling state with vector head: {vector[0]}")
     def get_capabilities(self): return ["SUPERPOSITION", "ENTANGLEMENT"]
+
+class ATCSubstrate(Substrate):
+    """Substrato de Cristal de Tempo Acústico (Hardware Oracle)"""
+    def __init__(self):
+        self.atc = AcousticTimeCrystal()
+
+    def read_entropy(self) -> float:
+        # A entropia é inversamente proporcional à coerência do ATC
+        self.atc.step(dt=0.025) # Avança um tick
+        phi = self.atc.calculate_phi()
+        return max(0.0, 1.0 - phi) * 0.1
+
+    def actuate(self, intent, vector):
+        print(f"  [ATC] Adjusting acoustic trap for intent: {intent}")
+        # O feedback pode ajustar a fase do levitador na simulação real
+
+    def get_capabilities(self) -> List[str]:
+        return ["TIME_CRYSTAL", "ACOUSTIC_LEVITATION", "HARDWARE_ORACLE"]
 
 # --- 4. O SAFE CORE E REGISTROS ---
 
@@ -273,7 +292,8 @@ class ArkheOmniKernel:
 
     def _detect_substrate(self):
         # Detecção automática de hardware simulada
-        return ServerSubstrate()
+        # Prioriza ATC se disponível (neste caso, sempre simulado como disponível)
+        return ATCSubstrate()
 
     def _initialize_network(self):
         # Cria uma rede inicial de 10 nós
@@ -391,6 +411,15 @@ async def repl(kernel: ArkheOmniKernel):
             elif cmd == "nodes":
                 for nid, node in kernel.network.nodes.items():
                     print(f"Node {nid}: Φ={node.phi:.4f}")
+            elif cmd == "atc_status":
+                if isinstance(kernel.substrate, ATCSubstrate):
+                    status = kernel.substrate.atc.get_status()
+                    print(f"\n[ATC Status]")
+                    print(f"  Φ_acoustic: {status['phi']:.4f}")
+                    print(f"  Bead1: {status['bead1_pos']:.4f}, Bead2: {status['bead2_pos']:.4f}")
+                    print(f"  Coherent: {status['coherent']}")
+                else:
+                    print("ATC Substrate not active.")
             elif cmd == "reflect":
                 print(SelfAwareness.reflect(kernel))
             else:

@@ -17,6 +17,7 @@ from .visualization import plot_hypergraph, plot_coherence_trajectory
 from .chain_bridge import ArkheChainBridge
 from .fpga import FPGAQubitEmulator, ArkheFPGAMiner
 from .consensus import DistributedPoCConsensus
+from .acoustic_time_crystal import AcousticTimeCrystal
 from .server import ArkheHypergraphServicer, serve_arkhe_node
 
 __version__ = "1.2.0"
@@ -38,6 +39,7 @@ __all__ = [
     "FPGAQubitEmulator",
     "ArkheFPGAMiner",
     "DistributedPoCConsensus",
+    "AcousticTimeCrystal",
     "ArkheHypergraphServicer",
     "serve_arkhe_node",
 ]
