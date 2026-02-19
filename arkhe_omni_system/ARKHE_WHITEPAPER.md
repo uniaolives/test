@@ -10,6 +10,7 @@ A fundação filosófica imutável. Define os limites éticos ($\Psi = 0.847$), 
 
 ### Camada 1.5: Mecânica Constitutiva (Rust)
 Implementada em Rust para máxima segurança e performance. Esta camada traduz os axiomas em leis físicas simuláveis, tratando handovers como deformações e a coerência como tensão interna do hipergrafo.
+A fundação filosófica imutável. Define os limites éticos ($\Psi = 0.847$) e o framework epistemológico baseado na ciência indutiva de Francis Bacon.
 
 ### Camada 2: Simulação Quântica (arkhe_qutip)
 Um kit de ferramentas de simulação que modela a informação integrada ($\Phi$) e a evolução de estados quânticos com memória histórica, permitindo a prototipagem de algoritmos de resistência à entropia.

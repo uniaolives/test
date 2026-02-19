@@ -6,6 +6,7 @@ import random
 import numpy as np
 from typing import List, Dict, Any, Optional
 from .fpga import FPGAQubitEmulator, ArkheFPGAMiner
+from .acoustic_time_crystal import AcousticTimeCrystal
 
 class ArkheNetworkNode:
     """
@@ -16,6 +17,7 @@ class ArkheNetworkNode:
         self.node_id = node_id
         self.location = location
         self.miner = ArkheFPGAMiner(node_id=node_id)
+        self.atc = AcousticTimeCrystal()
         self.qckd_keys: Dict[str, str] = {}
         self.peers: List['ArkheNetworkNode'] = []
         self.blockchain: List[Dict[str, Any]] = []
@@ -48,6 +50,29 @@ class ArkheNetworkNode:
         result = self.miner.mine(block_header, target_phi=target_phi)
         return result
 
+    async def run_pocp_round(self, block_header: Dict[str, Any], target_phi: float):
+        """
+        Executes a Proof of Coherence Physical (PoCP) round.
+        Uses the Acoustic Time Crystal as the entropy source.
+        """
+        print(f"[{self.node_id}] Performing PoCP mining with ATC at {self.location}...")
+        start_time = time.time()
+
+        # Simulate ATC stability for a period
+        for _ in range(100):
+            self.atc.step(dt=0.01)
+
+        phi = self.atc.calculate_phi()
+        if phi > target_phi:
+            return {
+                'node_id': self.node_id,
+                'phi_achieved': phi,
+                'proof_type': 'PoCP',
+                'atc_status': self.atc.get_status(),
+                'timestamp': time.time()
+            }
+        return None
+
 class DistributedPoCConsensus:
     """
     Orchestrates the Proof-of-Coherence consensus across multiple nodes.
@@ -58,6 +83,7 @@ class DistributedPoCConsensus:
         self.block_time_target = 10.0 # seconds for simulation
 
     async def start_cycle(self):
+    async def start_cycle(self, mode: str = 'PoC'):
         """Simulates one consensus cycle (finding the next block)."""
         header = {
             'prev_hash': '0'*64,
@@ -66,6 +92,10 @@ class DistributedPoCConsensus:
         }
 
         tasks = [node.run_mining_round(header, self.target_phi) for node in self.nodes]
+        if mode == 'PoCP':
+            tasks = [node.run_pocp_round(header, self.target_phi) for node in self.nodes]
+        else:
+            tasks = [node.run_mining_round(header, self.target_phi) for node in self.nodes]
 
         # Wait for the first winner
         done, pending = await asyncio.wait(
