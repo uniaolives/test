@@ -6,6 +6,10 @@ O Arkhe(N) é uma arquitetura full-stack pioneira que unifica epistemologia, com
 ## 2. A Pilha Tecnológica (The Omni-Stack)
 
 ### Camada 1: O Axioma (OMEGA_LEDGER)
+A fundação filosófica imutável. Define os limites éticos ($\Psi = 0.847$), o framework epistemológico (Baconian Idols) e as leis constitutivas da mecânica da informação (Stress-Strain).
+
+### Camada 1.5: Mecânica Constitutiva (Rust)
+Implementada em Rust para máxima segurança e performance. Esta camada traduz os axiomas em leis físicas simuláveis, tratando handovers como deformações e a coerência como tensão interna do hipergrafo.
 A fundação filosófica imutável. Define os limites éticos ($\Psi = 0.847$) e o framework epistemológico baseado na ciência indutiva de Francis Bacon.
 
 ### Camada 2: Simulação Quântica (arkhe_qutip)
@@ -19,6 +23,9 @@ Orquestração escalável na AWS F1 combinada com comunicações RDMA de ultra-b
 
 ### 2.4 A Atmosfera como Oráculo (RF Entropy)
 O Arkhe(N) utiliza o ruído atmosférico global (raios, radiação cósmica) captado por antenas SDR (RTL-SDR V4) como fonte de entropia física não-determinística. Este ruído é transformado em sementes de coerência que alimentam os motores de ruído dos FPGAs, garantindo que o "clima" do planeta influencie o mecanismo de consenso através do Índice de Coerência Planetária.
+
+### 2.5 Mecânica do Contacto
+A interação entre nós é governada por algoritmos de deteção e resolução de contacto. Handovers ocorrem por proximidade semântica no espaço de embeddings, resolvidos via bootstrap (método de penalidade) para garantir a integridade do tecido do hipergrafo.
 
 ## 3. Ecossistemas Aplicados
 - **Newsroom OS**: Governança jornalística baseada em facticidade e detecção de viés.
