@@ -6,10 +6,10 @@ This document specifies the hardware architecture for the Arkhe(N) Quantum Emula
 
 The Quantum ALU is responsible for executing matrix multiplications on the state vector at the hardware clock level.
 
-### VHDL Entity: `quantum_alu`
+### SystemVerilog Module: `arkhe_qalu_18b`
 
-```vhdl
-entity quantum_alu is
+```verilog
+module arkhe_qalu_18b (
     generic (
         N_QUBITS : integer := 7;
         PRECISION : integer := 18 -- Fixed point bits
@@ -29,9 +29,8 @@ entity quantum_alu is
         target_qb   : in  integer range 0 to N_QUBITS-1;
         control_qb  : in  integer range 0 to N_QUBITS-1;
 
-        busy        : out std_logic
-    );
-end entity;
+        output reg  signed [17:0] psi1_out_re, psi1_out_im
+);
 ```
 
 ### Functional Design
@@ -40,20 +39,21 @@ end entity;
 
 ## 2. Noise Engine (Thermodynamic Inversion)
 
-Simulates environmental decoherence using thermal noise from the FPGA silicon.
+Simulates environmental decoherence using thermal noise from the FPGA silicon via LFSR.
 
-```vhdl
-entity noise_engine is
-    port (
-        clk         : in  std_logic;
-        qsr_in      : in  complex_vector(0 to 2**N_QUBITS-1);
-        noise_mode  : in  noise_mode_t; -- T1 (Relaxation), T2 (Dephasing)
-        intensity   : in  real;
-        phi_coupling: in  real; -- Golden ratio drive alpha_phi
-        qsr_out     : out complex_vector(0 to 2**N_QUBITS-1);
-        coherence   : out real -- Real-time C(t) calculation
-    );
-end entity;
+### SystemVerilog Module: `arkhe_noise_engine`
+
+```verilog
+module arkhe_noise_engine (
+    input  wire        clk,
+    input  wire        rst,
+    input  wire [15:0] t1_damping_factor,
+    input  wire [15:0] t2_dephasing_factor,
+    input  wire signed [17:0] psi_in_re,
+    input  wire signed [17:0] psi_in_im,
+    output reg  signed [17:0] psi_out_re,
+    output reg  signed [17:0] psi_out_im
+);
 ```
 
 ### Physics Implementation

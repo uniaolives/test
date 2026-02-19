@@ -173,6 +173,9 @@ class ArkheSolver:
             result.coherence_trajectory = [{'purity': purity(s)} for s in result.states]
             result.phi_trajectory = [integrated_information(s) for s in result.states]
             # Use a different name to avoid collision with QuTiP's Result.final_state property
-            result.arkhe_final_state = ArkheQobj(result.states[-1])
+            # Ensure history and node_id are propagated
+            history = getattr(rho0, 'history', [])
+            node_id = getattr(rho0, 'node_id', str(uuid.uuid4()))
+            result.arkhe_final_state = ArkheQobj(result.states[-1], history=history, node_id=node_id)
 
         return result

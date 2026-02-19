@@ -5,7 +5,7 @@ import time
 import random
 import numpy as np
 from typing import List, Dict, Any, Optional
-from .fpga import FPGAQubitEmulator, ArkheFPGAMiner
+from ..fpga import FPGAQubitEmulator, ArkheFPGAMiner
 
 class ArkheNetworkNode:
     """

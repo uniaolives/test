@@ -11,8 +11,9 @@
 - **Coherence Metrics**: Advanced measures including Φ (integrated information)
 - **Visualization**: 2D plotting of quantum hypergraphs
 - **Chain Bridge**: Integration with Arkhe(N)Chain blockchain (mock)
-- **FPGA Emulation**: Hardware-in-the-loop simulation of noisy qubits (T1/T2)
-- **Distributed PoC**: Proof-of-Coherence network consensus simulator
+- **FPGA Emulation**: Hardware-in-the-loop simulation of noisy qubits (T1/T2) with SystemVerilog ALU and Noise Engine.
+- **gRPC Network**: High-performance distributed consensus and telemetric communication.
+- **Cloud Readiness**: AWS EC2 F1 (FPGA) integration for global scale.
 
 ---
 
@@ -48,11 +49,11 @@ hg = create_ring_hypergraph(5)
 print(f"Global coherence: {hg.global_coherence:.4f}")
 ```
 
-### FPGA and Network Emulation
+### FPGA and gRPC Network
 
 ```python
 import asyncio
-from arkhe_qutip import ArkheNetworkNode, DistributedPoCConsensus
+from arkhe_qutip import ArkheNetworkNode, DistributedPoCConsensus, ArkheHypergraphServicer
 
 async def run_testnet():
     # Setup nodes
@@ -67,7 +68,9 @@ async def run_testnet():
     block = await consensus.start_cycle()
     print(f"Block found by {block['node_id']}")
 
-asyncio.run(run_testnet())
+# To start a gRPC server node:
+# from arkhe_qutip import serve_arkhe_node
+# serve_arkhe_node(node_id="RIO_VAL_01", port=50051)
 ```
 
 ---

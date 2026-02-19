@@ -46,6 +46,12 @@ def test_arkhe_solver():
     assert hasattr(result, 'coherence_trajectory')
     assert isinstance(result.arkhe_final_state, ArkheQobj)
 
+    # Test history propagation
+    psi0_with_history = psi0.handover(qt.sigmax(), {'type': 'initial-flip'})
+    result2 = solver.solve(psi0_with_history, tlist, track_coherence=True)
+    assert len(result2.arkhe_final_state.history) == 1
+    assert result2.arkhe_final_state.node_id == psi0_with_history.node_id
+
 def test_chain_bridge():
     bridge = ArkheChainBridge(mock_mode=False)
     psi = ArkheQobj(qt.basis(2, 0))

@@ -9,6 +9,9 @@ setup(
         "qutip-qip>=0.3.0",
         "numpy>=1.20.0",
         "scipy>=1.7.0",
+        "grpcio>=1.60.0",
+        "grpcio-tools>=1.60.0",
+        "torch>=2.0.0",
     ],
     extras_require={
         "viz": ["matplotlib>=3.5.0", "networkx>=2.8.0"],
