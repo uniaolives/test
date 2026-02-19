@@ -21,6 +21,7 @@ members = [
     "mobile/ar",
     "web777_ontology", "aigmi", "safecore-9d", "harmonia",
     "asi-net/rust/asi-net-crate", "phase-5/bio_kernel",
+    "arkhe_drone_swarm",
 ]
 resolver = "2"
 
