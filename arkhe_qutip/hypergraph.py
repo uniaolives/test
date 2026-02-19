@@ -34,6 +34,12 @@ class QuantumHypergraph:
     def add_two_qubit_gate(self, i: int, j: int, operator: qt.Qobj, weight: float = 1.0):
         self.add_hyperedge((i, j), operator, weight, {'type': 'two-qubit-gate'})
 
+    def add_multi_qubit_gate(self, target_nodes: List[int], operator: qt.Qobj, weight: float = 1.0):
+        self.add_hyperedge(tuple(target_nodes), operator, weight, {'type': 'multi-qubit-gate'})
+
+    def update_nodes(self, nodes: List[ArkheQobj]):
+        self.nodes = nodes
+
     @property
     def n_nodes(self) -> int:
         return len(self.nodes)
