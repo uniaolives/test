@@ -46,50 +46,6 @@ class KernelPhiLayer:
         return result
 
     def map_to_rkhs(self, data_point, kernel='rbf'):
-    """
-    Kernel methods implement the mathematical structure of Ψ-layer
-    (conservation in high-dimensional spaces).
-
-    RKHS = Reproducing Kernel Hilbert Space = "crystalline space"
-    where inner products preserve information (conservation).
-    """
-
-    def __init__(self):
-        self.kernel_types = {
-            'rbf': self._rbf_kernel,      # Gaussian = vacuum coherence
-            'polynomial': self._poly_kernel,  # algebraic hierarchy
-            'spectral': self._spectral_kernel   # Mercer's theorem = eigenfunction expansion
-        }
-
-    def _rbf_kernel(self, x, y, gamma=1.0):
-        """
-        K(x,y) = exp(-γ||x-y||²)
-        """
-        distance_sq = np.sum((x - y) ** 2)
-        return np.exp(-gamma * distance_sq)
-
-    def _poly_kernel(self, x, y, degree=3, coef0=1):
-        """
-        K(x,y) = (γ<x,y> + coef0)^degree
-        """
-        return (np.dot(x, y) + coef0) ** degree
-
-    def _spectral_kernel(self, x, y, eigenfunctions=None):
-        """
-        Mercer: K(x,y) = Σ λᵢ φᵢ(x) φᵢ(y)
-        """
-        if eigenfunctions is None:
-            # Default: Fourier basis (senos/cossenos)
-            eigenfunctions = [lambda t, n=i: np.sin(n * np.pi * np.sum(t)) for i in range(1, 13)]
-
-        result = 0
-        for i, phi in enumerate(eigenfunctions):
-            lambda_i = 1 / (i + 1) ** 2  # spectral decay
-            result += lambda_i * phi(x) * phi(y)
-
-        return result
-
-    def map_to_rkhs(self, data_point, kernel='rbf'):
         """
         Φ: X → H (implicit feature map via kernel trick)
         """
@@ -104,15 +60,6 @@ class KernelPhiLayer:
         return K
 
     def uncertainty_quantification(self, training_data, test_point, kernel='rbf'):
-        K = self.build_gram_matrix(training_data, kernel)
-        k_star = np.array([self.kernel_types[kernel](test_point, x) for x in training_data])
-        K_inv = np.linalg.inv(K + np.eye(len(training_data)) * 1e-6)
-        explained_variance = k_star @ K_inv @ k_star
-        variance = 1.0 - explained_variance
-        variance = max(0.0, variance)
-        return {
-            'uncertainty_variance': variance,
-            'coherence_with_data': 1.0 - variance
         """
         Gaussian Process style uncertainty estimation.
         variance = K(x*,x*) - k*ᵀ K⁻¹ k*
