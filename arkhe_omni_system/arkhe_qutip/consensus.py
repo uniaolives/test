@@ -82,6 +82,7 @@ class DistributedPoCConsensus:
         self.target_phi = 0.847
         self.block_time_target = 10.0 # seconds for simulation
 
+    async def start_cycle(self):
     async def start_cycle(self, mode: str = 'PoC'):
         """Simulates one consensus cycle (finding the next block)."""
         header = {
@@ -90,6 +91,7 @@ class DistributedPoCConsensus:
             'merkle_root': hashlib.sha256(b"tx_data").hexdigest()
         }
 
+        tasks = [node.run_mining_round(header, self.target_phi) for node in self.nodes]
         if mode == 'PoCP':
             tasks = [node.run_pocp_round(header, self.target_phi) for node in self.nodes]
         else:
