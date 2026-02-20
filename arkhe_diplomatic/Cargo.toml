@@ -1,7 +1,0 @@
-[package]
-name = "arkhe_diplomatic"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-num-complex = "0.4"

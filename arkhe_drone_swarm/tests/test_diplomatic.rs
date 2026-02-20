@@ -61,7 +61,6 @@ fn test_diplomatic_handshake_success() {
 
     // Attempt handshake with good remote coherence
     let result = protocol.attempt_handshake("galileo-002", 0.5, 0.95, 1000).unwrap();
-    let result = protocol.attempt_handshake("galileo-002", 0.5, 0.95).unwrap();
 
     assert!(matches!(result.status, HandshakeStatus::ACCEPTED));
     assert!(result.coherence_global >= 0.847);
@@ -79,20 +78,17 @@ fn test_diplomatic_fallback_and_recovery() {
 
     // 2. Trigger Fallback: Low Coherence
     let result = protocol.attempt_handshake("chaos-node", 0.0, 0.4, 1000).unwrap();
-    let result = protocol.attempt_handshake("chaos-node", 0.0, 0.4).unwrap();
     assert_eq!(result.status, HandshakeStatus::SemionicFallback);
     assert_eq!(protocol.state, ProtocolState::Semionic);
     assert_eq!(protocol.current_alpha, 0.5);
 
     // 3. Stay in Semionic if coherence remains low
     let result = protocol.attempt_handshake("chaos-node", 0.0, 0.4, 1010).unwrap();
-    let result = protocol.attempt_handshake("chaos-node", 0.0, 0.4).unwrap();
     assert_eq!(result.status, HandshakeStatus::REJECTED);
     assert_eq!(protocol.state, ProtocolState::Semionic);
 
     // 4. Recovery (Annealing): Coherence returns to normal
     let result = protocol.attempt_handshake("safe-node", 0.0, 0.95, 1020).unwrap();
-    let result = protocol.attempt_handshake("safe-node", 0.0, 0.95).unwrap();
     assert_eq!(result.status, HandshakeStatus::ACCEPTED);
     assert_eq!(protocol.state, ProtocolState::Annealing);
     assert!(protocol.current_alpha > 0.5); // Started increasing
@@ -104,9 +100,6 @@ fn test_diplomatic_fallback_and_recovery() {
         protocol.attempt_handshake("safe-node", 0.0, 0.95, ts).unwrap();
         count += 1;
         ts += 10;
-    while protocol.state == ProtocolState::Annealing && count < 100 {
-        protocol.attempt_handshake("safe-node", 0.0, 0.95).unwrap();
-        count += 1;
     }
 
     // 6. Final State: Normal

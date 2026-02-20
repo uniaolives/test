@@ -64,9 +64,6 @@ impl DiplomaticProtocol {
         self.prover = Some(prover);
     }
 
-        }
-    }
-
     pub fn attach_hardware(&mut self, hardware: HardwareEmbassy) {
         self.hardware = Some(hardware);
     }
@@ -86,8 +83,6 @@ impl DiplomaticProtocol {
         };
         self.last_timestamp = timestamp;
 
-        remote_coherence: f64
-    ) -> Result<HandshakeResponse, ArkheError> {
         // 1. Obter dados locais do hardware (se disponível)
         let (local_phase, local_coherence) = if let Some(hw) = &mut self.hardware {
             hw.extract_phase_and_coherence()
@@ -141,7 +136,6 @@ impl DiplomaticProtocol {
         };
 
         let phase_diff = effective_remote_phase - local_phase;
-        let phase_diff = remote_phase - local_phase;
         let g_adjustment = -phase_diff;
 
         println!(

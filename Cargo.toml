@@ -22,9 +22,6 @@ members = [
     "web777_ontology", "aigmi", "safecore-9d", "harmonia",
     "asi-net/rust/asi-net-crate", "phase-5/bio_kernel",
     "arkhe_drone_swarm",
-    "arkhe_anyonic_core",
-    "arkhe_anyonic_grpc",
-    "arkhe_diplomatic",
     "arkhe_omni_system/constitutive_rust",
 ]
 resolver = "2"

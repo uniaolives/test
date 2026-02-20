@@ -18,6 +18,19 @@
 
 ---
 
+## 🛰️ Arkhe(N) Diplomatic Protocol & Arkhe-1 Mission
+
+The Arkhe Protocol is the world's first communication and consensus system for space networks based on **anyonic statistics** and **topological invariants**. It provides intrinsically fault-tolerant routing and post-quantum security for satellite constellations.
+
+- **Arkhe-1 CubeSat**: A 1U demonstration mission to validate the protocol in LEO orbit.
+- **Topological Consensus**: Uses the Yang-Baxter equation to ensure path-independent data integrity.
+- **Post-Quantum Security**: Integrated Ring-LWE zero-knowledge proofs for physical-layer identity binding.
+- **Resilient Architecture**: Adaptive Kalman Filtering and Semionic Fallback for extreme environmental noise (Solar Storms).
+
+For more details, see the [Flight Readiness Review & Executive Whitepaper](docs/ARKHE_PROTOCOL_FRR_WHITEPAPER.md).
+
+---
+
 ## 🚀 Quick Start
 
 ### Basic Usage
