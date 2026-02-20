@@ -25,6 +25,7 @@ members = [
     "arkhe_anyonic_core",
     "arkhe_anyonic_grpc",
     "arkhe_diplomatic",
+    "arkhe_crypto",
 ]
 resolver = "2"
 

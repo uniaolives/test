@@ -262,6 +262,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "arkhe_crypto"
+version = "0.1.0"
+dependencies = [
+ "num-complex 0.4.6",
+ "rand 0.8.5",
+ "serde",
+]
+
+[[package]]
 name = "arkhe_diplomatic"
 version = "0.1.0"
 dependencies = [

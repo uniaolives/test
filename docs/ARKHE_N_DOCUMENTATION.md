@@ -21,6 +21,7 @@ Para investidores e parceiros estratégicos, os seguintes documentos definem a v
 *   [**Whitepaper Comercial v2.0 (Anyonic Edition)**](ARKHE_N_COMMERCIAL_WHITEPAPER_V2.md): A fronteira do consenso topológico e dissipação universal.
 *   [**Anyonic gRPC & Diplomatic Bridge**](../arkhe_anyonic_grpc): Infraestrutura de rede e hardware para consenso topológico e recuperação de falhas.
 *   [**Roteamento Triádico Yang-Baxter**](ARKHE_N_TRIADIC_RFC.md): Protocolo de resiliência de malha para bypass topológico.
+*   [**Arkhe-1 Flight Readiness Review**](ARKHE_1_FLIGHT_READINESS_REVIEW_FINAL.md): Revisão técnica definitiva para missão orbital LEO.
 
 ---
 
