@@ -238,6 +238,28 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c3d036a3c4ab069c7b410a2ce876bd74808d2d0888a82667669f8e783a898bf1"
 
 [[package]]
+name = "arkhe_anyonic_core"
+version = "0.1.0"
+dependencies = [
+ "num-complex 0.4.6",
+ "numpy",
+ "pyo3",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
+name = "arkhe_drone_swarm"
+version = "0.1.0"
+dependencies = [
+ "ndarray",
+ "rand 0.8.5",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "arrayref"
 version = "0.3.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
