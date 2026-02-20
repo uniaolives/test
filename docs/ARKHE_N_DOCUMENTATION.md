@@ -22,6 +22,7 @@ Para investidores e parceiros estratégicos, os seguintes documentos definem a v
 *   [**Anyonic gRPC & Diplomatic Bridge**](../arkhe_anyonic_grpc): Infraestrutura de rede e hardware para consenso topológico e recuperação de falhas.
 *   [**Roteamento Triádico Yang-Baxter**](ARKHE_N_TRIADIC_RFC.md): Protocolo de resiliência de malha para bypass topológico.
 *   [**Arkhe-1 Flight Readiness Review**](ARKHE_1_FLIGHT_READINESS_REVIEW_FINAL.md): Revisão técnica definitiva para missão orbital LEO.
+*   [**Arquitetura do Sistema Arkhe(N)**](ARKHE_N_SYSTEM_ARCHITECTURE.md): Visão unificada (Solo, Lançador e Satélite).
 
 ---
 

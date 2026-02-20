@@ -15,4 +15,3 @@ __pycache__
 diagnostic_bio_output.txt
 __pycache__/
 *.pyc
-target/
