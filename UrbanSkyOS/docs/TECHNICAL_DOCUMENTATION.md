@@ -649,3 +649,25 @@ O **QuantumPilotCore** utiliza sensores quânticos (simulando Ironstone Opal) pa
 ### 10.4 Protocolo de Handover Quântico
 
 Garante que, em caso de perda de coerência, o estado quântico possa ser "congelado", transferido para um processador clássico (tomografia) e posteriormente restaurado sem perda de continuidade operacional.
+
+---
+
+## 11. Implementação em Rust (Arkhe Drone Swarm)
+
+### 11.1 Visão Geral
+
+Para aplicações que exigem máxima performance, segurança de memória e integração nativa com os princípios termodinâmicos do Arkhe(N), o UrbanSkyOS disponibiliza o projeto **`arkhe_drone_swarm`**. Esta biblioteca em Rust implementa o núcleo de coordenação e segurança do enxame, tratando cada drone como um nó em um hipergrafo dinâmico.
+
+### 11.2 Principais Funcionalidades
+
+- **Módulo Constitutivo**: Gerenciamento de parâmetros físicos e histórico de handovers em tempo real.
+- **Hiperbolicidade e Estabilidade**: Algoritmos eficientes para verificar a estabilidade do enxame e detectar riscos de colisão iminente.
+- **Monitoramento de Coerência**: Cálculo de métricas de alinhamento (posição, intenção e energia) com recomendações de ações automáticas.
+- **Coordenação Swarm**: Eleição de líderes, heartbeats e processamento de mensagens autenticadas.
+- **Safety e Geofencing**: Verificações rigorosas de zonas de exclusão e cálculo de tempo até colisão (TTC).
+
+### 11.3 Exemplo de Integração
+
+O projeto `arkhe_drone_swarm` pode ser compilado como uma biblioteca estática ou dinâmica para ser integrada via FFI (Foreign Function Interface) com o controlador ROS 2 em Python ou C++.
+
+Para mais detalhes, consulte o diretório `/arkhe_drone_swarm` na raiz do repositório.
