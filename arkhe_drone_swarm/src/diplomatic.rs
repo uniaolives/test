@@ -2,6 +2,8 @@
 //! Implementação da interoperabilidade satelital baseada em coerência de fase.
 
 use crate::hardware_embassy::HardwareEmbassy;
+use crate::kalman::AdaptiveKalmanPredictor;
+use crate::zk_lattice::{ArkheZKProver, Polynomial};
 use crate::ArkheError;
 use serde::{Deserialize, Serialize};
 
@@ -26,6 +28,8 @@ pub struct HandshakeResponse {
     pub g_adjustment: f64,
     pub coherence_global: f64,
     pub alpha: f64,
+    #[serde(skip)]
+    pub zk_proof: Option<Polynomial>,
 }
 
 pub struct DiplomaticProtocol {
@@ -35,6 +39,9 @@ pub struct DiplomaticProtocol {
     pub state: ProtocolState,
     pub current_alpha: f64,
     pub target_alpha: f64,
+    pub kalman: AdaptiveKalmanPredictor,
+    pub last_timestamp: u64, // ms
+    pub prover: Option<ArkheZKProver>,
 }
 
 impl DiplomaticProtocol {
@@ -47,7 +54,14 @@ impl DiplomaticProtocol {
             state: ProtocolState::Normal,
             current_alpha: golden_ratio,
             target_alpha: golden_ratio,
+            kalman: AdaptiveKalmanPredictor::new(1e-4, 1e-2, 30.0),
+            last_timestamp: 0,
+            prover: None,
         }
+    }
+
+    pub fn set_prover(&mut self, prover: ArkheZKProver) {
+        self.prover = Some(prover);
     }
 
     pub fn attach_hardware(&mut self, hardware: HardwareEmbassy) {
@@ -59,8 +73,16 @@ impl DiplomaticProtocol {
         &mut self,
         remote_node_id: &str,
         remote_phase: f64,
-        remote_coherence: f64
+        remote_coherence: f64,
+        timestamp: u64,
     ) -> Result<HandshakeResponse, ArkheError> {
+        let dt = if self.last_timestamp == 0 {
+            0.01 // 10ms default
+        } else {
+            (timestamp - self.last_timestamp) as f64 / 1000.0
+        };
+        self.last_timestamp = timestamp;
+
         // 1. Obter dados locais do hardware (se disponível)
         let (local_phase, local_coherence) = if let Some(hw) = &mut self.hardware {
             hw.extract_phase_and_coherence()
@@ -72,6 +94,10 @@ impl DiplomaticProtocol {
 
         // 2. Calcular coerência combinada (física do handshake)
         let combined_coherence = (local_coherence + remote_coherence) / 2.0;
+
+        // 2.1. Atualizar Filtro de Kalman Adaptativo
+        self.kalman.update(remote_phase, dt, combined_coherence);
+        let predicted_phase = self.kalman.predict_phase(dt);
 
         // 3. Gerenciar estados de Fallback e Annealing
         let mut status = HandshakeStatus::ACCEPTED;
@@ -88,6 +114,7 @@ impl DiplomaticProtocol {
                     g_adjustment: 0.0,
                     coherence_global: combined_coherence,
                     alpha: self.current_alpha,
+                    zk_proof: None,
                 });
             }
         } else if self.state == ProtocolState::Semionic {
@@ -101,7 +128,14 @@ impl DiplomaticProtocol {
         }
 
         // 5. Calcular ajuste de fase g|ψ|² = -Δϕ
-        let phase_diff = remote_phase - local_phase;
+        // Usamos a fase predita pelo Kalman se a coerência for baixa
+        let effective_remote_phase = if combined_coherence < 0.5 {
+            predicted_phase
+        } else {
+            remote_phase
+        };
+
+        let phase_diff = effective_remote_phase - local_phase;
         let g_adjustment = -phase_diff;
 
         println!(
@@ -109,11 +143,15 @@ impl DiplomaticProtocol {
             remote_node_id, self.state, combined_coherence, self.current_alpha
         );
 
+        // 6. Gerar Prova ZK da fase física (Post-Quantum)
+        let zk_proof = self.prover.as_ref().map(|p| p.generate_phase_proof(local_phase));
+
         Ok(HandshakeResponse {
             status,
             g_adjustment,
             coherence_global: combined_coherence,
             alpha: self.current_alpha,
+            zk_proof,
         })
     }
 

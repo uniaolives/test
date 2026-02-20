@@ -274,6 +274,24 @@ impl AnyonicHypergraph {
             .collect()
     }
 
+    /// Expurga vórtices topológicos, resetando a fase de handovers incidentes.
+    /// Retorna o número de nós que tiveram suas fases limpas.
+    pub fn purge_vortices(&mut self) -> usize {
+        let vortices = self.detect_vortices();
+        let num_purged = vortices.len();
+        for (node, _) in vortices {
+            println!("🚨 [ANYON] Expurgo de Vórtice Topológico no nó: {}", node);
+            // Resetar fase de todos os handovers incidentes a este nó
+            for h in self.handovers.values_mut() {
+                if h.node_i == node || h.node_j == node {
+                    h.accumulated_phase = Complex64::new(1.0, 0.0);
+                    h.braid_partners.clear();
+                }
+            }
+        }
+        num_purged
+    }
+
     /// Retorna a dissipação total para um dado momento k, somando sobre handovers.
     pub fn total_dissipation(&self, k: f64) -> (f64, f64) {
         let mut d2 = 0.0;

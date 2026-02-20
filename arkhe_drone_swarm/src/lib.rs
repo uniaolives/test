@@ -16,6 +16,8 @@
 //! - anyonic: estatística fracionária e braiding topológico
 //! - hardware_embassy: interface física via SDR (SoapySDR)
 //! - diplomatic: protocolo de interoperabilidade satelital
+//! - kalman: filtro de Kalman adaptativo para predição de fase
+//! - zk_lattice: provas de conhecimento zero pós-quânticas
 
 extern crate alloc;
 
@@ -35,6 +37,8 @@ pub use hardware::*;
 pub use anyonic::*;
 pub use hardware_embassy::*;
 pub use diplomatic::*;
+pub use kalman::*;
+pub use zk_lattice::*;
 
 /// Tipos de erro comuns
 #[derive(Debug, Clone, PartialEq)]
@@ -87,6 +91,8 @@ impl fmt::Display for ArkheError {
 pub mod anyonic;
 pub mod hardware_embassy;
 pub mod diplomatic;
+pub mod kalman;
+pub mod zk_lattice;
 
 // ============================================================================
 // Módulo constitutive: parâmetros do drone e dinâmica
@@ -228,8 +234,6 @@ pub mod constitutive {
 
     /// Módulo constitutive para o enxame
     pub struct ConstitutiveModule {
-        params: BTreeMap<String, DroneParams>,
-        histories: BTreeMap<String, HandoverHistory>,
         pub params: BTreeMap<String, DroneParams>,
         pub histories: BTreeMap<String, HandoverHistory>,
     }
@@ -363,8 +367,6 @@ pub mod coherence {
     /// Monitor de coerência
     pub struct CoherenceMonitor {
         pub history: Vec<f64>,
-        warning_threshold: f64,
-        critical_threshold: f64,
         pub warning_threshold: f64,
         pub critical_threshold: f64,
     }
@@ -492,13 +494,6 @@ pub mod swarm {
     /// Coordenador do enxame
     pub struct SwarmCoordinator {
         /// Mapa de papéis
-        roles: BTreeMap<String, SwarmRole>,
-        /// Líder atual (se houver)
-        current_leader: Option<String>,
-        /// Último heartbeats
-        last_seen: BTreeMap<String, u64>,
-        /// Timeout para considerar drone perdido (ms)
-        heartbeat_timeout: u64,
         pub roles: BTreeMap<String, SwarmRole>,
         /// Líder atual (se houver)
         pub current_leader: Option<String>,
