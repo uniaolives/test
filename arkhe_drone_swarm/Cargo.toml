@@ -9,3 +9,9 @@ serde_json = "1.0"
 ndarray = "0.15"
 rand = "0.8"
 thiserror = "1.0"
+num-complex = "0.4"
+soapysdr = { version = "0.4", optional = true }
+
+[features]
+default = []
+real_sdr = ["dep:soapysdr"]

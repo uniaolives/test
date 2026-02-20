@@ -26,6 +26,7 @@ members = [
     "arkhe_anyonic_grpc",
     "arkhe_diplomatic",
     "arkhe_crypto",
+    "arkhe_omni_system/constitutive_rust",
 ]
 resolver = "2"
 

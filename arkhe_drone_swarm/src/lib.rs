@@ -13,6 +13,9 @@
 //! - safety: prevenção de colisões, geofencing, failsafe
 //! - crypto: autenticação e integridade dos handovers
 //! - hardware: abstração de sensores e atuadores (para simulação ou hardware real)
+//! - anyonic: estatística fracionária e braiding topológico
+//! - hardware_embassy: interface física via SDR (SoapySDR)
+//! - diplomatic: protocolo de interoperabilidade satelital
 
 extern crate alloc;
 
@@ -29,6 +32,9 @@ pub use swarm::*;
 pub use safety::*;
 pub use crypto::*;
 pub use hardware::*;
+pub use anyonic::*;
+pub use hardware_embassy::*;
+pub use diplomatic::*;
 
 /// Tipos de erro comuns
 #[derive(Debug, Clone, PartialEq)]
@@ -49,6 +55,18 @@ pub enum ArkheError {
     Other(String),
 }
 
+impl From<&str> for ArkheError {
+    fn from(s: &str) -> Self {
+        ArkheError::Other(s.to_string())
+    }
+}
+
+impl From<String> for ArkheError {
+    fn from(s: String) -> Self {
+        ArkheError::Other(s)
+    }
+}
+
 impl fmt::Display for ArkheError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -62,6 +80,13 @@ impl fmt::Display for ArkheError {
         }
     }
 }
+
+// ============================================================================
+// Módulos internos
+// ============================================================================
+pub mod anyonic;
+pub mod hardware_embassy;
+pub mod diplomatic;
 
 // ============================================================================
 // Módulo constitutive: parâmetros do drone e dinâmica
@@ -205,6 +230,8 @@ pub mod constitutive {
     pub struct ConstitutiveModule {
         params: BTreeMap<String, DroneParams>,
         histories: BTreeMap<String, HandoverHistory>,
+        pub params: BTreeMap<String, DroneParams>,
+        pub histories: BTreeMap<String, HandoverHistory>,
     }
 
     impl ConstitutiveModule {
@@ -338,6 +365,8 @@ pub mod coherence {
         pub history: Vec<f64>,
         warning_threshold: f64,
         critical_threshold: f64,
+        pub warning_threshold: f64,
+        pub critical_threshold: f64,
     }
 
     impl CoherenceMonitor {
@@ -437,6 +466,7 @@ pub mod coherence {
 pub mod swarm {
     use super::*;
     use alloc::collections::BTreeMap;
+    use crate::anyonic::AnyonicHypergraph;
 
     /// Papel do drone no enxame
     #[derive(Debug, Clone, PartialEq)]
@@ -456,6 +486,7 @@ pub mod swarm {
         pub intention: MissionPhase,
         pub battery: f64,
         pub signature: Vec<u8>,   // assinatura criptográfica
+        pub intensity: f64,
     }
 
     /// Coordenador do enxame
@@ -468,6 +499,15 @@ pub mod swarm {
         last_seen: BTreeMap<String, u64>,
         /// Timeout para considerar drone perdido (ms)
         heartbeat_timeout: u64,
+        pub roles: BTreeMap<String, SwarmRole>,
+        /// Líder atual (se houver)
+        pub current_leader: Option<String>,
+        /// Último heartbeats
+        pub last_seen: BTreeMap<String, u64>,
+        /// Timeout para considerar drone perdido (ms)
+        pub heartbeat_timeout: u64,
+        /// Hipergrafo anyónico
+        pub anyon_graph: AnyonicHypergraph,
     }
 
     impl SwarmCoordinator {
@@ -477,6 +517,7 @@ pub mod swarm {
                 current_leader: None,
                 last_seen: BTreeMap::new(),
                 heartbeat_timeout,
+                anyon_graph: AnyonicHypergraph::new(),
             }
         }
 
@@ -522,6 +563,13 @@ pub mod swarm {
         /// Processa handover recebido
         pub fn process_handover(&mut self, msg: HandoverMessage) -> Result<(), ArkheError> {
             self.heartbeat(&msg.src, msg.timestamp);
+            // Registrar no grafo anyónico
+            self.anyon_graph.create_handover(
+                msg.src.clone(),
+                msg.dst.clone(),
+                msg.timestamp,
+                msg.intensity,
+            ).map_err(|e| ArkheError::Other(e.to_string()))?;
             Ok(())
         }
     }

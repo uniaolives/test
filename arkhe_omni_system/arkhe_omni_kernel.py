@@ -292,6 +292,7 @@ class ArkheOmniKernel:
 
     def _detect_substrate(self):
         # Detecção automática de hardware simulada
+        return ServerSubstrate()
         # Prioriza ATC se disponível (neste caso, sempre simulado como disponível)
         return ATCSubstrate()
 

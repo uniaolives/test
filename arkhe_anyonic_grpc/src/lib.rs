@@ -30,6 +30,7 @@ pub struct BraidingBuffer {
     output_tx: mpsc::Sender<AnyonicPacket>,
     /// Último timestamp processado (para detecção de gap)
     pub last_processed: u128,
+    last_processed: u128,
 }
 
 impl BraidingBuffer {
@@ -48,6 +49,13 @@ impl BraidingBuffer {
         let ts = packet.timestamp_ns;
 
         if ts < self.last_processed && self.last_processed - ts > 1_000_000_000 {
+    /// Insere pacote no buffer, retorna pacotes prontos para processamento
+    pub async fn insert(&mut self, packet: AnyonicPacket) -> Result<(), Status> {
+        let ts = packet.timestamp_ns;
+
+        // Verificar se timestamp é válido (não muito no passado)
+        if ts < self.last_processed && self.last_processed - ts > 1_000_000_000 {
+            // Mais de 1 segundo no passado: descartar ou processar com α neutro
             return Err(Status::out_of_range("Packet too old for topological ordering"));
         }
 
@@ -90,6 +98,24 @@ impl BraidingBuffer {
         let now = Instant::now();
         let ready: Vec<u128> = self.packets.iter()
             .filter(|(ts, pkt)| {
+
+        // Verificar se precisa de flush (tamanho ou timeout)
+        self.check_flush().await;
+
+        Ok(())
+    }
+
+    /// Verifica condições de flush e processa pacotes prontos
+    async fn check_flush(&mut self) {
+        let now = Instant::now();
+
+        // Coletar pacotes que podem ser processados
+        let ready: Vec<u128> = self.packets.iter()
+            .filter(|(ts, pkt)| {
+                // Pacote está pronto se:
+                // 1. É o mais antigo e buffer está cheio, OU
+                // 2. Passou do timeout, OU
+                // 3. Próximo pacote na sequência está presente (gap = 1)
                 self.packets.len() >= self.max_size ||
                 now.duration_since(pkt.received_at) > self.timeout ||
                 self.is_next_in_sequence(**ts)
@@ -106,10 +132,14 @@ impl BraidingBuffer {
     }
 
     fn is_next_in_sequence(&self, ts: u128) -> bool {
+    /// Verifica se este timestamp é o próximo na sequência esperada
+    fn is_next_in_sequence(&self, ts: u128) -> bool {
+        // Simplificação: assumimos granularidade de 1ms (1_000_000 ns)
         let expected_next = self.last_processed + 1_000_000;
         ts == expected_next
     }
 
+    /// Força processamento de todos os pacotes restantes (shutdown)
     pub async fn drain(&mut self) {
         let ts_list: Vec<u128> = self.packets.keys().cloned().collect();
         for ts in ts_list {
@@ -123,6 +153,10 @@ impl BraidingBuffer {
 
 pub struct AnyonicInterceptor;
 
+/// Placeholder for AnyonicInterceptor
+pub struct AnyonicInterceptor;
+
+/// Interceptor gRPC que integra o BraidingBuffer
 pub struct BufferedAnyonicInterceptor {
     pub inner: AnyonicInterceptor,
     pub buffer: BraidingBuffer,
@@ -130,6 +164,10 @@ pub struct BufferedAnyonicInterceptor {
 
 impl Interceptor for BufferedAnyonicInterceptor {
     fn call(&mut self, request: Request<()>) -> Result<Request<()>, Status> {
+// Implementação básica do interceptor para fins de demonstração
+impl BufferedAnyonicInterceptor {
+    pub async fn process_request(&mut self, request: Request<()>) -> Result<Request<()>, Status> {
+        // Extrair metadados anyônicos do request
         let metadata = request.metadata();
         let timestamp_ns = metadata.get("x-arkhe-timestamp-ns")
             .and_then(|v| v.to_str().ok())
@@ -156,6 +194,7 @@ impl Interceptor for BufferedAnyonicInterceptor {
             .and_then(|s| s.parse::<f64>().ok())
             .unwrap_or(0.0);
 
+        // Criar pacote anyônico
         let packet = AnyonicPacket {
             timestamp_ns,
             alpha: (alpha_num, alpha_den),
@@ -166,6 +205,14 @@ impl Interceptor for BufferedAnyonicInterceptor {
 
         self.buffer.insert_sync(packet)?;
 
+            payload: vec![], // Payload real seria extraído do request
+            received_at: Instant::now(),
+        };
+
+        // Inserir no buffer (pode retornar erro se muito atrasado)
+        self.buffer.insert(packet).await?;
+
+        // O request continua, mas marcado como "buffered"
         Ok(request)
     }
 }
@@ -180,6 +227,7 @@ mod tests {
         let (tx, mut rx) = mpsc::channel(10);
         let mut buffer = BraidingBuffer::new(5, 100, tx);
 
+        // Inserir pacotes fora de ordem
         let pkt1 = AnyonicPacket {
             timestamp_ns: 2_000_000,
             alpha: (1, 3),
@@ -197,6 +245,9 @@ mod tests {
 
         buffer.insert(pkt1).await.unwrap();
         buffer.insert(pkt2).await.unwrap();
+
+        // Como o gap é pequeno e is_next_in_sequence usa granularidade de 1ms,
+        // pkt2 deve disparar o envio de pkt2 seguido de pkt1 se estiverem sequenciais.
 
         let out1 = rx.recv().await.unwrap();
         assert_eq!(out1.timestamp_ns, 1_000_000);
