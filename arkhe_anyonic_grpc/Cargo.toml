@@ -1,0 +1,12 @@
+[package]
+name = "arkhe_anyonic_grpc"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tonic = "0.12"
+tokio = { version = "1", features = ["full"] }
+num-complex = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+async-trait = "0.1"
+arkhe_anyonic_core = { path = "../arkhe_anyonic_core" }

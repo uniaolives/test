@@ -234,6 +234,8 @@ pub mod constitutive {
 
     /// Módulo constitutive para o enxame
     pub struct ConstitutiveModule {
+        params: BTreeMap<String, DroneParams>,
+        histories: BTreeMap<String, HandoverHistory>,
         pub params: BTreeMap<String, DroneParams>,
         pub histories: BTreeMap<String, HandoverHistory>,
     }
@@ -367,6 +369,8 @@ pub mod coherence {
     /// Monitor de coerência
     pub struct CoherenceMonitor {
         pub history: Vec<f64>,
+        warning_threshold: f64,
+        critical_threshold: f64,
         pub warning_threshold: f64,
         pub critical_threshold: f64,
     }
@@ -494,6 +498,13 @@ pub mod swarm {
     /// Coordenador do enxame
     pub struct SwarmCoordinator {
         /// Mapa de papéis
+        pub roles: BTreeMap<String, SwarmRole>,
+        /// Líder atual (se houver)
+        pub current_leader: Option<String>,
+        /// Último heartbeats
+        pub last_seen: BTreeMap<String, u64>,
+        /// Timeout para considerar drone perdido (ms)
+        heartbeat_timeout: u64,
         pub roles: BTreeMap<String, SwarmRole>,
         /// Líder atual (se houver)
         pub current_leader: Option<String>,
