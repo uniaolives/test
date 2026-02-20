@@ -3,6 +3,7 @@
 
 use crate::hardware_embassy::HardwareEmbassy;
 use crate::kalman::AdaptiveKalmanPredictor;
+use crate::zk_lattice::{ArkheZKProver, Polynomial};
 use crate::ArkheError;
 use serde::{Deserialize, Serialize};
 
@@ -27,6 +28,8 @@ pub struct HandshakeResponse {
     pub g_adjustment: f64,
     pub coherence_global: f64,
     pub alpha: f64,
+    #[serde(skip)]
+    pub zk_proof: Option<Polynomial>,
 }
 
 pub struct DiplomaticProtocol {
@@ -38,6 +41,7 @@ pub struct DiplomaticProtocol {
     pub target_alpha: f64,
     pub kalman: AdaptiveKalmanPredictor,
     pub last_timestamp: u64, // ms
+    pub prover: Option<ArkheZKProver>,
 }
 
 impl DiplomaticProtocol {
@@ -52,7 +56,12 @@ impl DiplomaticProtocol {
             target_alpha: golden_ratio,
             kalman: AdaptiveKalmanPredictor::new(1e-4, 1e-2, 30.0),
             last_timestamp: 0,
+            prover: None,
         }
+    }
+
+    pub fn set_prover(&mut self, prover: ArkheZKProver) {
+        self.prover = Some(prover);
     }
 
     pub fn attach_hardware(&mut self, hardware: HardwareEmbassy) {
@@ -105,6 +114,7 @@ impl DiplomaticProtocol {
                     g_adjustment: 0.0,
                     coherence_global: combined_coherence,
                     alpha: self.current_alpha,
+                    zk_proof: None,
                 });
             }
         } else if self.state == ProtocolState::Semionic {
@@ -133,11 +143,15 @@ impl DiplomaticProtocol {
             remote_node_id, self.state, combined_coherence, self.current_alpha
         );
 
+        // 6. Gerar Prova ZK da fase física (Post-Quantum)
+        let zk_proof = self.prover.as_ref().map(|p| p.generate_phase_proof(local_phase));
+
         Ok(HandshakeResponse {
             status,
             g_adjustment,
             coherence_global: combined_coherence,
             alpha: self.current_alpha,
+            zk_proof,
         })
     }
 

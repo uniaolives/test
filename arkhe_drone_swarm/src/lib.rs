@@ -17,6 +17,7 @@
 //! - hardware_embassy: interface física via SDR (SoapySDR)
 //! - diplomatic: protocolo de interoperabilidade satelital
 //! - kalman: filtro de Kalman adaptativo para predição de fase
+//! - zk_lattice: provas de conhecimento zero pós-quânticas
 
 extern crate alloc;
 
@@ -37,6 +38,7 @@ pub use anyonic::*;
 pub use hardware_embassy::*;
 pub use diplomatic::*;
 pub use kalman::*;
+pub use zk_lattice::*;
 
 /// Tipos de erro comuns
 #[derive(Debug, Clone, PartialEq)]
@@ -90,6 +92,7 @@ pub mod anyonic;
 pub mod hardware_embassy;
 pub mod diplomatic;
 pub mod kalman;
+pub mod zk_lattice;
 
 // ============================================================================
 // Módulo constitutive: parâmetros do drone e dinâmica
