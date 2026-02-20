@@ -82,7 +82,6 @@ class DistributedPoCConsensus:
         self.target_phi = 0.847
         self.block_time_target = 10.0 # seconds for simulation
 
-    async def start_cycle(self):
     async def start_cycle(self, mode: str = 'PoC'):
         """Simulates one consensus cycle (finding the next block)."""
         header = {
