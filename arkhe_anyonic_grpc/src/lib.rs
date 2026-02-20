@@ -6,6 +6,7 @@ use std::time::{Duration, Instant};
 use tokio::sync::mpsc;
 use tonic::{Request, Status};
 use num_complex::Complex64;
+use tonic::service::Interceptor;
 
 /// Pacote anyônico recebido, aguardando ordenação
 #[derive(Debug, Clone)]
@@ -28,6 +29,7 @@ pub struct BraidingBuffer {
     /// Canal de saída para pacotes processados
     output_tx: mpsc::Sender<AnyonicPacket>,
     /// Último timestamp processado (para detecção de gap)
+    pub last_processed: u128,
     last_processed: u128,
 }
 
@@ -42,6 +44,11 @@ impl BraidingBuffer {
         }
     }
 
+    /// Insere pacote no buffer
+    pub fn insert_sync(&mut self, packet: AnyonicPacket) -> Result<(), Status> {
+        let ts = packet.timestamp_ns;
+
+        if ts < self.last_processed && self.last_processed - ts > 1_000_000_000 {
     /// Insere pacote no buffer, retorna pacotes prontos para processamento
     pub async fn insert(&mut self, packet: AnyonicPacket) -> Result<(), Status> {
         let ts = packet.timestamp_ns;
@@ -53,6 +60,44 @@ impl BraidingBuffer {
         }
 
         self.packets.insert(ts, packet);
+        self.check_flush_sync();
+        Ok(())
+    }
+
+    /// Versão async para inserção
+    pub async fn insert(&mut self, packet: AnyonicPacket) -> Result<(), Status> {
+        let ts = packet.timestamp_ns;
+        if ts < self.last_processed && self.last_processed - ts > 1_000_000_000 {
+            return Err(Status::out_of_range("Packet too old for topological ordering"));
+        }
+        self.packets.insert(ts, packet);
+        self.check_flush().await;
+        Ok(())
+    }
+
+    fn check_flush_sync(&mut self) {
+        let now = Instant::now();
+        let ready: Vec<u128> = self.packets.iter()
+            .filter(|(ts, pkt)| {
+                self.packets.len() >= self.max_size ||
+                now.duration_since(pkt.received_at) > self.timeout ||
+                self.is_next_in_sequence(**ts)
+            })
+            .map(|(ts, _)| *ts)
+            .collect();
+
+        for ts in ready {
+            if let Some(pkt) = self.packets.remove(&ts) {
+                self.last_processed = ts;
+                let _ = self.output_tx.try_send(pkt);
+            }
+        }
+    }
+
+    async fn check_flush(&mut self) {
+        let now = Instant::now();
+        let ready: Vec<u128> = self.packets.iter()
+            .filter(|(ts, pkt)| {
 
         // Verificar se precisa de flush (tamanho ou timeout)
         self.check_flush().await;
@@ -86,6 +131,7 @@ impl BraidingBuffer {
         }
     }
 
+    fn is_next_in_sequence(&self, ts: u128) -> bool {
     /// Verifica se este timestamp é o próximo na sequência esperada
     fn is_next_in_sequence(&self, ts: u128) -> bool {
         // Simplificação: assumimos granularidade de 1ms (1_000_000 ns)
@@ -105,6 +151,8 @@ impl BraidingBuffer {
     }
 }
 
+pub struct AnyonicInterceptor;
+
 /// Placeholder for AnyonicInterceptor
 pub struct AnyonicInterceptor;
 
@@ -114,6 +162,8 @@ pub struct BufferedAnyonicInterceptor {
     pub buffer: BraidingBuffer,
 }
 
+impl Interceptor for BufferedAnyonicInterceptor {
+    fn call(&mut self, request: Request<()>) -> Result<Request<()>, Status> {
 // Implementação básica do interceptor para fins de demonstração
 impl BufferedAnyonicInterceptor {
     pub async fn process_request(&mut self, request: Request<()>) -> Result<Request<()>, Status> {
@@ -149,6 +199,12 @@ impl BufferedAnyonicInterceptor {
             timestamp_ns,
             alpha: (alpha_num, alpha_den),
             phase: Complex64::new(phase_re, phase_im),
+            payload: vec![],
+            received_at: Instant::now(),
+        };
+
+        self.buffer.insert_sync(packet)?;
+
             payload: vec![], // Payload real seria extraído do request
             received_at: Instant::now(),
         };
