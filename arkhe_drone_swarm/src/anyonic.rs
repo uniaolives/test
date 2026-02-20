@@ -199,6 +199,13 @@ impl AnyonicHypergraph {
         self.node_stat.insert(node, alpha);
     }
 
+    /// Atualiza a estatística de um nó (usado para Fallback/Annealing)
+    pub fn update_node_stat(&mut self, node: &str, alpha: AnyonStatistic) {
+        if self.node_stat.contains_key(node) {
+            self.node_stat.insert(node.to_string(), alpha);
+        }
+    }
+
     /// Cria um handover entre dois nós. A estatística do handover é a média das dos nós.
     pub fn create_handover(
         &mut self,
