@@ -23,6 +23,8 @@ members = [
     "asi-net/rust/asi-net-crate", "phase-5/bio_kernel",
     "arkhe_drone_swarm",
     "arkhe_anyonic_core",
+    "arkhe_anyonic_grpc",
+    "arkhe_diplomatic",
 ]
 resolver = "2"
 

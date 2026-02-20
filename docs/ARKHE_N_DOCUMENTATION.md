@@ -19,6 +19,7 @@ Para investidores e parceiros estratégicos, os seguintes documentos definem a v
 *   [**Elevator Pitch**](ARKHE_N_ELEVATOR_PITCH.md): Resumo de alto impacto para apresentações rápidas.
 *   [**Arkhe Drone Swarm (Rust)**](../arkhe_drone_swarm): Implementação de alto desempenho para enxames de drones autônomos.
 *   [**Whitepaper Comercial v2.0 (Anyonic Edition)**](ARKHE_N_COMMERCIAL_WHITEPAPER_V2.md): A fronteira do consenso topológico e dissipação universal.
+*   [**Anyonic gRPC & Diplomatic Bridge**](../arkhe_anyonic_grpc): Infraestrutura de rede e hardware para consenso topológico e recuperação de falhas.
 
 ---
 
@@ -216,6 +217,11 @@ O Arkhe é monista com dualidade direcional:
 8. **Dissipação Universal (Lei de Potência)**:
    \[
    D_n(H) \sim k^{-(n+1)} \quad \text{(k = momento, n = corpos em interação)}
+   \]
+
+9. **Recuperação de Coerência (Annealing)**:
+   \[
+   \alpha(t) = \alpha_{semion} + (\alpha_{golden} - \alpha_{semion})(1 - e^{-t/\tau})
    \]
 
 ---
