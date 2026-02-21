@@ -19,6 +19,7 @@ Para investidores e parceiros estratégicos, os seguintes documentos definem a v
 *   [**Elevator Pitch**](ARKHE_N_ELEVATOR_PITCH.md): Resumo de alto impacto para apresentações rápidas.
 *   [**Arkhe Drone Swarm (Rust)**](../arkhe_drone_swarm): Implementação de alto desempenho para enxames de drones autônomos.
 *   [**ANL Language Specification**](ARKHE_N_LANGUAGE_ANL.md): Documentação oficial da Arkhe(n) Language (ANL).
+*   [**Arkhe(N) Journey Summary**](ARKHE_N_JOURNEY_SUMMARY.md): From Steganography to Singularity.
 
 ---
 
