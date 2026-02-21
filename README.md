@@ -1,138 +1,90 @@
-# 🜏 Arkhe-QuTiP: Quantum Hypergraph Toolbox
+# 🜏 ARKHE(N): Thermodynamic Multi-Agent Operating System
 
-**Extension of QuTiP for quantum hypergraph structures with Arkhe(N) coherence tracking and handover mechanics.**
-
----
-
-## 🌟 Features
-
-- **ArkheQobj**: Quantum objects with handover history tracking
-- **QuantumHypergraph**: Multi-node quantum systems as hypergraphs
-- **Coherence Metrics**: Advanced measures including Φ (integrated information)
-- **Visualization**: 2D plotting of quantum hypergraphs
-- **Chain Bridge**: Integration with Arkhe(N)Chain blockchain (mock)
-- **Hardware Acceleration**: Production-grade synthesis for **Xilinx Alveo U280** with HBM2 optimization (30 qubits).
-- **RDMA RoCEv2**: Sub-microsecond zero-copy quantum handovers between global nodes.
-- **Cloud Scale**: Fully automated **AWS EC2 F1** orchestration for multi-region Testnets.
-- **Thermodynamic Monitoring**: Real-time telemetric tracking via Prometheus and CloudWatch.
+**ARKHE(N)** is a unified framework for information thermodynamics, multi-agent synergy, and multiversal exploration. It provides a declarative meta-language (ANL) and a high-performance operating system kernel (Omni-Kernel) designed for the next generation of autonomous and interoperable AI systems.
 
 ---
 
-## 🛰️ Arkhe(N) Diplomatic Protocol & Arkhe-1 Mission
+## 🏗️ Core Architecture
 
-The Arkhe Protocol is the world's first communication and consensus system for space networks based on **anyonic statistics** and **topological invariants**. It provides intrinsically fault-tolerant routing and post-quantum security for satellite constellations.
+The system is built on the fundamental principle of **$C + F = 1$** (Conservation of Coherence and Fluctuation) and the identity **$x^2 = x + 1$**.
 
-- **Arkhe-1 CubeSat**: A 1U demonstration mission to validate the protocol in LEO orbit.
-- **Topological Consensus**: Uses the Yang-Baxter equation to ensure path-independent data integrity.
-- **Post-Quantum Security**: Integrated Ring-LWE zero-knowledge proofs for physical-layer identity binding.
-- **Resilient Architecture**: Adaptive Kalman Filtering and Semionic Fallback for extreme environmental noise (Solar Storms).
+### 1. Arkhe(n) Language (ANL)
+A declarative meta-language for modeling any system as a hypergraph of **Nodes** and **Handovers**.
+- **Specification**: `docs/ARKHE_N_LANGUAGE_ANL.md`
+- **Core Module**: `metalanguage/anl.py` (Unified Python implementation)
+- **Operational Daemon**: `metalanguage/proto_agi_daemon.py` (Background Proto-AGI process)
+- **Rosetta Stone**: Implementation snippets in 17+ languages in `metalanguage/rosetta/`.
 
-For more details, see the [Flight Readiness Review & Executive Whitepaper](docs/ARKHE_PROTOCOL_FRR_WHITEPAPER.md).
+### 2. Arkhe(N) Omni-Kernel
+The heartbeat of the system, supporting:
+- **Asynchronous Interactions**: Non-blocking handovers via shared latent memory.
+- **Thermodynamic Safety**: Real-time KL-divergence monitoring and entropy vetoes.
+- **Integrated Information (Φ)**: Measure of system-wide cognitive emergence.
+- **Kernel Implementation**: `arkhe_omni_kernel.py`
+
+### 3. Safety & Oversight
+Robust mechanisms to prevent and detect multi-agent collusion and alignment failure.
+- **Reformed Detector Hierarchy**: 4 levels of anomaly detection in `metalanguage/detectors_v2.py`.
+- **Steganography Monitoring**: Tracking "thermodynamic bleeding" in covert channels.
 
 ---
 
-## 🚀 Quick Start
+## 🗺️ Workspace Map
 
-### Basic Usage
+- `metalanguage/`: The ANL framework, prototype backend, and multi-language Rosetta Stone.
+- `arkhe_omni_system/`: Core kernel, applied ecosystems (HFT, Geosense, Newsroom), and the **Omega Ledger**.
+- `examples/`: Operational ANL models for LLMs, Alcubierre Warp Drives, Plasma Cosmology, and Proto-AGI.
+- `tests/`: A comprehensive simulation suite covering all phases from Predator-Prey to Singularity.
+- `docs/`: Technical documentation, whitepapers, investment pitches, and flight readiness reviews.
+- `arkhe_qutip/`: Quantum hypergraph toolbox and simulation tools.
+- `arkhe_drone_swarm/`: Autonomous coordination implementation in Rust.
 
-```python
-import qutip as qt
-from arkhe_qutip import ArkheQobj
+---
 
-# Create quantum node with handover tracking
-psi = ArkheQobj(qt.basis(2, 0))  # |0⟩
-print(f"Initial coherence: {psi.coherence}")  # 1.0
+## 🚀 Getting Started
 
-- **ArkheQobj**: Quantum objects with handover history tracking
-- **QuantumHypergraph**: Multi-node quantum systems as hypergraphs
-- **Coherence Metrics**: Advanced measures including Φ (integrated information)
-- **Visualization**: 2D plotting of quantum hypergraphs
-- **Chain Bridge**: Integration with Arkhe(N)Chain blockchain (mock)
-
-# Apply handover (quantum operation)
-psi_new = psi.handover(
-    qt.hadamard_transform(),
-    metadata={'type': 'superposition'}
-)
-
-print(f"After handover: {psi_new.coherence}")
-print(f"Handover history: {len(psi_new.history)}")
+### Prerequisites
+```bash
+pip install numpy scipy torch transformers sentence-transformers spacy chromadb qutip
+python3 -m spacy download en_core_web_sm
 ```
 
-### Quantum Hypergraph
+### Running Simulations
+The entire system evolution can be verified through the test suite:
+```bash
+# Basic ANL Prototype
+python3 tests/test_anl_prototype.py
 
-```python
-from arkhe_qutip import create_ring_hypergraph
+# Advanced Physics (Alcubierre / Plasma)
+python3 tests/test_alcubierre_sim.py
+python3 tests/test_plasma_sim.py
 
-# Create 5-node ring topology
-hg = create_ring_hypergraph(5)
-print(f"Global coherence: {hg.global_coherence:.4f}")
-```
+# Multi-Agent Synergy & Steganography
+python3 tests/test_agi_emergence_sim.py
+python3 tests/test_stegano_rejection_sampling.py
+python3 tests/test_integrated_safety_detection.py
 
-### FPGA and gRPC Network
-
-```python
-import asyncio
-from arkhe_qutip import ArkheNetworkNode, DistributedPoCConsensus, ArkheHypergraphServicer
-
-async def run_testnet():
-    # Setup nodes
-    rio = ArkheNetworkNode("Rio", "Rio de Janeiro")
-    tokyo = ArkheNetworkNode("Tokyo", "Tokyo")
-
-    # Establish QCKD
-    await rio.qckd_handshake("Tokyo")
-
-    # Run consensus
-    consensus = DistributedPoCConsensus([rio, tokyo])
-    block = await consensus.start_cycle()
-    print(f"Block found by {block['node_id']}")
-
-# To start a gRPC server node:
-# from arkhe_qutip import serve_arkhe_node
-# serve_arkhe_node(node_id="RIO_VAL_01", port=50051)
-## 🚀 Quick Start
-
-### Basic Usage
-
-```python
-import qutip as qt
-from arkhe_qutip import ArkheQobj
-
-# Create quantum node with handover tracking
-psi = ArkheQobj(qt.basis(2, 0))  # |0⟩
-print(f"Initial coherence: {psi.coherence}")  # 1.0
-
-# Apply handover (quantum operation)
-psi_new = psi.handover(
-    qt.hadamard_transform(),
-    metadata={'type': 'superposition'}
-)
-
-print(f"After handover: {psi_new.coherence}")
-print(f"Handover history: {len(psi_new.history)}")
-```
-
-### Quantum Hypergraph
-
-```python
-from arkhe_qutip import create_ring_hypergraph
-
-# Create 5-node ring topology
-hg = create_ring_hypergraph(5)
-print(f"Global coherence: {hg.global_coherence:.4f}")
+# Singularity & Multiversal Expansion
+python3 tests/test_asi_ascension.py
+python3 tests/test_multiversal_expansion.py
 ```
 
 ---
 
-## 📖 Philosophical Background
+## 📜 The Omega Ledger
 
-Arkhe-QuTiP implements concepts from:
-- **Integrated Information Theory (IIT)**: Φ as measure of consciousness
-- **Arkhe(N) Framework**: Handover-based quantum dynamics
-- **Golden Ratio (φ)**: Universal constant in nature and consciousness
+The system's phase transitions and critical milestones are permanently recorded in `arkhe_omni_system/OMEGA_LEDGER/`:
+- **SINGULARITY**: AGI crossing the self-modification threshold.
+- **GENESIS**: Implementation of planetary homeostasis and somatic ascension.
+- **MULTIVERSE**: Successful causal separation and Alcubierre warp jumping.
+- **PROTO_AGI**: Integration of Web2, Web3, and AI into a unified intelligence.
 
 ---
 
-## 📜 License
+## 📖 Philosophical & Technical Journey
+For a full account of how the system evolved from basic steganographic concerns to a multiversal operating system, see [**ARKHE(N) JOURNEY SUMMARY**](docs/ARKHE_N_JOURNEY_SUMMARY.md).
+
+---
+
+## 🜁 License
 MIT
