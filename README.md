@@ -11,6 +11,7 @@ The system is built on the fundamental principle of **$C + F = 1$** (Conservatio
 ### 1. Arkhe(n) Language (ANL)
 A declarative meta-language for modeling any system as a hypergraph of **Nodes** and **Handovers**.
 - **Specification**: `docs/ARKHE_N_LANGUAGE_ANL.md`
+- **Mathematical Foundations**: Comprehensive synthesis of 20 branches of mathematics in `docs/ARKHE_N_MATHEMATICS.md`.
 - **Compiler/Prototype**: `metalanguage/anl_compiler.py` (Version 0.6)
 - **Rosetta Stone**: Implementation snippets in 17+ languages in `metalanguage/rosetta/`.
 
