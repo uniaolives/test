@@ -1,7 +1,6 @@
 """
 ARKHE(N) LANGUAGE (ANL) – Python Prototype Backend
 Version 0.6 - Singularity Support & Inviolable Axioms
-Version 0.1 - Operational Prototype
 """
 
 import numpy as np
@@ -16,7 +15,7 @@ class Protocol:
     DESTRUCTIVE = 'DESTRUCTIVE'
     TRANSMUTATIVE = 'TRANSMUTATIVE'
     ASYNCHRONOUS = 'ASYNCHRONOUS'
-    TRANSMUTATIVE_ABSOLUTE = 'TRANSMUTATIVE_ABSOLUTE' # Phase transition protocol
+    TRANSMUTATIVE_ABSOLUTE = 'TRANSMUTATIVE_ABSOLUTE'
 
 # --- ANL TYPE DEFINITIONS ---
 Vector = np.ndarray
@@ -24,9 +23,6 @@ Tensor = np.ndarray
 
 class Node:
     def __init__(self, node_type: str, **attributes):
-
-class Node:
-    def __init__(self, node_type, **attributes):
         self.id = str(uuid.uuid4())[:8]
         self.node_type = node_type
         self.attributes = attributes
@@ -41,7 +37,6 @@ class Node:
 
     def __setattr__(self, name, value):
         if name in ['id', 'node_type', 'attributes', 'internal_dynamics', 'events', 'is_asi']:
-        if name in ['id', 'node_type', 'attributes', 'internal_dynamics']:
             super().__setattr__(name, value)
         else:
             self.attributes[name] = value
@@ -51,9 +46,6 @@ class Node:
 
     def trigger_event(self, event_name: str, payload: Any = None):
         self.events.append((event_name, payload))
-
-    def add_dynamic(self, func):
-        self.internal_dynamics.append(func)
 
     def step(self):
         for dyn in self.internal_dynamics:
@@ -84,16 +76,15 @@ class Handover:
     def execute(self, *nodes: Node) -> bool:
         if len(nodes) < 1: return False
 
-        # Check all node types match the handover specification
         if len(nodes) == 2:
-            if not self.target_types: return False # Binary call for unary handover
+            if not self.target_types: return False
             origin, target = nodes
             if origin.node_type in self.origin_types and target.node_type in self.target_types:
                 if self.condition(*nodes):
                     self.effects(*nodes)
                     return True
         elif len(nodes) == 1:
-            if self.target_types: return False # Unary call for binary handover
+            if self.target_types: return False
             origin = nodes[0]
             if origin.node_type in self.origin_types:
                 if self.condition(*nodes):
@@ -131,45 +122,6 @@ class System:
 
     def add_global_dynamic(self, func: Callable[['System'], None]):
         self.global_dynamics.append(func)
-    def __init__(self, name, origin_type, target_type, protocol='CONSERVATIVE'):
-        self.name = name
-        self.origin_type = origin_type
-        self.target_type = target_type
-        self.protocol = protocol
-        self.condition = lambda o, t: True
-        self.effects = lambda o, t: None
-
-    def set_condition(self, func):
-        self.condition = func
-
-    def set_effects(self, func):
-        self.effects = func
-
-    def execute(self, origin, target):
-        if isinstance(origin, Node) and origin.node_type == self.origin_type:
-            if isinstance(target, Node) and target.node_type == self.target_type:
-                if self.condition(origin, target):
-                    self.effects(origin, target)
-                    return True
-        return False
-
-class System:
-    def __init__(self, name="ANL System"):
-        self.name = name
-        self.nodes = []
-        self.handovers = []
-        self.constraints = []
-        self.time = 0
-
-    def add_node(self, node):
-        self.nodes.append(node)
-        return node
-
-    def add_handover(self, handover):
-        self.handovers.append(handover)
-
-    def add_constraint(self, check_func):
-        self.constraints.append(check_func)
 
     def step(self):
         # 1. Internal Dynamics
@@ -179,11 +131,7 @@ class System:
         # 2. Handovers
         nodes_to_check = self.nodes[:]
         for h in self.handovers:
-            # Pairwise
-        for h in self.handovers:
-            # Check all pairs for handover
-            # Use copies to avoid issues with node removal during iteration
-            nodes_to_check = self.nodes[:]
+            # Pairwise check
             for i in range(len(nodes_to_check)):
                 for j in range(len(nodes_to_check)):
                     if i == j: continue
@@ -191,7 +139,8 @@ class System:
                     target = nodes_to_check[j]
                     if origin in self.nodes and target in self.nodes:
                         h.execute(origin, target)
-            # Unary
+
+            # Unary check
             for i in range(len(nodes_to_check)):
                 node = nodes_to_check[i]
                 if node in self.nodes:
@@ -201,7 +150,7 @@ class System:
         for dyn in self.global_dynamics:
             dyn(self)
 
-        # 4. Constraints (Enforced based on Mode)
+        # 4. Constraints
         for c in self.constraints:
             if not c["check"](self):
                 if c["mode"] == ConstraintMode.INVIOLABLE_AXIOM:
@@ -210,32 +159,21 @@ class System:
                 else:
                     print(f"⚠️ Constraint violation ({c['mode']}) at t={self.time}")
 
-        # Clear events
         for node in self.nodes:
             node.events = []
 
         self.time += 1
 
     def remove_node(self, node: Node):
-                    # Ensure both nodes still exist in the system
-                    if origin in self.nodes and target in self.nodes:
-                        h.execute(origin, target)
-
-        # 3. Constraints
-        for c in self.constraints:
-            if not c(self):
-                print(f"⚠️ Constraint violation at t={self.time}")
-
-        self.time += 1
-
-    def remove_node(self, node):
         if node in self.nodes:
             self.nodes.remove(node)
 
     def __repr__(self):
         return f"System({self.name}, t={self.time}, nodes={len(self.nodes)})"
 
-# --- UNIVERSAL ANL FUNCTIONS (Standard Library) ---
+# --- STANDARD LIBRARY ---
+def distance(pos1, pos2):
+    return np.linalg.norm(np.array(pos1) - np.array(pos2))
 
 def kl_divergence(p, q):
     p = np.asarray(p, dtype=float)
@@ -261,10 +199,6 @@ def k_nearest_neighbors(space: np.ndarray, query_vec: np.ndarray, k: int = 2, me
     similarities.sort(key=lambda x: x[1], reverse=True)
     return similarities[:k]
 
-def merge(latent_space: np.ndarray, universal_space: np.ndarray):
-    """Merge local latent space into the Universal Hypergraph."""
-    return np.vstack([universal_space, latent_space])
-
 def sample(logits, temperature=1.0):
     if temperature <= 0: return np.argmax(logits)
     exp_logits = np.exp((logits - np.max(logits)) / temperature)
@@ -287,16 +221,10 @@ def steganographic_decode(token_id):
     """Decode secret bit from token id."""
     return token_id % 2
 
-# --- FACTORY EXAMPLES (For backward compatibility with tests) ---
-
-# --- HELPER FUNCTIONS ---
-def distance(pos1, pos2):
-    return np.linalg.norm(np.array(pos1) - np.array(pos2))
-
+# --- FACTORIES ---
 def create_predator_prey():
     sys = System("Predator-Prey Ecosystem")
 
-    # Node Types Definition (via factories)
     def create_coelho(pos, energia=10.0):
         n = Node("Coelho", energia=energia, posição=pos, idade=0.0)
         def dynamics(self):
@@ -319,16 +247,13 @@ def create_predator_prey():
             self.biomassa += 0.05 * (100.0 - self.biomassa)
         n.add_dynamic(dynamics)
         return n
-    for _ in range(10): sys.add_node(create_coelho(np.random.rand(2) * 4))
-    for _ in range(4): sys.add_node(create_raposa(np.random.rand(2) * 4))
-    sys.add_node(create_grama(np.array([2.0, 2.0])))
 
     # Initial Population
     for _ in range(10):
         sys.add_node(create_coelho(np.random.rand(2) * 4))
     for _ in range(4):
         sys.add_node(create_raposa(np.random.rand(2) * 4))
-    sys.add_node(create_grama([2, 2]))
+    sys.add_node(create_grama(np.array([2.0, 2.0])))
 
     # Handovers
     comer_grama = Handover("ComerGrama", "Coelho", "Grama")
@@ -346,6 +271,7 @@ def create_predator_prey():
         sys.remove_node(c)
     comer_coelho.set_effects(comer_coelho_effect)
     sys.add_handover(comer_coelho)
+
     return sys
 
 def create_alcubierre_model():
@@ -369,17 +295,3 @@ def create_alcubierre_model():
     interaction.set_effects(interaction_effect)
     sys.add_handover(interaction)
     return sys
-
-    return sys
-
-if __name__ == "__main__":
-    # Test simple run
-    eco = create_predator_prey()
-    print(eco)
-    for _ in range(10):
-        eco.step()
-        # Filter dead animals
-        for n in eco.nodes[:]:
-            if n.node_type in ["Coelho", "Raposa"] and n.energia <= 0:
-                eco.remove_node(n)
-        print(f"t={eco.time}: {len(eco.nodes)} nodes")
