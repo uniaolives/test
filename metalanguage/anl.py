@@ -1,9 +1,7 @@
 """
-ARKHE(N) LANGUAGE (ANL) – Python Prototype Backend
-Version 0.7 - Active Inference & Universal Handovers
-"Everything is a Hypergraph. Every interaction is a Handover."
 ARKHE(N) LANGUAGE (ANL) – Python Core Module
 Version 0.7 - Active Inference, Ouroboros Loops & ArkheProtocol
+"Everything is a Hypergraph. Every interaction is a Handover."
 """
 
 import numpy as np
@@ -15,9 +13,7 @@ from typing import List, Callable, Any, Dict, Union, Optional
 from enum import Enum
 
 # --- 1. ANL PROTOCOLS ---
-from typing import List, Callable, Any, Dict, Union, Optional
 
-# --- ANL PROTOCOLS ---
 class Protocol:
     CONSERVATIVE = 'CONSERVATIVE'
     CREATIVE = 'CREATIVE'
@@ -29,14 +25,7 @@ class Protocol:
     DISCOVERY = 'DISCOVERY'
     ROUTING = 'ROUTING'
 
-# --- 2. CORE ANL CLASSES ---
-
-class Node:
-    """Fundamental entity in the Arkhe(n) Hypergraph."""
-    def __init__(self, node_id: str, node_type: str = "GenericNode", **attributes):
-        self.id = node_id if node_id else str(uuid.uuid4())[:8]
-
-# --- ARKHE PROTOCOL STRUCTURES ---
+# --- 2. ARKHE PROTOCOL STRUCTURES ---
 
 class IntentObject:
     def __init__(self, goal: str, constraints: List['Constraint'] = None, success_metrics: List['Metric'] = None):
@@ -55,6 +44,7 @@ class Constraint:
             "<": lambda a, b: a < b,
             "<=": lambda a, b: a <= b,
             "==": lambda a, b: a == b,
+            "===": lambda a, b: a == b,
             ">=": lambda a, b: a >= b,
             ">": lambda a, b: a > b
         }
@@ -75,13 +65,12 @@ class ContextSnapshot:
         self.target_state = target_state
         self.ambient_conditions = ambient_conditions or {}
 
-# --- ANL TYPE DEFINITIONS ---
-Vector = np.ndarray
-Tensor = np.ndarray
+# --- 3. CORE ANL CLASSES ---
 
 class Node:
-    def __init__(self, node_type: str, **attributes):
-        self.id = str(uuid.uuid4())[:8]
+    """Fundamental entity in the Arkhe(n) Hypergraph."""
+    def __init__(self, node_id: str = None, node_type: str = "GenericNode", **attributes):
+        self.id = node_id if node_id else str(uuid.uuid4())[:8]
         self.node_type = node_type
         self.attributes = attributes
         self.internal_dynamics = []
@@ -100,17 +89,11 @@ class Node:
         raise AttributeError(f"Node '{self.node_type}' ({self.id}) has no attribute '{name}'")
 
     def __setattr__(self, name, value):
-        if name in ['id', 'node_type', 'attributes', 'internal_dynamics', 'events']:
+        if name in ['id', 'node_type', 'attributes', 'internal_dynamics', 'events', 'is_asi', 'beliefs', 'dirichlet_params', 'curiosity_score', 'capabilities']:
             super().__setattr__(name, value)
         else:
             if not hasattr(self, 'attributes'):
                 super().__setattr__('attributes', {})
-        raise AttributeError(f"Node {self.node_type} has no attribute {name}")
-
-    def __setattr__(self, name, value):
-        if name in ['id', 'node_type', 'attributes', 'internal_dynamics', 'events', 'is_asi', 'beliefs', 'dirichlet_params', 'curiosity_score', 'capabilities']:
-            super().__setattr__(name, value)
-        else:
             self.attributes[name] = value
 
     def add_dynamic(self, func: Callable[['Node'], None]):
@@ -120,19 +103,6 @@ class Node:
         self.events.append((event_name, payload, time.time()))
 
     def step(self):
-        for dyn in self.internal_dynamics:
-            dyn(self)
-
-    def __repr__(self):
-        return f"<{self.node_type} id={self.id}>"
-
-class Handover:
-    """Structured exchange of intention, context, and value."""
-    def __init__(self, name: str, protocol: str = Protocol.CONSERVATIVE):
-        self.name = name
-        self.events.append((event_name, payload))
-
-    def step(self):
         # Active Inference: Minimize Variational Free Energy
         self.minimize_vfe()
         for dyn in self.internal_dynamics:
@@ -140,7 +110,6 @@ class Handover:
 
     def minimize_vfe(self):
         """Mock VFE minimization: update beliefs based on observations."""
-        # In a real FEP model, this would be a gradient descent on VFE
         observation_index = 0 if np.random.random() > 0.5 else 1
         self.dirichlet_params[observation_index] += 0.1
         self.beliefs = self.dirichlet_params / np.sum(self.dirichlet_params)
@@ -151,9 +120,10 @@ class Handover:
         return self.curiosity_score
 
     def __repr__(self):
-        return f"<{self.node_type} {self.id} {self.attributes}>"
+        return f"<{self.node_type} id={self.id}>"
 
 class Handover:
+    """Structured exchange of intention, context, and value."""
     def __init__(self, name: str, origin_types: Union[str, List[str]], target_types: Optional[Union[str, List[str]]] = None, protocol: str = Protocol.CONSERVATIVE):
         self.name = name
         self.origin_types = [origin_types] if isinstance(origin_types, str) else origin_types
@@ -172,14 +142,20 @@ class Handover:
     def set_effects(self, func: Callable):
         self.effects = func
 
-    def execute(self, source: Node, target: Optional[Node] = None) -> bool:
-        nodes = [source]
-        if target:
-            nodes.append(target)
-
-        if self.condition(*nodes):
-            self.effects(*nodes)
-            return True
+    def execute(self, *nodes: Node) -> bool:
+        if len(nodes) < 1: return False
+        if len(nodes) == 2:
+            origin, target = nodes
+            if origin.node_type in self.origin_types and (not self.target_types or target.node_type in self.target_types):
+                if self.condition(*nodes):
+                    self.effects(*nodes)
+                    return True
+        elif len(nodes) == 1:
+            origin = nodes[0]
+            if origin.node_type in self.origin_types:
+                if self.condition(*nodes):
+                    self.effects(*nodes)
+                    return True
         return False
 
 class Hypergraph:
@@ -193,113 +169,6 @@ class Hypergraph:
 
     def add_node(self, node: Node) -> Node:
         self.nodes[node.id] = node
-    def execute(self, *nodes: Node) -> bool:
-        if len(nodes) < 1: return False
-        if len(nodes) == 2:
-            if not self.target_types: return False
-            origin, target = nodes
-            if origin.node_type in self.origin_types and target.node_type in self.target_types:
-                if self.condition(*nodes):
-                    self.effects(*nodes)
-                    return True
-        elif len(nodes) == 1:
-            if self.target_types: return False
-            origin = nodes[0]
-            if origin.node_type in self.origin_types:
-                if self.condition(*nodes):
-                    self.effects(*nodes)
-                    return True
-        return False
-
-class ArkheLink(Handover):
-    def __init__(self, source: Node, target: Node, intent: IntentObject, context: ContextSnapshot, ontology: str):
-        super().__init__("ArkheLink", source.node_type, target.node_type, Protocol.TRANSMUTATIVE)
-        self.source_node = source
-        self.target_node = target
-        self.identity_proof = "zk-SNARK-placeholder"
-        self.intent = intent
-        self.context = context
-        self.ontology = ontology
-        self.signature = "ed25519-placeholder"
-        self.preconditions = []
-        self.postconditions = []
-
-    def verify_identity(self) -> bool:
-        # Mock zk-SNARK verification
-        print(f"  [Security] Verifying zk-SNARK for {self.source_node.id}...")
-        return self.identity_proof.startswith("zk-SNARK")
-
-    def verify_signature(self) -> bool:
-        # Mock signature verification
-        print(f"  [Security] Verifying ed25519 signature for handover {self.name}...")
-        return self.signature.startswith("ed25519")
-
-    def execute(self) -> bool:
-        # Refined execution for Link Layer
-        print(f"--- Handover Attempt: {self.name} ({self.source_node.node_type} -> {self.target_node.node_type}) ---")
-
-        if not self.verify_identity():
-            print("  [Failed] Identity verification failed.")
-            return False
-        if not self.verify_signature():
-            print("  [Failed] Signature verification failed.")
-            return False
-
-        # Check preconditions
-        print("  [LinkLayer] Checking preconditions...")
-        for pre in self.preconditions:
-            if not pre(self.source_node, self.target_node):
-                print("  [Failed] Precondition not met.")
-                return False
-
-        # Execute effects
-        print("  [LinkLayer] Executing effects...")
-        self.effects(self.source_node, self.target_node)
-
-        # Check postconditions
-        print("  [LinkLayer] Validating postconditions and metrics...")
-        for post in self.postconditions:
-            if not post(self.source_node, self.target_node):
-                print("  [Failed] Postcondition not met.")
-                return False
-
-        # Check metrics
-        all_metrics_passed = True
-        for metric in self.intent.success_metrics:
-            if not metric.satisfied():
-                print(f"  [Metric Failed] {metric.name}: current={metric.value}, threshold={metric.threshold}")
-                all_metrics_passed = False
-            else:
-                print(f"  [Metric Passed] {metric.name}: {metric.value} >= {metric.threshold}")
-
-        if all_metrics_passed:
-            print("  [Success] Handover completed successfully.")
-        else:
-            print("  [Partial] Handover completed but some metrics failed.")
-
-        return True
-
-class ConstraintMode:
-    SOFT = 'SOFT'
-    HARD = 'HARD'
-    INVIOLABLE_AXIOM = 'INVIOLABLE_AXIOM'
-
-class System:
-    def __init__(self, name="ANL System"):
-        self.name = name
-        self.nodes: List[Node] = []
-        self.handovers: List[Handover] = []
-        self.constraints: List[Dict[str, Any]] = []
-        self.global_dynamics: List[Callable[['System'], None]] = []
-        self.time = 0
-        self.coherence = 1.0
-
-    def discover_agents(self, goal: str) -> List[Node]:
-        """Network Layer: Discover agents based on goal matching capabilities."""
-        return [n for n in self.nodes if goal in n.capabilities]
-
-    def add_node(self, node: Node) -> Node:
-        self.nodes.append(node)
         return node
 
     def add_handover(self, handover: Handover):
@@ -310,24 +179,40 @@ class System:
         for node in self.nodes.values():
             node.step()
 
-        # 2. Handovers (This is a simplified execution for the prototype)
-        # In a real network, handovers are triggered by events or intentions
+        # 2. Handovers
+        for h in self.handovers:
+            # For simplicity in prototype, we try all combinations
+            node_list = list(self.nodes.values())
+            for i in range(len(node_list)):
+                # Unary
+                h.execute(node_list[i])
+                # Binary
+                for j in range(len(node_list)):
+                    if i == j: continue
+                    h.execute(node_list[i], node_list[j])
 
         self.time += 1
 
     def __repr__(self):
         return f"Hypergraph({self.name}, t={self.time}, nodes={len(self.nodes)})"
 
-# --- 3. UTILITIES ---
+class ConstraintMode:
+    SOFT = 'SOFT'
+    HARD = 'HARD'
+    INVIOLABLE_AXIOM = 'INVIOLABLE_AXIOM'
 
-def cosine_similarity(v1, v2):
-    v1 = np.asarray(v1)
-    v2 = np.asarray(v2)
-    return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2) + 1e-12)
+class System(Hypergraph):
+    """Refined System model inheriting from Hypergraph."""
+    def __init__(self, name="ANL System"):
+        super().__init__(name)
+        self.constraints: List[Dict[str, Any]] = []
+        self.global_dynamics: List[Callable[['System'], None]] = []
+        self.coherence = 1.0
 
-def kl_divergence(p, q):
-    p = np.asarray(p, dtype=float)
-    q = np.asarray(q, dtype=float)
+    def discover_agents(self, goal: str) -> List[Node]:
+        """Network Layer: Discover agents based on goal matching capabilities."""
+        return [n for n in self.nodes.values() if isinstance(n, Agent) and goal in n.capabilities]
+
     def add_constraint(self, check_func: Callable[['System'], bool], mode: str = ConstraintMode.SOFT):
         self.constraints.append({
             "check": check_func,
@@ -335,20 +220,7 @@ def kl_divergence(p, q):
         })
 
     def step(self):
-        # 1. Internal Dynamics
-        for node in self.nodes:
-            node.step()
-
-        # 2. Handovers
-        for h in self.handovers:
-            # Binary
-            for i in range(len(self.nodes)):
-                for j in range(len(self.nodes)):
-                    if i == j: continue
-                    h.execute(self.nodes[i], self.nodes[j])
-            # Unary
-            for n in self.nodes:
-                h.execute(n)
+        super().step()
 
         # 3. Ouroboros Loop (Feedback)
         self.ouroboros_feedback()
@@ -363,21 +235,14 @@ def kl_divergence(p, q):
                 if c["mode"] == ConstraintMode.INVIOLABLE_AXIOM:
                     raise RuntimeError(f"Axiom Breached in {self.name}")
 
-        self.time += 1
-
     def ouroboros_feedback(self):
         """Ouroboros: System's state affects its own parameters."""
-        avg_curiosity = np.mean([n.calculate_epistemic_value() for n in self.nodes]) if self.nodes else 0
+        avg_curiosity = np.mean([n.calculate_epistemic_value() for n in self.nodes.values()]) if self.nodes else 0
         self.coherence = 0.9 * self.coherence + 0.1 * (1.0 / (1.0 + avg_curiosity))
 
     def remove_node(self, node: Node):
-        if node in self.nodes: self.nodes.remove(node)
-
-# --- UTILS ---
-def kl_divergence(p, q):
-    p = np.where(p == 0, 1e-12, p)
-    q = np.where(q == 0, 1e-12, q)
-    return np.sum(p * np.log(p / q))
+        if node.id in self.nodes:
+            del self.nodes[node.id]
 
 # --- 4. AGENTS AND ONTOLOGIES ---
 
@@ -413,11 +278,11 @@ class Agent(Node):
     def __init__(self, agent_id: str, ontology: Union[str, Ontology], **attributes):
         # Extract reputation if present, default to 1.0
         reputation = attributes.pop('reputation', 1.0)
-        super().__init__(agent_id, node_type="Agent", **attributes)
+        super().__init__(node_id=agent_id, node_type="Agent", **attributes)
         self.ontology = ontology if isinstance(ontology, Ontology) else Ontology(ontology)
         self.capabilities = {} # intent_name -> handler_function
         self.reputation = reputation
-        self.constraints = {} # Default constraints the agent imposes
+        self.agent_constraints = {} # Rename to avoid conflict with Node attributes if any
 
     def register_capability(self, intent_name: str, handler: Callable):
         self.capabilities[intent_name] = handler
@@ -470,7 +335,6 @@ class ArkheLink:
 
     def sign(self, private_key_placeholder: str = "secret"):
         """Sign the handover data to ensure integrity."""
-        # Simplified signing for the prototype
         data_to_sign = {
             "source": self.source,
             "target": self.target,
@@ -515,14 +379,6 @@ class IntentDiscovery:
 
     def lookup(self, goal: str, constraints: List[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
         candidates = self.registry.get(goal, [])
-        # Filter based on constraints (simplified)
-        if constraints:
-            filtered = []
-            for candidate in candidates:
-                # Basic matching: if candidate has constraints, check if they are compatible
-                # For this prototype, we'll just return all and let the user decide
-                filtered.append(candidate)
-            return sorted(filtered, key=lambda x: x.get('reputation', 1.0), reverse=True)
         return sorted(candidates, key=lambda x: x.get('reputation', 1.0), reverse=True)
 
 class RouteIntent:
@@ -531,7 +387,6 @@ class RouteIntent:
         self.hypergraph = hypergraph
 
     def find_path(self, source_id: str, target_id: str) -> List[str]:
-        # Simplified pathfinding (direct for now)
         if source_id in self.hypergraph.nodes and target_id in self.hypergraph.nodes:
             return [source_id, target_id]
         return []
@@ -539,6 +394,15 @@ class RouteIntent:
     def forward(self, link: ArkheLink, path: List[str]):
         """Simulate forwarding along a path."""
         print(f"Routing handover from {link.source} to {link.target} via {path}")
-        # In a real system, this would involve multiple handovers
+
+# --- 7. UTILITIES ---
+
 def cosine_similarity(v1, v2):
+    v1 = np.asarray(v1)
+    v2 = np.asarray(v2)
     return np.dot(v1, v2) / (np.linalg.norm(v1) * np.linalg.norm(v2) + 1e-12)
+
+def kl_divergence(p, q):
+    p = np.where(p == 0, 1e-12, p)
+    q = np.where(q == 0, 1e-12, q)
+    return np.sum(p * np.log(p / q))
