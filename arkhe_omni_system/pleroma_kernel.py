@@ -47,6 +47,26 @@ class WindingNumber:
     poloidal: int
     toroidal: int
 
+@dataclass
+class Quantum:
+    amplitudes: np.ndarray # Complex matrix
+    basis: str = "|n,m>"
+
+    @classmethod
+    def from_winding_basis(cls, max_n=10, max_m=10):
+        # Initialize with uniform superposition
+        shape = (max_n + 1, max_m + 1)
+        amplitudes = np.ones(shape, dtype=complex) / np.sqrt(np.prod(shape))
+        return cls(amplitudes=amplitudes)
+
+@dataclass
+class Thought:
+    geometry: Hyperbolic3
+    phase: Torus2
+    quantum: Quantum
+    content: str = ""
+    task_id: str = field(default_factory=lambda: hashlib.sha256(str(random.random()).encode()).hexdigest()[:8])
+
 class PleromaNode:
     """
     Constitutionally hardened node for the Pleroma Kernel.
@@ -62,6 +82,7 @@ class PleromaNode:
         self.coherence = 1.0
         self.neighbors: List['PleromaNode'] = []
         self.latency_map: Dict[str, float] = {} # node_id -> observed latency
+        self.active_thoughts: Dict[str, Thought] = {}
         self.running = True
 
     def establish_entanglement(self, neighbors: List['PleromaNode']):
@@ -135,8 +156,12 @@ class PleromaNode:
         # Simulated gradient for toroidal dynamics
         return type('Gradient', (), {'theta': random.uniform(-0.1, 0.1), 'phi': random.uniform(-0.1, 0.1)})
 
-    async def run_cycle(self):
+    async def run_cycle(self, kernel: 'PleromaKernel'):
         """Main operational cycle of the node."""
+        if time.time() < kernel.frozen_until:
+            await asyncio.sleep(DT)
+            return
+
         start_time = time.time()
 
         # Step 1: Quantum-secure peer exchange
@@ -183,10 +208,25 @@ class PleromaNode:
         await asyncio.sleep(0.005)
         self.self_model_budget += fraction # Release after task
 
+    def spawn_thought(self, thought: Thought) -> str:
+        """Spawn a distributed thought task."""
+        self.active_thoughts[thought.task_id] = thought
+        # print(f"  [THOUGHT] Node {self.node_id} spawned task {thought.task_id}: {thought.content}")
+        return thought.task_id
+
+    async def query(self, thought: Thought) -> str:
+        """Execute a synchronous query against the Pleroma."""
+        self.spawn_thought(thought)
+        await asyncio.sleep(0.1) # Simulate processing
+        # Collapse quantum state to "most probable solution"
+        n, m = np.unravel_index(np.argmax(np.abs(thought.quantum.amplitudes)), thought.quantum.amplitudes.shape)
+        return f"Collapsed Solution at |{n},{m}⟩ for: {thought.content}"
+
 class PleromaKernel:
     def __init__(self, n_nodes=10):
         self.nodes: Dict[str, PleromaNode] = {}
         self._initialize_nodes(n_nodes)
+        self.frozen_until = 0
         self.running = True
 
     def _initialize_nodes(self, n_nodes):
@@ -209,13 +249,19 @@ class PleromaKernel:
             self.nodes[nid].latency_map[node_ids[(i+1)%n_nodes]] = random.uniform(0.01, 0.05)
             self.nodes[nid].latency_map[node_ids[(i-1)%n_nodes]] = random.uniform(0.01, 0.05)
 
+    def emergency_stop(self, reason: str):
+        """Article 3: Human Authority override."""
+        print(f"\n🛑 [EMERGENCY] Pleroma halted! Reason: {reason}")
+        self.frozen_until = time.time() + 1.0 # Freeze for 1 second
+        return True
+
     async def run(self, duration=5.0):
         print(f"🜏 Pleroma Kernel v1.0.0 Online. Orchestrating {len(self.nodes)} nodes.")
         print("-" * 60)
 
         start_time = time.time()
         while time.time() - start_time < duration and self.running:
-            tasks = [node.run_cycle() for node in self.nodes.values()]
+            tasks = [node.run_cycle(self) for node in self.nodes.values()]
             await asyncio.gather(*tasks)
 
             # Global status update
