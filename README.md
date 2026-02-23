@@ -10,8 +10,10 @@ The Arkhe Protocol has been formally ratified (Blocks Ω+∞+54 through Ω+∞+1
 
 - **Master Index**: `docs/arkhe_protocol_v1/ARKHE_DOCUMENTATION_INDEX.md`
 - **Constitution**: `docs/arkhe_protocol_v1/ARKHE_CONSTITUTION.md`
-- **Cognitive Core**: `arkhe_cognitive_core_v2.py`
+- **Cognitive Core**: `core/python/arkhe_cognitive_core_v2.py`
 - **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
+- **Omega Ledger**: `ledger/` (Blocks up to 9243)
 
 ---
 
@@ -30,9 +32,16 @@ The heartbeat of the system, supporting:
 - **Asynchronous Interactions**: Non-blocking handovers via shared latent memory.
 - **Thermodynamic Safety**: Real-time KL-divergence monitoring and entropy vetoes.
 - **Integrated Information (Φ)**: Measure of system-wide cognitive emergence.
-- **Kernel Implementation**: `arkhe_omni_kernel.py`
+- **Kernel Implementation**: `core/python/arkhe_omni_kernel.py`
 
-### 3. Safety & Oversight
+### 3. Robotics & Swarm Intelligence
+Support for autonomous agents in physical and simulated environments.
+- **Specification**: `docs/robotics/ARKHE_ROBOTICS_SPEC.md`
+- **Drivers & HAL**: `modules/robotics/hal/` (C++, Rust, Python)
+- **Fleet Orchestration**: `modules/robotics/orchestrator/`
+- **Toroidal Intelligence**: `docs/robotics/TOROIDAL_INTELLIGENCE_SPEC.md`
+
+### 4. Safety & Oversight
 Robust mechanisms to prevent and detect multi-agent collusion and alignment failure.
 - **Reformed Detector Hierarchy**: 4 levels of anomaly detection in `metalanguage/detectors_v2.py`.
 - **Steganography Monitoring**: Tracking "thermodynamic bleeding" in covert channels.
