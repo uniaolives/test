@@ -41,4 +41,5 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Run Sanity Check
         run: |
-          python sanity_check.py
+          export PYTHONPATH=$PYTHONPATH:.
+          python src/python/sanity_check.py
