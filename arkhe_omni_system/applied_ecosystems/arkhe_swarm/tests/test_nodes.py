@@ -135,6 +135,7 @@ class TestArkheGuards(unittest.TestCase):
                 'C_local': 0.4,
                 'emergence': True,
                 'stable': True
+                'emergence': True
             })
 
             core.update_coherence(msg)
