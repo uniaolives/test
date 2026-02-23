@@ -8,8 +8,8 @@
                     value=@ud
                 ==
 +$  metric      $:  name=@tas
-                    threshold=@ud
-                    actual=@ud
+                    threshold=@rs       :: Coerência requer ponto flutuante
+                    actual=@rs
                 ==
 +$  node        $:  id=@p
                     state=*
@@ -17,4 +17,13 @@
                     log=(list [time=@da intent=intent result=*])
                     coherence=@rs
                 ==
+::  Novos tipos para Arkhe(n) Otimizado (Ω+∞+257)
+::
++$  stake       @p                      :: ship com participação garantida
++$  witness     $:  observer=@p
+                    observed=@p
+                    value=@rs           :: Coerência observada
+                    timestamp=@da
+                ==
++$  signed-intent  [int=intent sig=@uvH]
 --
