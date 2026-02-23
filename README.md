@@ -10,8 +10,9 @@ The Arkhe Protocol has been formally ratified (Blocks Ω+∞+54 through Ω+∞+1
 
 - **Master Index**: `docs/arkhe_protocol_v1/ARKHE_DOCUMENTATION_INDEX.md`
 - **Constitution**: `docs/arkhe_protocol_v1/ARKHE_CONSTITUTION.md`
-- **Cognitive Core**: `arkhe_cognitive_core_v2.py`
+- **Cognitive Core**: `src/python/arkhe_cognitive_core_v2.py`
 - **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Omega Ledger**: `ledger/` (Blocks up to 9243)
 
 ---
 
@@ -30,7 +31,7 @@ The heartbeat of the system, supporting:
 - **Asynchronous Interactions**: Non-blocking handovers via shared latent memory.
 - **Thermodynamic Safety**: Real-time KL-divergence monitoring and entropy vetoes.
 - **Integrated Information (Φ)**: Measure of system-wide cognitive emergence.
-- **Kernel Implementation**: `arkhe_omni_kernel.py`
+- **Kernel Implementation**: `src/python/arkhe_omni_kernel.py`
 
 ### 3. Safety & Oversight
 Robust mechanisms to prevent and detect multi-agent collusion and alignment failure.
