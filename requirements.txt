@@ -67,3 +67,4 @@ deprecated
 anyio
 starlette
 pyyaml
+pymavlink
