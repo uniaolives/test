@@ -66,3 +66,4 @@ httpcore
 deprecated
 anyio
 starlette
+pyyaml
