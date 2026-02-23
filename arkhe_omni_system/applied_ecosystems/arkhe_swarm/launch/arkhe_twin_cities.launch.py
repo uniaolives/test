@@ -38,6 +38,14 @@ def generate_launch_description():
         output='screen'
     )
 
+    # Simulation Data Provider
+    drone_sim = Node(
+        package='arkhe_swarm',
+        executable='drone_state_sim',
+        parameters=[config_file],
+        output='screen'
+    )
+
     # Constitutional Guards
     guards = [
         Node(package='arkhe_swarm', executable='cognitive_guard', parameters=[config_file]),
@@ -46,6 +54,22 @@ def generate_launch_description():
         Node(package='arkhe_swarm', executable='transparency_guard', parameters=[config_file]),
     ]
 
+    # Drone Spawning (17 drones: 8 Rio, 8 SP, 1 Bridge)
+    spawn_nodes = []
+    for i in range(17):
+        # Hyperbolic positions for Twin Cities configuration (Option B: 3D)
+        if i < 8: # Rio
+            x = -2.0 + (i % 3) * 0.5
+            y = 0.2 + (i // 3) * 0.2
+            z = 0.1 + (i % 2) * 500.0 # Vary altitude to simulate atmospheric layers
+        elif i < 16: # SP
+            x = 2.0 + ((i-8) % 3) * 0.5
+            y = 0.2 + ((i-8) // 3) * 0.2
+            z = 0.1 + ((i-8) % 2) * 1000.0
+        else: # Bridge
+            x = 0.0
+            y = 0.5
+            z = 2000.0 # Bridge at higher altitude
     # Drone Spawning (17 drones)
     spawn_nodes = []
     for i in range(17):
@@ -61,6 +85,7 @@ def generate_launch_description():
                     '-entity', f'iris_{i}',
                     '-x', str(x),
                     '-y', str(y),
+                    '-z', str(z),
                     '-z', '0.1',
                     '-robot_namespace', f'drone{i}'
                 ],
@@ -73,6 +98,7 @@ def generate_launch_description():
         gazebo,
         arkhe_core,
         ghz_consensus,
+        drone_sim,
         *guards,
         *spawn_nodes
     ])
