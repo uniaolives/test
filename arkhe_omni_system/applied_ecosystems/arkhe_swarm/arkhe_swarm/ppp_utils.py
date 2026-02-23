@@ -24,18 +24,47 @@ def sample_ppp_hyperbolic(n_points, x_range, y_range, lambda0, alpha):
 
 def hyperbolic_distance_uhp(p1, p2):
     """
-    Calculates the hyperbolic distance in the Upper Half-Plane model.
-    dH(p1, p2) = arcosh(1 + (||p1-p2||^2) / (2 * y1 * y2))
+    Calculates the hyperbolic distance in the Upper Half-Plane (2D) or Half-Space (3D) model.
+    dH(p1, p2) = arcosh(1 + (||p1-p2||^2) / (2 * z1 * z2))
+    where z is the vertical coordinate (y in 2D, z in 3D).
     """
-    x1, y1 = p1
-    x2, y2 = p2
+    p1 = np.array(p1)
+    p2 = np.array(p2)
 
-    # Ensure y > 0
-    y1 = max(0.001, y1)
-    y2 = max(0.001, y2)
+    # Identify vertical coordinate
+    z1 = p1[-1]
+    z2 = p2[-1]
 
-    val = 1 + ((x1 - x2)**2 + (y1 - y2)**2) / (2 * y1 * y2)
+    # Ensure z > 0
+    z1 = max(0.001, z1)
+    z2 = max(0.001, z2)
+
+    sq_dist = np.sum((p1 - p2)**2)
+    val = 1 + sq_dist / (2 * z1 * z2)
     return np.arccosh(max(1.0, val))
+
+def atmospheric_density(z, rho0=1.225, H=8500.0):
+    """
+    Calculates air density at altitude z using the exponential model ρ(z) = ρ0 * exp(-z/H).
+    z in meters, H (scale height) approx 8.5km.
+    """
+    return rho0 * np.exp(-z / H)
+
+def stability_threshold_q_process(d):
+    """
+    Returns the stability threshold for the Q-process: (d-1)^2 / 8.
+    For d=2 (2D): 0.125
+    For d=3 (3D): 0.5
+    """
+    return ((d - 1)**2) / 8.0
+
+def check_q_process_condition(v_max, n_neighbors, d=3):
+    """
+    Checks the condition for global coherence (Q-process).
+    V_max * n_neighbors < threshold
+    """
+    threshold = stability_threshold_q_process(d)
+    return v_max * n_neighbors < threshold
 
 def generate_twin_cities_fleet(n_rio, n_sp, n_bridge):
     """

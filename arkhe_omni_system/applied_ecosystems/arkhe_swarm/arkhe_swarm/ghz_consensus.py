@@ -5,7 +5,7 @@ import numpy as np
 from std_msgs.msg import Float32MultiArray, String
 from geometry_msgs.msg import PoseStamped
 import json
-from .ppp_utils import hyperbolic_distance_uhp
+from .ppp_utils import hyperbolic_distance_uhp, check_q_process_condition
 
 class GHZConsensus(Node):
     """
@@ -19,9 +19,11 @@ class GHZConsensus(Node):
         super().__init__('ghz_consensus')
         self.declare_parameter('n_drones', 17)
         self.declare_parameter('tau', 2.0)
+        self.declare_parameter('v_max', 0.005)
 
         self.n_drones = self.get_parameter('n_drones').get_parameter_value().integer_value
         self.tau = self.get_parameter('tau').get_parameter_value().double_value
+        self.v_max = self.get_parameter('v_max').get_parameter_value().double_value
 
         self.positions = {}
         self.states = {}  # simulated quantum states (0 or 1)
@@ -52,8 +54,10 @@ class GHZConsensus(Node):
         self.timer = self.create_timer(1.0, self.compute_coherence)
 
     def pose_callback(self, msg, idx):
+        # Support 2D and 3D. Vertical coordinate is always the last one.
         self.positions[idx] = np.array([msg.pose.position.x,
-                                        msg.pose.position.y])
+                                        msg.pose.position.y,
+                                        msg.pose.position.z])
 
     def state_callback(self, msg, idx):
         self.states[idx] = msg.data[0]  # 0 or 1
@@ -87,12 +91,18 @@ class GHZConsensus(Node):
             C_global = max(0.0, ghz_fidelity)
             emergence = C_global > C_local
 
+            # Stability Check (Q-process condition)
+            # Simplified neighbor count: all drones (global check)
+            n_neighbors = self.n_drones
+            stable = check_q_process_condition(self.v_max, n_neighbors, d=3)
+
             # Publish metrics
             msg = String()
             msg.data = json.dumps({
                 'C_global': float(C_global),
                 'C_local': float(C_local),
-                'emergence': bool(emergence)
+                'emergence': bool(emergence),
+                'stable': bool(stable)
             })
             self.coherence_pub.publish(msg)
 

@@ -57,16 +57,19 @@ def generate_launch_description():
     # Drone Spawning (17 drones: 8 Rio, 8 SP, 1 Bridge)
     spawn_nodes = []
     for i in range(17):
-        # Hyperbolic positions for Twin Cities configuration
+        # Hyperbolic positions for Twin Cities configuration (Option B: 3D)
         if i < 8: # Rio
             x = -2.0 + (i % 3) * 0.5
             y = 0.2 + (i // 3) * 0.2
+            z = 0.1 + (i % 2) * 500.0 # Vary altitude to simulate atmospheric layers
         elif i < 16: # SP
             x = 2.0 + ((i-8) % 3) * 0.5
             y = 0.2 + ((i-8) // 3) * 0.2
+            z = 0.1 + ((i-8) % 2) * 1000.0
         else: # Bridge
             x = 0.0
             y = 0.5
+            z = 2000.0 # Bridge at higher altitude
 
         spawn_nodes.append(
             Node(
@@ -76,7 +79,7 @@ def generate_launch_description():
                     '-entity', f'iris_{i}',
                     '-x', str(x),
                     '-y', str(y),
-                    '-z', '0.1',
+                    '-z', str(z),
                     '-robot_namespace', f'drone{i}'
                 ],
                 output='screen'
