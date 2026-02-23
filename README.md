@@ -4,6 +4,17 @@
 
 ---
 
+## 🏛️ ARKHE PROTOCOL v1.0.0 — RATIFIED
+
+The Arkhe Protocol has been formally ratified (Blocks Ω+∞+54 through Ω+∞+169). It provides the complete specification for Human-AI coexistence and secure orbital connectivity.
+
+- **Master Index**: `docs/arkhe_protocol_v1/ARKHE_DOCUMENTATION_INDEX.md`
+- **Constitution**: `docs/arkhe_protocol_v1/ARKHE_CONSTITUTION.md`
+- **Cognitive Core**: `arkhe_cognitive_core_v2.py`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+
+---
+
 ## 🏗️ Core Architecture
 
 The system is built on the fundamental principle of **$C + F = 1$** (Conservation of Coherence and Fluctuation) and the identity **$x^2 = x + 1$**.
