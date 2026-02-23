@@ -13,6 +13,8 @@ The Arkhe Protocol has been formally ratified (Blocks Ω+∞+54 through Ω+∞+1
 - **Cognitive Core**: `core/python/arkhe_cognitive_core_v2.py`
 - **Hardware**: `arkhe_omni_system/hardware_silicon/`
 - **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
+- **Cognitive Core**: `src/python/arkhe_cognitive_core_v2.py`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
 - **Omega Ledger**: `ledger/` (Blocks up to 9243)
 
 ---
@@ -33,6 +35,7 @@ The heartbeat of the system, supporting:
 - **Thermodynamic Safety**: Real-time KL-divergence monitoring and entropy vetoes.
 - **Integrated Information (Φ)**: Measure of system-wide cognitive emergence.
 - **Kernel Implementation**: `core/python/arkhe_omni_kernel.py`
+- **Kernel Implementation**: `src/python/arkhe_omni_kernel.py`
 
 ### 3. Robotics & Swarm Intelligence
 Support for autonomous agents in physical and simulated environments.

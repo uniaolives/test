@@ -48,6 +48,9 @@ with patch('rclpy.node.Node', MockNode):
     from arkhe_swarm.authority_guard import AuthorityGuard
     from arkhe_swarm.cognitive_guard import CognitiveGuard
     from arkhe_swarm.arkhe_core import ArkheCore
+    from arkhe_swarm.ghz_consensus import GHZConsensus
+    from arkhe_swarm.drone_state_sim import DroneStateSim
+    from arkhe_swarm.ppp_utils import hyperbolic_distance_uhp, sample_ppp_hyperbolic, atmospheric_density, stability_threshold_q_process
 
 class TestArkheGuards(unittest.TestCase):
     def test_ai_guard_violation(self):
@@ -130,6 +133,8 @@ class TestArkheGuards(unittest.TestCase):
             msg.data = json.dumps({
                 'C_global': 0.618,
                 'C_local': 0.4,
+                'emergence': True,
+                'stable': True
                 'emergence': True
             })
 
@@ -137,6 +142,70 @@ class TestArkheGuards(unittest.TestCase):
 
             self.assertEqual(core.global_coherence, 0.618)
             self.assertTrue(core.is_emergent)
+
+    def test_ghz_consensus_3d_stability(self):
+        with patch('rclpy.node.Node', MockNode):
+            node = GHZConsensus()
+            node.n_drones = 2
+
+            # Mock 3D positions
+            msg1 = MagicMock()
+            msg1.pose.position.x = 0.0
+            msg1.pose.position.y = 0.0
+            msg1.pose.position.z = 1.0
+            node.pose_callback(msg1, 0)
+
+            msg2 = MagicMock()
+            msg2.pose.position.x = 0.0
+            msg2.pose.position.y = 0.0
+            msg2.pose.position.z = 2.0
+            node.pose_callback(msg2, 1)
+
+            # Mock states
+            s_msg = MagicMock()
+            s_msg.data = [1.0]
+            node.state_callback(s_msg, 0)
+            node.state_callback(s_msg, 1)
+
+            node.compute_coherence()
+
+            # Check published metrics
+            self.assertTrue(node.coherence_pub.publish.called)
+            data = json.loads(node.coherence_pub.publish.call_args[0][0].data)
+            self.assertIn('stable', data)
+            # Threshold for d=3 is 0.5. v_max * n_drones = 0.005 * 2 = 0.01 < 0.5. Should be stable.
+            self.assertTrue(data['stable'])
+
+    def test_ppp_utils_distance_2d(self):
+        p1 = (0.0, 1.0)
+        p2 = (0.0, 2.0)
+        # dH = arcosh(1 + (0^2 + 1^2)/(2*1*2)) = arcosh(1 + 0.25) = arcosh(1.25)
+        dist = hyperbolic_distance_uhp(p1, p2)
+        self.assertAlmostEqual(dist, 0.693147, places=5) # ln(1.25 + sqrt(1.25^2 - 1)) approx 0.693
+
+    def test_ppp_utils_distance_3d(self):
+        p1 = (0.0, 0.0, 1.0)
+        p2 = (0.0, 0.0, 2.0)
+        dist = hyperbolic_distance_uhp(p1, p2)
+        self.assertAlmostEqual(dist, 0.693147, places=5)
+
+    def test_atmospheric_density(self):
+        self.assertEqual(atmospheric_density(0), 1.225)
+        self.assertLess(atmospheric_density(8500), 1.225 / 2.0) # exp(-1) approx 0.36
+
+    def test_stability_thresholds(self):
+        self.assertEqual(stability_threshold_q_process(2), 0.125)
+        self.assertEqual(stability_threshold_q_process(3), 0.5)
+
+    def test_drone_state_sim_publish(self):
+        with patch('rclpy.node.Node', MockNode):
+            sim = DroneStateSim()
+            sim.publish_data()
+
+            # Check if topics were published
+            self.assertTrue(sim.state_pubs[0].publish.called)
+            self.assertTrue(sim.load_pubs[0].publish.called)
+            self.assertTrue(sim.thz_pubs[0].publish.called)
 
 if __name__ == '__main__':
     unittest.main()
