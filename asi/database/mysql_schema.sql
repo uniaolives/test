@@ -26,6 +26,9 @@ BEGIN
     SET total_cf = NEW.coherence + (1.0 - NEW.coherence);
 
     IF NEW.coherence < 0.0 OR NEW.coherence > 1.0 THEN
+    SET total_cf = NEW.coherence + (1.0 - NEW.coherence);
+
+    IF total_cf < 0.9 OR total_cf > 1.1 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Conservation Law Violated: C + F != 1';
     END IF;

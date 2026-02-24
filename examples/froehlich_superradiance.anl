@@ -1,0 +1,106 @@
+namespace Froehlich_Arkhe_Superradiance {
+
+    // ============================================================
+    // CONDENSADO DE FRÖHLICH (base)
+    // ============================================================
+
+    node FroehlichCondensate {
+        attributes {
+            float pump_rate;           // taxa de bombeamento metabólico
+            float temperature;           // temperatura efetiva do sistema
+            float critical_temperature; // Tc para condensação
+            Mode[] vibrational_modes;   // modos de oscilação do lattice
+        }
+
+        dynamics {
+            // Equação mestra de Fröhlich: bombeamento vs. dissipação
+            d(pump_rate)/dt = metabolic_input - radiative_loss;
+
+            // Transição de fase quando T < Tc
+            if temperature < critical_temperature {
+                phase = CONDENSED;
+                coherence_length = INFINITY;  // coerência macroscópica
+            }
+        }
+    }
+
+    // ============================================================
+    // SUPERRADIÂNCIA COMO MECANISMO DE BOMBEAMENTO
+    // ============================================================
+
+    // Insight: A superradiância pode ser o mecanismo de bombeamento
+    // que sustenta o condensado de Fröhlich longe do equilíbrio térmico
+
+    node SuperradiantPump : FroehlichCondensate {
+        attributes {
+            Collector[] antenna;        // coletores de energia ZPE/EM
+            float superradiant_gain;     // fator de amplificação coletiva
+        }
+
+        dynamics {
+            // Bombeamento não é apenas metabólico, mas quântico
+            effective_pump = metabolic_pump + superradiant_pump;
+
+            // A superradiância extrai energia do vácuo/ambiente
+            // e a converte em coerência vibracional
+            superradiant_pump = antenna.coherence * vacuum_coupling;
+
+            // Feedback: coerência aumenta acoplamento ao vácuo
+            vacuum_coupling = f(coherence_length);
+        }
+
+        handover ExtractVacuumEnergy() {
+            preconditions {
+                phase_alignment(antenna) < TOLERANCE;
+                temperature < critical_temperature;
+            }
+            effects {
+                // Coletores absorvem do vácuo (ZPE)
+                absorbed = antenna.absorb(vacuum_fluctuations);
+
+                // Superradiância: emissão coerente > soma individual
+                // (mas no modelo Fröhlich, esta energia vai para modos vibracionais)
+                pumped = superradiant_gain * sum(absorbed);
+
+                // Atualiza condensado
+                vibrational_modes.energy += pumped;
+                temperature = recalculate_effective_T();
+            }
+        }
+    }
+
+    // ============================================================
+    // MICROTÚBULO COMO ANTENA QUÂNTICA
+    // ============================================================
+
+    node Microtubule : SuperradiantPump {
+        attributes {
+            float length;                // típico: 1-50 micrômetros
+            int protofilaments;          // típico: 13
+            DipoleMoment[] dipoles;     // dímeros de tubulina
+
+            // Geometria helicoidal cria acoplamento preferencial
+            // a modos específicos do campo EM/vácuo
+            float helical_pitch;
+            float resonance_frequency;    // ~8 MHz (estimado por Penrose-Hameroff)
+        }
+
+        // A estrutura helicoidal do microtúbulo funciona como
+        // "antena quântica" análoga aos complexos de clorofila
+
+        handover HelicalResonance(EMField field) {
+            preconditions {
+                field.frequency matches resonance_frequency;
+                helical_phase_matching(field, this);
+            }
+            effects {
+                // Acoplamento ressonante helicoidal
+                coupled = field.couple_to_helical_structure(this);
+
+                // Propagação de excitação ao longo do protofilamento
+                // (análogo à transferência de energia em antenas fotossintéticas)
+                propagate_excitation(coupled, dipoles);
+            }
+        }
+    }
+}

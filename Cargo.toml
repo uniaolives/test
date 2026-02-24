@@ -23,6 +23,10 @@ members = [
     "asi-net/rust/asi-net-crate", "phase-5/bio_kernel",
     "arkhe_drone_swarm",
     "arkhe_omni_system/constitutive_rust",
+    "ramo-k/rust-asi-wasm",
+    "ramo-k/simulator",
+    "arkhe_omni_system/asi/rust_asi",
+    "arkhe_omni_system/applied_ecosystems/asi_sat",
 ]
 resolver = "2"
 
