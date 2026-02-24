@@ -63,6 +63,11 @@ This document formalizes the unified architecture of the Arkhe(n) system. The sy
 - **Hardware:** FSM-based `qci_buffer.v` for nanosecond-precise gate application.
 - **Safety:** Automatic cancellation of stale classical messages exceeding the T2 coherence deadline.
 
+### 2.10. Ontological Unification (IC-Map-Vector)
+- **IC (Integrated Circuit):** The ℍ³ Hyperbolic Mesh is realized as a topological IC where nodes are components and geodesics are interconnections.
+- **Integrated Map:** GIS-style identification of Position, State, and Topology into a single `IntegratedView`, eliminating relational joins.
+- **SyncVector:** An integrating vector accumulating topological correlation strength ($\Delta \phi$) along geodesics, serving as the basis for the qhttp:// protocol.
+
 ---
 
 ## 3. Deployment & Scaling Governance
