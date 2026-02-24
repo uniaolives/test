@@ -3,9 +3,11 @@
 Arkhe-QuTiP: Quantum Hypergraph Toolbox (Omni-System Edition)
 """
 
-from .core import ArkheQobj, HandoverEvent
+from .core import ArkheQobj, HandoverEvent, QuantumHandover, ArkheHypergraph, compute_local_coherence
 from .solver import ArkheSolver
 from .hypergraph import QuantumHypergraph, create_ring_hypergraph
+from .entanglement import ArkheEntangledState, EmergencePhaseTransition, create_arkhe_hypergraph_from_entangled
+from .lindblad import ArkheLindbladian, AIAuthorityBlocker, ConstitutionMonitor, CognitiveLoad
 from .coherence import (
     purity,
     von_neumann_entropy,
@@ -26,6 +28,9 @@ __all__ = [
     "ArkheQobj",
     "ArkheSolver",
     "HandoverEvent",
+    "QuantumHandover",
+    "ArkheHypergraph",
+    "compute_local_coherence",
     "QuantumHypergraph",
     "create_ring_hypergraph",
     "purity",
@@ -42,4 +47,11 @@ __all__ = [
     "AcousticTimeCrystal",
     "ArkheHypergraphServicer",
     "serve_arkhe_node",
+    "ArkheEntangledState",
+    "EmergencePhaseTransition",
+    "create_arkhe_hypergraph_from_entangled",
+    "ArkheLindbladian",
+    "AIAuthorityBlocker",
+    "ConstitutionMonitor",
+    "CognitiveLoad",
 ]
