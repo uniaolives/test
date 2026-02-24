@@ -62,4 +62,50 @@
   =/  failures  0
   ?:  =(0 (lent log.n))  .1.0
   (quo:rs .1.0 (sun:rs (add 1 failures)))
+
+::  ++  memoized-jam  : serialização otimizada com cache.
+::
+++  memoized-jam
+  |=  [a=* cache=(map * @)]
+  ^-  [@ (map * @)]
+  =/  cached  (~(get by cache) a)
+  ?~  cached
+    =/  jammed  (jam a)
+    [jammed (~(put by cache) a jammed)]
+  [u.cached cache]
+
+::  ++  verify-intent-signature  : verifica integridade e autoria da intenção.
+::
+++  verify-intent-signature
+  |=  [sin=signed-intent:arkhe ship=@p]
+  ^-  ?
+  ::  Protótipo: verifica hash da intenção com o ship.
+  ::  Em prod usaríamos ed25519 via jael.
+  =(sig.sin (shax (jam [int.sin ship])))
+
+::  ++  compute-global-coherence  : consenso sobre coerência global.
+::
+++  compute-global-coherence
+  |=  [wits=(list witness:arkhe) stakes=(map @p @ud)]
+  ^-  @rs
+  ::  1. Filtrar witnesses de ships sem stake
+  =/  filtered  (skim wits |=(w=witness:arkhe (~(has by stakes) observer.w)))
+  ?:  =(0 (lent filtered))  .0.0
+  ::  2. Ordenar por valor
+  =/  sorted
+    %+  sort  filtered
+    |=  [a=witness:arkhe b=witness:arkhe]
+    (lth:rs value.a value.b)
+  ::  3. Média aparada (Trimmed Mean) - remove 10% de cada extremidade
+  =/  len  (lent sorted)
+  =/  trim  (div len 10)
+  =/  trimmed  (scag (sub len (add trim trim)) (slag trim sorted))
+  ?:  =(0 (lent trimmed))  .0.0
+  ::  4. Média ponderada pelo stake
+  =/  total-weight  0
+  =/  weighted-sum  .0.0
+  |-
+  ?~  trimmed  (quo:rs weighted-sum (sun:rs (max 1 total-weight)))
+  =/  s  (~(gut by stakes) observer.i.trimmed 1)
+  $(trimmed t.trimmed, total-weight (add total-weight s), weighted-sum (add:rs weighted-sum (mul:rs value.i.trimmed (sun:rs s))))
 --
