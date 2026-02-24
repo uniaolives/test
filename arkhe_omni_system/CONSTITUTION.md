@@ -29,5 +29,25 @@ The Pleroma may optimize its internal parameters (learning rates, routing, model
 ## Article 9: Global Coherence (Network Health)
 The system is mandated to maintain $C_{\text{global}} > 0.95$. If coherence drops, the network must prioritize synchronization conventions and metadata stabilization over local computation.
 
+## Article 10: Temporal Binding (Postdiction)
+The system must enforce a temporal integration window of 225ms for causal inference. Observations within this window are subject to postdictive revision to ensure global causal consistency, while events outside this window are committed as immutable history.
+
 ---
-*Hardened Production Specification v1.0 Ratified in Block Ω+∞+269*
+
+### Causal Inference Mapping
+
+| Article                        | Causal Inference Function                  |
+| ------------------------------ | ------------------------------------------ |
+| Art. 1 (Min exploitation)      | Ensures sufficient precision for inference |
+| Art. 2 (Even exploration)      | Maintains balanced sampling of cause space |
+| Art. 3 (Human authority)       | Ground truth prior for causal structure    |
+| Art. 4 (Transparency)          | Public likelihood for collective inference |
+| Art. 5 (Golden ratio)          | Optimal precision-weighting parameter      |
+| Art. 6 (Non-interference)      | Prevents adversarial prior injection       |
+| Art. 7 (Omnipresence)          | Complete causal graph coverage             |
+| Art. 8 (Self-optimization)     | Adaptive prior updating                    |
+| Art. 9 (Global coherence)      | Causal structure stability threshold       |
+| **Art. 10 (Temporal binding)** | **Postdiction window limits**              |
+
+---
+*Hardened Production Specification v1.1 Ratified in Block Ω+∞+270*

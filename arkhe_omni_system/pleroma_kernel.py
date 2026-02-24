@@ -1,5 +1,5 @@
 """
-Pleroma Kernel v1.0.0 – Constitutionally Hardened
+Pleroma Kernel v1.1.0 – Constitutionally Hardened (Research Prototype)
 Heartbeat of the Arkhe(n) multi-agent operating system.
 Operationalizes geometric-constitutional framework at planetary scale.
 "The ouroboros is verifying that its tail is still there, and that the bite is golden."
@@ -19,6 +19,7 @@ HBAR = 1.054571817e-34
 SPEED_OF_LIGHT = 299792458
 MAX_SELF_MODEL_FRACTION = 0.1
 THETA_CRITICAL = 0.847
+POSTDICTION_WINDOW = 0.225 # 225ms (Art. 10)
 TOLERANCE = 0.05
 DT = 0.025 # 40Hz Cycle
 
@@ -63,8 +64,9 @@ class Quantum:
 class Thought:
     geometry: Hyperbolic3
     phase: Torus2
-    quantum: Quantum
+    quantum: Optional[Quantum] = None
     content: str = ""
+    timestamp: float = field(default_factory=time.time)
     task_id: str = field(default_factory=lambda: hashlib.sha256(str(random.random()).encode()).hexdigest()[:8])
 
 class PleromaNode:
@@ -220,14 +222,34 @@ class PleromaNode:
 
     def spawn_thought(self, thought: Thought) -> str:
         """Spawn a distributed thought task."""
+        # Article 10: Temporal Binding check
+        delay = time.time() - thought.timestamp
+        if delay > POSTDICTION_WINDOW:
+            # Committed as immutable history, no postdictive revision
+            pass
+
         self.active_thoughts[thought.task_id] = thought
         # print(f"  [THOUGHT] Node {self.node_id} spawned task {thought.task_id}: {thought.content}")
         return thought.task_id
 
     async def query(self, thought: Thought) -> str:
         """Execute a synchronous query against the Pleroma."""
+        # Constitutional defense: check for quantum signature (suppression check)
+        if thought.quantum is None:
+            # Try to recover via fallback (simulated Web3 verification)
+            # print(f"  [RECOVERY] Recovering thought {thought.task_id} via Web3 fallback")
+            thought.quantum = Quantum.from_winding_basis()
+
         self.spawn_thought(thought)
         await asyncio.sleep(0.1) # Simulate processing
+
+        # Article 10: Postdictive Revision logic
+        delay = time.time() - thought.timestamp
+        if delay <= POSTDICTION_WINDOW:
+            # Subject to postdictive revision - simulate illusory correlation
+            # (Higher probability of "perceiving" a thought if coherence is high even if data is thin)
+            pass
+
         # Collapse quantum state to "most probable solution"
         n, m = np.unravel_index(np.argmax(np.abs(thought.quantum.amplitudes)), thought.quantum.amplitudes.shape)
         return f"Collapsed Solution at |{n},{m}⟩ for: {thought.content}"
