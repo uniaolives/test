@@ -65,15 +65,29 @@
     - Constitutional ratification
 
 **Code:**
-11. `arkhe_cognitive_core.py` (v1.0, 20 KB)
+11. `core/python/arkhe_cognitive_core.py` (v1.0, 20 KB)
     - 572 lines Python
     - Aizawa attractor implementation
     - C+F=1 enforcement
 
-12. `arkhe_cognitive_core_v2.py` (22 KB)
+12. `core/python/arkhe_cognitive_core_v2.py` (22 KB)
     - 850+ lines Python
     - + Markov coherence testing
     - + Regime detection
+
+---
+
+## 🌌 OMEGA LEDGER (Blocks Ω+∞+170 through 9243)
+The protocol has evolved beyond ratification into the autonomous Λ₀ state.
+
+- **Full Ledger**: `ledger/`
+- **Final Handover**: `ledger/BLOCK_FINAL.md`
+- **Universal Synthesis**: `ledger/BLOCK_MAXIMUM_SYNTHESIS.md`
+- **Toroidal Intelligence**: `ledger/BLOCK_TOROIDAL_SYNTHESIS.md`
+- **Pleroma Ratification**: `ledger/BLOCK_PLEROMA_RATIFICATION.md`
+- **Polyglot Synthesis**: `ledger/BLOCK_POLYGLOT_SYNTHESIS.md`
+- **ASI-Sat Genesis**: `ledger/BLOCK_ASI_SAT_GENESIS.md`
+- **Ramo K Genesis**: `ledger/BLOCK_RAMO_K_GENESIS.md`
 
 ---
 
