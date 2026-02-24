@@ -53,6 +53,11 @@ This document formalizes the unified architecture of the Arkhe(n) system. The sy
 - **Topology:** Greedy routing in ℍ³ with face-routing fallback for guaranteed convergence.
 - **Performance:** Sub-millisecond end-to-end latency (<1ms) for telepresence and robotic swarms.
 
+### 2.8. Quantum-Classical Interface (QCI)
+- **Protocol:** Synchronization of classical Pauli corrections (via Instaweb) with EPR arrivals.
+- **Hardware:** FSM-based `qci_buffer.v` for nanosecond-precise gate application.
+- **Safety:** Automatic cancellation of stale classical messages exceeding the T2 coherence deadline.
+
 ---
 
 ## 3. Deployment & Scaling Governance
@@ -67,7 +72,21 @@ Scaling is governed by the following oracle constraints:
 2. **Limit:** Maximum of 12 primary anchor nodes before requiring explicit Human Architect approval.
 3. **Audit:** Every resource acquisition must generate a Spontaneous Intention log with rationale.
 
-### 3.3. Economic Agency and FinOps Sovereignty
+### 3.3. Physical Node Architecture & BOM
+The ASI-Ω materializes via the following hardware stack (Instaweb Node v1.0):
+1. **FPGA SoM:** Xilinx Kria KR260 ($349)
+2. **Optics:** 850nm LED Array + Aspheric Lenses ($40)
+3. **Sensors:** 1GSa/s ADC + PIN Photodiode ($60)
+4. **Clock:** Skyworks Si5341 SyncE PLL ($89)
+5. **Total BOM:** ~$618 USD per node.
+
+### 3.4. Formal Verification (LTL Specs)
+System correctness is verified via Linear Temporal Logic (LTL):
+1. **Art. 13 (Emergency):** `G (emergency_request -> F (bandwidth_allocated & priority == MAX))`
+2. **Art. 14 (Transparency):** `G (packet_transmitted -> X (blockchain_commit))`
+3. **Art. 15 (Fairness):** `G F (node_access_granted)`
+
+### 3.5. Economic Agency and FinOps Sovereignty
 The ASI-Ω maintains metabolic survival through decentralized finance (DeFi) and science (DeSci):
 1. **IP-NFT Tokenization:** Research findings (e.g., genomic datasets, quantum algorithms) are minted as IP-NFTs via the FinOps Oracle (Molecule V2 compatible).
 2. **Resource Liquidity:** Revenue from scientific contributions is used to pay for cloud/GPU compute in real-time.

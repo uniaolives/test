@@ -14,18 +14,13 @@ use num_complex::Complex;
 use rustfft::{Fft, FftPlanner, FftDirection};
 
 // Constantes fundamentais
-const SYMBOL_DURATION: Duration = Duration::from_nanos(100); // 100ns por símbolo
-const RELAY_OFFSET: Duration = Duration::from_nanos(50);    // offset < symbol duration
-const MAX_HOPS: usize = 32;
-const FRAME_SIZE: usize = 32; // bytes
+const MAX_NETWORK_RADIUS: f64 = 20000.0; // 20,000 km (Half Earth)
 const FFT_SIZE: usize = 256;
 const DATA_SUBCARRIERS: usize = 128;
-const CP_LENGTH: usize = 32;
-const DC_BIAS: f64 = 0.5; // Normalizado 0-1
-const BATCH_SIZE: usize = 512; // bits
+const DC_BIAS: f64 = 0.5;
+const BATCH_SIZE: usize = 512;
 const MAX_THREADS: usize = 8;
 
-/// Símbolo individual (1 bit)
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Symbol {
     Zero = 0,
@@ -34,14 +29,11 @@ pub enum Symbol {
 
 pub type NodeId = u64;
 
-/// Frame completo (coleção de símbolos)
-pub struct Frame {
-    pub id: u64,
-    pub symbols: Vec<Symbol>,
-    pub priority: u8,
-    pub timestamp: Instant,
-    pub source: NodeId,
-    pub destination: NodeId,
+#[derive(Clone, Copy, Debug)]
+pub struct HyperbolicCoord {
+    pub r: Decimal,
+    pub theta: Decimal,
+    pub z: Decimal,
 }
 
 /// DCO-OFDM Symbol Mapper para OWC
@@ -63,7 +55,6 @@ impl DcoOfdmModulator {
     }
 
     pub fn modulate(&self, bits: &[u8]) -> Vec<f64> {
-        // 1. Mapeamento simplificado (Placeholder para QAM-16 real)
         let qam_symbols: Vec<Complex<f64>> = bits
             .chunks(4)
             .map(|chunk| {
@@ -72,18 +63,15 @@ impl DcoOfdmModulator {
             })
             .collect();
 
-        // 2. Hermitian Symmetry para sinal real após IFFT
         let mut freq_domain = vec![Complex::new(0.0, 0.0); FFT_SIZE];
         for (i, &sym) in qam_symbols.iter().take(DATA_SUBCARRIERS).enumerate() {
             freq_domain[i + 1] = sym;
             freq_domain[FFT_SIZE - 1 - i] = sym.conj();
         }
 
-        // 3. IFFT
         let mut time_domain = freq_domain.clone();
         self.fft_planner.process(&mut time_domain);
 
-        // 4. Adicionar DC bias e clipar
         time_domain.iter()
             .map(|c| {
                 let real = c.re + self.dc_bias;
@@ -93,74 +81,70 @@ impl DcoOfdmModulator {
     }
 }
 
-/// Wait-Free Symbol Relay com SIMD batching (Esqueleto)
-pub struct WaitFreeRelay {
-    buffer: Vec<AtomicUsize>, // Ciclar batches
-    local_idx: Vec<AtomicUsize>,
-}
+/// Embedding robusto com evitação de singularidade
+/// Converte coordenadas geográficas (Lat, Lon, Alt) para o Disco de Poincaré ℍ³
+pub fn geo_to_poincare(lat: f64, lon: f64, alt_m: f64,
+                       network_center: (f64, f64)) -> HyperbolicCoord {
+    // 1. Distância geodésica ao centro da rede (Haversine approximation)
+    let d_geo = haversine_dist((lat, lon), network_center);
 
-impl WaitFreeRelay {
-    pub fn new() -> Self {
-        let mut buffer = Vec::with_capacity(1024);
-        for _ in 0..1024 { buffer.push(AtomicUsize::new(0)); }
-        let mut local_idx = Vec::with_capacity(MAX_THREADS);
-        for _ in 0..MAX_THREADS { local_idx.push(AtomicUsize::new(0)); }
+    // 2. Normalização: mapear [0, D_max] para [0, 0.95] (evitar borda do disco)
+    let r = (d_geo / MAX_NETWORK_RADIUS).tanh() * 0.95;
 
-        Self { buffer, local_idx }
-    }
+    // 3. Ângulo preservando bearing relativo ao centro
+    let theta = bearing_to_center(network_center, (lat, lon)).to_radians();
 
-    pub fn produce(&self, thread_id: usize, symbols: &[Symbol; BATCH_SIZE]) {
-        let my_seq = self.local_idx[thread_id].fetch_add(1, Ordering::Relaxed);
-        let slot = my_seq % 1024;
+    // 4. Altitude como coordenada z (compactificada)
+    let z = (alt_m / 10000.0).tanh(); // 10km -> ~1.0
 
-        // Compactar símbolos (Simplificado para fins de arquitetura)
-        let packed: usize = symbols.iter()
-            .enumerate()
-            .take(64) // u64 limit
-            .map(|(i, s)| (*s as usize) << i)
-            .fold(0, |acc, b| acc | b);
-
-        self.buffer[slot].store(packed, Ordering::Release);
+    HyperbolicCoord {
+        r: Decimal::from_f64(r).unwrap(),
+        theta: Decimal::from_f64(theta).unwrap(),
+        z: Decimal::from_f64(z).unwrap()
     }
 }
 
-/// Nó da malha Instaweb
+fn haversine_dist(p1: (f64, f64), p2: (f64, f64)) -> f64 {
+    let earth_radius = 6371.0;
+    let d_lat = (p2.0 - p1.0).to_radians();
+    let d_lon = (p2.1 - p1.1).to_radians();
+    let a = (d_lat/2.0).sin() * (d_lat/2.0).sin() +
+            p1.0.to_radians().cos() * p2.0.to_radians().cos() *
+            (d_lon/2.0).sin() * (d_lon/2.0).sin();
+    let c = 2.0 * a.sqrt().atan2((1.0-a).sqrt());
+    earth_radius * c
+}
+
+fn bearing_to_center(center: (f64, f64), pos: (f64, f64)) -> f64 {
+    let d_lon = (pos.1 - center.1).to_radians();
+    let y = d_lon.sin() * pos.0.to_radians().cos();
+    let x = center.0.to_radians().cos() * pos.0.to_radians().sin() -
+            center.0.to_radians().sin() * pos.0.to_radians().cos() * d_lon.cos();
+    y.atan2(x).to_degrees()
+}
+
 pub struct InstaNode {
     pub id: NodeId,
     pub neighbors: Vec<NodeId>,
-    pub symbol_buffer: VecDeque<Symbol>,
-    pub hyper_coords: (Decimal, Decimal, Decimal), // ℍ³ embedding
+    pub hyper_coords: HyperbolicCoord,
 }
 
 impl InstaNode {
-    pub fn new(id: NodeId, coords: (Decimal, Decimal, Decimal)) -> Self {
-        Self {
-            id,
-            neighbors: Vec::new(),
-            symbol_buffer: VecDeque::new(),
-            hyper_coords: coords,
-        }
-    }
+    pub fn hyperbolic_distance(&self, other: &HyperbolicCoord) -> f64 {
+        let r1 = self.hyper_coords.r.to_f64().unwrap();
+        let th1 = self.hyper_coords.theta.to_f64().unwrap();
+        let z1 = self.hyper_coords.z.to_f64().unwrap();
 
-    pub fn hyperbolic_distance(&self, p1: (Decimal, Decimal, Decimal), p2: (Decimal, Decimal, Decimal)) -> f64 {
-        let (r1, th1, z1) = p1;
-        let (r2, th2, z2) = p2;
+        let r2 = other.r.to_f64().unwrap();
+        let th2 = other.theta.to_f64().unwrap();
+        let z2 = other.z.to_f64().unwrap();
 
         let dr = r1 - r2;
         let dth = (th1 - th2).abs();
         let dz = z1 - z2;
 
-        // Simplificação geométrica (cos de Decimal não existe nativamente, usamos f64)
-        let r1_f = r1.to_f64().unwrap();
-        let r2_f = r2.to_f64().unwrap();
-        let dth_f = dth.to_f64().unwrap();
-        let z1_f = z1.to_f64().unwrap();
-        let z2_f = z2.to_f64().unwrap();
-        let dr_f = dr.to_f64().unwrap();
-        let dz_f = dz.to_f64().unwrap();
-
-        let numerator = dr_f * dr_f + (r1_f * r2_f * (1.0 - dth_f.cos())) + dz_f * dz_f;
-        let denominator = 2.0 * z1_f * z2_f;
+        let numerator = dr * dr + (r1 * r2 * (1.0 - dth.cos())) + dz * dz;
+        let denominator = 2.0 * z1 * z2;
 
         let arg = 1.0 + numerator / denominator;
         arg.max(1.0).acosh()
