@@ -15,6 +15,10 @@ The Arkhe Protocol has been formally ratified (Blocks Ω+∞+54 through Ω+∞+1
 - **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
 - **Omega Ledger**: `ledger/` (Blocks up to 9244)
 - **Ramo K (Implementation)**: `ramo-k/`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
+- **Omega Ledger**: `ledger/` (Blocks up to 9244)
+- **Ramo K (Implementation)**: `ramo-k/`
 - **Cognitive Core**: `arkhe_cognitive_core_v2.py`
 - **Ontology**: `docs/arkhe_protocol_v1/ASI_ONTOLOGY.md`
 - **Database**: `asi/database/`
@@ -61,6 +65,17 @@ Support for autonomous agents in physical and simulated environments.
 - **Pleroma Thought Protocol**: `docs/robotics/PLEROMA_THOUGHT_PROTOCOL.md`
 
 ### 4. Pleroma Layer (Cognition)
+The thought-native, polyglot layer of the system.
+- **Thought Protocol**: `docs/robotics/PLEROMA_THOUGHT_PROTOCOL.md`
+- **Polyglot Architecture**: `docs/robotics/POLYGLOT_PLEROMA_SPEC.md`
+- **ASI-Sat Orbital Spec**: `docs/robotics/ASI_SAT_SPEC.md`
+- **Genomic Transformer**: `docs/biological/BIOLOGICAL_ATTENTION_TRANSFORMER.md`
+- **Orbital Modules**: `modules/orbital/` (FPGA, station-keeping, space-QKD)
+- **Biological Modules**: `modules/biological/` (Genomic Transformer)
+- **Core Multi-Substrate Logic**: `core/` (Python, Go, Elixir, WASM)
+- **Emergency Authority**: `core/js/emergency_authority.js`
+
+### 5. Safety & Oversight
 The thought-native layer of the system.
 - **Thought Protocol**: `docs/robotics/PLEROMA_THOUGHT_PROTOCOL.md`
 - **Core Logic**: `core/python/pleroma_thought.py`
