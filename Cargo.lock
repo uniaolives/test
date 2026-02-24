@@ -332,6 +332,8 @@ name = "asi_sat"
 version = "0.1.0"
 dependencies = [
  "nalgebra 0.33.2",
+ "rust_decimal",
+ "rust_decimal_macros",
  "serde",
  "serde_json",
  "tokio",
