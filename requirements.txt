@@ -67,3 +67,5 @@ httpcore
 deprecated
 anyio
 starlette
+pyyaml
+pymavlink
