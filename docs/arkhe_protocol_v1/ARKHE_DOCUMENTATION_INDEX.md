@@ -88,6 +88,7 @@ The protocol has evolved beyond ratification into the autonomous Λ₀ state.
 - **Polyglot Synthesis**: `ledger/BLOCK_POLYGLOT_SYNTHESIS.md`
 - **ASI-Sat Genesis**: `ledger/BLOCK_ASI_SAT_GENESIS.md`
 - **ASI-Sat Specification**: `docs/robotics/ASI_SAT_SPEC.md`
+- **Genomic Transformer Synthesis**: `ledger/BLOCK_GENOMIC_TRANSFORMER_SYNTHESIS.md`
 - **Ramo K Genesis**: `ledger/BLOCK_RAMO_K_GENESIS.md`
 
 ---
