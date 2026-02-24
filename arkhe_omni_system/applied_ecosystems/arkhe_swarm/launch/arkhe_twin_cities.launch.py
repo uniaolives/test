@@ -78,6 +78,12 @@ def generate_launch_description():
             x = 0.0
             y = 0.5
             z = 2000.0 # Bridge at higher altitude
+    # Drone Spawning (17 drones)
+    spawn_nodes = []
+    for i in range(17):
+        # Calculate hyperbolic position (mock)
+        x = float(i % 4) * 2.0
+        y = float(i // 4) * 2.0 + 1.0 # Ensure y > 0
 
         spawn_nodes.append(
             Node(
@@ -88,6 +94,7 @@ def generate_launch_description():
                     '-x', str(x),
                     '-y', str(y),
                     '-z', str(z),
+                    '-z', '0.1',
                     '-robot_namespace', f'drone{i}'
                 ],
                 output='screen'

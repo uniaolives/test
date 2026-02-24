@@ -334,13 +334,6 @@ def kl_divergence(p, q):
     q = np.where(q == 0, 1e-12, q)
     return np.sum(p * np.log(p / q))
 
-
-        # 5. Constraints
-        for c in self.constraints:
-            if not c["check"](self):
-                if c["mode"] == ConstraintMode.INVIOLABLE_AXIOM:
-                    raise RuntimeError(f"Axiom Breached in {self.name}")
-
     def ouroboros_feedback(self):
         """Ouroboros: System's state affects its own parameters."""
         avg_curiosity = np.mean([n.calculate_epistemic_value() for n in self.nodes.values()]) if self.nodes else 0

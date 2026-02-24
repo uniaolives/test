@@ -25,6 +25,9 @@ class GHZConsensus(Node):
         self.tau = self.get_parameter('tau').get_parameter_value().double_value
         self.v_max = self.get_parameter('v_max').get_parameter_value().double_value
 
+        self.n_drones = self.get_parameter('n_drones').get_parameter_value().integer_value
+        self.tau = self.get_parameter('tau').get_parameter_value().double_value
+
         self.positions = {}
         self.states = {}  # simulated quantum states (0 or 1)
 
@@ -58,6 +61,8 @@ class GHZConsensus(Node):
         self.positions[idx] = np.array([msg.pose.position.x,
                                         msg.pose.position.y,
                                         msg.pose.position.z])
+        self.positions[idx] = np.array([msg.pose.position.x,
+                                        msg.pose.position.y])
 
     def state_callback(self, msg, idx):
         self.states[idx] = msg.data[0]  # 0 or 1
@@ -72,6 +77,14 @@ class GHZConsensus(Node):
             for j in range(self.n_drones):
                 if i != j:
                     dist_matrix[i,j] = hyperbolic_distance_uhp(self.positions[i], self.positions[j])
+                    # Half-plane coordinates (ensure y > 0)
+                    y_i = max(0.1, self.positions[i][1])
+                    y_j = max(0.1, self.positions[j][1])
+
+                    # Hyperbolic distance: dH = arcosh(1 + ((x_i-x_j)² + (y_i-y_j)²)/(2*y_i*y_j))
+                    val = 1 + ((self.positions[i][0] - self.positions[j][0])**2 +
+                                (y_i - y_j)**2) / (2 * y_i * y_j)
+                    dist_matrix[i,j] = np.arccosh(max(1.0, val))
 
         # Probabilistic Handover
         handover_prob = np.exp(-dist_matrix / self.tau)
@@ -103,6 +116,7 @@ class GHZConsensus(Node):
                 'C_local': float(C_local),
                 'emergence': bool(emergence),
                 'stable': bool(stable)
+                'emergence': bool(emergence)
             })
             self.coherence_pub.publish(msg)
 
