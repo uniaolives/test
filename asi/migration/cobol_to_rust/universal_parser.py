@@ -305,6 +305,7 @@ class SpaghettiRustTransmuter:
             "// Gerado por ASI-Ω Universal COBOL Parser v2.0",
             "use rust_decimal::Decimal;",
             "use rust_decimal_macros::dec;",
+            "use rust_decimal::prelude::ToPrimitive;",
             "use std::collections::HashMap;",
             "use thiserror::Error;",
             "use tokio::sync::RwLock;",
@@ -500,8 +501,13 @@ class SpaghettiRustTransmuter:
             return f"state = ParagraphState::{target}; continue;"
         elif stmt.verb == CobolVerb.GO_TO_DEPENDING:
             arms = [f"{i+1} => ParagraphState::{t.replace('-', '_').upper()}" for i, t in enumerate(stmt.target_paragraphs)]
-            cond = self._transmute_condition(stmt.condition)
-            return f"state = match ({cond}) as i64 {{ {' , '.join(arms)}, _ => state }}; continue;"
+            cond_code = self._transmute_condition(stmt.condition)
+            # Handle Decimal vs primitive integer
+            if "get_decimal" in cond_code:
+                idx_val = f"({cond_code}).to_i64().unwrap_or(0)"
+            else:
+                idx_val = f"({cond_code}) as i64"
+            return f"state = match {idx_val} {{ {' , '.join(arms)}, _ => state }}; continue;"
         elif stmt.verb == CobolVerb.ALTER:
             return f'ctx.set_alter_target("{stmt.operands[0]}", "{stmt.operands[1]}").await;'
         elif stmt.verb == CobolVerb.STOP_RUN:
@@ -541,11 +547,21 @@ class SpaghettiRustTransmuter:
 
     def _transmute_arithmetic(self, expr: str) -> str:
         if not expr: return "dec!(0)"
+        if ' ** ' in expr:
+            parts = expr.split(' ** ')
+            base = self._transmute_arithmetic(parts[0])
+            exp_raw = parts[1].strip()
+            if self._is_var(exp_raw):
+                exp = f"ctx.get_decimal(\"{exp_raw}\").await?.to_i64().unwrap()"
+            else:
+                exp = exp_raw
+            return f"{base}.powi({exp})"
+
         tokens = expr.split()
         result = []
         for token in tokens:
             clean = token.strip('().')
-            if '-' in clean and not clean.replace('-', '').isdigit():
+            if self._is_var(clean):
                 result.append(f'ctx.get_decimal("{clean}").await?')
             elif clean.replace('.', '', 1).isdigit():
                 result.append(f'dec!({clean})')

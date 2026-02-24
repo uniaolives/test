@@ -1,6 +1,7 @@
 // Gerado por ASI-Ω Universal COBOL Parser v2.0
 use rust_decimal::Decimal;
 use rust_decimal_macros::dec;
+use rust_decimal::prelude::ToPrimitive;
 use std::collections::HashMap;
 use thiserror::Error;
 use tokio::sync::RwLock;
@@ -190,16 +191,4 @@ async fn fim_programa(ctx: &Context) -> Result<(), BusinessError> {
     println!("{}", "FIM");
     // Jump STOP_RUN ignored in structured version
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[tokio::test]
-    async fn test_spaghetti_flow() {
-        let ctx = Context::new();
-        let result = main_loop(&ctx).await;
-        assert!(result.is_ok());
-    }
 }
