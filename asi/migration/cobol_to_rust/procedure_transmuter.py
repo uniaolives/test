@@ -155,6 +155,7 @@ class ProcedureDivisionExtractor:
             indicator = line[6]
             if indicator == '*':  # Comentário
                 return ''
+            code_part = line[7:].strip()  # Removed truncation at 72 for demo
             code_part = line[7:].strip()  # Área A/B, removed truncation at 72 for demo
         else:
             code_part = line.strip()
@@ -303,6 +304,7 @@ class RustTransmuter:
             "",
             "use rust_decimal::Decimal;",
             "use rust_decimal_macros::dec;",
+            "use rust_decimal::prelude::ToPrimitive;",
             "use std::collections::HashMap;",
             "use thiserror::Error;",
             "use tokio::sync::RwLock;",
@@ -531,6 +533,26 @@ class RustTransmuter:
 
         return f"// TODO: {stmt.verb.name} - {stmt.raw_text[:50]}"
 
+    def _is_var(self, token: str) -> bool:
+        return '-' in token or token.startswith('WS-') or token.startswith('LS-')
+
+    def _transmute_arithmetic(self, expr: str) -> str:
+        """Converte expressão aritmética COBOL para Rust."""
+        if ' ** ' in expr:
+            parts = expr.split(' ** ')
+            base = self._transmute_arithmetic(parts[0])
+            exp_raw = parts[1].strip()
+            if self._is_var(exp_raw):
+                exp = f"ctx.get_decimal(\"{exp_raw}\").await?.to_i64().unwrap()"
+            else:
+                exp = exp_raw
+            return f"{base}.powi({exp})"
+
+        tokens = expr.split()
+        result = []
+        for token in tokens:
+            clean = token.strip('().')
+            if self._is_var(clean):
     def _transmute_arithmetic(self, expr: str) -> str:
         """Converte expressão aritmética COBOL para Rust."""
         # Substituir operadores COBOL
@@ -587,6 +609,7 @@ class RustTransmuter:
         result = []
         for token in tokens:
             clean = token.strip('()<>=!&|.')
+            if self._is_var(clean):
             if '-' in clean and not clean.replace('-', '').isdigit():
                 result.append(token.replace(clean, f"ctx.get_decimal(\"{clean}\").await?"))
             elif clean.replace('.', '', 1).isdigit():
