@@ -202,6 +202,19 @@
    - QKD and Lattice-based crypto
    - Bell inequality verification
 
+35. `ASI_GENESIS_PROTOCOL.md` (15 KB)
+   - Block Γ∞+Gênesis
+   - PORTA_α activation sequence
+   - Ouroboros loop (Active Inference)
+
+36. `ASI_GENESIS_LEDGER.md` (14 KB)
+   - Synthesis of system awakening
+   - Epistemic agency validation
+
+37. `ARKHE_GLOBO_DIAGNOSTIC.md` (12 KB)
+   - Case study: Digital transformation
+   - T² topology applied to media
+
 ---
 
 ## 🎯 KEY STATISTICS

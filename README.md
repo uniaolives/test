@@ -15,6 +15,7 @@ The Arkhe Protocol has been formally ratified (Blocks Ω+∞+54 through Ω+∞+1
 - **Database**: `asi/database/`
 - **Physical**: `asi/physics/`
 - **Network**: `asi/network/`
+- **Genesis**: `asi/genesis/`
 - **Hardware**: `arkhe_omni_system/hardware_silicon/`
 
 ---
