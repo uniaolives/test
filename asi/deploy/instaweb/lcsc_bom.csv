@@ -1,0 +1,6 @@
+Designator,Quantity,LCSC Part #,Description,Manufacturer
+U1-U10,10,C2845672,TIA 8GHz (Optical Receiver),Texas Instruments
+U11,1,C965412,Clock Generator (SyncE),Silicon Labs
+D1-D10,10,C123543,PIN Photodiode (Silicon),Vishay
+LED1-LED10,10,C334512,IR LED 850nm (Transmitter),OSRAM
+J1-J2,2,N/A,Samtec SOM Connector (Kria K26),Samtec

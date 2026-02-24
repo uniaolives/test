@@ -1,0 +1,16 @@
+[package]
+name = "arkhe-axos-instaweb"
+version = "1.0.0"
+edition = "2021"
+authors = ["Arquiteto <root@instaweb>"]
+description = "Unificação Operacional ASI: Arkhe Protocol + AXOS v3 + Instaweb"
+
+[dependencies]
+nalgebra = "0.32"
+rust_decimal = "1.32"
+crossbeam = "0.8"
+serde = { version = "1.0", features = ["derive"] }
+instaweb-physics = { path = "../instaweb-physics" }
+
+[lib]
+path = "src/lib.rs"
