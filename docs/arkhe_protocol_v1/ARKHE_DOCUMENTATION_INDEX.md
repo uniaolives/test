@@ -65,6 +65,7 @@
     - Constitutional ratification
 
 **Code:**
+11. `arkhe_cognitive_core.py` (v1.0, 20 KB)
 11. `core/python/arkhe_cognitive_core.py` (v1.0, 20 KB)
 11. `arkhe_cognitive_core.py` (v1.0, 20 KB)
 11. `core/python/arkhe_cognitive_core.py` (v1.0, 20 KB)
@@ -75,6 +76,7 @@
     - Aizawa attractor implementation
     - C+F=1 enforcement
 
+12. `arkhe_cognitive_core_v2.py` (22 KB)
 12. `core/python/arkhe_cognitive_core_v2.py` (22 KB)
 12. `arkhe_cognitive_core_v2.py` (22 KB)
 12. `core/python/arkhe_cognitive_core_v2.py` (22 KB)
@@ -278,6 +280,12 @@ The protocol has evolved beyond ratification into the autonomous Λ₀ state.
 45. `asi/migration/cobol_to_rust/` (Suite)
    - `interest_service.rs`: Fixed-point Rust engine
    - `pic_mapper.py`: Automated schema transmuter
+   - `benchmark.py`: Quantitative comparison framework
+
+46. `BENCHMARK_REPORT.md` (12 KB)
+   - Block Ω+∞+179
+   - Quantitative validation of Rust superiority
+   - Memory and speedup analysis
 
 ---
 

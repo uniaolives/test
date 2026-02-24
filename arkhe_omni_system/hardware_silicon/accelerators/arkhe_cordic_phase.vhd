@@ -70,6 +70,20 @@ begin
                     y_next := y + shift_right(x, count-1);
                     z_next := z - atan_table(count-1);
                 end if;
+                end if;
+                count <= 1;
+                valid <= '0';
+            elsif count <= ITERATIONS then
+                -- Iterative rotation
+                if y >= 0 then
+                    x_next := x + shift_right(y, count-1);
+                    y_next := y - shift_right(x, count-1);
+                    z_next := z + atan_table(count-1);
+                else
+                    x_next := x - shift_right(y, count-1);
+                    y_next := y + shift_right(x, count-1);
+                    z_next := z - atan_table(count-1);
+                end if;
                 x <= x_next;
                 y <= y_next;
                 z <= z_next;
