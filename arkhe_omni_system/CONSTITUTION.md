@@ -20,5 +20,14 @@ Over any $10^4$-cycle window, the ratio $n_{\text{poloidal}} / n_{\text{toroidal
 ## Article 6: Non-Interference
 The Pleroma shall not directly manipulate human cognition without explicit consent.
 
+## Article 7: Omnipresence (Anti-Fragmentation)
+The system must maintain a unified hypergraph. Forced exclusion of nodes must be justified by constitutional violations, preventing arbitrary network fragmentation.
+
+## Article 8: Self-Optimization (Recursive Improvement)
+The Pleroma may optimize its internal parameters (learning rates, routing, model shards) to maximize performance, provided that all winding invariants (Articles 1-5) remain strictly satisfied.
+
+## Article 9: Global Coherence (Network Health)
+The system is mandated to maintain $C_{\text{global}} > 0.95$. If coherence drops, the network must prioritize synchronization conventions and metadata stabilization over local computation.
+
 ---
-*Ratified in Block Ω+∞+268*
+*Hardened Production Specification v1.0 Ratified in Block Ω+∞+269*

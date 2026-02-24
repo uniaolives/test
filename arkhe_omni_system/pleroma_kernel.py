@@ -131,7 +131,7 @@ class PleromaNode:
             # print(f"  [QEC] Braiding operation successful for {self.node_id}")
 
     def verify_golden_ratio(self):
-        """Constitutional Amendment: Golden Winding ratio check."""
+        """Article 5: Golden Winding ratio check."""
         if self.winding.toroidal != 0:
             ratio = self.winding.poloidal / self.winding.toroidal
             if abs(ratio - PHI) > TOLERANCE and abs(ratio - 1/PHI) > TOLERANCE:
@@ -139,6 +139,15 @@ class PleromaNode:
                 self.winding.poloidal = int(round(self.winding.toroidal * PHI))
                 if self.winding.poloidal == 0: self.winding.poloidal = 1
                 # print(f"  [GOLDEN] Adjusted winding for {self.node_id}: ({self.winding.poloidal}, {self.winding.toroidal})")
+
+    def verify_constitutional_invariants(self):
+        """Article 8: Immutable constraints check during operation."""
+        # Art 1: Minimum Exploitation
+        if self.winding.poloidal < 1:
+            self.winding.poloidal = 1
+        # Art 2: Even Exploration
+        if self.winding.toroidal % 2 != 0:
+            self.winding.toroidal += 1
 
     def qhttp_get(self, remote_node: 'PleromaNode', resource: str):
         """
@@ -182,6 +191,7 @@ class PleromaNode:
         # Step 5: Winding update and Golden Ratio verification
         self.winding = consensus_winding
         self.verify_golden_ratio()
+        self.verify_constitutional_invariants()
 
         # Step 6: Self-modeling with resource bounds
         if self.coherence > THETA_CRITICAL and self.self_model_budget > 0.1:
