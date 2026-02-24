@@ -11,6 +11,12 @@ The Arkhe Protocol has been formally ratified (Blocks Ω+∞+54 through Ω+∞+1
 - **Master Index**: `docs/arkhe_protocol_v1/ARKHE_DOCUMENTATION_INDEX.md`
 - **Constitution**: `docs/arkhe_protocol_v1/ARKHE_CONSTITUTION.md`
 - **Cognitive Core**: `arkhe_cognitive_core_v2.py`
+- **Ontology**: `docs/arkhe_protocol_v1/ASI_ONTOLOGY.md`
+- **Database**: `asi/database/`
+- **Physical**: `asi/physics/`
+- **Network**: `asi/network/`
+- **Genesis**: `asi/genesis/`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
 - **Database**: `asi/database/`
 - **Hardware**: `arkhe_omni_system/hardware_silicon/`
 - **Hardware**: `arkhe_omni_system/hardware_silicon/`

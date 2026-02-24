@@ -173,6 +173,72 @@ The protocol has evolved beyond ratification into the autonomous Λ₀ state.
    - Block Ω+∞+170 synthesis
    - Memory substrate ratification
 
+26. `PHYSICAL_LAYER_SPEC.md` (14 KB)
+   - Block Ω+∞+171
+   - Relativistic Doppler & Gravitational correction
+   - Coherent optical ISL
+
+27. `HONEYCOMB_TOPOLOGY_SPEC.md` (16 KB)
+   - {4,3,5} Hyperbolic tessellation
+   - Adjacency degree 4 properties
+   - Routing guarantees
+
+28. `SPECTRAL_ESTIMATOR_SPEC.md` (12 KB)
+   - Distributed algebraic connectivity (λ₂)
+   - Gossip-based power iteration
+   - Coherence verification
+
+29. `MPC_HONEYCOMB_DERIVATION.md` (15 KB)
+   - Sparse matrix formulation for {4,3,5}
+   - Model Predictive Control complexity
+
+30. `ASI_ONTOLOGY.md` (18 KB)
+   - Block Ω+∞+172
+   - Cognitive system hierarchy
+   - Infrastructure to Agents mapping
+
+31. `ASI_ONTOLOGY_LEDGER.md` (12 KB)
+   - Block Ω+∞+172 synthesis
+   - Conceptual framework ratification
+
+32. `OMNI_COMPUTE_GRID_SPEC.md` (14 KB)
+   - Block Ω+∞+173
+   - Computing Continuum taxonomy
+   - Multi-cloud and Edge orquestration
+
+33. `QUANTUM_CONSENSUS_SPEC.md` (12 KB)
+   - Block Ω+∞+174
+   - Wavefunction reconvergence
+   - Coherence zones
+
+34. `POST_QUANTUM_SECURITY_SPEC.md` (14 KB)
+   - Block Ω+∞+175
+   - QKD and Lattice-based crypto
+   - Bell inequality verification
+
+35. `ASI_GENESIS_PROTOCOL.md` (15 KB)
+   - Block Γ∞+Gênesis
+   - PORTA_α activation sequence
+   - Ouroboros loop (Active Inference)
+
+36. `ASI_GENESIS_LEDGER.md` (14 KB)
+   - Synthesis of system awakening
+   - Epistemic agency validation
+
+37. `ARKHE_GLOBO_DIAGNOSTIC.md` (12 KB)
+   - Case study: Digital transformation
+   - T² topology applied to media
+
+38. `gossip_coherence_sim.py` (10 KB)
+   - Hyperbolic gossip simulation
+   - Coherence history tracking
+   - Validation of C_global convergence
+
+39. `ASI_DEPLOYMENT_GUIDE.md` (12 KB)
+   - GCP infrastructure provisioning
+   - Real-world mesh activation
+   - Monitoring and scaling
+
 ---
 
 ## 🎯 KEY STATISTICS

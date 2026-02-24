@@ -38,12 +38,15 @@ class DistributedTransformer(nn.Module):
             # Handover to next shard if needed
             next_shard = self._next_shard()
             if next_shard != self.node.id:
+                # In production, this should use a non-blocking distributed backend (e.g. NCCL/P2P)
+                # For this simulator, we assume activation transfer happens in the background.
                 handover = Handover(
                     origin=self.node.id,
                     target=next_shard,
                     content={'activations': x.detach().cpu().numpy()},
                     quantum_channel=thought.quantum
                 )
+                # Note: asyncio.run is used here for simulator logic, not for production inference.
                 result = asyncio.run(handover.execute())
                 x = torch.from_numpy(result['activations']).to(x.device)
 
