@@ -215,6 +215,11 @@
    - Case study: Digital transformation
    - T² topology applied to media
 
+38. `gossip_coherence_sim.py` (10 KB)
+   - Hyperbolic gossip simulation
+   - Coherence history tracking
+   - Validation of C_global convergence
+
 ---
 
 ## 🎯 KEY STATISTICS
