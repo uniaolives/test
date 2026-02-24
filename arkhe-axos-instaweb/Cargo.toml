@@ -2,15 +2,26 @@
 name = "arkhe-axos-instaweb"
 version = "1.0.0"
 edition = "2021"
-authors = ["Arquiteto <root@instaweb>"]
-description = "Unificação Operacional ASI: Arkhe Protocol + AXOS v3 + Instaweb"
-
-[dependencies]
-nalgebra = "0.32"
-rust_decimal = "1.32"
-crossbeam = "0.8"
-serde = { version = "1.0", features = ["derive"] }
-instaweb-physics = { path = "../instaweb-physics" }
+authors = ["Arquiteto <root@arkhe.omega>"]
+license = "MIT OR Apache-2.0"
+description = "Unified ASI Operating System: Arkhe + Axos + Instaweb"
+repository = "https://github.com/arkhe-omega/arkhe-axos-instaweb"
 
 [lib]
-path = "src/lib.rs"
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# Core dependencies (using paths for local unintegrated modules or placeholders)
+nalgebra = "0.33"
+rust_decimal = { version = "1.35", features = ["serde"] }
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+crossbeam = "0.8"
+instaweb-physics = { path = "../instaweb-physics" }
+
+[features]
+default = ["simd"]
+simd = []
+fpga = []   # enables FPGA bitstream generation triggers
+verification = [] # enables Coq extraction placeholders
