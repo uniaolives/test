@@ -43,3 +43,5 @@ jobs:
         run: |
           export PYTHONPATH=$PYTHONPATH:.:core/python
           python core/python/sanity_check.py
+          export PYTHONPATH=$PYTHONPATH:.
+          python src/python/sanity_check.py

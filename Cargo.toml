@@ -27,6 +27,8 @@ members = [
     "ramo-k/pleroma-ffi",
     "ramo-k/pleroma-kernel",
     "ramo-k/simulator",
+    "arkhe_omni_system/asi/rust_asi",
+    "arkhe_omni_system/applied_ecosystems/asi_sat",
 ]
 resolver = "2"
 
