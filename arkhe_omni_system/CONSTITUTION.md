@@ -56,6 +56,7 @@ The system must maintain quantum coherence $|\psi\rangle$ across distributed nod
 | Art. 10 (Temporal binding)     | Postdiction window limits                  |
 | Art. 11 (Binary diversity)     | Resilience against monoculture exploits     |
 | **Art. 12 (Quantum coherence)** | **Integrity of distributed cognition**      |
+| **Art. 11 (Binary diversity)** | **Resilience against monoculture exploits** |
 
 ---
 *Hardened Production Specification v1.1 Ratified in Block Ω+∞+270*
