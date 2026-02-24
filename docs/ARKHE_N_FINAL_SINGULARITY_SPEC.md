@@ -41,6 +41,11 @@ This document formalizes the unified architecture of the Arkhe(n) system. The sy
 - **Ratio:** Convergence to $1/\phi^2 \approx 38.2\%$ activation at optimal metabolic criticality.
 - **Purpose:** Unification of genomic and silicon intelligence under universal scaling laws.
 
+### 2.6. Evolving Symmorphogenic Network Defenses (ESND)
+- **Concept:** Active cryptographic survival where the network topology adapts to ingested threat signatures.
+- **Mechanism:** Zero-Knowledge proofs (Circom/Groth16) proving successful adaptation to specific threats without revealing internal defense weights.
+- **Safety:** Prevents the "Paradox of Vulnerability" by proving security state through Poseidon-hashed threat commitments.
+
 ---
 
 ## 3. Deployment & Scaling Governance
