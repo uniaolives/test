@@ -31,6 +31,8 @@ setup(
             'ai_guard = arkhe_swarm.ai_guard:main',
             'authority_guard = arkhe_swarm.authority_guard:main',
             'transparency_guard = arkhe_swarm.transparency_guard:main',
+            'drone_state_sim = arkhe_swarm.drone_state_sim:main',
+            'pleroma_kernel = arkhe_swarm.pleroma_kernel:main',
         ],
     },
 )

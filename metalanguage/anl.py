@@ -27,6 +27,21 @@ class Protocol:
 
 # --- 2. CORE ANL CLASSES ---
 
+class ConstraintType(Enum):
+    TIME = 'TIME'
+    COST = 'COST'
+    RELIABILITY = 'RELIABILITY'
+    COHERENCE = 'COHERENCE'
+
+class Ontology:
+    ARKHE_CORE = "arkhe:core:v1"
+    ARKHE_SATELLITE = "arkhe:satellite:v1"
+    ARKHE_BIO = "arkhe:bio:v1"
+
+class Node:
+    """Fundamental entity in the Arkhe(n) Hypergraph."""
+    def __init__(self, node_type: str, **attributes):
+        self.id = str(uuid.uuid4())[:8]
 class Node:
     """Fundamental entity in the Arkhe(n) Hypergraph."""
     def __init__(self, node_type: str, **attributes):
@@ -132,6 +147,28 @@ class Node:
     def __repr__(self):
         return f"<{self.node_type} id={self.id}>"
 
+class Agent(Node):
+    def __init__(self, id_val: str, node_type: str, **attributes):
+        super().__init__(node_type, **attributes)
+        self.id = id_val
+        self.handlers = {}
+
+    def register_capability(self, capability: str, handler: Callable):
+        if not hasattr(self, 'capabilities'):
+            self.capabilities = []
+        if capability not in self.capabilities:
+            self.capabilities.append(capability)
+        self.handlers[capability] = handler
+
+    def can_handle(self, capability: str) -> bool:
+        return capability in self.capabilities
+
+    def handle(self, handover_data: Dict) -> Any:
+        goal = handover_data.get('intent', {}).get('goal')
+        if goal in self.handlers:
+            return self.handlers[goal](handover_data)
+        return None
+
 class Handover:
     """Structured exchange of intention, context, and value."""
     def __init__(self, name: str, origin_types: Union[str, List[str]], target_types: Optional[Union[str, List[str]]] = None, protocol: str = Protocol.CONSERVATIVE):
@@ -196,22 +233,42 @@ class ContextSnapshot:
         self.ambient_conditions = ambient_conditions or {}
 
 class ArkheLink(Handover):
-    def __init__(self, source: Node, target: Node, intent: IntentObject, context: ContextSnapshot, ontology: str):
-        super().__init__("ArkheLink", source.node_type, target.node_type, Protocol.TRANSMUTATIVE)
-        self.source_node = source
-        self.target_node = target
-        self.identity_proof = "zk-SNARK-placeholder"
+    def __init__(self, source_id: str, target_id: str, intent: Union[Dict, IntentObject], ontology: str, context: Optional[ContextSnapshot] = None):
+        super().__init__("ArkheLink", "any", "any", Protocol.TRANSMUTATIVE)
+        self.source_id = source_id
+        self.target_id = target_id
         self.intent = intent
-        self.context = context
         self.ontology = ontology
-        self.signature = "ed25519-placeholder"
-        self.preconditions = []
-        self.postconditions = []
+        self.context = context
+        self.signature = None
+        self.identity_proof = "zk-SNARK-placeholder"
+
+    def sign(self):
+        payload = f"{self.source_id}:{self.target_id}:{json.dumps(self.intent, default=lambda o: o.__dict__)}"
+        self.signature = hashlib.sha256(payload.encode()).hexdigest()
+
+    def verify(self) -> bool:
+        return self.signature is not None
+
+    def to_dict(self) -> Dict:
+        return {
+            "source": self.source_id,
+            "target": self.target_id,
+            "intent": self.intent if isinstance(self.intent, dict) else self.intent.__dict__,
+            "ontology": self.ontology,
+            "signature": self.signature
+        }
 
     def verify_identity(self) -> bool:
         return self.identity_proof.startswith("zk-SNARK")
 
     def verify_signature(self) -> bool:
+        return self.signature is not None
+
+    def execute(self, source: Node, target: Node) -> bool:
+        if not self.verify_identity() or not self.verify_signature():
+            return False
+        return True
         return self.signature.startswith("ed25519")
 
     def execute(self) -> bool:
@@ -261,6 +318,42 @@ class Hypergraph:
 
     def discover_agents(self, goal: str) -> List[Node]:
         return [n for n in self.nodes if goal in n.capabilities]
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
 
     def step(self):
         for node in self.nodes:

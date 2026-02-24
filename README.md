@@ -15,6 +15,26 @@ The Arkhe Protocol has been formally ratified (Blocks Ω+∞+54 through Ω+∞+1
 - **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
 - **Omega Ledger**: `ledger/` (Blocks up to 9244)
 - **Ramo K (Implementation)**: `ramo-k/`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
+- **Omega Ledger**: `ledger/` (Blocks up to 9244)
+- **Ramo K (Implementation)**: `ramo-k/`
+- **Cognitive Core**: `arkhe_cognitive_core_v2.py`
+- **Ontology**: `docs/arkhe_protocol_v1/ASI_ONTOLOGY.md`
+- **Database**: `asi/database/`
+- **Physical**: `asi/physics/`
+- **Network**: `asi/network/`
+- **Genesis**: `asi/genesis/`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Database**: `asi/database/`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Cognitive Core**: `core/python/arkhe_cognitive_core_v2.py`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
+- **Cognitive Core**: `src/python/arkhe_cognitive_core_v2.py`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Omega Ledger**: `ledger/` (Blocks up to 9243)
 
 ---
 
@@ -34,6 +54,7 @@ The heartbeat of the system, supporting:
 - **Thermodynamic Safety**: Real-time KL-divergence monitoring and entropy vetoes.
 - **Integrated Information (Φ)**: Measure of system-wide cognitive emergence.
 - **Kernel Implementation**: `core/python/arkhe_omni_kernel.py`
+- **Kernel Implementation**: `src/python/arkhe_omni_kernel.py`
 
 ### 3. Robotics & Swarm Intelligence
 Support for autonomous agents in physical and simulated environments.
@@ -55,6 +76,14 @@ The thought-native, polyglot layer of the system.
 - **Emergency Authority**: `core/js/emergency_authority.js`
 
 ### 5. Safety & Oversight
+The thought-native layer of the system.
+- **Thought Protocol**: `docs/robotics/PLEROMA_THOUGHT_PROTOCOL.md`
+- **Core Logic**: `core/python/pleroma_thought.py`
+- **Emergency Authority**: `core/js/emergency_authority.js`
+
+### 5. Safety & Oversight
+
+### 4. Safety & Oversight
 Robust mechanisms to prevent and detect multi-agent collusion and alignment failure.
 - **Reformed Detector Hierarchy**: 4 levels of anomaly detection in `metalanguage/detectors_v2.py`.
 - **Steganography Monitoring**: Tracking "thermodynamic bleeding" in covert channels.
