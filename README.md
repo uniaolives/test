@@ -48,6 +48,7 @@ The thought-native, polyglot layer of the system.
 - **Thought Protocol**: `docs/robotics/PLEROMA_THOUGHT_PROTOCOL.md`
 - **Polyglot Architecture**: `docs/robotics/POLYGLOT_PLEROMA_SPEC.md`
 - **ASI-Sat Orbital Spec**: `docs/robotics/ASI_SAT_SPEC.md`
+- **Orbital Modules**: `modules/orbital/` (FPGA, station-keeping, space-QKD)
 - **Core Multi-Substrate Logic**: `core/` (Python, Go, Elixir, WASM)
 - **Emergency Authority**: `core/js/emergency_authority.js`
 
