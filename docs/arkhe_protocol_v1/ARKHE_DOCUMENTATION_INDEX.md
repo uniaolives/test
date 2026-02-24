@@ -220,6 +220,11 @@
    - Coherence history tracking
    - Validation of C_global convergence
 
+39. `ASI_DEPLOYMENT_GUIDE.md` (12 KB)
+   - GCP infrastructure provisioning
+   - Real-world mesh activation
+   - Monitoring and scaling
+
 ---
 
 ## 🎯 KEY STATISTICS
