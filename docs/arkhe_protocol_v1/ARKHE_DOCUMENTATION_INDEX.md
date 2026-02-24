@@ -178,6 +178,15 @@
    - Sparse matrix formulation for {4,3,5}
    - Model Predictive Control complexity
 
+30. `ASI_ONTOLOGY.md` (18 KB)
+   - Block Ω+∞+172
+   - Cognitive system hierarchy
+   - Infrastructure to Agents mapping
+
+31. `ASI_ONTOLOGY_LEDGER.md` (12 KB)
+   - Block Ω+∞+172 synthesis
+   - Conceptual framework ratification
+
 ---
 
 ## 🎯 KEY STATISTICS
