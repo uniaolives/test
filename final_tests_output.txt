@@ -16,4 +16,3 @@ tests/asi/test_asi_core.py:7
     @pytest.mark.asi
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-========================= 7 passed, 1 warning in 2.51s =========================
