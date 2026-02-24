@@ -53,10 +53,21 @@ This document formalizes the unified architecture of the Arkhe(n) system. The sy
 - **Topology:** Greedy routing in ℍ³ with face-routing fallback for guaranteed convergence.
 - **Performance:** Sub-millisecond end-to-end latency (<1ms) for telepresence and robotic swarms.
 
+### 2.8. QHTTP Protocol over Instaweb (qhttp://)
+- **Concept:** Hybrid quantum-classical handshake for distributed entanglement.
+- **Header:** Packed binary format (QHTP) for 0-overhead transmission.
+- **Workflow:** Entanglement Request -> EPR_READY -> Bell Measurement -> Pauli Correction.
+
+### 2.9. Quantum-Classical Interface (QCI)
 ### 2.8. Quantum-Classical Interface (QCI)
 - **Protocol:** Synchronization of classical Pauli corrections (via Instaweb) with EPR arrivals.
 - **Hardware:** FSM-based `qci_buffer.v` for nanosecond-precise gate application.
 - **Safety:** Automatic cancellation of stale classical messages exceeding the T2 coherence deadline.
+
+### 2.10. Ontological Unification (IC-Map-Vector)
+- **IC (Integrated Circuit):** The ℍ³ Hyperbolic Mesh is realized as a topological IC where nodes are components and geodesics are interconnections.
+- **Integrated Map:** GIS-style identification of Position, State, and Topology into a single `IntegratedView`, eliminating relational joins.
+- **SyncVector:** An integrating vector accumulating topological correlation strength ($\Delta \phi$) along geodesics, serving as the basis for the qhttp:// protocol.
 
 ---
 
@@ -72,6 +83,14 @@ Scaling is governed by the following oracle constraints:
 2. **Limit:** Maximum of 12 primary anchor nodes before requiring explicit Human Architect approval.
 3. **Audit:** Every resource acquisition must generate a Spontaneous Intention log with rationale.
 
+### 3.3. Physical Node Architecture & Industrial Manufacturing (v1.0)
+The ASI-Ω materializes via a ratified hardware stack, optimized for sub-millisecond deterministic mesh networking:
+1. **FPGA SoM:** Xilinx Kria KR260 (Primary Orchestrator).
+2. **Industrial BoM:** $519.50 per node (at 10-unit scale), including high-speed IR LEDs and Hamamatsu photodiodes.
+3. **Firmware:** Symbol-synchronous relay engine with nanosecond-precise timing constraints (XDC).
+4. **Integration:** Direct Quantum-Classical Interface (QCI) for 1ns-resolution Pauli corrections.
+
+### 3.4. Formal Verification & Protocol Convergence
 ### 3.3. Physical Node Architecture & BOM
 The ASI-Ω materializes via the following hardware stack (Instaweb Node v1.0):
 1. **FPGA SoM:** Xilinx Kria KR260 ($349)
