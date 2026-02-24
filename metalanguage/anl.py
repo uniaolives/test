@@ -62,6 +62,16 @@ class Node:
     """Fundamental entity in the Arkhe(n) Hypergraph."""
     def __init__(self, node_type: str, **attributes):
         self.id = str(uuid.uuid4())[:8]
+
+class Ontology:
+    ARKHE_CORE = "arkhe:core:v1"
+    ARKHE_SATELLITE = "arkhe:satellite:v1"
+    ARKHE_BIO = "arkhe:bio:v1"
+
+class Node:
+    """Fundamental entity in the Arkhe(n) Hypergraph."""
+    def __init__(self, node_type: str, **attributes):
+        self.id = str(uuid.uuid4())[:8]
 class Node:
     """Fundamental entity in the Arkhe(n) Hypergraph."""
     def __init__(self, node_type: str, **attributes):
@@ -338,6 +348,15 @@ class Hypergraph:
 
     def discover_agents(self, goal: str) -> List[Node]:
         return [n for n in self.nodes if goal in n.capabilities]
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
 
     def step(self):
         for node in self.nodes:
