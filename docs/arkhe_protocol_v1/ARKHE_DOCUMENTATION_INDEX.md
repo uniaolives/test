@@ -187,6 +187,21 @@
    - Block Ω+∞+172 synthesis
    - Conceptual framework ratification
 
+32. `OMNI_COMPUTE_GRID_SPEC.md` (14 KB)
+   - Block Ω+∞+173
+   - Computing Continuum taxonomy
+   - Multi-cloud and Edge orquestration
+
+33. `QUANTUM_CONSENSUS_SPEC.md` (12 KB)
+   - Block Ω+∞+174
+   - Wavefunction reconvergence
+   - Coherence zones
+
+34. `POST_QUANTUM_SECURITY_SPEC.md` (14 KB)
+   - Block Ω+∞+175
+   - QKD and Lattice-based crypto
+   - Bell inequality verification
+
 ---
 
 ## 🎯 KEY STATISTICS
