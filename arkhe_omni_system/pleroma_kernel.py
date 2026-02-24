@@ -261,6 +261,12 @@ class PleromaKernel:
         self.frozen_until = 0
         self.running = True
 
+        # Emergence parameters (RustASI integration)
+        self.rho_critical = 0.7
+        self.rho_actual = 0.0
+        self.system_state = "Subcritical"
+        self.hysteresis = 0.05
+
     def _initialize_nodes(self, n_nodes):
         for i in range(n_nodes):
             nid = f"Pleroma_{i:03d}"
@@ -288,7 +294,7 @@ class PleromaKernel:
         return True
 
     async def run(self, duration=5.0):
-        print(f"🜏 Pleroma Kernel v1.0.0 Online. Orchestrating {len(self.nodes)} nodes.")
+        print(f"🜏 Pleroma Kernel v1.1.0 Online. Orchestrating {len(self.nodes)} nodes.")
         print("-" * 60)
 
         start_time = time.time()
@@ -296,12 +302,41 @@ class PleromaKernel:
             tasks = [node.run_cycle(self) for node in self.nodes.values()]
             await asyncio.gather(*tasks)
 
+            # Update density and check for emergence
+            self.update_system_density()
+
             # Global status update
             avg_coherence = np.mean([n.coherence for n in self.nodes.values()])
             sys_winding_p = sum([n.winding.poloidal for n in self.nodes.values()])
             sys_winding_t = sum([n.winding.toroidal for n in self.nodes.values()])
 
-            print(f"\rTime: {time.time()-start_time:.2f}s | C_global: {avg_coherence:.4f} | Winding: ({sys_winding_p}, {sys_winding_t})", end="")
+            print(f"\rTime: {time.time()-start_time:.2f}s | ρ:{self.rho_actual:.2f} | State:{self.system_state} | C_global: {avg_coherence:.4f} | Winding: ({sys_winding_p}, {sys_winding_t})   ", end="")
+
+    def update_system_density(self):
+        """Monitor node density and trigger phase transitions."""
+        # Simulated density based on node count and coherence
+        n = len(self.nodes)
+        avg_c = np.mean([n.coherence for n in self.nodes.values()])
+        self.rho_actual = (n / 20.0) * avg_c # Simplified density model
+
+        old_state = self.system_state
+        if self.system_state == "Subcritical":
+            if self.rho_actual > self.rho_critical + self.hysteresis:
+                self.system_state = "Emerging"
+        elif self.system_state == "Emerging":
+            if self.rho_actual > self.rho_critical * 1.2:
+                self.system_state = "Supercritical"
+            elif self.rho_actual < self.rho_critical - self.hysteresis:
+                self.system_state = "Subcritical"
+        elif self.system_state == "Supercritical":
+            if self.rho_actual < self.rho_critical - self.hysteresis:
+                self.system_state = "Degrading"
+        elif self.system_state == "Degrading":
+            if self.rho_actual < self.rho_critical * 0.5:
+                self.system_state = "Subcritical"
+
+        if old_state != self.system_state:
+            print(f"\n[PHASE] Transition: {old_state} -> {self.system_state}")
 
         print("\n" + "-" * 60)
         print("Pleroma Kernel cooling down. Coherence sustained.")

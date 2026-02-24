@@ -32,6 +32,9 @@ The system is mandated to maintain $C_{\text{global}} > 0.95$. If coherence drop
 ## Article 10: Temporal Binding (Postdiction)
 The system must enforce a temporal integration window of 225ms for causal inference. Observations within this window are subject to postdictive revision to ensure global causal consistency, while events outside this window are committed as immutable history.
 
+## Article 11: Binary Diversity (Resilience)
+To prevent monoculture vulnerabilities, the network must maintain diversity in its executable binaries. No single binary implementation (hash) should exceed 50% of the active network nodes.
+
 ---
 
 ### Causal Inference Mapping
@@ -47,7 +50,8 @@ The system must enforce a temporal integration window of 225ms for causal infere
 | Art. 7 (Omnipresence)          | Complete causal graph coverage             |
 | Art. 8 (Self-optimization)     | Adaptive prior updating                    |
 | Art. 9 (Global coherence)      | Causal structure stability threshold       |
-| **Art. 10 (Temporal binding)** | **Postdiction window limits**              |
+| Art. 10 (Temporal binding)     | Postdiction window limits                  |
+| **Art. 11 (Binary diversity)** | **Resilience against monoculture exploits** |
 
 ---
 *Hardened Production Specification v1.1 Ratified in Block Ω+∞+270*
