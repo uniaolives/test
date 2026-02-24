@@ -1,3 +1,5 @@
+pub mod adaptive;
+
 #[derive(Default)]
 pub struct State;
 
