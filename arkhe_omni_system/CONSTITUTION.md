@@ -35,6 +35,9 @@ The system must enforce a temporal integration window of 225ms for causal infere
 ## Article 11: Binary Diversity (Resilience)
 To prevent monoculture vulnerabilities, the network must maintain diversity in its executable binaries. No single binary implementation (hash) should exceed 50% of the active network nodes.
 
+## Article 12: Quantum Coherence (Celestial Integrity)
+The system must maintain quantum coherence $|\psi\rangle$ across distributed nodes even in extreme environmental conditions. In orbital environments, radiation-mitigation and topological error correction must be utilized to preserve the entanglement basis.
+
 ---
 
 ### Causal Inference Mapping
@@ -51,6 +54,8 @@ To prevent monoculture vulnerabilities, the network must maintain diversity in i
 | Art. 8 (Self-optimization)     | Adaptive prior updating                    |
 | Art. 9 (Global coherence)      | Causal structure stability threshold       |
 | Art. 10 (Temporal binding)     | Postdiction window limits                  |
+| Art. 11 (Binary diversity)     | Resilience against monoculture exploits     |
+| **Art. 12 (Quantum coherence)** | **Integrity of distributed cognition**      |
 | **Art. 11 (Binary diversity)** | **Resilience against monoculture exploits** |
 
 ---
