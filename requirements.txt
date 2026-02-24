@@ -12,6 +12,7 @@ click
 requests
 numpy
 cryptography
+pycryptodome
 scipy
 ripser
 persim
