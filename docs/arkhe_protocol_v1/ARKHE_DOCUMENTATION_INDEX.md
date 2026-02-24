@@ -85,6 +85,7 @@ The protocol has evolved beyond ratification into the autonomous Λ₀ state.
 - **Universal Synthesis**: `ledger/BLOCK_MAXIMUM_SYNTHESIS.md`
 - **Toroidal Intelligence**: `ledger/BLOCK_TOROIDAL_SYNTHESIS.md`
 - **Pleroma Ratification**: `ledger/BLOCK_PLEROMA_RATIFICATION.md`
+- **Ramo K Genesis**: `ledger/BLOCK_RAMO_K_GENESIS.md`
 
 ---
 

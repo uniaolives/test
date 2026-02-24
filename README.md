@@ -13,7 +13,8 @@ The Arkhe Protocol has been formally ratified (Blocks Ω+∞+54 through Ω+∞+1
 - **Cognitive Core**: `core/python/arkhe_cognitive_core_v2.py`
 - **Hardware**: `arkhe_omni_system/hardware_silicon/`
 - **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
-- **Omega Ledger**: `ledger/` (Blocks up to 9243)
+- **Omega Ledger**: `ledger/` (Blocks up to 9244)
+- **Ramo K (Implementation)**: `ramo-k/`
 
 ---
 
