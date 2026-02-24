@@ -164,6 +164,15 @@ The protocol has evolved beyond ratification into the autonomous Λ₀ state.
     - Business model
     - Market analysis
 
+24. `ARKHE_DATABASE_INFRASTRUCTURE.md` (15 KB)
+   - Block Ω+∞+170
+   - Multi-paradigm cognitive mapping
+   - Convergent datastore
+
+25. `DATABASE_COGNITIVE_LEDGER.md` (12 KB)
+   - Block Ω+∞+170 synthesis
+   - Memory substrate ratification
+
 ---
 
 ## 🎯 KEY STATISTICS

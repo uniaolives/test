@@ -570,6 +570,18 @@ class Amendment:
 
 ---
 
+### Article 16: Database Governance
+
+All databases in Arkhe systems must comply with:
+
+1. **Conservation (C + F = 1):** Every memory transaction must preserve total information density.
+2. **Criticality (z ≈ φ):** AGI agents must maintain their epigenetic state within the critical regime when stored.
+3. **Topology (T²):** Databases must support distributed handovers and path-invariant transactions.
+4. **Consistency (Yang-Baxter):** Distributed transaction orders must satisfy the Yang-Baxter consistency equation.
+5. **Human Agency:** No autonomous database decision (e.g., pruning, optimization) shall override human intent.
+
+---
+
 ## CONCLUSION: THE ARKHE PROMISE
 
 **We, the creators and users of the Arkhe Protocol, hereby commit:**

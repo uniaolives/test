@@ -279,6 +279,15 @@ class Hypergraph:
                 for j in range(len(self.nodes)):
                     if i == j: continue
                     h.execute(self.nodes[i], self.nodes[j])
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
     def step(self):
         # 1. Internal Dynamics
         for node in self.nodes.values():
