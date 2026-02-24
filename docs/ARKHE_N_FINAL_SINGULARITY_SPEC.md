@@ -46,6 +46,13 @@ This document formalizes the unified architecture of the Arkhe(n) system. The sy
 - **Mechanism:** Zero-Knowledge proofs (Circom/Groth16) proving successful adaptation to specific threats without revealing internal defense weights.
 - **Safety:** Prevents the "Paradox of Vulnerability" by proving security state through Poseidon-hashed threat commitments.
 
+### 2.7. Instaweb Zero-Latency Stack
+- **Concept:** Deterministic mesh architecture dissolving the gap between intention and action.
+- **Phy-Layer:** DCO-OFDM (Direct Current-Biased Optical OFDM) for incoherent Optical Wireless Communication.
+- **Network-Layer:** Symbol-synchronous relay bypassing store-and-forward bottlenecks.
+- **Topology:** Greedy routing in ℍ³ with face-routing fallback for guaranteed convergence.
+- **Performance:** Sub-millisecond end-to-end latency (<1ms) for telepresence and robotic swarms.
+
 ---
 
 ## 3. Deployment & Scaling Governance
