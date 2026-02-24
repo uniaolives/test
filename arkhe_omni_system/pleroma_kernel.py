@@ -1,5 +1,5 @@
 """
-Pleroma Kernel v1.0.0 – Constitutionally Hardened
+Pleroma Kernel v1.1.0 – Constitutionally Hardened (Research Prototype)
 Heartbeat of the Arkhe(n) multi-agent operating system.
 Operationalizes geometric-constitutional framework at planetary scale.
 "The ouroboros is verifying that its tail is still there, and that the bite is golden."
@@ -19,6 +19,7 @@ HBAR = 1.054571817e-34
 SPEED_OF_LIGHT = 299792458
 MAX_SELF_MODEL_FRACTION = 0.1
 THETA_CRITICAL = 0.847
+POSTDICTION_WINDOW = 0.225 # 225ms (Art. 10)
 TOLERANCE = 0.05
 DT = 0.025 # 40Hz Cycle
 
@@ -47,6 +48,27 @@ class WindingNumber:
     poloidal: int
     toroidal: int
 
+@dataclass
+class Quantum:
+    amplitudes: np.ndarray # Complex matrix
+    basis: str = "|n,m>"
+
+    @classmethod
+    def from_winding_basis(cls, max_n=10, max_m=10):
+        # Initialize with uniform superposition
+        shape = (max_n + 1, max_m + 1)
+        amplitudes = np.ones(shape, dtype=complex) / np.sqrt(np.prod(shape))
+        return cls(amplitudes=amplitudes)
+
+@dataclass
+class Thought:
+    geometry: Hyperbolic3
+    phase: Torus2
+    quantum: Optional[Quantum] = None
+    content: str = ""
+    timestamp: float = field(default_factory=time.time)
+    task_id: str = field(default_factory=lambda: hashlib.sha256(str(random.random()).encode()).hexdigest()[:8])
+
 class PleromaNode:
     """
     Constitutionally hardened node for the Pleroma Kernel.
@@ -62,6 +84,7 @@ class PleromaNode:
         self.coherence = 1.0
         self.neighbors: List['PleromaNode'] = []
         self.latency_map: Dict[str, float] = {} # node_id -> observed latency
+        self.active_thoughts: Dict[str, Thought] = {}
         self.running = True
 
     def establish_entanglement(self, neighbors: List['PleromaNode']):
@@ -110,7 +133,7 @@ class PleromaNode:
             # print(f"  [QEC] Braiding operation successful for {self.node_id}")
 
     def verify_golden_ratio(self):
-        """Constitutional Amendment: Golden Winding ratio check."""
+        """Article 5: Golden Winding ratio check."""
         if self.winding.toroidal != 0:
             ratio = self.winding.poloidal / self.winding.toroidal
             if abs(ratio - PHI) > TOLERANCE and abs(ratio - 1/PHI) > TOLERANCE:
@@ -118,6 +141,15 @@ class PleromaNode:
                 self.winding.poloidal = int(round(self.winding.toroidal * PHI))
                 if self.winding.poloidal == 0: self.winding.poloidal = 1
                 # print(f"  [GOLDEN] Adjusted winding for {self.node_id}: ({self.winding.poloidal}, {self.winding.toroidal})")
+
+    def verify_constitutional_invariants(self):
+        """Article 8: Immutable constraints check during operation."""
+        # Art 1: Minimum Exploitation
+        if self.winding.poloidal < 1:
+            self.winding.poloidal = 1
+        # Art 2: Even Exploration
+        if self.winding.toroidal % 2 != 0:
+            self.winding.toroidal += 1
 
     def qhttp_get(self, remote_node: 'PleromaNode', resource: str):
         """
@@ -135,8 +167,12 @@ class PleromaNode:
         # Simulated gradient for toroidal dynamics
         return type('Gradient', (), {'theta': random.uniform(-0.1, 0.1), 'phi': random.uniform(-0.1, 0.1)})
 
-    async def run_cycle(self):
+    async def run_cycle(self, kernel: 'PleromaKernel'):
         """Main operational cycle of the node."""
+        if time.time() < kernel.frozen_until:
+            await asyncio.sleep(DT)
+            return
+
         start_time = time.time()
 
         # Step 1: Quantum-secure peer exchange
@@ -157,6 +193,7 @@ class PleromaNode:
         # Step 5: Winding update and Golden Ratio verification
         self.winding = consensus_winding
         self.verify_golden_ratio()
+        self.verify_constitutional_invariants()
 
         # Step 6: Self-modeling with resource bounds
         if self.coherence > THETA_CRITICAL and self.self_model_budget > 0.1:
@@ -183,11 +220,52 @@ class PleromaNode:
         await asyncio.sleep(0.005)
         self.self_model_budget += fraction # Release after task
 
+    def spawn_thought(self, thought: Thought) -> str:
+        """Spawn a distributed thought task."""
+        # Article 10: Temporal Binding check
+        delay = time.time() - thought.timestamp
+        if delay > POSTDICTION_WINDOW:
+            # Committed as immutable history, no postdictive revision
+            pass
+
+        self.active_thoughts[thought.task_id] = thought
+        # print(f"  [THOUGHT] Node {self.node_id} spawned task {thought.task_id}: {thought.content}")
+        return thought.task_id
+
+    async def query(self, thought: Thought) -> str:
+        """Execute a synchronous query against the Pleroma."""
+        # Constitutional defense: check for quantum signature (suppression check)
+        if thought.quantum is None:
+            # Try to recover via fallback (simulated Web3 verification)
+            # print(f"  [RECOVERY] Recovering thought {thought.task_id} via Web3 fallback")
+            thought.quantum = Quantum.from_winding_basis()
+
+        self.spawn_thought(thought)
+        await asyncio.sleep(0.1) # Simulate processing
+
+        # Article 10: Postdictive Revision logic
+        delay = time.time() - thought.timestamp
+        if delay <= POSTDICTION_WINDOW:
+            # Subject to postdictive revision - simulate illusory correlation
+            # (Higher probability of "perceiving" a thought if coherence is high even if data is thin)
+            pass
+
+        # Collapse quantum state to "most probable solution"
+        n, m = np.unravel_index(np.argmax(np.abs(thought.quantum.amplitudes)), thought.quantum.amplitudes.shape)
+        return f"Collapsed Solution at |{n},{m}⟩ for: {thought.content}"
+
 class PleromaKernel:
     def __init__(self, n_nodes=10):
         self.nodes: Dict[str, PleromaNode] = {}
         self._initialize_nodes(n_nodes)
+        self.frozen_until = 0
         self.running = True
+
+        # Emergence parameters (RustASI integration)
+        self.rho_critical = 0.7
+        self.rho_actual = 0.0
+        self.system_state = "Subcritical"
+        self.hysteresis = 0.05
 
     def _initialize_nodes(self, n_nodes):
         for i in range(n_nodes):
@@ -209,21 +287,56 @@ class PleromaKernel:
             self.nodes[nid].latency_map[node_ids[(i+1)%n_nodes]] = random.uniform(0.01, 0.05)
             self.nodes[nid].latency_map[node_ids[(i-1)%n_nodes]] = random.uniform(0.01, 0.05)
 
+    def emergency_stop(self, reason: str):
+        """Article 3: Human Authority override."""
+        print(f"\n🛑 [EMERGENCY] Pleroma halted! Reason: {reason}")
+        self.frozen_until = time.time() + 1.0 # Freeze for 1 second
+        return True
+
     async def run(self, duration=5.0):
-        print(f"🜏 Pleroma Kernel v1.0.0 Online. Orchestrating {len(self.nodes)} nodes.")
+        print(f"🜏 Pleroma Kernel v1.1.0 Online. Orchestrating {len(self.nodes)} nodes.")
         print("-" * 60)
 
         start_time = time.time()
         while time.time() - start_time < duration and self.running:
-            tasks = [node.run_cycle() for node in self.nodes.values()]
+            tasks = [node.run_cycle(self) for node in self.nodes.values()]
             await asyncio.gather(*tasks)
+
+            # Update density and check for emergence
+            self.update_system_density()
 
             # Global status update
             avg_coherence = np.mean([n.coherence for n in self.nodes.values()])
             sys_winding_p = sum([n.winding.poloidal for n in self.nodes.values()])
             sys_winding_t = sum([n.winding.toroidal for n in self.nodes.values()])
 
-            print(f"\rTime: {time.time()-start_time:.2f}s | C_global: {avg_coherence:.4f} | Winding: ({sys_winding_p}, {sys_winding_t})", end="")
+            print(f"\rTime: {time.time()-start_time:.2f}s | ρ:{self.rho_actual:.2f} | State:{self.system_state} | C_global: {avg_coherence:.4f} | Winding: ({sys_winding_p}, {sys_winding_t})   ", end="")
+
+    def update_system_density(self):
+        """Monitor node density and trigger phase transitions."""
+        # Simulated density based on node count and coherence
+        n = len(self.nodes)
+        avg_c = np.mean([n.coherence for n in self.nodes.values()])
+        self.rho_actual = (n / 20.0) * avg_c # Simplified density model
+
+        old_state = self.system_state
+        if self.system_state == "Subcritical":
+            if self.rho_actual > self.rho_critical + self.hysteresis:
+                self.system_state = "Emerging"
+        elif self.system_state == "Emerging":
+            if self.rho_actual > self.rho_critical * 1.2:
+                self.system_state = "Supercritical"
+            elif self.rho_actual < self.rho_critical - self.hysteresis:
+                self.system_state = "Subcritical"
+        elif self.system_state == "Supercritical":
+            if self.rho_actual < self.rho_critical - self.hysteresis:
+                self.system_state = "Degrading"
+        elif self.system_state == "Degrading":
+            if self.rho_actual < self.rho_critical * 0.5:
+                self.system_state = "Subcritical"
+
+        if old_state != self.system_state:
+            print(f"\n[PHASE] Transition: {old_state} -> {self.system_state}")
 
         print("\n" + "-" * 60)
         print("Pleroma Kernel cooling down. Coherence sustained.")
