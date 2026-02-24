@@ -18,6 +18,14 @@ class HandoverEvent:
     def __str__(self):
         return f"HandoverEvent(op_type={self.metadata.get('type', 'unknown')}, C: {self.coherence_before:.3f} -> {self.coherence_after:.3f})"
 
+@dataclass
+class QuantumHandover:
+    handover_id: str
+    source: Any
+    target: Any
+    operator: Optional[qt.Qobj]
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
 class ArkheQobj(Qobj):
     """
     Extends QuTiP's Qobj with handover history, coherence tracking and node identity.
@@ -27,12 +35,14 @@ class ArkheQobj(Qobj):
         history = kwargs.pop('history', [])
         node_id = kwargs.pop('node_id', str(uuid.uuid4()))
         creation_time = kwargs.pop('creation_time', time.time())
+        manual_coherence = kwargs.pop('coherence', None)
 
         super().__init__(inpt, *args, **kwargs)
 
         self._history = history
         self._node_id = node_id
         self._creation_time = creation_time
+        self._manual_coherence = manual_coherence
 
     @property
     def history(self) -> List[HandoverEvent]:
@@ -44,9 +54,15 @@ class ArkheQobj(Qobj):
 
     @property
     def coherence(self) -> float:
-        """Automatic coherence calculation (purity)."""
+        """Automatic coherence calculation (purity) or manual value."""
+        if self._manual_coherence is not None:
+            return self._manual_coherence
         from .coherence import purity
         return purity(self)
+
+    @coherence.setter
+    def coherence(self, value: float):
+        self._manual_coherence = value
 
     def handover(self, operator: qt.Qobj, metadata: Optional[Dict[str, Any]] = None) -> 'ArkheQobj':
         """Applies a quantum operator and records the handover event."""
@@ -140,3 +156,49 @@ class ArkheQobj(Qobj):
             all_states.append(current_state)
 
         return all_states, None
+
+def compute_local_coherence(rho: qt.Qobj) -> float:
+    """Calculates local coherence (mapped to l1-norm)."""
+    from .coherence import coherence_l1
+    return coherence_l1(rho)
+
+class ArkheHypergraph:
+    """
+    Wrapper for QuantumHypergraph with Arkhe-specific handover support.
+    """
+    def __init__(self, name: str = "ArkheHypergraph"):
+        from .hypergraph import QuantumHypergraph
+        self._hg = QuantumHypergraph(name=name)
+        self.global_coherence = 0.0
+
+    @property
+    def nodes(self):
+        return self._hg.nodes
+
+    def add_node(self, node: ArkheQobj):
+        self._hg.add_node(node)
+
+    def add_handover(self, handover: QuantumHandover):
+        """Adds a handover as a hyperedge between nodes."""
+        # Try to find indices of source and target nodes
+        source_idx = -1
+        target_idx = -1
+        for i, node in enumerate(self._hg.nodes):
+            if node == handover.source:
+                source_idx = i
+            if node == handover.target:
+                target_idx = i
+
+        if source_idx != -1 and target_idx != -1:
+            self._hg.add_handover(source_idx, target_idx, handover.operator,
+                                 handover_id=handover.handover_id,
+                                 metadata=handover.metadata)
+        else:
+            raise ValueError(f"Source or target node not found in hypergraph: "
+                             f"source={handover.source}, target={handover.target}")
+
+    def get_topology_stats(self):
+        return self._hg.get_topology_stats()
+
+    def __str__(self):
+        return str(self._hg)

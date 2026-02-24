@@ -52,6 +52,7 @@ contract PleromaConstitution {
     }
 
     function slash(address node, uint256 amount) internal {
+    function slash(address node, uint256 amount) public {
         // Called by constitutional court if violation proven
         stake[node] -= amount;
     }
