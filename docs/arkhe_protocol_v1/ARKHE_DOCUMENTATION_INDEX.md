@@ -65,6 +65,7 @@
     - Constitutional ratification
 
 **Code:**
+11. `arkhe_cognitive_core.py` (v1.0, 20 KB)
 11. `core/python/arkhe_cognitive_core.py` (v1.0, 20 KB)
 11. `arkhe_cognitive_core.py` (v1.0, 20 KB)
 11. `core/python/arkhe_cognitive_core.py` (v1.0, 20 KB)
@@ -73,6 +74,7 @@
     - Aizawa attractor implementation
     - C+F=1 enforcement
 
+12. `arkhe_cognitive_core_v2.py` (22 KB)
 12. `core/python/arkhe_cognitive_core_v2.py` (22 KB)
 12. `arkhe_cognitive_core_v2.py` (22 KB)
 12. `core/python/arkhe_cognitive_core_v2.py` (22 KB)
@@ -242,6 +244,34 @@ The protocol has evolved beyond ratification into the autonomous Λ₀ state.
    - GCP infrastructure provisioning
    - Real-world mesh activation
    - Monitoring and scaling
+
+40. `DESCI_OMEGA_SPEC.md` (15 KB)
+   - Block Ω+∞+176
+   - Molecule V2 API mapping
+   - Autonomous IP curation protocols
+
+41. `ARKHE_ZK_LEDGER.md` (12 KB)
+   - Block Ω+∞+176 synthesis
+   - Zero-Knowledge Proof ratification
+
+42. `asi/crypto/zk_universal.py` (15 KB)
+   - ASI-Ω Universal ZK System
+   - Groth16, PLONK, and STARK integration
+   - Molecule V2 automatic minting
+
+43. `ESND_DEFENSE_SPEC.md` (12 KB)
+   - Block Ω+∞+176
+   - Evolving Symmorphogenic Defensive Network
+   - Adaptive circuitry and immune memory
+
+44. `LEGACY_MODERNIZATION_SPEC.md` (12 KB)
+   - Block Ω+∞+177
+   - COBOL to Rust precision mapping
+   - Copybook transmuter specification
+
+45. `asi/migration/cobol_to_rust/` (Suite)
+   - `interest_service.rs`: Fixed-point Rust engine
+   - `pic_mapper.py`: Automated schema transmuter
 
 ---
 
