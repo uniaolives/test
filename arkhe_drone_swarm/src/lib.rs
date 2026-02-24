@@ -93,6 +93,7 @@ pub mod hardware_embassy;
 pub mod diplomatic;
 pub mod kalman;
 pub mod zk_lattice;
+pub mod pleroma;
 
 // ============================================================================
 // Módulo constitutive: parâmetros do drone e dinâmica

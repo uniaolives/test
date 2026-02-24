@@ -1,6 +1,4 @@
-// arkheHumanTool.ts
-// Reference implementation for Arkhe(n) Human-Tool Interface in TypeScript
-
+// metalanguage/rosetta/human_tool/arkheHumanTool.ts
 interface Human {
     processingCapacity: number;  // bits/min
     attentionSpan: number;       // minutes
@@ -57,7 +55,6 @@ class InteractionGuard {
             return null;
         }
 
-        // Simular geração (em produção, chamaria API)
         const output = `Generated content for: ${intent}`;
 
         const impact = load * 0.3;
@@ -100,5 +97,3 @@ class InteractionGuard {
         return reviews / Math.max(1, total);
     }
 }
-
-export { Human, Tool, InteractionGuard };

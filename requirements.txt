@@ -11,6 +11,7 @@ trl
 click
 requests
 numpy
+cryptography
 scipy
 ripser
 persim
@@ -66,3 +67,5 @@ httpcore
 deprecated
 anyio
 starlette
+pyyaml
+pymavlink
