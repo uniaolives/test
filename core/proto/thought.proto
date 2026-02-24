@@ -1,0 +1,52 @@
+// core/proto/thought.proto
+syntax = "proto3";
+
+package pleroma;
+
+message Thought {
+    // Geometry (ℍ³)
+    HyperbolicCoord geometry = 1;
+
+    // Phase (T²)
+    ToroidalPhase phase = 2;
+
+    // Quantum state
+    QuantumState quantum = 3;
+
+    // Constitutional validity proof
+    bytes constitutional_proof = 4;
+
+    // Content (opaque, substrate-specific)
+    bytes content = 5;
+
+    // Metadata
+    string thought_id = 6;
+    uint64 timestamp = 7;
+    string parent_id = 8;
+}
+
+message HyperbolicCoord {
+    double r = 1;
+    double theta_h = 2;
+    double z = 3;
+}
+
+message ToroidalPhase {
+    double theta = 1;
+    double phi = 2;
+    int32 winding_n = 3;
+    int32 winding_m = 4;
+}
+
+message QuantumState {
+    repeated ComplexAmplitude amplitudes = 1;
+    uint32 max_n = 2;
+    uint32 max_m = 3;
+}
+
+message ComplexAmplitude {
+    uint32 n = 1;
+    uint32 m = 2;
+    double re = 3;
+    double im = 4;
+}
