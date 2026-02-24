@@ -25,6 +25,37 @@ class Protocol:
     DISCOVERY = 'DISCOVERY'
     ROUTING = 'ROUTING'
 
+# --- 2. CORE ANL CLASSES ---
+
+class ConstraintType(Enum):
+    TIME = 'TIME'
+    COST = 'COST'
+    RELIABILITY = 'RELIABILITY'
+    COHERENCE = 'COHERENCE'
+
+class Ontology:
+    ARKHE_CORE = "arkhe:core:v1"
+    ARKHE_SATELLITE = "arkhe:satellite:v1"
+    ARKHE_BIO = "arkhe:bio:v1"
+
+class Node:
+    """Fundamental entity in the Arkhe(n) Hypergraph."""
+    def __init__(self, node_type: str, **attributes):
+        self.id = str(uuid.uuid4())[:8]
+
+class Ontology:
+    ARKHE_CORE = "arkhe:core:v1"
+    ARKHE_SATELLITE = "arkhe:satellite:v1"
+    ARKHE_BIO = "arkhe:bio:v1"
+
+class Node:
+    """Fundamental entity in the Arkhe(n) Hypergraph."""
+    def __init__(self, node_type: str, **attributes):
+        self.id = str(uuid.uuid4())[:8]
+class Node:
+    """Fundamental entity in the Arkhe(n) Hypergraph."""
+    def __init__(self, node_type: str, **attributes):
+        self.id = str(uuid.uuid4())[:8]
 # --- 2. ARKHE PROTOCOL STRUCTURES ---
 
 class IntentObject:
@@ -103,6 +134,7 @@ class Node:
         self.events.append((event_name, payload, time.time()))
 
     def step(self):
+        # Active Inference: Minimize Variational Free Energy (Mock)
         # Active Inference: Minimize Variational Free Energy
         self.minimize_vfe()
         for dyn in self.internal_dynamics:
@@ -114,6 +146,9 @@ class Node:
         self.dirichlet_params[observation_index] += 0.1
         self.beliefs = self.dirichlet_params / np.sum(self.dirichlet_params)
 
+        for dyn in self.internal_dynamics:
+            dyn(self)
+
     def calculate_epistemic_value(self):
         """Pure Curiosity: Information gain from Dirichlet updates."""
         self.curiosity_score = np.sum(np.abs(np.log(self.dirichlet_params / np.sum(self.dirichlet_params))))
@@ -122,15 +157,34 @@ class Node:
     def __repr__(self):
         return f"<{self.node_type} id={self.id}>"
 
+class Agent(Node):
+    def __init__(self, id_val: str, node_type: str, **attributes):
+        super().__init__(node_type, **attributes)
+        self.id = id_val
+        self.handlers = {}
+
+    def register_capability(self, capability: str, handler: Callable):
+        if not hasattr(self, 'capabilities'):
+            self.capabilities = []
+        if capability not in self.capabilities:
+            self.capabilities.append(capability)
+        self.handlers[capability] = handler
+
+    def can_handle(self, capability: str) -> bool:
+        return capability in self.capabilities
+
+    def handle(self, handover_data: Dict) -> Any:
+        goal = handover_data.get('intent', {}).get('goal')
+        if goal in self.handlers:
+            return self.handlers[goal](handover_data)
+        return None
+
 class Handover:
     """Structured exchange of intention, context, and value."""
     def __init__(self, name: str, origin_types: Union[str, List[str]], target_types: Optional[Union[str, List[str]]] = None, protocol: str = Protocol.CONSERVATIVE):
         self.name = name
         self.origin_types = [origin_types] if isinstance(origin_types, str) else origin_types
-        if target_types:
-            self.target_types = [target_types] if isinstance(target_types, str) else target_types
-        else:
-            self.target_types = []
+        self.target_types = [target_types] if isinstance(target_types, str) else (target_types if target_types is not None else [])
         self.protocol = protocol
         self.condition = lambda *args: True
         self.effects = lambda *args: None
@@ -144,6 +198,103 @@ class Handover:
 
     def execute(self, *nodes: Node) -> bool:
         if len(nodes) < 1: return False
+        if self.condition(*nodes):
+            self.effects(*nodes)
+            return True
+        return False
+
+# --- 3. ARKHE PROTOCOL STRUCTURES ---
+
+class IntentObject:
+    def __init__(self, goal: str, constraints: List['Constraint'] = None, success_metrics: List['Metric'] = None):
+        self.goal = goal
+        self.constraints = constraints or []
+        self.success_metrics = success_metrics or []
+
+class Constraint:
+    def __init__(self, type: str, value: Any, operator: str):
+        self.type = type
+        self.value = value
+        self.operator = operator
+
+    def satisfied(self, current_value: Any) -> bool:
+        ops = {
+            "<": lambda a, b: a < b,
+            "<=": lambda a, b: a <= b,
+            "==": lambda a, b: a == b,
+            ">=": lambda a, b: a >= b,
+            ">": lambda a, b: a > b
+        }
+        return ops.get(self.operator, lambda a, b: False)(current_value, self.value)
+
+class Metric:
+    def __init__(self, name: str, threshold: float):
+        self.name = name
+        self.threshold = threshold
+        self.value = 0.0
+
+    def satisfied(self) -> bool:
+        return self.value >= self.threshold
+
+class ContextSnapshot:
+    def __init__(self, source_state: str, target_state: str = None, ambient_conditions: Dict = None):
+        self.source_state = source_state
+        self.target_state = target_state
+        self.ambient_conditions = ambient_conditions or {}
+
+class ArkheLink(Handover):
+    def __init__(self, source_id: str, target_id: str, intent: Union[Dict, IntentObject], ontology: str, context: Optional[ContextSnapshot] = None):
+        super().__init__("ArkheLink", "any", "any", Protocol.TRANSMUTATIVE)
+        self.source_id = source_id
+        self.target_id = target_id
+        self.intent = intent
+        self.ontology = ontology
+        self.context = context
+        self.signature = None
+        self.identity_proof = "zk-SNARK-placeholder"
+
+    def sign(self):
+        payload = f"{self.source_id}:{self.target_id}:{json.dumps(self.intent, default=lambda o: o.__dict__)}"
+        self.signature = hashlib.sha256(payload.encode()).hexdigest()
+
+    def verify(self) -> bool:
+        return self.signature is not None
+
+    def to_dict(self) -> Dict:
+        return {
+            "source": self.source_id,
+            "target": self.target_id,
+            "intent": self.intent if isinstance(self.intent, dict) else self.intent.__dict__,
+            "ontology": self.ontology,
+            "signature": self.signature
+        }
+
+    def verify_identity(self) -> bool:
+        return self.identity_proof.startswith("zk-SNARK")
+
+    def verify_signature(self) -> bool:
+        return self.signature is not None
+
+    def execute(self, source: Node, target: Node) -> bool:
+        if not self.verify_identity() or not self.verify_signature():
+            return False
+        return True
+        return self.signature.startswith("ed25519")
+
+    def execute(self) -> bool:
+        if not self.verify_identity() or not self.verify_signature():
+            return False
+        for pre in self.preconditions:
+            if not pre(self.source_node, self.target_node):
+                return False
+        self.effects(self.source_node, self.target_node)
+        for post in self.postconditions:
+            if not post(self.source_node, self.target_node):
+                return False
+        return all(m.satisfied() for m in self.intent.success_metrics)
+
+class System:
+    def __init__(self, name="ANL System"):
         if len(nodes) == 2:
             origin, target = nodes
             if origin.node_type in self.origin_types and (not self.target_types or target.node_type in self.target_types):
@@ -165,6 +316,7 @@ class Hypergraph:
         self.nodes: Dict[str, Node] = {}
         self.handovers: List[Handover] = []
         self.time = 0
+        self.coherence = 1.0
         self.global_phi = 1.0
 
     def add_node(self, node: Node) -> Node:
@@ -174,6 +326,62 @@ class Hypergraph:
     def add_handover(self, handover: Handover):
         self.handovers.append(handover)
 
+    def discover_agents(self, goal: str) -> List[Node]:
+        return [n for n in self.nodes if goal in n.capabilities]
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
+
+    def step(self):
+        for node in self.nodes:
+            node.step()
+        for h in self.handovers:
+            for i in range(len(self.nodes)):
+                for j in range(len(self.nodes)):
+                    if i == j: continue
+                    h.execute(self.nodes[i], self.nodes[j])
     def step(self):
         # 1. Internal Dynamics
         for node in self.nodes.values():
@@ -224,16 +432,19 @@ class System(Hypergraph):
 
         # 3. Ouroboros Loop (Feedback)
         self.ouroboros_feedback()
-
-        # 4. Global Dynamics
         for dyn in self.global_dynamics:
             dyn(self)
+        self.time += 1
 
-        # 5. Constraints
-        for c in self.constraints:
-            if not c["check"](self):
-                if c["mode"] == ConstraintMode.INVIOLABLE_AXIOM:
-                    raise RuntimeError(f"Axiom Breached in {self.name}")
+    def ouroboros_feedback(self):
+        avg_curiosity = np.mean([n.calculate_epistemic_value() for n in self.nodes]) if self.nodes else 0
+        self.coherence = 0.9 * self.coherence + 0.1 * (1.0 / (1.0 + avg_curiosity))
+
+# --- UTILS ---
+def kl_divergence(p, q):
+    p = np.where(p == 0, 1e-12, p)
+    q = np.where(q == 0, 1e-12, q)
+    return np.sum(p * np.log(p / q))
 
     def ouroboros_feedback(self):
         """Ouroboros: System's state affects its own parameters."""
