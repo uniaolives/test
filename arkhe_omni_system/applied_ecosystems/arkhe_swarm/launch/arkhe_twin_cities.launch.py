@@ -46,6 +46,14 @@ def generate_launch_description():
         output='screen'
     )
 
+    # Pleroma Kernel
+    pleroma_kernel = Node(
+        package='arkhe_swarm',
+        executable='pleroma_kernel',
+        parameters=[config_file],
+        output='screen'
+    )
+
     # Constitutional Guards
     guards = [
         Node(package='arkhe_swarm', executable='cognitive_guard', parameters=[config_file]),
@@ -99,6 +107,7 @@ def generate_launch_description():
         arkhe_core,
         ghz_consensus,
         drone_sim,
+        pleroma_kernel,
         *guards,
         *spawn_nodes
     ])

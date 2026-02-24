@@ -3,6 +3,7 @@ import sys
 import unittest
 from unittest.mock import MagicMock, patch
 import json
+import numpy as np
 
 # Mock rclpy before importing nodes
 sys.modules['rclpy'] = MagicMock()
@@ -50,6 +51,7 @@ with patch('rclpy.node.Node', MockNode):
     from arkhe_swarm.arkhe_core import ArkheCore
     from arkhe_swarm.ghz_consensus import GHZConsensus
     from arkhe_swarm.drone_state_sim import DroneStateSim
+    from arkhe_swarm.pleroma_kernel import PleromaKernel, QuantumState
     from arkhe_swarm.ppp_utils import hyperbolic_distance_uhp, sample_ppp_hyperbolic, atmospheric_density, stability_threshold_q_process
 
 class TestArkheGuards(unittest.TestCase):
@@ -206,6 +208,29 @@ class TestArkheGuards(unittest.TestCase):
             self.assertTrue(sim.state_pubs[0].publish.called)
             self.assertTrue(sim.load_pubs[0].publish.called)
             self.assertTrue(sim.thz_pubs[0].publish.called)
+
+    def test_quantum_state_evolution(self):
+        qs = QuantumState(max_n=2, max_m=2)
+        initial_amp = qs.amplitudes[0, 0]
+        self.assertEqual(initial_amp, 1.0)
+
+        qs.evolve(dt=0.1, hbar=1.0)
+        # Norm should be preserved
+        norm = np.sum(np.abs(qs.amplitudes)**2)
+        self.assertAlmostEqual(norm, 1.0)
+
+    def test_pleroma_kernel_loop(self):
+        with patch('rclpy.node.Node', MockNode):
+            kernel = PleromaKernel()
+            kernel.neighbor_states = {
+                0: {'pose': [0, 0, 1]},
+                1: {'pose': [0, 0, 2]}
+            }
+            kernel.main_loop()
+
+            # Check if coherence was published
+            self.assertTrue(kernel.coherence_pub.publish.called)
+            self.assertTrue(kernel.state_pub.publish.called)
 
 if __name__ == '__main__':
     unittest.main()
