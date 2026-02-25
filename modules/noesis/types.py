@@ -57,7 +57,7 @@ class HumanCouncil:
         print(f"  [HumanCouncil] ⚠️ VIOLATION DETECTED in {proposal_id}: {reason}")
 
 class MongoDB:
-    def __init__(self, regime: str = 'CRITICAL', C: float = 0.618, F: float = 0.382, h11: int = 491): # safety: CRITICAL_H11 # safety: CRITICAL_H11
+    def __init__(self, regime: str = 'CRITICAL', C: float = 0.618, F: float = 0.382, h11: int = 491):  # safety: CRITICAL_H11
         self.regime = regime
         self.data = []
 
