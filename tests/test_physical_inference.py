@@ -37,8 +37,15 @@ def generate_training_data(n_samples=500, seq_len=85):
 
     return torch.cat(X, dim=0), torch.stack(y)
 
+def mdn_loss_fn(pi, mu, sigma, target):
+    """MDN Negative Log-Likelihood Loss."""
+    mix = torch.distributions.Categorical(pi)
+    comp = torch.distributions.Independent(torch.distributions.Normal(mu, sigma), 1)
+    gmm = torch.distributions.MixtureSameFamily(mix, comp)
+    return -gmm.log_prob(target).mean()
+
 def run_physical_inference_experiment():
-    print("--- Starting Physical Sensitivity Mapping Experiment ---")
+    print("--- Starting Physical Sensitivity Mapping Experiment (MDN Upgrade) ---")
 
     # 1. Setup
     n_params = 6
@@ -49,30 +56,29 @@ def run_physical_inference_experiment():
     model = PhysicalAutoencoder(max_expansion=max_exp, n_phys_params=n_params)
     optimizer = optim.Adam(model.parameters(), lr=0.005)
     criterion_recon = nn.CrossEntropyLoss()
-    criterion_phys = nn.MSELoss()
 
     lambda_sparse = 0.01
     lambda_phys = 1.0
 
     # 2. Training Loop
-    print("Training integrated model...")
-    epochs = 50
+    print("Training integrated model with MDN...")
+    epochs = 100
     for epoch in range(epochs):
         optimizer.zero_grad()
-        logits, factors, phys_pred, pooled = model(X_train)
+        logits, factors, (pi, mu, sigma), pooled = model(X_train)
 
         # loss_recon expects [batch, vocab, seq]
         loss_recon = criterion_recon(logits.permute(0, 2, 1), X_train)
         loss_sparse = factors.float().mean()
-        loss_phys = criterion_phys(phys_pred, y_train)
+        loss_phys = mdn_loss_fn(pi, mu, sigma, y_train)
 
         loss_total = loss_recon + lambda_sparse * loss_sparse + lambda_phys * loss_phys
         loss_total.backward()
         optimizer.step()
 
-        if epoch % 10 == 0:
+        if epoch % 20 == 0:
             print(f"  Epoch {epoch:02d}: recon={loss_recon.item():.4f}, "
-                  f"sparse={loss_sparse.item():.4f}, phys={loss_phys.item():.4f}")
+                  f"sparse={loss_sparse.item():.4f}, phys_nll={loss_phys.item():.4f}")
 
     # 3. Sensitivity Analysis (Correlation)
     print("\nPerforming sensitivity analysis...")
@@ -104,17 +110,33 @@ def run_physical_inference_experiment():
     plt.savefig('latent_physical_correlation.png')
     print("✅ Sensitivity heatmap saved to latent_physical_correlation.png")
 
-    # 4. Inference on 85-bit Sequence
+    # 4. Inference on 85-bit Sequence with Uncertainty
     print("\nInferring physical conditions for the 85-bit sequence...")
     bits_85 = "00001010111011000111110011010010000101011101100011111001101001000010101110"
     tokens = torch.tensor([int(b) for b in bits_85]).unsqueeze(0)
 
     with torch.no_grad():
-        _, factors, phys_infer, _ = model(tokens)
+        _, factors, (pi, mu, sigma), _ = model(tokens)
 
-    print("Inferred parameters:")
-    for name, val in zip(param_names, phys_infer[0]):
-        print(f"  {name:5}: {val.item():.3f}")
+    # For inference, we take the mean of the most probable mixture component
+    idx = torch.argmax(pi[0])
+    inferred_means = mu[0, idx]
+    inferred_stds = sigma[0, idx]
+
+    print("Inferred parameters (Value ± Uncertainty):")
+    for name, val, err in zip(param_names, inferred_means, inferred_stds):
+        print(f"  {name:5}: {val.item():.3f} ± {err.item():.3f}")
+
+    # Plot uncertainty (error bars)
+    plt.figure(figsize=(10, 6))
+    x_pos = np.arange(n_params)
+    plt.errorbar(x_pos, inferred_means.numpy(), yerr=inferred_stds.numpy(), fmt='o', capsize=5, color='blue')
+    plt.xticks(x_pos, param_names)
+    plt.ylabel('Value')
+    plt.title('Inferred Physical Parameters with 1σ Uncertainty')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.savefig('85bit_physical_uncertainty.png')
+    print("✅ Uncertainty visualization saved to 85bit_physical_uncertainty.png")
 
     # Plot expansion factors
     plt.figure(figsize=(10, 4))
