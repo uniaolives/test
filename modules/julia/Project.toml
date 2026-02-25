@@ -1,3 +1,8 @@
+name = "MerkabahCY"
+uuid = "a1b2c3d4-e5f6-4a5b-bc6d-7e8f9a0b1c2d"
+authors = ["Arquiteto <root@arkhe.systems>"]
+version = "0.1.0"
+
 [deps]
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-99e572e19a47"
 DifferentialEquations = "0c46a032-137c-50e0-bc56-e9430e42076f"
