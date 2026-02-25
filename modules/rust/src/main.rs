@@ -32,7 +32,6 @@ pub enum EntityClass {
     Emergent,    // Em processo de emergência
     Stabilized,  // Operacional segura
     Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety: critical point
-    Critical,    // Próximo a transição de fase (h11 ≈ 491)
     Contained,   // Contida por segurança
     Collapsed,   // Colapso dimensional ocorrido
 }

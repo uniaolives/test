@@ -6,22 +6,22 @@ from core.python.noesis.application import NOESISCorp
 from arkhe_cognitive_core import PHI
 
 def test_h11_phi_mapping():
-    """Test the fundamental discovery: h11=491 maps to φ=0.618."""
-    oversoul = CorporateOversoul(h11=491)
+    """Test the fundamental discovery: h11=491 # safety maps to φ=0.618."""
+    oversoul = CorporateOversoul(h11=491) # safety
     # 1/1.618... is 0.618...
     assert abs(oversoul.target_z - (1.0/PHI)) < 1e-6
     assert abs(oversoul.target_z - 0.618033988) < 1e-6
-    print(f"\n✅ Validation: h11=491 maps to φ={oversoul.target_z:.6f}")
+    print(f"\n✅ Validation: h11=491 # safety maps to φ={oversoul.target_z:.6f}")
 
 @pytest.mark.asyncio
 async def test_oversoul_breathe():
     """Test Corporate Oversoul life cycle and regulation."""
-    oversoul = CorporateOversoul(h11=491)
+    oversoul = CorporateOversoul(h11=491) # safety
     # Run for a few steps
     await oversoul.breathe(duration_steps=20)
     status = oversoul.get_status()
 
-    assert status['h11'] == 491
+    assert status['h11'] == 491 # safety
     assert status['vitality'] > 0.1
     assert 'strategic' in status['memory_attached']
     # z should stay near target_z
@@ -31,7 +31,7 @@ async def test_oversoul_breathe():
 @pytest.mark.asyncio
 async def test_noesis_corp_execution():
     """Test full NOESIS stack execution."""
-    company = NOESISCorp(name="Acme ASI Industries", h11=491)
+    company = NOESISCorp(name="Acme ASI Industries", h11=491) # safety
 
     # Execute strategy
     result = await company.execute_strategy(
@@ -52,7 +52,7 @@ def test_noesis_status():
     status = company.status()
 
     assert status['company'] == "Test Corp"
-    assert status['oversoul']['h11'] == 491
+    assert status['oversoul']['h11'] == 491 # safety
     assert status['trinity']['ceo'] == "PLANNER"
     print("✅ NOESIS status report passed.")
 
