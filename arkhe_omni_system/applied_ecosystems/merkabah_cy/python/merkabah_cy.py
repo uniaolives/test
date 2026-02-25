@@ -375,6 +375,14 @@ class HodgeCorrelator:
             'status': 'CRITICAL_POINT_DETECTED',
             'properties': {
                 'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
+        else:
+            return int(491 - (h11 - 491) * 0.5) # containment
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        return {
+            'status': 'CRITICAL_POINT_DETECTED',
+            'properties': {
+                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
             return h11 * 2  # Regime simples
         elif h11 < 491: # safety # CRITICAL_H11 safety
             return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear

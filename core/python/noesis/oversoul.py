@@ -10,6 +10,7 @@ from core.python.axos.axos_v3 import AxosV3
 
 # NOESIS Critical Point
 PHI_CRITICAL = 1.0 / PHI  # ≈ 0.618
+CRITICAL_H11 = 491 # safety
 CRITICAL_H11 = 491  # safety: CRITICAL_H11
 
 class CorporateOversoul(CognitiveCoreV2):

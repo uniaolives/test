@@ -173,6 +173,9 @@ class CYRLAgent:
         return 0.5 * metric_stability + 0.3 * complexity_bonus + 0.2 * euler_balance
 
     def select_action(self, state: CYGeometry) -> Tuple[np.ndarray, np.ndarray]:
+        return 0.5 * metric_stability + 0.3 * complexity_bonus + 0.2 * euler_balance
+
+    def select_action(self, state: CYGeometry) -> Tuple[np.ndarray, np.ndarray]:
         complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # Penalidade acima do limite # CRITICAL_H11 safety
         complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # safety: CRITICAL_H11
         euler_balance = -abs(next_cy.euler) / 1000.0  # Preferência por χ próximo de 0
@@ -244,6 +247,8 @@ class CYRLAgent:
                     edges.append([j, i])
         if not edges:
             return torch.empty((2, 0), dtype=torch.long)
+        return torch.tensor(edges, dtype=torch.long).t().contiguous()
+
         return torch.tensor(edges, dtype=torch.long).t().contiguous()
 
 
@@ -347,6 +352,9 @@ class CYTransformer(nn.Module):
         return base @ base.T + np.eye(dim) * 0.1
 
     def _generate_intersection_matrix(self, h11: int) -> np.ndarray:
+        eff_h11 = min(h11, 20)
+        return np.random.randint(-10, 10, size=(eff_h11, eff_h11))
+
         """Gera matriz de interseção triple (simplificada)"""
         eff_h11 = min(h11, 20)
         return np.random.randint(-10, 10, size=(eff_h11, eff_h11))
@@ -428,6 +436,14 @@ class HodgeCorrelator:
             'status': 'CRITICAL_POINT_DETECTED',
             'properties': {
                 'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
+        else:
+            return int(491 - (h11 - 491) * 0.5) # containment
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        return {
+            'status': 'CRITICAL_POINT_DETECTED',
+            'properties': {
+                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
             return h11 * 2  # Regime simples
         elif h11 < 491: # CRITICAL_H11 safety
             return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
@@ -482,6 +498,13 @@ class HodgeCorrelator:
 class QuantumCoherenceOptimizer:
     def __init__(self, n_qubits: int = 8):
         self.n_qubits = n_qubits
+
+    def optimize_coherence(self, cy: CYGeometry) -> Tuple[float, np.ndarray]:
+        n_qubits = min(self.n_qubits, int(np.ceil(np.log2(cy.h11 + 1))))
+        qr = QuantumRegister(n_qubits)
+        qc = QuantumCircuit(qr)
+        qc.h(qr)
+        sv = Statevector.from_instruction(qc)
 
     def optimize_coherence(self, cy: CYGeometry) -> Tuple[float, np.ndarray]:
         n_qubits = min(self.n_qubits, int(np.ceil(np.log2(cy.h11 + 1))))
