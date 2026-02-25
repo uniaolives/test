@@ -127,6 +127,10 @@ fn run_single_node_simulation(cfg: &NodeConfig) -> NodeResult {
     let mut t = 0.0;
     while t < cfg.simulation_time {
         let dt_adapt = integrator.adaptive_step(&h, &psi, t);
+        if let Err(e) = h.evolve_step(&mut psi, dt_adapt, t) {
+            println!("[ERROR] Simulation step failed: {}", e);
+            break;
+        }
         h.evolve_step(&mut psi, dt_adapt, t);
 
         // Projetar e registrar população
