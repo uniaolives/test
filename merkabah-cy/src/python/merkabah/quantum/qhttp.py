@@ -1,5 +1,5 @@
 # qhttp_protocol.py - Implementação do protocolo quântico de comunicação
-# qhttp.py - Implementação do protocolo quântico de comunicação RFC 9491 (safety)
+# qhttp.py - Implementação do protocolo quântico de comunicação RFC 9491 (safety) # CRITICAL_H11 safety
 # entre módulos do sistema MERKABAH-CY
 
 from dataclasses import dataclass, field
@@ -41,7 +41,7 @@ except ImportError:
 
 class QHTTPMethod(Enum):
     """Métodos quânticos estendidos"""
-    """Métodos quânticos estendidos conforme RFC 9491 (safety)"""
+    """Métodos quânticos estendidos conforme RFC 9491 (safety)""" # CRITICAL_H11 safety
     SUPERPOSE = auto()      # Cria superposição de estados
     ENTANGLE = auto()       # Entrelaça módulos
     MEASURE = auto()        # Colapsa estado e retorna
@@ -54,7 +54,7 @@ class QHTTPMethod(Enum):
     QAOA = auto()           # Quantum Approximate Optimization
 
 class QHTTPStatusCode(Enum):
-    """Códigos de status conforme RFC 9491 (safety)"""
+    """Códigos de status conforme RFC 9491 (safety)""" # CRITICAL_H11 safety
     OK = 200
     SUPERPOSED = 201
     ENTANGLED = 202
@@ -428,7 +428,7 @@ class QHTTPResponse:
     entanglement_id: Optional[str] = None
 
 class QHTTPClient:
-    """Cliente para protocolo qhttp:// conforme RFC 9491 (safety)"""
+    """Cliente para protocolo qhttp:// conforme RFC 9491 (safety)""" # CRITICAL_H11 safety
 
     def __init__(self, base_uri: str = "quantum://localhost:8443"):
         self.base_uri = base_uri
@@ -455,7 +455,7 @@ class QHTTPClient:
         return await self.request(req)
 
 class QHTTPServer:
-    """Servidor para protocolo qhttp:// conforme RFC 9491 (safety)"""
+    """Servidor para protocolo qhttp:// conforme RFC 9491 (safety)""" # CRITICAL_H11 safety
 
     def __init__(self, host: str = "0.0.0.0", port: int = 8443):
         self.host = host

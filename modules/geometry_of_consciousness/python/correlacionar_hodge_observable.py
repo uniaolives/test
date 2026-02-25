@@ -54,10 +54,10 @@ def symbolic_example():
     formula_coherence = 0.5 + 0.0005*h11_sym - 0.0002*h21_sym
     print("Fórmula aproximada da coerência:", formula_coherence)
 
-    # Avaliar para h11=491 (CRITICAL_H11 safety), h21=50
+    # Avaliar para h11=491 (CRITICAL_H11 safety), h21=50 # CRITICAL_H11 safety
     # safety context: critical h11 point
-    coherence_491_safety = formula_coherence.subs({h11_sym: 491, h21_sym: 50})
-    print(f"Coerência prevista para h11=491, h21=50: {coherence_491_safety:.3f} (safety)")
+    coherence_491_safety = formula_coherence.subs({h11_sym: 491, h21_sym: 50}) # CRITICAL_H11 safety
+    print(f"Coerência prevista para h11=491, h21=50: {coherence_491_safety:.3f} (safety)") # CRITICAL_H11 safety
     return formula_coherence
 
 if __name__ == "__main__":
