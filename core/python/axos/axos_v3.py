@@ -7,6 +7,7 @@ from .universal import AxosUniversalSubstrate
 from .interoperability import AxosInteroperability
 from .reasoning import AxosMolecularReasoning
 from .stability import AxosInterfaceStability
+from .geometry import AxosGeometryOfConsciousness
 
 class AxosV3(
     AxosAgentOrchestration,  # Inherits from Integrity and Deterministic
@@ -14,7 +15,8 @@ class AxosV3(
     AxosUniversalSubstrate,
     AxosInteroperability,
     AxosMolecularReasoning,
-    AxosInterfaceStability
+    AxosInterfaceStability,
+    AxosGeometryOfConsciousness
 ):
     """
     AXOS v3 (Axiom Operating System)
