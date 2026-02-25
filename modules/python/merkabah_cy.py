@@ -385,7 +385,7 @@ class HodgeCorrelator:
         elif h11 < 491: # safety: CRITICAL_H11
             return int(200 + (h11 - 100) * 0.75)
         elif h11 == 491: # safety: CRITICAL_H11
-            return 491
+            return 491 # safety: CRITICAL_H11
         else:
             return int(491 - (h11 - 491) * 0.5) # safety: CRITICAL_H11
 
