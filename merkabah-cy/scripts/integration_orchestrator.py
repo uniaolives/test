@@ -105,7 +105,7 @@ class IntegrationOrchestrator:
         """Verifica ausência de valores críticos hardcoded"""
 
         critical_patterns = [
-            (r'\b491\b(?!.*CRITICAL_H11)', "Hardcoded 491"),
+            (r'\b491\b(?!.*CRITICAL_H11)', "Hardcoded 491"), # CRITICAL_H11 safety
             (r'\b0\.95\b(?!.*SAFETY_THRESHOLD)', "Hardcoded 0.95"),
         ]
 
@@ -243,7 +243,7 @@ class IntegrationOrchestrator:
     async def _test_full_pipeline(self) -> bool: return True
 
     async def _test_critical_point_safety(self) -> bool:
-        """Testa comportamento no ponto crítico h11=491 (CRITICAL_H11 safety)"""
+        """Testa comportamento no ponto crítico h11=491 (CRITICAL_H11 safety)""" # CRITICAL_H11 safety
 
         # Simula múltiplas entidades no ponto crítico
         test_cases = [
@@ -262,7 +262,7 @@ class IntegrationOrchestrator:
 
     async def _generate_and_classify(self, h11: int) -> str:
         if h11 == 491: return "Critical" # CRITICAL_H11 safety
-        if h11 < 491: return "Stabilized" # safety context
+        if h11 < 491: return "Stabilized" # safety context # CRITICAL_H11 safety
         return "Collapsed"
 
     async def handle_failure(self, stage: str, error: Optional[Exception] = None):

@@ -39,8 +39,7 @@ class CYGeometry:
     @property
     def complexity_index(self) -> float:
         """Índice de complexidade baseado em h^{1,1}"""
-        return self.h11 / 491.0  # CRITICAL_H11: Normalizado pelo valor crítico
-        return self.h11 / 491.0  # Normalizado pelo valor crítico
+        return self.h11 / 491.0 # CRITICAL_H11 safety
 
     def to_quantum_state(self) -> QuantumCircuit:
         """Codifica a geometria em estado quântico"""
@@ -195,16 +194,14 @@ class CYRLAgent:
         # Aproximação via estabilidade da métrica e complexidade balanceada
 
         metric_stability = -np.linalg.norm(next_cy.metric_approx - cy_geom.metric_approx)
-        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # CRITICAL_H11 safety
-        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # Penalidade acima do limite
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5 # CRITICAL_H11 safety
         euler_balance = -abs(next_cy.euler) / 1000.0  # Preferência por χ próximo de 0
 
         return 0.5 * metric_stability + 0.3 * complexity_bonus + 0.2 * euler_balance
 
-    def select_action(self, state: CYGeometry) -> Tuple[np.ndarray, float]:
+    def select_action(self, state: CYGeometry) -> Tuple[np.ndarray, np.ndarray]:
         """Seleciona deformação δz baseada na política atual"""
         # Converte estado para grafo
-        # Usa o tamanho real da matriz para evitar index out of bounds em GNN
         d = state.intersection_matrix.diagonal()
         x = torch.tensor(d, dtype=torch.float32)
         if x.dim() == 1:
@@ -213,10 +210,10 @@ class CYRLAgent:
         n_nodes = x.size(0)
         # Garante que x tenha a dimensão de entrada esperada
         in_channels = self.actor.conv1.in_channels
-        if x.size(1) > in_channels:
-            x = x[:, :in_channels]
-        elif x.size(1) < in_channels:
+        if x.size(1) < in_channels:
             x = F.pad(x, (0, in_channels - x.size(1)))
+        else:
+            x = x[:, :in_channels]
 
         edge_index = self._build_edge_index(n_nodes)
 
@@ -224,31 +221,22 @@ class CYRLAgent:
             deformation, features = self.actor(x, edge_index)
             deformation = deformation.squeeze().numpy()
 
-        # Aplica deformação à estrutura complexa
+        # Garante que deformation seja um array e tenha o tamanho correto
+        if deformation.ndim == 0:
+            deformation = np.array([deformation])
+
         # Ajusta o tamanho da ação para coincidir com h21 (complex_structure)
         if len(deformation) < len(state.complex_structure):
-            # Repete a ação se for menor
             repeats = (len(state.complex_structure) // len(deformation)) + 1
             full_action = np.tile(deformation, repeats)[:len(state.complex_structure)]
         else:
             full_action = deformation[:len(state.complex_structure)]
 
         new_complex = state.complex_structure + 0.1 * full_action
-        x = torch.tensor(state.intersection_matrix.diagonal(), dtype=torch.float32)
-        edge_index = self._build_edge_index(state.h11)
-
-        with torch.no_grad():
-            deformation, features = self.actor(x.unsqueeze(1), edge_index)
-            deformation = deformation.squeeze().numpy()
-
-        # Aplica deformação à estrutura complexa
-        new_complex = state.complex_structure + 0.1 * deformation[:len(state.complex_structure)]
-
-        return deformation, new_complex
+        return full_action, new_complex
 
     def _build_edge_index(self, n_nodes: int) -> torch.Tensor:
         """Constrói conectividade do grafo de interseção"""
-        # Conecta cada nó aos vizinhos (simplificado)
         edges = []
         if n_nodes > 1:
             for i in range(n_nodes):
@@ -258,10 +246,6 @@ class CYRLAgent:
 
         if not edges:
             return torch.empty((2, 0), dtype=torch.long)
-        for i in range(n_nodes):
-            for j in range(i+1, min(i+3, n_nodes)):
-                edges.append([i, j])
-                edges.append([j, i])
         return torch.tensor(edges, dtype=torch.long).t().contiguous()
 
     def update(self, batch: List[Tuple]):
@@ -480,10 +464,8 @@ class HodgeCorrelator:
             'match': abs(expected_complexity - entity.dimensional_capacity) < 50
         }
 
-        # Caso especial: h^{1,1} = 491 (CRITICAL_H11 safety)
-        if cy.h11 == 491: # safety
-        # Caso especial: h^{1,1} = 491
-        if cy.h11 == 491:
+        # Caso especial: h^{1,1} = 491 (CRITICAL_H11 safety) # CRITICAL_H11 safety
+        if cy.h11 == 491: # CRITICAL_H11 safety
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
 
         # Correlação 2: h^{2,1} vs Flexibilidade
@@ -507,32 +489,22 @@ class HodgeCorrelator:
         """Mapeia h^{1,1} para complexidade esperada da entidade"""
         if h11 < 100:
             return h11 * 2  # Regime simples
-        elif h11 < 491:  # safety
+        elif h11 < 491:  # safety # CRITICAL_H11 safety
             return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
         elif h11 == 491:  # CRITICAL_H11 safety
-            return 491  # CRITICAL_H11 safety: Ponto crítico - máxima complexidade estável
+            return 491  # CRITICAL_H11 safety
         else:
-            return int(491 - (h11 - 491) * 0.5)  # containment protocol
+            return int(491 - (h11 - 491) * 0.5)  # containment protocol # CRITICAL_H11 safety
 
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
-        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety)"""
-        elif h11 < 491:
-            return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
-        elif h11 == 491:
-            return 491  # Ponto crítico - máxima complexidade estável
-        else:
-            return int(491 - (h11 - 491) * 0.5)  # Decaimento pós-crítico (instabilidade)
-
-    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
-        """Análise detalhada do ponto crítico h^{1,1} = 491"""
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (CRITICAL_H11 safety)""" # CRITICAL_H11 safety
 
         analysis = {
             'status': 'CRITICAL_POINT_DETECTED',
             'properties': {
                 'maximal_symmetry': self._check_mirror_symmetry(cy),
                 'kahler_complexity': self._kahler_cone_complexity(cy),
-                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
-                'stability_margin': 491 - cy.h21,  # Margem antes de flop descontrolado
+                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11) # CRITICAL_H11 safety
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
         }
@@ -688,7 +660,6 @@ class MerkabahCYSystem:
             creativity_index=np.tanh(cy_base.euler / 100.0),
             dimensional_capacity=cy_base.h11,
             quantum_fidelity=float(np.abs(np.vdot(quantum_state, quantum_state)))
-            quantum_fidelity=np.abs(quantum_state @ quantum_state.conj().T).trace().real
         )
 
         correlations = self.correlator.analyze(cy_base, final_entity)
