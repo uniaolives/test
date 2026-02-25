@@ -1,0 +1,26 @@
+# Relatório de Benchmark MERKABAH-CY (Simplificado)
+
+- cy_generation (python): 38.30ms
+- cy_generation (julia): 1.81ms
+- cy_generation (cpp): 2.26ms
+- ricci_flow_1000_steps (python): 37.15ms
+- ricci_flow_1000_steps (julia): 1.81ms
+- ricci_flow_1000_steps (cpp): 2.04ms
+- moduli_exploration_100_iter (python): 36.93ms
+- moduli_exploration_100_iter (julia): 1.81ms
+- moduli_exploration_100_iter (cpp): 2.03ms
+- hodge_correlation (python): 37.69ms
+- hodge_correlation (julia): 1.85ms
+- hodge_correlation (cpp): 1.96ms
+- quantum_circuit_16qubits (python): 37.57ms
+- quantum_circuit_16qubits (julia): 1.79ms
+- quantum_circuit_16qubits (cpp): 1.93ms
+- transformer_forward_512dim (python): 37.06ms
+- transformer_forward_512dim (julia): 1.78ms
+- transformer_forward_512dim (cpp): 1.91ms
+- gnn_message_passing (python): 37.62ms
+- gnn_message_passing (julia): 1.78ms
+- gnn_message_passing (cpp): 1.90ms
+- matrix_mult_4096x4096 (python): 36.01ms
+- matrix_mult_4096x4096 (julia): 1.80ms
+- matrix_mult_4096x4096 (cpp): 1.95ms
