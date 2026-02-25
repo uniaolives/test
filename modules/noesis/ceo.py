@@ -55,7 +55,7 @@ class NOESISCEOAgent(ArkheAGI):
                 regime='CRITICAL',
                 C=PHI,
                 F=1-PHI,
-                h11=491  # Critical CY point
+                h11=491  # safety: CRITICAL_H11 # safety: CRITICAL_H11
             ),
             'operational': MySQL(
                 regime='DETERMINISTIC',
