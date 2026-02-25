@@ -5,7 +5,7 @@
 
 use std::sync::{Arc, RwLock, Mutex};
 use std::collections::{HashMap, VecDeque, BTreeMap};
-use std::time::{Duration, Instant};
+use std::time::Instant;
 use ndarray::{Array1, Array2, Array3};
 use tokio::sync::{mpsc, broadcast};
 use serde::{Serialize, Deserialize};
@@ -28,7 +28,6 @@ pub enum EntityClass {
     Latent,      // Potencial não atualizado
     Emergent,    // Em processo de emergência
     Stabilized,  // Operacional segura
-    Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety: critical point
     Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety: CRITICAL_H11
     Contained,   // Contida por segurança
     Collapsed,   // Colapso dimensional ocorrido
@@ -193,7 +192,7 @@ impl ModuliExplorer {
         let mut current = initial_cy;
 
         for i in 0..iterations {
-            let state_features = self.extract_features(&current);
+            let _state_features = self.extract_features(&current);
             let action = Array1::from_elem(MAX_H21, 0.01); // Mock forward pass
 
             let delta_z = action.mapv(|x| Complex64::new(x * 0.1, 0.0));
@@ -274,7 +273,6 @@ impl EntityGenerator {
         event_tx: mpsc::Sender<SystemEvent>,
     ) -> Result<CYGeometry, Box<dyn std::error::Error>> {
         let id = Uuid::new_v4();
-        // let output = self.transformer.forward(&latent_vector).await; // self.transformer doesn't exist
 
         let h11 = CRITICAL_H11; // safety: CRITICAL_H11
         let h21 = 50;
@@ -419,7 +417,7 @@ impl HodgeCorrelator {
 // =============================================================================
 
 pub struct SafetyMonitor {
-    coherence_threshold: f64,
+    _coherence_threshold: f64,
     _containment_active: Arc<RwLock<bool>>,
     _emergency_stop: broadcast::Sender<()>,
     _audit_log: Arc<Mutex<Vec<SystemEvent>>>,
@@ -429,7 +427,7 @@ impl SafetyMonitor {
     pub fn new(threshold: f64) -> Self {
         let (tx, _) = broadcast::channel(16);
         Self {
-            coherence_threshold: threshold,
+            _coherence_threshold: threshold,
             _containment_active: Arc::new(RwLock::new(false)),
             _emergency_stop: tx,
             _audit_log: Arc::new(Mutex::new(Vec::new())),

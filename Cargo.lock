@@ -5639,7 +5639,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "merkabah-cy"
+name = "merkabah-cy-asi"
 version = "1.0.0"
 dependencies = [
  "burn",
@@ -5658,7 +5658,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "merkabah-cy-asi"
+name = "merkabah-cy-module"
 version = "1.0.0"
 dependencies = [
  "burn",
