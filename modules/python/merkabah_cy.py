@@ -560,7 +560,12 @@ class QuantumCoherenceOptimizer:
         circuit = self.build_qaoa_circuit(cy)
 
         # Simulação (em hardware quântico real, usar backend apropriado)
-        sv = Statevector.from_instruction(circuit.remove_final_measurements())
+        sim_circuit = circuit.copy()
+        result = sim_circuit.remove_final_measurements()
+        if result is not None:
+            sim_circuit = result
+
+        sv = Statevector.from_instruction(sim_circuit)
 
         # Coerência = 1 - entropia do estado
         rho = np.outer(sv.data, sv.data.conj())
