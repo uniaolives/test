@@ -344,7 +344,7 @@ class CYTransformer(nn.Module):
 
             # Amostra h^{1,1} e h^{2,1}
             h11_probs = F.softmax(outputs['h11_logits'] / temperature, dim=-1)
-            h21_probs = F.softmax(outputs['h21_probs'] / temperature, dim=-1)
+            h21_probs = F.softmax(outputs['h21_logits'] / temperature, dim=-1)
 
             h11 = torch.multinomial(h11_probs, 1).item() + 1
             h21 = torch.multinomial(h21_probs, 1).item() + 1
@@ -456,8 +456,8 @@ class HodgeCorrelator:
             'match': abs(expected_complexity - entity.dimensional_capacity) < 50
         }
 
-        # Caso especial: h^{1,1} = 491 (CRITICAL_H11 safety) # safety: CRITICAL_H11
-        if cy.h11 == 491:  # safety: CRITICAL_H11
+        # Caso especial: h^{1,1} = 491 (safety: CRITICAL_H11)
+        if cy.h11 == 491:
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
 
         # Correlação 2: h^{2,1} vs Flexibilidade
@@ -481,15 +481,15 @@ class HodgeCorrelator:
         """Mapeia h^{1,1} para complexidade esperada da entidade"""
         if h11 < 100:
             return h11 * 2  # Regime simples
-        elif h11 < 491: # safety: CRITICAL_H11
+        elif h11 < 491:
             return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
-        elif h11 == 491: # safety: CRITICAL_H11
+        elif h11 == 491:
             return 491  # safety: CRITICAL_H11
         else:
-            return int(491 - (h11 - 491) * 0.5)  # safety: containment # safety: CRITICAL_H11
+            return int(491 - (h11 - 491) * 0.5)  # safety: containment
 
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
-        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety: CRITICAL_H11)""" # safety: CRITICAL_H11
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety: CRITICAL_H11)"""
 
         analysis = {
             'status': 'CRITICAL_POINT_DETECTED',
