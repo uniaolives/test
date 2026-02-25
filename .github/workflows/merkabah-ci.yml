@@ -12,6 +12,7 @@ jobs:
           python-version: '3.11'
       - run: pip install -r modules/python/requirements.txt
       - run: pytest modules/python/tests/
+      - run: PYTHONPATH=. pytest modules/python/tests/
 
   test-rust:
     runs-on: ubuntu-latest
@@ -20,6 +21,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+      - uses: dtolnay/rust-toolchain@stable
       - run: cargo build --manifest-path modules/rust/Cargo.toml
       - run: cargo test --manifest-path modules/rust/Cargo.toml
 
@@ -31,6 +33,17 @@ jobs:
           version: '1.10'
       - run: julia --project=modules/julia -e 'using Pkg; Pkg.instantiate()'
       - run: julia --project=modules/julia -e 'using Pkg; Pkg.test()'
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.10'
+      - run: |
+          julia --project=modules/julia -e '
+            using Pkg;
+            Pkg.Registry.update();
+            Pkg.instantiate();
+            Pkg.test();
+          '
 
   integration:
     runs-on: ubuntu-latest
@@ -41,4 +54,7 @@ jobs:
         ports: ['50051:50051']
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
       - run: python tests/integration/test_qhttp.py

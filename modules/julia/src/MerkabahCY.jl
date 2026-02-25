@@ -271,6 +271,10 @@ struct HodgeCorrelator
 
     function HodgeCorrelator()
         new(491) # safety
+    critical_h11::Int  # 491
+
+    function HodgeCorrelator()
+        new(491)
     end
 end
 

@@ -33,6 +33,7 @@ members = [
     "asi/merkabah_cy/rust",
     "modules/rust",
     "merkabah-cy/src/rust",
+    "modules/rust",
 ]
 resolver = "2"
 
