@@ -199,8 +199,18 @@ class CYRLAgent:
         """Seleciona deformação δz baseada na política atual"""
         # Converte estado para grafo
         d = state.intersection_matrix.diagonal()
-        x = torch.tensor(d, dtype=torch.float32).unsqueeze(1)
+        x = torch.tensor(d, dtype=torch.float32)
+        if x.dim() == 1:
+            x = x.unsqueeze(1)
+
         n_nodes = x.size(0)
+        # Garante que x tenha a dimensão de entrada esperada
+        in_channels = self.actor.conv1.in_channels
+        if x.size(1) < in_channels:
+            x = F.pad(x, (0, in_channels - x.size(1)))
+        else:
+            x = x[:, :in_channels]
+
         edge_index = self._build_edge_index(n_nodes)
 
         with torch.no_grad():
