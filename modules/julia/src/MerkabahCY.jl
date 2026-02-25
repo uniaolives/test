@@ -12,6 +12,7 @@ using Graphs
 using GraphNeuralNetworks
 using Optim
 using Symbolics
+using Tullio
 using Tullio  # Computação tensorial eficiente
 
 export CYVariety, Entity, map_cy, generate_entity, correlate
@@ -44,6 +45,10 @@ struct Entity
     quantum_fidelity::Float64
 end
 
+struct HodgeCorrelator
+    critical_h11::Int  # 491 (CRITICAL_H11 safety)
+    function HodgeCorrelator()
+        new(491) # CRITICAL_H11 safety
 # =============================================================================
 # FUNÇÕES AUXILIARES
 # =============================================================================
@@ -168,9 +173,9 @@ end
 function h11_to_complexity(corr::HodgeCorrelator, h11::Int)::Int
     if h11 < 100
         return h11 * 2
-    elseif h11 < corr.critical_h11
+    elif h11 < corr.critical_h11
         return Int(floor(200 + (h11 - 100) * 0.75))
-    elseif h11 == corr.critical_h11
+    elif h11 == corr.critical_h11
         return corr.critical_h11
     else
         return Int(floor(corr.critical_h11 - (h11 - corr.critical_h11) * 0.5))

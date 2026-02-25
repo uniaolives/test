@@ -37,6 +37,7 @@ class CYGeometry:
     @property
     def complexity_index(self) -> float:
         """Índice de complexidade baseado em h^{1,1}"""
+        return self.h11 / 491.0  # Normalizado pelo valor crítico # CRITICAL_H11 safety
         return self.h11 / 491.0  # CRITICAL_H11 safety
         return self.h11 / 491.0  # Normalizado pelo valor crítico # CRITICAL_H11 safety
         return self.h11 / 491.0  # safety: CRITICAL_H11
@@ -168,6 +169,7 @@ class CYRLAgent:
 
     def compute_reward(self, cy_geom: CYGeometry, next_cy: CYGeometry) -> float:
         metric_stability = -np.linalg.norm(next_cy.metric_approx - cy_geom.metric_approx)
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # Penalidade acima do limite # CRITICAL_H11 safety
         complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # CRITICAL_H11 safety
         euler_balance = -abs(next_cy.euler) / 1000.0
         return 0.5 * metric_stability + 0.3 * complexity_bonus + 0.2 * euler_balance
@@ -245,6 +247,9 @@ class CYRLAgent:
                 for j in range(i+1, min(i+3, n_nodes)):
                     edges.append([i, j])
                     edges.append([j, i])
+
+        if not edges:
+            return torch.empty((2, 0), dtype=torch.long)
         if not edges:
             return torch.empty((2, 0), dtype=torch.long)
         return torch.tensor(edges, dtype=torch.long).t().contiguous()
