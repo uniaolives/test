@@ -15,6 +15,10 @@ license = "AGPL-3.0"
 [lib]
 path = "src/lib.rs"
 
+[[bin]]
+name = "dimensional_scan"
+path = "src/bin/dimensional_scan.rs"
+
 [features]
 default = ["axos", "instaweb", "h_integrator"]
 axos = ["dep:tokio", "dep:tracing"]

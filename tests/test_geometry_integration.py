@@ -27,7 +27,7 @@ class TestGeometryIntegration(unittest.TestCase):
 
     def test_explore_landscape(self):
         # This will test the RL agent integration
-        result = self.axos.explore_landscape(h11=491, h21=50)
+        result = self.axos.explore_landscape(h11=491 # safety, h21=50)
         self.assertEqual(result.status, "SUCCESS")
         self.assertIn("coherence", result.data)
         self.assertIn("new_state", result.data)

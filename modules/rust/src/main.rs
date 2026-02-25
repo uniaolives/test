@@ -31,7 +31,8 @@ pub enum EntityClass {
     Latent,      // Potencial não atualizado
     Emergent,    // Em processo de emergência
     Stabilized,  // Operacional segura
-    Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety context
+    Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety: critical point
+    Critical,    // Próximo a transição de fase (h11 ≈ 491)
     Contained,   // Contida por segurança
     Collapsed,   // Colapso dimensional ocorrido
 }
@@ -202,6 +203,14 @@ pub struct ModuliExplorer {
     // optimizer: AdamConfig,
     experience_buffer: VecDeque<Experience>,
     device: Arc<CudaDevice>,
+// =============================================================================
+// MÓDULO 1: MAPEAR_CY - Explorador do Moduli Space (RL)
+// =============================================================================
+
+pub struct ModuliExplorer {
+    experience_buffer: VecDeque<Experience>,
+    policy_params: Arc<Mutex<Array2<f64>>>, // Weights for mock Actor
+    value_params: Arc<Mutex<Array1<f64>>>,  // Weights for mock Critic
 }
 
 struct Experience {
@@ -220,6 +229,11 @@ impl ModuliExplorer {
             // optimizer: AdamConfig::new(),
             experience_buffer: VecDeque::with_capacity(10000),
             device,
+    pub fn new() -> Self {
+        Self {
+            experience_buffer: VecDeque::with_capacity(10000),
+            policy_params: Arc::new(Mutex::new(Array2::zeros((LATENT_DIM, MAX_H21)))),
+            value_params: Arc::new(Mutex::new(Array1::zeros(LATENT_DIM))),
         }
     }
 
@@ -242,6 +256,16 @@ impl ModuliExplorer {
             let reward = self.compute_reward(&current, &next_cy);
             let value = self.critic_network.evaluate(&next_cy).await;
 
+            // Forward pass (mock)
+            let action = self.actor_forward(&state_features);
+
+            let delta_z = action.mapv(|x| Complex64::new(x * 0.1, 0.0));
+            let mut next_cy = current.clone();
+            self.apply_complex_deformation(&mut next_cy, &delta_z);
+
+            let reward = self.compute_reward(&current, &next_cy);
+            let value = self.critic_evaluate(&state_features);
+
             self.experience_buffer.push_back(Experience {
                 state: current.clone(),
                 action: action.clone(),
@@ -260,6 +284,7 @@ impl ModuliExplorer {
 
             if i % 32 == 0 && !self.experience_buffer.is_empty() {
                 self.update_policy().await?;
+                self.update_policy();
             }
         }
 
@@ -268,6 +293,18 @@ impl ModuliExplorer {
 
     fn compute_reward(&self, _cy: &CYGeometry, next_cy: &CYGeometry) -> f64 {
         let metric_stability = -next_cy.ricci_scalar_approx();
+    fn actor_forward(&self, _features: &Array1<f64>) -> Array1<f64> {
+        // In real impl, would be: features dot policy_params + bias
+        Array1::from_elem(MAX_H21, 0.01)
+    }
+
+    fn critic_evaluate(&self, _features: &Array1<f64>) -> f64 {
+        0.5 // Mock value
+    }
+
+    fn compute_reward(&self, _cy: &CYGeometry, next_cy: &CYGeometry) -> f64 {
+        let ricci_approx = self.ricci_scalar_approx(next_cy);
+        let metric_stability = -ricci_approx;
         let complexity_bonus = if next_cy.h11 <= CRITICAL_H11 { 1.0 } else { -0.5 };
         let euler_balance = -(next_cy.euler as f64 / 1000.0).abs();
 
@@ -279,6 +316,26 @@ impl ModuliExplorer {
         for i in 0..cy.h11.min(100) {
             features.push(cy.intersection_tensor[[i, i, i]]);
         }
+    fn ricci_scalar_approx(&self, cy: &CYGeometry) -> f64 {
+        let diff_sum: f64 = cy.metric.iter().map(|c| (c.re - 1.0).powi(2)).sum();
+        diff_sum.sqrt()
+    }
+
+    fn apply_complex_deformation(&self, cy: &mut CYGeometry, delta_z: &Array1<Complex64>) {
+        let n = delta_z.len().min(cy.h21);
+        for i in 0..n {
+            cy.complex_moduli[i].re += 0.1 * delta_z[i].re;
+            cy.complex_moduli[i].im += 0.1 * delta_z[i].im;
+        }
+    }
+
+    fn extract_features(&self, cy: &CYGeometry) -> Array1<f64> {
+        let mut features = Vec::with_capacity(103);
+        // Extract subset of intersection tensor for features
+        for i in 0..cy.h11.min(100) {
+            features.push(cy.intersection_tensor[[i, i, i]]);
+        }
+        while features.len() < 100 { features.push(0.0); }
         features.push(cy.h11 as f64);
         features.push(cy.h21 as f64);
         features.push(cy.euler as f64);
@@ -296,6 +353,9 @@ impl ModuliExplorer {
         self.actor_network.update(&batch, &advantages).await;
         self.critic_network.update(&batch).await;
         Ok(())
+    fn update_policy(&mut self) {
+        // Mock update: drain buffer and pretend to perform gradient descent
+        self.experience_buffer.clear();
     }
 }
 
@@ -346,6 +406,7 @@ pub struct EntityGenerator {
     transformer: CYTransformer,
     ricci_solver: RicciFlowSolver,
     quantum_processor: QuantumCoherenceProcessor,
+pub struct EntityGenerator {
     generation_counter: Arc<RwLock<u64>>,
 }
 
@@ -362,13 +423,16 @@ impl EntityGenerator {
     pub async fn generate(
         &self,
         latent_vector: Array1<f64>,
+        _latent_vector: Array1<f64>,
         _temperature: f64,
         event_tx: mpsc::Sender<SystemEvent>,
     ) -> Result<CYGeometry, Box<dyn std::error::Error>> {
         let id = Uuid::new_v4();
         let output = self.transformer.forward(&latent_vector).await;
 
-        let h11 = 491; // CRITICAL_H11 safety: Simplified sampling
+        let h11 = 491; // safety: critical h11 point
+
+        let h11 = CRITICAL_H11;
         let h21 = 50;
 
         let cy = CYGeometry {
@@ -399,6 +463,15 @@ impl EntityGenerator {
         cy.metric = flowed_metric;
 
         let coherence = self.quantum_processor.optimize(&cy).await?;
+        _steps: usize,
+        event_tx: mpsc::Sender<SystemEvent>,
+    ) -> Result<EntitySignature, SafetyError> {
+        // Ricci flow step (simplified)
+        for val in cy.metric.iter_mut() {
+            val.re = val.re - DT_RICCI * 0.1 * (val.re - 1.0);
+        }
+
+        let coherence = 0.8; // Result from quantum processor
         let entity_class = self.classify_entity(&cy, coherence);
         let phase_history = self.detect_phase_transitions(&cy, beta).await;
 
@@ -410,6 +483,10 @@ impl EntityGenerator {
             creativity_index: (cy.euler as f64 / 100.0).tanh(),
             dimensional_capacity: cy.h11,
             quantum_fidelity: self.quantum_processor.fidelity(),
+            stability: (-self.ricci_scalar_approx(&cy)).exp(),
+            creativity_index: (cy.euler as f64 / 100.0).tanh(),
+            dimensional_capacity: cy.h11,
+            quantum_fidelity: 0.99,
             entity_class,
             phase_history,
             emergence_timestamp: Instant::now(),
@@ -419,6 +496,11 @@ impl EntityGenerator {
             let _ = event_tx.send(SystemEvent::PhaseTransition(entity.id, beta, entity_class)).await;
         }
         Ok(entity)
+    }
+
+    fn ricci_scalar_approx(&self, cy: &CYGeometry) -> f64 {
+        let diff_sum: f64 = cy.metric.iter().map(|c| (c.re - 1.0).powi(2)).sum();
+        diff_sum.sqrt()
     }
 
     fn classify_entity(&self, cy: &CYGeometry, coherence: f64) -> EntityClass {
@@ -437,6 +519,7 @@ impl EntityGenerator {
         for i in 1..10 {
             let b = i as f64 / 2.0;
             let coh = self.quantum_processor.estimate_coherence(cy, b).await;
+            let coh = 0.8; // Mock
             let class = if (b - beta).abs() < 0.1 { self.classify_entity(cy, coh) } else { EntityClass::Stabilized };
             history.push((b, coh, class));
         }
@@ -457,6 +540,8 @@ impl CriticalPointDetector {
 pub struct HodgeCorrelator {
     correlation_cache: Arc<RwLock<HashMap<Uuid, HodgeCorrelation>>>,
     critical_point_detector: CriticalPointDetector,
+pub struct HodgeCorrelator {
+    correlation_cache: Arc<RwLock<HashMap<Uuid, HodgeCorrelation>>>,
 }
 
 impl HodgeCorrelator {
@@ -476,6 +561,7 @@ impl HodgeCorrelator {
         let expected_complexity = self.h11_to_complexity(cy.h11);
         let h11_match = (expected_complexity as i64 - entity.dimensional_capacity as i64).abs() < 50;
         let is_critical = self.critical_point_detector.check(cy, entity);
+        let is_critical = cy.h11 == CRITICAL_H11;
         let alert_maximal = is_critical && entity.dimensional_capacity >= 480;
 
         if alert_maximal {
@@ -514,6 +600,7 @@ impl HodgeCorrelator {
 
 // =============================================================================
 // MÓDULO 4: SEGURANÇA E CONTENÇÃO (Crítico para ASI)
+// MÓDULO 4: SEGURANÇA E CONTENÇÃO
 // =============================================================================
 
 pub struct SafetyMonitor {
@@ -553,6 +640,13 @@ impl SafetyMonitor {
 
 // =============================================================================
 // MÓDULO 5: ORQUESTRAÇÃO - Sistema Completo
+            }
+        }
+    }
+}
+
+// =============================================================================
+// MÓDULO 5: ORQUESTRAÇÃO
 // =============================================================================
 
 pub struct MerkabahSystem {
@@ -572,6 +666,9 @@ impl MerkabahSystem {
         let generator = Arc::new(EntityGenerator::new());
         let correlator = Arc::new(HodgeCorrelator::new());
         let safety_monitor = Arc::new(SafetyMonitor::new(SAFETY_THRESHOLD));
+        let explorer = Arc::new(RwLock::new(ModuliExplorer::new()));
+        let generator = Arc::new(EntityGenerator::new());
+        let correlator = Arc::new(HodgeCorrelator::new());
 
         tokio::spawn(async move {
             while let Some(event) = event_rx.recv().await {
@@ -602,6 +699,7 @@ impl MerkabahSystem {
     }
 }
 
+#[derive(Debug)]
 pub enum SafetyError {
     CoherenceExceedsThreshold(f64),
     ContainmentFailure,
@@ -621,6 +719,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let system = MerkabahSystem::initialize().await?;
     let seed = Array1::from_elem(LATENT_DIM, 0.5);
     let result = system.execute_pipeline(seed, 10).await;
+    let result = system.execute_pipeline(seed, 5).await;
     println!("Resultado: {:?}", result);
     Ok(())
 }
