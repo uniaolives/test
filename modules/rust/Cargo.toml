@@ -1,5 +1,6 @@
 [package]
 name = "merkabah-cy"
+name = "merkabah-cy-module"
 version = "1.0.0"
 edition = "2021"
 

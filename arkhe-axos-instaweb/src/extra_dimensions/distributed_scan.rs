@@ -131,7 +131,6 @@ fn run_single_node_simulation(cfg: &NodeConfig) -> NodeResult {
             println!("[ERROR] Simulation step failed: {}", e);
             break;
         }
-        h.evolve_step(&mut psi, dt_adapt, t);
 
         // Projetar e registrar população
         let rho_obs = h.project_observable(&psi);

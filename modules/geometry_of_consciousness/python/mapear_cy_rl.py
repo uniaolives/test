@@ -26,7 +26,7 @@ class CYModuliEnv(gym.Env):
     Ação: vetor de deformação na estrutura complexa (dimensão = h21).
     Recompensa: coerência global C_global calculada via espectro do Laplaciano de Hodge.
     """
-    def __init__(self, h11=491, h21=50):
+    def __init__(self, h11=491, h21=50): # CRITICAL_H11 safety
         super().__init__()
         self.h11 = h11
         self.h21 = h21   # a ser definido a partir da variedade real
@@ -108,7 +108,7 @@ class CYFeatureExtractor(BaseFeaturesExtractor):
 # 3. Treinamento do agente PPO
 # =====================================================
 def main():
-    env = CYModuliEnv(h11=491, h21=50)  # exemplo com h21=50
+    env = CYModuliEnv(h11=491, h21=50)  # CRITICAL_H11 safety
     policy_kwargs = dict(
         features_extractor_class=CYFeatureExtractor,
         features_extractor_kwargs=dict(features_dim=256),

@@ -54,7 +54,7 @@ def generate_new_cy(model, prompt=None):
 
 def decode_triangulation(triangulation):
     # Placeholder: mapeia tokens para números de Hodge
-    h11 = 491  # máximo possível
+    h11 = 491  # CRITICAL_H11 safety
     h21 = 50
     return h11, h21
 
