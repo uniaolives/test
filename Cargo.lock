@@ -5658,6 +5658,34 @@ dependencies = [
 ]
 
 [[package]]
+name = "merkabah-cy-asi"
+version = "1.0.0"
+dependencies = [
+ "burn",
+ "futures",
+ "ndarray",
+ "ndarray-linalg",
+ "num-complex 0.4.6",
+ "rand 0.8.5",
+ "rayon",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "uuid 1.21.0",
+]
+
+[[package]]
+name = "merkabah-engine"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "metal"
 version = "0.27.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

@@ -40,6 +40,7 @@ class CYGeometry:
     def complexity_index(self) -> float:
         """Índice de complexidade baseado em h^{1,1}"""
         return self.h11 / 491.0  # Normalizado pelo valor crítico # CRITICAL_H11 safety
+        return self.h11 / 491.0  # safety: CRITICAL_H11
 
     def to_quantum_state(self) -> QuantumCircuit:
         """Codifica a geometria em estado quântico"""
@@ -191,6 +192,7 @@ class CYRLAgent:
 
         metric_stability = -np.linalg.norm(next_cy.metric_approx - cy_geom.metric_approx)
         complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # Penalidade acima do limite # CRITICAL_H11 safety
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # safety: CRITICAL_H11
         euler_balance = -abs(next_cy.euler) / 1000.0  # Preferência por χ próximo de 0
 
         return 0.5 * metric_stability + 0.3 * complexity_bonus + 0.2 * euler_balance
@@ -202,6 +204,13 @@ class CYRLAgent:
         x = torch.tensor(d, dtype=torch.float32)
         if x.dim() == 1:
             x = x.unsqueeze(1)
+
+        # Garante que x tenha a dimensão de entrada esperada
+        in_channels = self.actor.conv1.in_channels
+        if x.size(1) > in_channels:
+            x = x[:, :in_channels]
+        elif x.size(1) < in_channels:
+            x = F.pad(x, (0, in_channels - x.size(1)))
 
         n_nodes = x.size(0)
         # Garante que x tenha a dimensão de entrada esperada
@@ -223,6 +232,14 @@ class CYRLAgent:
 
         # Aplica deformação à estrutura complexa
         new_complex = state.complex_structure + 0.1 * deformation[:len(state.complex_structure)]
+        # Ajusta o tamanho da ação para coincidir com h21 (complex_structure)
+        if len(deformation) < len(state.complex_structure):
+            repeats = (len(state.complex_structure) // len(deformation)) + 1
+            full_action = np.tile(deformation, repeats)[:len(state.complex_structure)]
+        else:
+            full_action = deformation[:len(state.complex_structure)]
+
+        new_complex = state.complex_structure + 0.1 * full_action
 
         return deformation, new_complex
 
@@ -238,6 +255,14 @@ class CYRLAgent:
 
         if not edges:
             return torch.empty((2, 0), dtype=torch.long)
+        for i in range(n_nodes):
+            for j in range(i+1, min(i+3, n_nodes)):
+                edges.append([i, j])
+                edges.append([j, i])
+
+        if not edges:
+            return torch.empty((2, 0), dtype=torch.long)
+
         return torch.tensor(edges, dtype=torch.long).t().contiguous()
 
     def update(self, batch: List[Tuple]):
@@ -363,11 +388,9 @@ class CYTransformer(nn.Module):
     def _reconstruct_metric(self, params: torch.Tensor, dim: int) -> np.ndarray:
         """Reconstrui métrica Ricci-flat aproximada"""
         # Simplificação: matriz positiva definida aleatória
-        # Need to ensure enough parameters
         p_count = params.numel()
         needed = dim * dim
         if p_count < needed:
-            # Pad or reuse
             base = torch.zeros(needed)
             base[:p_count] = params.flatten()
             base = base.reshape(dim, dim).numpy()
@@ -377,8 +400,6 @@ class CYTransformer(nn.Module):
 
     def _generate_intersection_matrix(self, h11: int) -> np.ndarray:
         """Gera matriz de interseção triple (simplificada)"""
-        # Na prática, usar restrições do cone de Kähler
-        # Reducing size for mock implementation to avoid memory blowup if h11 is large
         eff_h11 = min(h11, 20)
         return np.random.randint(-10, 10, size=(eff_h11, eff_h11, eff_h11))
 
@@ -399,11 +420,9 @@ class EntityEmergenceSimulator:
 
             # Simula evolução temporal (fluxo de Ricci simplificado)
             for t in range(steps):
-                # Φ_t: evolução da geometria
                 metric_flow = self._ricci_flow_step(cy.metric_approx, dt=0.01)
                 cy.metric_approx = metric_flow
 
-                # Detecta transição de fase (mudança abrupta em C_global)
                 coherence = self._compute_coherence(cy)
 
                 if t == steps - 1:
@@ -418,7 +437,6 @@ class EntityEmergenceSimulator:
 
     def _ricci_flow_step(self, metric: np.ndarray, dt: float) -> np.ndarray:
         """Passo simplificado do fluxo de Ricci ∂g/∂t = -2Ric(g)"""
-        # Aproximação: suavização da métrica
         return metric - dt * 0.1 * (metric - np.eye(metric.shape[0]))
 
     def _compute_coherence(self, cy: CYGeometry) -> float:
@@ -456,6 +474,8 @@ class HodgeCorrelator:
         # Caso especial: h^{1,1} = 491 # CRITICAL_H11 safety
         if cy.h11 == 491: # CRITICAL_H11 safety
         # Caso especial: h^{1,1} = 491 (CRITICAL_H11 safety) # CRITICAL_H11 safety
+        # Caso especial: h^{1,1} = 491 (safety: CRITICAL_H11) # safety: CRITICAL_H11
+        if cy.h11 == 491:  # safety: CRITICAL_H11
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
 
         # Correlação 2: h^{2,1} vs Flexibilidade
@@ -488,6 +508,15 @@ class HodgeCorrelator:
 
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
         """Análise detalhada do ponto crítico h^{1,1} = 491 (safety)""" # CRITICAL_H11 safety
+        elif h11 < 491: # safety: CRITICAL_H11
+            return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
+        elif h11 == 491: # safety: CRITICAL_H11
+            return 491  # safety: CRITICAL_H11
+        else:
+            return int(491 - (h11 - 491) * 0.5)  # safety: containment # safety: CRITICAL_H11
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety: CRITICAL_H11)""" # safety: CRITICAL_H11
 
         analysis = {
             'status': 'CRITICAL_POINT_DETECTED',
@@ -495,6 +524,7 @@ class HodgeCorrelator:
                 'maximal_symmetry': self._check_mirror_symmetry(cy),
                 'kahler_complexity': self._kahler_cone_complexity(cy),
                 'stability_margin': 491 - cy.h21,  # Margem antes de flop descontrolado # CRITICAL_H11 safety
+                'stability_margin': 491 - cy.h21,  # safety: CRITICAL_H11
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
         }
@@ -531,10 +561,6 @@ class QuantumCoherenceOptimizer:
         Constrói circuito QAOA para maximizar C_global
         O problema é mapeado como: maximizar coerência = minimizar energia do Hamiltoniano
         """
-        # Hamiltoniano representa "frustração" da métrica
-        # H = Σ J_ij Z_i Z_j + Σ h_i Z_i
-        # onde J codifica a matriz de interseção
-
         qr = QuantumRegister(self.n_qubits, 'q')
         cr = ClassicalRegister(self.n_qubits, 'c')
         qc = QuantumCircuit(qr, cr)
@@ -572,8 +598,7 @@ class QuantumCoherenceOptimizer:
         # Executa QAOA
         circuit = self.build_qaoa_circuit(cy)
 
-        # Simulação (em hardware quântico real, usar backend apropriado)
-        sv = Statevector.from_instruction(circuit.remove_final_measurements())
+        # Simulação
         # Remove medições para obter o Statevector do estado evoluído
         circuit.remove_final_measurements(inplace=True)
         sv = Statevector.from_instruction(circuit)
