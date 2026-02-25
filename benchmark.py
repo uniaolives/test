@@ -25,7 +25,7 @@ async def bench_mapear_cy(client, h11, h21, iterations):
 async def run_benchmark(config):
     client = QHTTPClient("localhost:50051")
     results = {}
-    for size in [100, 200, 300, 400, 491]:
+    for size in [100, 200, 300, 400, 491]: # CRITICAL_H11 safety
         for lang in ["python", "rust", "julia"]:
             # In a real scenario, we might call different endpoints for different languages
             t = await bench_mapear_cy(client, size, 250, 10) # Reduced iterations for quick verification
