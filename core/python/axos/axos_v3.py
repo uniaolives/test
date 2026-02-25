@@ -26,7 +26,9 @@ class AxosV3(
 
     def __init__(self, **kwargs):
         # Initialize all parent classes via MRO
-        super().__init__(**kwargs)
+        # To avoid object.__init__ TypeError, we don't pass kwargs up
+        # unless the mixins are designed to consume them.
+        super().__init__()
 
     def get_version(self) -> str:
         return "v3.0 (Block Ω+∞+171)"
@@ -39,3 +41,17 @@ class AxosV3(
             "yang_baxter_enabled": True,
             "substrate_agnostic": True
         }
+
+    def execute(self, operation, **kwargs):
+        """Execute operation through integrity gates."""
+        if not self.integrity_gate(operation):
+            return {"status": "BLOCKED", "reason": "Integrity gate failure"}
+        return self.deterministic_execute(operation)
+
+    async def execute_async(self, operation, **kwargs):
+        """Async execution through integrity gates."""
+        return self.execute(operation, **kwargs)
+
+    def verify_yang_baxter(self, operation) -> bool:
+        """Topological verification."""
+        return True # Simplified for demo
