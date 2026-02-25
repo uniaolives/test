@@ -343,6 +343,8 @@ class HodgeCorrelator:
             'observed': entity.dimensional_capacity,
             'match': abs(expected_complexity - entity.dimensional_capacity) < 50
         }
+
+        # Caso especial: h^{1,1} = 491 (safety) # CRITICAL_H11 safety
         if cy.h11 == 491: # CRITICAL_H11 safety
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
         correlations['h21_flexibility'] = {
@@ -373,6 +375,31 @@ class HodgeCorrelator:
             'status': 'CRITICAL_POINT_DETECTED',
             'properties': {
                 'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
+        else:
+            return int(491 - (h11 - 491) * 0.5) # containment
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        return {
+            'status': 'CRITICAL_POINT_DETECTED',
+            'properties': {
+                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
+            return h11 * 2  # Regime simples
+        elif h11 < 491: # safety # CRITICAL_H11 safety
+            return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
+        elif h11 == 491: # CRITICAL_H11 safety
+            return 491  # CRITICAL_H11 safety
+        else:
+            return int(491 - (h11 - 491) * 0.5)  # containment protocol # CRITICAL_H11 safety
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety)""" # CRITICAL_H11 safety
+
+        analysis = {
+            'status': 'CRITICAL_POINT_DETECTED',
+            'properties': {
+                'maximal_symmetry': self._check_mirror_symmetry(cy),
+                'kahler_complexity': self._kahler_cone_complexity(cy),
+                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11) # CRITICAL_H11 safety
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
         }

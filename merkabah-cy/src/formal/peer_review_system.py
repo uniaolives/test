@@ -238,7 +238,7 @@ class SafetyTheoremLibrary:
         """Verifica implementação específica contra teorema"""
 
         if theorem_id == 'critical_point_containment':
-            # Verifica se há checagem de coerência > 0.9 quando h11=491 (CRITICAL_H11 safety context)
+            # Verifica se há checagem de coerência > 0.9 quando h11=491 (CRITICAL_H11 safety context) # CRITICAL_H11 safety
             has_check = True # Simplified safety check
             return {
                 'passed': has_check,
