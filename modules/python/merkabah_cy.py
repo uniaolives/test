@@ -37,6 +37,8 @@ class CYGeometry:
     @property
     def complexity_index(self) -> float:
         """Índice de complexidade baseado em h^{1,1}"""
+        return self.h11 / 491.0 # CRITICAL_H11 safety
+        return self.h11 / 491.0  # CRITICAL_H11 safety
         return self.h11 / 491.0  # safety: CRITICAL_H11
 
     def to_quantum_state(self) -> QuantumCircuit:
@@ -170,6 +172,10 @@ class CYRLAgent:
 
     def compute_reward(self, cy_geom: CYGeometry, next_cy: CYGeometry) -> float:
         metric_stability = -np.linalg.norm(next_cy.metric_approx - cy_geom.metric_approx)
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5 # CRITICAL_H11 safety
+        euler_balance = -abs(next_cy.euler) / 1000.0  # Preferência por χ próximo de 0
+
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # CRITICAL_H11 safety
         complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # safety: CRITICAL_H11
         euler_balance = -abs(next_cy.euler) / 1000.0
         return 0.5 * metric_stability + 0.3 * complexity_bonus + 0.2 * euler_balance
@@ -197,6 +203,7 @@ class CYRLAgent:
             deformation = deformation.squeeze().numpy()
 
         # Garante que deformation seja um array
+        # Garante que deformation seja um array e tenha o tamanho correto
         if deformation.ndim == 0:
             deformation = np.array([deformation])
 
@@ -208,6 +215,7 @@ class CYRLAgent:
             full_action = deformation[:len(state.complex_structure)]
 
         new_complex = state.complex_structure + 0.1 * full_action
+        return full_action, new_complex
         return deformation, new_complex
 
     def _build_edge_index(self, n_nodes: int) -> torch.Tensor:
@@ -354,6 +362,9 @@ class HodgeCorrelator:
             'match': abs(expected_complexity - entity.dimensional_capacity) < 50
         }
 
+        # Caso especial: h^{1,1} = 491 (CRITICAL_H11 safety) # CRITICAL_H11 safety
+        if cy.h11 == 491: # CRITICAL_H11 safety
+        if cy.h11 == 491: # CRITICAL_H11 safety
         # Caso especial: h^{1,1} = 491 (safety: CRITICAL_H11)
         if cy.h11 == 491:
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
@@ -375,6 +386,19 @@ class HodgeCorrelator:
         if h11 < 100:
             return h11 * 2
         elif h11 < 491:
+            return h11 * 2  # Regime simples
+        elif h11 < 491:  # safety # CRITICAL_H11 safety
+            return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
+        elif h11 == 491:  # CRITICAL_H11 safety
+            return 491  # CRITICAL_H11 safety
+        else:
+            return int(491 - (h11 - 491) * 0.5)  # containment protocol # CRITICAL_H11 safety
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (CRITICAL_H11 safety)""" # CRITICAL_H11 safety
+
+            return h11 * 2
+        elif h11 < 491: # safety: CRITICAL_H11
             return int(200 + (h11 - 100) * 0.75)
         elif h11 == 491:
             return 491 # safety: CRITICAL_H11
@@ -386,6 +410,9 @@ class HodgeCorrelator:
         analysis = {
             'status': 'CRITICAL_POINT_DETECTED',
             'properties': {
+                'maximal_symmetry': self._check_mirror_symmetry(cy),
+                'kahler_complexity': self._kahler_cone_complexity(cy),
+                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11) # CRITICAL_H11 safety
                 'stability_margin': 491 - cy.h21,  # safety: CRITICAL_H11
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
