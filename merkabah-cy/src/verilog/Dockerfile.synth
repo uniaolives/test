@@ -1,0 +1,5 @@
+FROM ubuntu:22.04
+RUN apt-get update && apt-get install -y yosys
+WORKDIR /app
+COPY . .
+CMD ["yosys", "-p", "read_verilog matrix_mult.vhd; synth_xilinx"]
