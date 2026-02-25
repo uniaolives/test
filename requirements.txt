@@ -25,6 +25,10 @@ fastapi
 uvicorn
 astropy
 scikit-learn
+torch-geometric
+stable-baselines3
+gym
+maturin
 aiohttp
 pyzmq
 pytest

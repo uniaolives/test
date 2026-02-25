@@ -259,19 +259,34 @@ checksum = "c3d036a3c4ab069c7b410a2ce876bd74808d2d0888a82667669f8e783a898bf1"
 
 [[package]]
 name = "arkhe-axos-instaweb"
-version = "0.1.0"
+version = "1.2.1"
 dependencies = [
  "arkhe_core",
  "arkhe_instaweb",
+ "bincode",
+ "clap",
+ "criterion",
+ "crossbeam",
  "nalgebra 0.32.6",
  "num-complex 0.4.6",
  "num-traits",
+ "parking_lot",
+ "pqcrypto-kyber 0.8.1",
+ "pqcrypto-sphincsplus 0.5.3",
+ "pqcrypto-traits",
+ "proptest",
+ "pyo3",
  "rayon",
  "rust_decimal",
  "rust_decimal_macros",
  "serde",
  "serde_json",
+ "sha2 0.10.9",
+ "simba 0.8.1",
  "tokio",
+ "tokio-test",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -1193,7 +1208,7 @@ dependencies = [
  "parking_lot",
  "pqcrypto-dilithium",
  "pqcrypto-falcon",
- "pqcrypto-sphincsplus",
+ "pqcrypto-sphincsplus 0.7.2",
  "serde",
  "serde_json",
  "thiserror 1.0.69",
@@ -6202,6 +6217,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "pqcrypto-kyber"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "15c00293cf898859d0c771455388054fd69ab712263c73fdc7f287a39b1ba000"
+dependencies = [
+ "cc",
+ "glob",
+ "libc",
+ "pqcrypto-internals",
+ "pqcrypto-traits",
+]
+
+[[package]]
+name = "pqcrypto-sphincsplus"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "140da2a265c2604c6cf8e1a7af80f3e2003cba3b75f69f083be3170810a62644"
+dependencies = [
+ "cc",
+ "glob",
+ "libc",
+ "pqcrypto-traits",
+]
+
+[[package]]
 name = "pqcrypto-sphincsplus"
 version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -7413,7 +7453,7 @@ dependencies = [
  "log",
  "ndarray",
  "pqcrypto-dilithium",
- "pqcrypto-kyber",
+ "pqcrypto-kyber 0.6.7",
  "pqcrypto-traits",
  "prost",
  "prost-types",
