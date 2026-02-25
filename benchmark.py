@@ -3,6 +3,8 @@ import asyncio
 import time
 import json
 import numpy as np
+import torch
+from modules.python.tensor_geometry import PoincareBall
 
 # Mock QHTTPClient if not available
 try:
@@ -22,10 +24,55 @@ async def bench_mapear_cy(client, h11, h21, iterations):
     end = time.perf_counter()
     return end - start
 
+def bench_tensor_expansion():
+    """Métricas de Expansão de Tensores e Geometria Hiperbólica"""
+    ball = PoincareBall(c=1.0)
+    results = {}
+
+    # 1. Benchmark: Broadcasting (Expansão Implícita)
+    x = torch.randn(100, 1, 512)
+    y = torch.randn(1, 100, 512)
+    start = time.perf_counter()
+    for _ in range(100):
+        z = x + y # Broadcasting ocorre aqui
+    results['broadcasting_100x100'] = time.perf_counter() - start
+
+    # 2. Benchmark: Möbius Addition (Geometria em ℍ³)
+    x_h = torch.randn(1000, 512) * 0.1
+    y_h = torch.randn(1000, 512) * 0.1
+    start = time.perf_counter()
+    for _ in range(100):
+        z_h = ball.mobius_add(x_h, y_h)
+    results['mobius_addition_1000x512'] = time.perf_counter() - start
+
+    # 3. Benchmark: Hyperbolic Distance
+    start = time.perf_counter()
+    for _ in range(100):
+        d = ball.distance(x_h, y_h)
+    results['hyperbolic_distance_1000x512'] = time.perf_counter() - start
+
+    return results
+
+async def run_benchmark(config):
+    client = QHTTPClient("localhost:50051")
+    results = {}
+
+    print("Running system benchmarks...")
+    for size in [100, 200, 491]:
+        for lang in ["python", "rust", "julia"]:
+            t = await bench_mapear_cy(client, size, 250, 10)
+            results[f"{lang}_h11={size}"] = t
+
+    print("Running tensor expansion benchmarks...")
+    results['tensor_metrics'] = bench_tensor_expansion()
+
 async def run_benchmark(config):
     client = QHTTPClient("localhost:50051")
     results = {}
     for size in [100, 200, 300, 400, 491]: # CRITICAL_H11 safety
+    for size in [100, 200, 300, 400, 491]: # safety
+    for size in [100, 200, 300, 400, 491]: # CRITICAL_H11 safety
+    for size in [100, 200, 300, 400, 491]: # safety: CRITICAL_H11 # safety: CRITICAL_H11
         for lang in ["python", "rust", "julia"]:
             # In a real scenario, we might call different endpoints for different languages
             t = await bench_mapear_cy(client, size, 250, 10) # Reduced iterations for quick verification
@@ -40,3 +87,5 @@ if __name__ == "__main__":
         print("Benchmark completed. Results saved to benchmark_results.json")
     except Exception as e:
         print(f"Benchmark failed: {e}")
+        import traceback
+        traceback.print_exc()
