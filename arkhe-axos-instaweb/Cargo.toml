@@ -39,6 +39,7 @@ pqcrypto-traits = "0.3"
 # Serialização
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+clap = { version = "4.5", features = ["derive"] }
 bincode = "1.3"
 sha2 = "0.10"
 
@@ -64,6 +65,10 @@ path = "src/bin/instaweb-node.rs"
 [[bin]]
 name = "h-integrator-cli"
 path = "src/bin/h-integrator-cli.rs"
+
+[[bin]]
+name = "dimensional_scan"
+path = "src/bin/dimensional_scan.rs"
 
 [profile.release]
 lto = "fat"
