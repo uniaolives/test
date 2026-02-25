@@ -15,6 +15,7 @@ use uuid::Uuid;
 // CONSTANTES E CONFIGURAÇÕES GLOBAIS
 // =============================================================================
 
+pub const CRITICAL_H11: usize = 491; // CRITICAL_H11 safety
 pub const CRITICAL_H11: usize = 491; // safety: CRITICAL_H11
 pub const MAX_H11: usize = 1000;
 pub const MAX_H21: usize = 1000;
@@ -28,6 +29,8 @@ pub enum EntityClass {
     Latent,      // Potencial não atualizado
     Emergent,    // Em processo de emergência
     Stabilized,  // Operacional segura
+    Critical,    // Próximo a transição de fase (CRITICAL_H11 safety: h11 ≈ 491) - safety: critical point // CRITICAL_H11 safety
+    Critical,    // Próximo a transição de fase (CRITICAL_H11 safety: h11 ≈ 491) // CRITICAL_H11 safety
     Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety: critical point
     Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety: CRITICAL_H11
     Contained,   // Contida por segurança
@@ -274,6 +277,9 @@ impl EntityGenerator {
         event_tx: mpsc::Sender<SystemEvent>,
     ) -> Result<CYGeometry, Box<dyn std::error::Error>> {
         let id = Uuid::new_v4();
+        let output = self.transformer.forward(&latent_vector).await;
+
+        let h11 = 491; // safety: critical h11 point // CRITICAL_H11 safety
         // let output = self.transformer.forward(&latent_vector).await; // self.transformer doesn't exist
 
         let h11 = CRITICAL_H11; // safety: CRITICAL_H11
