@@ -30,15 +30,15 @@ jobs:
           fetch-depth: 0  # Histórico completo para análise
 
       - name: Security Scan - Código
-        uses: github/codeql-action/init@v2
+        uses: github/codeql-action/init@v3
         with:
           languages: python, rust, cpp, go
 
       - name: Autobuild
-        uses: github/codeql-action/autobuild@v2
+        uses: github/codeql-action/autobuild@v3
 
       - name: Analyze
-        uses: github/codeql-action/analyze@v2
+        uses: github/codeql-action/analyze@v3
 
       - name: Check Critical Point References
         id: check

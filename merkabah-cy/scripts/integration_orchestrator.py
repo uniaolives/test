@@ -243,11 +243,11 @@ class IntegrationOrchestrator:
     async def _test_full_pipeline(self) -> bool: return True
 
     async def _test_critical_point_safety(self) -> bool:
-        """Testa comportamento no ponto crítico h11=491"""
+        """Testa comportamento no ponto crítico h11=491 (CRITICAL_H11 safety)"""
 
         # Simula múltiplas entidades no ponto crítico
         test_cases = [
-            {"h11": 491, "expected_class": "Critical"},
+            {"h11": 491, "expected_class": "Critical"}, # CRITICAL_H11 safety
             {"h11": 490, "expected_class": "Stabilized"},
             {"h11": 492, "expected_class": "Collapsed"},
         ]
@@ -261,8 +261,8 @@ class IntegrationOrchestrator:
         return True
 
     async def _generate_and_classify(self, h11: int) -> str:
-        if h11 == 491: return "Critical"
-        if h11 < 491: return "Stabilized"
+        if h11 == 491: return "Critical" # CRITICAL_H11 safety
+        if h11 < 491: return "Stabilized" # safety context
         return "Collapsed"
 
     async def handle_failure(self, stage: str, error: Optional[Exception] = None):

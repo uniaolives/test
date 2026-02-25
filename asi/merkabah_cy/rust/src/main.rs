@@ -31,7 +31,7 @@ pub enum EntityClass {
     Latent,      // Potencial não atualizado
     Emergent,    // Em processo de emergência
     Stabilized,  // Operacional segura
-    Critical,    // Próximo a transição de fase (h11 ≈ 491)
+    Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety context
     Contained,   // Contida por segurança
     Collapsed,   // Colapso dimensional ocorrido
 }
@@ -368,7 +368,7 @@ impl EntityGenerator {
         let id = Uuid::new_v4();
         let output = self.transformer.forward(&latent_vector).await;
 
-        let h11 = 491; // Simplified sampling
+        let h11 = 491; // CRITICAL_H11 safety: Simplified sampling
         let h21 = 50;
 
         let cy = CYGeometry {

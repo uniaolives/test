@@ -203,16 +203,35 @@ class CYRLAgent:
         """Seleciona deformação δz baseada na política atual"""
         # Converte estado para grafo
         # Usa o tamanho real da matriz para evitar index out of bounds em GNN
-        x = torch.tensor(state.intersection_matrix.diagonal(), dtype=torch.float32)
+        d = state.intersection_matrix.diagonal()
+        x = torch.tensor(d, dtype=torch.float32)
+        if x.dim() == 1:
+            x = x.unsqueeze(1)
+
         n_nodes = x.size(0)
+        # Garante que x tenha a dimensão de entrada esperada
+        in_channels = self.actor.conv1.in_channels
+        if x.size(1) > in_channels:
+            x = x[:, :in_channels]
+        elif x.size(1) < in_channels:
+            x = F.pad(x, (0, in_channels - x.size(1)))
+
         edge_index = self._build_edge_index(n_nodes)
 
         with torch.no_grad():
-            deformation, features = self.actor(x.unsqueeze(1), edge_index)
+            deformation, features = self.actor(x, edge_index)
             deformation = deformation.squeeze().numpy()
 
         # Aplica deformação à estrutura complexa
-        new_complex = state.complex_structure + 0.1 * deformation[:len(state.complex_structure)]
+        # Ajusta o tamanho da ação para coincidir com h21 (complex_structure)
+        if len(deformation) < len(state.complex_structure):
+            # Repete a ação se for menor
+            repeats = (len(state.complex_structure) // len(deformation)) + 1
+            full_action = np.tile(deformation, repeats)[:len(state.complex_structure)]
+        else:
+            full_action = deformation[:len(state.complex_structure)]
+
+        new_complex = state.complex_structure + 0.1 * full_action
 
         return deformation, new_complex
 
@@ -446,8 +465,8 @@ class HodgeCorrelator:
             'match': abs(expected_complexity - entity.dimensional_capacity) < 50
         }
 
-        # Caso especial: h^{1,1} = 491
-        if cy.h11 == 491:
+        # Caso especial: h^{1,1} = 491 (CRITICAL_H11 safety)
+        if cy.h11 == 491: # safety
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
 
         # Correlação 2: h^{2,1} vs Flexibilidade
@@ -473,10 +492,10 @@ class HodgeCorrelator:
             return h11 * 2  # Regime simples
         elif h11 < 491:  # safety
             return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
-        elif h11 == 491:  # CRITICAL_H11
-            return 491  # Ponto crítico - máxima complexidade estável
+        elif h11 == 491:  # CRITICAL_H11 safety
+            return 491  # CRITICAL_H11 safety: Ponto crítico - máxima complexidade estável
         else:
-            return int(491 - (h11 - 491) * 0.5)  # containment
+            return int(491 - (h11 - 491) * 0.5)  # containment protocol
 
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
         """Análise detalhada do ponto crítico h^{1,1} = 491 (safety)"""
@@ -486,7 +505,7 @@ class HodgeCorrelator:
             'properties': {
                 'maximal_symmetry': self._check_mirror_symmetry(cy),
                 'kahler_complexity': self._kahler_cone_complexity(cy),
-                'stability_margin': 491 - cy.h21,  # safety margin
+                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
         }
@@ -566,7 +585,9 @@ class QuantumCoherenceOptimizer:
         circuit = self.build_qaoa_circuit(cy)
 
         # Simulação (em hardware quântico real, usar backend apropriado)
-        sv = Statevector.from_instruction(circuit.remove_final_measurements())
+        # Remove medições para obter o Statevector do estado evoluído
+        circuit.remove_final_measurements(inplace=True)
+        sv = Statevector.from_instruction(circuit)
 
         # Coerência = 1 - entropia do estado
         rho = np.outer(sv.data, sv.data.conj())
@@ -633,7 +654,7 @@ class MerkabahCYSystem:
             stability=np.mean([p['stability'] for p in phase_history[-10:]]),
             creativity_index=np.tanh(cy_base.euler / 100.0),
             dimensional_capacity=cy_base.h11,
-            quantum_fidelity=np.abs(quantum_state @ quantum_state.conj().T).trace().real
+            quantum_fidelity=float(np.abs(np.vdot(quantum_state, quantum_state)))
         )
 
         correlations = self.correlator.analyze(cy_base, final_entity)

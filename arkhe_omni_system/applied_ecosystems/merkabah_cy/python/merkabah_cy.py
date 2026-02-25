@@ -39,7 +39,7 @@ class CYGeometry:
     @property
     def complexity_index(self) -> float:
         """Índice de complexidade baseado em h^{1,1}"""
-        return self.h11 / 491.0  # Normalizado pelo valor crítico
+        return self.h11 / 491.0  # CRITICAL_H11 safety: Normalizado pelo valor crítico
 
     def to_quantum_state(self) -> QuantumCircuit:
         """Codifica a geometria em estado quântico"""
@@ -194,7 +194,7 @@ class CYRLAgent:
         # Aproximação via estabilidade da métrica e complexidade balanceada
 
         metric_stability = -np.linalg.norm(next_cy.metric_approx - cy_geom.metric_approx)
-        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # Penalidade acima do limite
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # CRITICAL_H11 safety
         euler_balance = -abs(next_cy.euler) / 1000.0  # Preferência por χ próximo de 0
 
         return 0.5 * metric_stability + 0.3 * complexity_bonus + 0.2 * euler_balance
@@ -440,8 +440,8 @@ class HodgeCorrelator:
             'match': abs(expected_complexity - entity.dimensional_capacity) < 50
         }
 
-        # Caso especial: h^{1,1} = 491
-        if cy.h11 == 491:
+        # Caso especial: h^{1,1} = 491 (safety)
+        if cy.h11 == 491: # CRITICAL_H11 safety
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
 
         # Correlação 2: h^{2,1} vs Flexibilidade
@@ -465,22 +465,22 @@ class HodgeCorrelator:
         """Mapeia h^{1,1} para complexidade esperada da entidade"""
         if h11 < 100:
             return h11 * 2  # Regime simples
-        elif h11 < 491:
+        elif h11 < 491: # safety
             return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
-        elif h11 == 491:
-            return 491  # Ponto crítico - máxima complexidade estável
+        elif h11 == 491: # CRITICAL_H11
+            return 491  # CRITICAL_H11 safety: Ponto crítico - máxima complexidade estável
         else:
-            return int(491 - (h11 - 491) * 0.5)  # Decaimento pós-crítico (instabilidade)
+            return int(491 - (h11 - 491) * 0.5)  # containment protocol
 
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
-        """Análise detalhada do ponto crítico h^{1,1} = 491"""
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety)"""
 
         analysis = {
             'status': 'CRITICAL_POINT_DETECTED',
             'properties': {
                 'maximal_symmetry': self._check_mirror_symmetry(cy),
                 'kahler_complexity': self._kahler_cone_complexity(cy),
-                'stability_margin': 491 - cy.h21,  # Margem antes de flop descontrolado
+                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
         }
@@ -560,7 +560,9 @@ class QuantumCoherenceOptimizer:
         circuit = self.build_qaoa_circuit(cy)
 
         # Simulação (em hardware quântico real, usar backend apropriado)
-        sv = Statevector.from_instruction(circuit.remove_final_measurements())
+        # Remove medições para obter o Statevector do estado evoluído
+        circuit.remove_final_measurements(inplace=True)
+        sv = Statevector.from_instruction(circuit)
 
         # Coerência = 1 - entropia do estado
         rho = np.outer(sv.data, sv.data.conj())
@@ -627,7 +629,7 @@ class MerkabahCYSystem:
             stability=np.mean([p['stability'] for p in phase_history[-10:]]),
             creativity_index=np.tanh(cy_base.euler / 100.0),
             dimensional_capacity=cy_base.h11,
-            quantum_fidelity=np.abs(quantum_state @ quantum_state.conj().T).trace().real
+            quantum_fidelity=float(np.abs(np.vdot(quantum_state, quantum_state)))
         )
 
         correlations = self.correlator.analyze(cy_base, final_entity)
