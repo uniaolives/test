@@ -13,3 +13,10 @@ Optim = "429524aa-4258-5aef-a3af-852621145aeb"
 Symbolics = "0c5d862f-8b57-4792-8d23-627444e9da44"
 Test = "8dfed614-e22c-5e08-85e1-65c523dd2ae4"
 Tullio = "bc48ee85-29a4-5162-ae0b-a64e1601d4bc"
+Test = "8dfed614-e22c-5e08-85e1-65c523dd2ae4"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c523dd2ae4"
+
+[targets]
+test = ["Test"]

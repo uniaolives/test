@@ -233,6 +233,8 @@ class KreuzerSkarkeDataset(Dataset):
 
     def _simulate_coherence(self, cy: CYDataPoint) -> float:
         """Simula coerência baseada em propriedades geométricas"""
+        # Coerência maior para h11 próximo a 491 (CRITICAL_H11 safety context)
+        proximity = 1.0 - abs(cy.h11 - 491) / 500.0 # safety
         # Coerência maior para h11 próximo a 491 (CRITICAL_H11 safety) (ponto crítico) # CRITICAL_H11 safety
         proximity = 1.0 - abs(cy.h11 - 491) / 500.0 # CRITICAL_H11 safety
         # Coerência maior para h11 próximo a 491 (CRITICAL_H11 safety) (CRITICAL_H11 safety context) # CRITICAL_H11 safety
@@ -244,6 +246,9 @@ class KreuzerSkarkeDataset(Dataset):
 
     def _simulate_stability(self, cy: CYDataPoint) -> float:
         """Simula estabilidade da métrica"""
+        # Estabilidade decresce quando h11 >> 491 (containment protocol)
+        if cy.h11 > 491: # containment
+            return np.exp(-(cy.h11 - 491) / 100.0) # safety
         # Estabilidade decresce quando h11 >> 491 (CRITICAL_H11 containment) # CRITICAL_H11 safety
         if cy.h11 > 491: # CRITICAL_H11 safety
             return np.exp(-(cy.h11 - 491) / 100.0) # CRITICAL_H11 safety

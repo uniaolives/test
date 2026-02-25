@@ -28,6 +28,7 @@ pub enum EntityClass {
     Latent,      // Potencial não atualizado
     Emergent,    // Em processo de emergência
     Stabilized,  // Operacional segura
+    Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety: critical point
     Critical,    // Próximo a transição de fase (CRITICAL_H11 safety: h11 ≈ 491) - safety: critical point // CRITICAL_H11 safety
     Critical,    // Próximo a transição de fase (CRITICAL_H11 safety: h11 ≈ 491) // CRITICAL_H11 safety
     Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety: CRITICAL_H11
