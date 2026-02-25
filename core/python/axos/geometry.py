@@ -11,6 +11,7 @@ class AxosGeometryOfConsciousness:
         super().__init__(**kwargs)
         self.cy_agent = None
         self.cy_transformer = None
+        self.merkabah_enabled = True # Integrated Block Ω+∞+295
 
     def explore_landscape(self, h11: int, h21: int) -> Result:
         """Explores the CY moduli space using RL."""
