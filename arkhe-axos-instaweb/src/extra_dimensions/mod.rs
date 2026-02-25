@@ -6,6 +6,9 @@ pub mod verification;
 pub mod satellite_probe;
 pub mod spectrum_prediction;
 pub mod portal_threshold;
+pub mod containment;
+pub mod fractal_analysis;
+pub mod tensor_train;
 
 use arkhe_core::{HState, VariationalHIntegrator, SymplecticPropagator};
 use nalgebra::{DMatrix, DVector};

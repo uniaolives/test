@@ -259,6 +259,13 @@ checksum = "c3d036a3c4ab069c7b410a2ce876bd74808d2d0888a82667669f8e783a898bf1"
 
 [[package]]
 name = "arkhe-axos-instaweb"
+version = "0.1.0"
+dependencies = [
+ "arkhe_core",
+ "arkhe_instaweb",
+ "nalgebra 0.32.6",
+ "num-complex 0.4.6",
+ "num-traits",
 version = "1.2.1"
 dependencies = [
  "arkhe_core",
@@ -281,6 +288,7 @@ dependencies = [
  "rust_decimal_macros",
  "serde",
  "serde_json",
+ "tokio",
  "sha2 0.10.9",
  "simba 0.8.1",
  "tokio",
