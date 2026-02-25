@@ -1,5 +1,10 @@
 [package]
 name = "arkhe-axos-instaweb"
+version = "1.2.1"
+edition = "2021"
+authors = ["Arquiteto <root@arkhe.systems>"]
+description = "Sistema operacional unificado: teoria, execução, rede, tempo"
+license = "AGPL-3.0"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,6 +14,10 @@ path = "src/bin/dimensional_scan.rs"
 
 [lib]
 path = "src/lib.rs"
+
+[[bin]]
+name = "dimensional_scan"
+path = "src/bin/dimensional_scan.rs"
 
 [features]
 default = ["axos", "instaweb", "h_integrator"]
