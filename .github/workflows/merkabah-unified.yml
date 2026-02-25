@@ -45,7 +45,7 @@ jobs:
         working-directory: merkabah-cy
         run: |
           # Verifica se há hardcoded values de h11=491 sem contexto de segurança
-          if grep -r "491" --include="*.py" --include="*.rs" --include="*.cpp" | grep -v "CRITICAL_H11\|safety\|containment"; then
+          if grep -rw "491" --include="*.py" --include="*.rs" --include="*.cpp" | grep -v "CRITICAL_H11\|safety\|containment"; then
             echo "::error::Referência crítica a 491 sem contexto de segurança detectada"
             echo "approved=false" >> $GITHUB_OUTPUT
             exit 1

@@ -72,8 +72,26 @@ class RFCSubmission:
         return ET.tostring(root, encoding='unicode')
 
     def _parse_markdown_sections(self, text: str):
-        # Placeholder for markdown parsing logic
-        return []
+        """Simple markdown parser for RFC sections"""
+        sections = []
+        current_section = None
+
+        for line in text.split('\n'):
+            if line.startswith('# '):
+                if current_section:
+                    sections.append(current_section)
+                title = line[2:].strip()
+                current_section = {
+                    'title': title,
+                    'anchor': title.lower().replace(' ', '-'),
+                    'paragraphs': []
+                }
+            elif line.strip() and current_section:
+                current_section['paragraphs'].append(line.strip())
+
+        if current_section:
+            sections.append(current_section)
+        return sections
 
     def submit_to_datatracker(self, xml_content: str,
                              submission_password: str) -> dict:
@@ -117,8 +135,19 @@ class RFCSubmission:
         except:
             return {'valid': False, 'output': 'idnits not installed'}
 
-    def _parse_idnits_errors(self, output): return []
-    def _parse_idnits_warnings(self, output): return []
+    def _parse_idnits_errors(self, output):
+        errors = []
+        for line in output.split('\n'):
+            if 'error' in line.lower():
+                errors.append(line.strip())
+        return errors
+
+    def _parse_idnits_warnings(self, output):
+        warnings = []
+        for line in output.split('\n'):
+            if 'warning' in line.lower():
+                warnings.append(line.strip())
+        return warnings
 
     def announce_to_lists(self, announcement: str):
         """Anuncia nas listas relevantes"""

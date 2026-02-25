@@ -142,7 +142,9 @@ class QHTTPClient:
 
     def __init__(self, base_uri: str = "quantum://localhost:8443"):
         self.base_uri = base_uri
-        self.encryption_key = b'placeholder_key_32_bytes_length!!' # Should be 32 bytes for Fernet
+        # Fernet requires 32 url-safe base64-encoded bytes.
+        # 'vK8H0v_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_U=' is a placeholder that matches this format.
+        self.encryption_key = b'vK8H0v_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_U='
 
     async def request(self, req: QHTTPRequest) -> QHTTPResponse:
         """Executa requisição qhttp://"""
