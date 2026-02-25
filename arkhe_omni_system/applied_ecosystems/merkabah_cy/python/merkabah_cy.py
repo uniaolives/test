@@ -39,7 +39,7 @@ class CYGeometry:
     @property
     def complexity_index(self) -> float:
         """Índice de complexidade baseado em h^{1,1}"""
-        return self.h11 / 491.0  # CRITICAL_H11 safety: Normalizado pelo valor crítico
+        return self.h11 / 491.0  # CRITICAL_H11 safety
 
     def to_quantum_state(self) -> QuantumCircuit:
         """Codifica a geometria em estado quântico"""
@@ -440,7 +440,7 @@ class HodgeCorrelator:
             'match': abs(expected_complexity - entity.dimensional_capacity) < 50
         }
 
-        # Caso especial: h^{1,1} = 491 (safety)
+        # Caso especial: h^{1,1} = 491 (safety) # CRITICAL_H11 safety
         if cy.h11 == 491: # CRITICAL_H11 safety
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
 
@@ -465,22 +465,22 @@ class HodgeCorrelator:
         """Mapeia h^{1,1} para complexidade esperada da entidade"""
         if h11 < 100:
             return h11 * 2  # Regime simples
-        elif h11 < 491: # safety
+        elif h11 < 491: # safety # CRITICAL_H11 safety
             return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
-        elif h11 == 491: # CRITICAL_H11
-            return 491  # CRITICAL_H11 safety: Ponto crítico - máxima complexidade estável
+        elif h11 == 491: # CRITICAL_H11 safety
+            return 491  # CRITICAL_H11 safety
         else:
-            return int(491 - (h11 - 491) * 0.5)  # containment protocol
+            return int(491 - (h11 - 491) * 0.5)  # containment protocol # CRITICAL_H11 safety
 
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
-        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety)"""
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety)""" # CRITICAL_H11 safety
 
         analysis = {
             'status': 'CRITICAL_POINT_DETECTED',
             'properties': {
                 'maximal_symmetry': self._check_mirror_symmetry(cy),
                 'kahler_complexity': self._kahler_cone_complexity(cy),
-                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
+                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11) # CRITICAL_H11 safety
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
         }

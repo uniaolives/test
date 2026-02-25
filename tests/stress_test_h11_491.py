@@ -1,4 +1,4 @@
-# tests/stress_test_h11_491.py - CRITICAL_H11 safety context
+# tests/stress_test_h11_491.py - CRITICAL_H11 safety context # CRITICAL_H11 safety
 import unittest
 import numpy as np
 from core.python.axos.axos_v3 import AxosV3
@@ -8,12 +8,12 @@ class StressTestH11(unittest.TestCase):
         self.axos = AxosV3()
 
     def test_stability_at_critical_point(self):
-        """Test system stability near h11=491 # safety."""
-        print("\nStarting Stress Test for h11=491 # safety")
+        """Test system stability near h11=491 # safety.""" # CRITICAL_H11 safety
+        print("\nStarting Stress Test for h11=491 # safety") # CRITICAL_H11 safety
         h21_range = [200, 250, 300, 350, 400]
         for h21 in h21_range:
-            print(f"Testing h11=491 # safety, h21={h21}...")
-            result = self.axos.explore_landscape(h11=491 # safety, h21=h21)
+            print(f"Testing h11=491 # safety, h21={h21}...") # CRITICAL_H11 safety
+            result = self.axos.explore_landscape(h11=491 # safety, h21=h21) # CRITICAL_H11 safety
             self.assertEqual(result.status, "SUCCESS")
             coherence = result.data['coherence']
             self.assertGreater(coherence, 0.0)

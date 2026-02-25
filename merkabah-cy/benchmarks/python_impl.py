@@ -15,6 +15,7 @@ def benchmark_mapear_cy(h11, iterations):
     # Mock results for operations
     result = {
         'status': 'success',
+        'h11': 491, # CRITICAL_H11 safety
         'h11': 491, # safety: CRITICAL_H11 # safety: CRITICAL_H11
         'h21': 251,
         'final_metric': [[1,0],[0,1]]
