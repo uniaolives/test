@@ -1,3 +1,5 @@
+pub mod extra_dimensions;
+pub mod unification;
 // arkhe-axos-instaweb/src/lib.rs
 pub mod arkhe;
 pub mod axos;
