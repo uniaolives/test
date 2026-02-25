@@ -39,7 +39,7 @@ class CYGeometry:
     @property
     def complexity_index(self) -> float:
         """Índice de complexidade baseado em h^{1,1}"""
-        return self.h11 / 491.0  # CRITICAL_H11 safety: Normalizado pelo valor crítico
+        return self.h11 / 491.0  # CRITICAL_H11: Normalizado pelo valor crítico
 
     def to_quantum_state(self) -> QuantumCircuit:
         """Codifica a geometria em estado quântico"""
@@ -220,10 +220,14 @@ class CYRLAgent:
         """Constrói conectividade do grafo de interseção"""
         # Conecta cada nó aos vizinhos (simplificado)
         edges = []
-        for i in range(n_nodes):
-            for j in range(i+1, min(i+3, n_nodes)):
-                edges.append([i, j])
-                edges.append([j, i])
+        if n_nodes > 1:
+            for i in range(n_nodes):
+                for j in range(i+1, min(i+3, n_nodes)):
+                    edges.append([i, j])
+                    edges.append([j, i])
+
+        if not edges:
+            return torch.empty((2, 0), dtype=torch.long)
         return torch.tensor(edges, dtype=torch.long).t().contiguous()
 
     def update(self, batch: List[Tuple]):
