@@ -194,6 +194,15 @@ class CYRLAgent:
             deformation, features = self.actor(x, edge_index)
             deformation = deformation.squeeze().numpy()
 
+        # Ajusta o tamanho da ação para coincidir com h21 (complex_structure)
+        if len(deformation) < len(state.complex_structure):
+            repeats = (len(state.complex_structure) // len(deformation)) + 1
+            full_action = np.tile(deformation, repeats)[:len(state.complex_structure)]
+        else:
+            full_action = deformation[:len(state.complex_structure)]
+
+        new_complex = state.complex_structure + 0.1 * full_action
+        return full_action, new_complex
         if deformation.ndim == 0:
             deformation = np.array([deformation])
 

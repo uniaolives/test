@@ -50,6 +50,12 @@ def test_data_redactor():
     assert redactor.redact_content(text, "admin") == text
 
 def test_behavioral_monitor():
+    monitor = BehavioralMonitor(contamination=0.1)
+    # Dados normais: pequenas quantias, muitos exemplos
+    train_data = []
+    np.random.seed(42)
+    for _ in range(200):
+        train_data.append({'amount': np.random.normal(10.0, 0.5)})
     monitor = BehavioralMonitor(contamination=0.01)
     # Dados normais: pequenas quantias, muitos exemplos
     train_data = []
@@ -62,6 +68,8 @@ def test_behavioral_monitor():
     assert monitor.check_action("a1", "pay", {'amount': 10.0}) is None
 
     # Ação anômala (extrema)
+    alert = monitor.check_action("a1", "pay", {'amount': 1000.0})
+    assert alert is not None
     alert = monitor.check_action("a1", "pay", {'amount': 10000.0})
     # IsolationForest prediction can be tricky in small sets
     # We just want to see if it behaves differently
