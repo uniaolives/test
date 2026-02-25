@@ -208,9 +208,6 @@ class CYRLAgent:
             deformation, features = self.actor(x, edge_index)
             deformation = deformation.squeeze().numpy()
 
-        if deformation.ndim == 0:
-            deformation = np.array([deformation])
-
         # Garante que deformation seja um array e tenha o tamanho correto
         if deformation.ndim == 0:
             deformation = np.array([deformation])
@@ -236,9 +233,6 @@ class CYRLAgent:
                     edges.append([j, i])
         if not edges:
             return torch.empty((2, 0), dtype=torch.long)
-        return torch.tensor(edges, dtype=torch.long).t().contiguous()
-
-
         return torch.tensor(edges, dtype=torch.long).t().contiguous()
 
 
@@ -406,21 +400,6 @@ class HodgeCorrelator:
         """Análise detalhada do ponto crítico h^{1,1} = 491 (CRITICAL_H11 safety)""" # CRITICAL_H11 safety
 
             return h11 * 2
-        elif h11 < 491: # safety
-            return int(200 + (h11 - 100) * 0.75)
-        elif h11 == 491: # CRITICAL_H11 safety
-            return 491 # safety
-        else:
-            return int(491 - (h11 - 491) * 0.5) # containment
-
-    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
-        return {
-            'status': 'CRITICAL_POINT_DETECTED',
-            'properties': {
-                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
-                'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
-            }
-        }
         elif h11 < 491: # safety: CRITICAL_H11
             return int(200 + (h11 - 100) * 0.75)
         elif h11 == 491: # safety: CRITICAL_H11
