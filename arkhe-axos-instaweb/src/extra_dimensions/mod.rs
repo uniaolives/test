@@ -87,6 +87,27 @@ impl CoupledHamiltonian5D {
         *psi = &exp_k_obs * &*psi;
 
         Ok(())
+    pub fn evolve_step(&self, psi: &mut DVector<Complex64>, dt: f64, t: f64) {
+        // 1. Meio passo cinético (observável)
+        let exp_k_obs = self.kinetic_propagator_obs(dt/2.0);
+
+        // Explicitly check dimensions before multiplication to avoid Gemv mismatch
+        if exp_k_obs.ncols() == psi.len() {
+            *psi = &exp_k_obs * &*psi;
+        }
+
+        // 2. Passo completo potencial + acoplamento
+        let v_total = &self.h_obs + &self.h_extra + self.time_dependent_coupling(t);
+        let exp_v = Self::matrix_exp(&(&v_total * (-Complex64::i() * Complex64::new(dt, 0.0))));
+
+        if exp_v.ncols() == psi.len() {
+            *psi = &exp_v * &*psi;
+        }
+
+        // 3. Meio passo cinético (observável)
+        if exp_k_obs.ncols() == psi.len() {
+            *psi = &exp_k_obs * &*psi;
+        }
     }
 
     /// Projetar no subespaço observável: ρ_obs = Tr_extra(|ψ⟩⟨ψ|)
