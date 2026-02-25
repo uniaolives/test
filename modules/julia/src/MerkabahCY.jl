@@ -267,6 +267,10 @@ end
 Sistema de correlação entre invariantes CY e propriedades da entidade
 """
 struct HodgeCorrelator
+    critical_h11::Int  # 491 - safety: critical point
+
+    function HodgeCorrelator()
+        new(491) # safety
     critical_h11::Int  # 491
 
     function HodgeCorrelator()
