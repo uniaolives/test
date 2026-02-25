@@ -481,8 +481,6 @@ class HodgeCorrelator:
         }
 
         # Caso especial: h^{1,1} = 491 (CRITICAL_H11 safety)
-        if cy.h11 == 491: # safety
-        # Caso especial: h^{1,1} = 491
         if cy.h11 == 491:
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
 
@@ -515,15 +513,6 @@ class HodgeCorrelator:
             return int(491 - (h11 - 491) * 0.5)  # containment protocol
 
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
-        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety)"""
-        elif h11 < 491:
-            return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
-        elif h11 == 491:
-            return 491  # Ponto crítico - máxima complexidade estável
-        else:
-            return int(491 - (h11 - 491) * 0.5)  # Decaimento pós-crítico (instabilidade)
-
-    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
         """Análise detalhada do ponto crítico h^{1,1} = 491"""
 
         analysis = {
@@ -532,7 +521,6 @@ class HodgeCorrelator:
                 'maximal_symmetry': self._check_mirror_symmetry(cy),
                 'kahler_complexity': self._kahler_cone_complexity(cy),
                 'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11)
-                'stability_margin': 491 - cy.h21,  # Margem antes de flop descontrolado
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
         }
@@ -688,7 +676,6 @@ class MerkabahCYSystem:
             creativity_index=np.tanh(cy_base.euler / 100.0),
             dimensional_capacity=cy_base.h11,
             quantum_fidelity=float(np.abs(np.vdot(quantum_state, quantum_state)))
-            quantum_fidelity=np.abs(quantum_state @ quantum_state.conj().T).trace().real
         )
 
         correlations = self.correlator.analyze(cy_base, final_entity)
