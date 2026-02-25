@@ -14,7 +14,6 @@ def main():
     # Mock results for operations
     result = {
         'status': 'success',
-        'h11': 491,
         'h11': 491, # CRITICAL_H11 safety context
         'h21': 251,
         'final_metric': [[1,0],[0,1]]
