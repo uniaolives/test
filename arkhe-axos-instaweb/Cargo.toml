@@ -3,12 +3,12 @@ name = "arkhe-axos-instaweb"
 version = "0.1.0"
 edition = "2021"
 
-[lib]
-path = "src/lib.rs"
-
 [[bin]]
 name = "dimensional_scan"
 path = "src/bin/dimensional_scan.rs"
+
+[lib]
+path = "src/lib.rs"
 
 [features]
 default = ["axos", "instaweb", "h_integrator"]

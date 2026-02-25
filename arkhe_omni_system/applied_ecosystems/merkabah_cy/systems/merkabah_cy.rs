@@ -19,7 +19,7 @@ impl CYVariety {
     }
 
     pub fn complexity_index(&self) -> f64 {
-        self.h11 as f64 / 491.0 // CRITICAL_H11 safety
+        self.h11 as f64 / 491.0 // CRITICAL_H11 safety // CRITICAL_H11 safety
     }
 }
 
@@ -56,7 +56,7 @@ mod tests {
 
     #[test]
     fn test_complexity_index() {
-        let cy = CYVariety::new(491, 250); // CRITICAL_H11 safety
+        let cy = CYVariety::new(491, 250); // CRITICAL_H11 safety // CRITICAL_H11 safety
         assert!((cy.complexity_index() - 1.0).abs() < 1e-6);
     }
 }
