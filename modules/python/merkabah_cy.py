@@ -20,6 +20,7 @@ from qiskit_algorithms.optimizers import COBYLA
 from qiskit.quantum_info import Statevector, entropy
 import sympy as sp
 from sympy.abc import x, y, z
+from modules.python.tensor_geometry import PoincareBall, HyperbolicLayer
 
 # =============================================================================
 # ESTRUTURAS DE DADOS FUNDAMENTAIS
@@ -40,6 +41,12 @@ class CYGeometry:
     def complexity_index(self) -> float:
         """Índice de complexidade baseado em h^{1,1}"""
         return self.h11 / 491.0 # CRITICAL_H11 safety
+        return self.h11 / 491.0  # Normalizado pelo valor crítico
+        return self.h11 / 491.0 # CRITICAL_H11 safety
+        return self.h11 / 491.0  # Normalizado pelo valor crítico
+        return self.h11 / 491.0 # CRITICAL_H11 safety
+        return self.h11 / 491.0  # CRITICAL_H11 safety
+        return self.h11 / 491.0  # safety: CRITICAL_H11
 
     def to_quantum_state(self) -> QuantumCircuit:
         """Codifica a geometria em estado quântico"""
@@ -86,19 +93,20 @@ class CYActorNetwork(nn.Module):
     """Actor: Propõe deformações na estrutura complexa via GNN"""
 
     def __init__(self, input_dim: int = 10, hidden_dim: int = 128, action_dim: int = 20):
+    def __init__(self, input_dim: int = 1, hidden_dim: int = 128, action_dim: int = 20):
         super().__init__()
         self.conv1 = GCNConv(input_dim, hidden_dim)
         self.conv2 = GCNConv(hidden_dim, hidden_dim)
         self.conv3 = GCNConv(hidden_dim, hidden_dim)
 
+        # MLP para deformações δz ∈ H^{2,1} usando geometria hiperbólica
         # MLP para deformações δz ∈ H^{2,1}
         self.deformation_net = nn.Sequential(
             nn.Linear(hidden_dim, hidden_dim * 2),
             nn.LayerNorm(hidden_dim * 2),
             nn.GELU(),
             nn.Dropout(0.1),
-            nn.Linear(hidden_dim * 2, action_dim),
-            nn.Tanh()  # Deformações limitadas
+            HyperbolicLayer(hidden_dim * 2, action_dim, c=1.0)
         )
 
         # Atenção para long-range correlations topológicas
@@ -106,6 +114,13 @@ class CYActorNetwork(nn.Module):
 
     def forward(self, x, edge_index, batch=None):
         # x: features dos divisores/ciclos [N, input_dim]
+            nn.Linear(hidden_dim * 2, action_dim),
+            nn.Tanh()
+        )
+
+        self.attention = nn.MultiheadAttention(hidden_dim, num_heads=4, batch_first=True)
+
+    def forward(self, x, edge_index, batch=None):
         h1 = F.gelu(self.conv1(x, edge_index))
         h2 = F.gelu(self.conv2(h1, edge_index))
         h3 = self.conv3(h2, edge_index)
@@ -115,6 +130,9 @@ class CYActorNetwork(nn.Module):
         h3_attended = h3_attended.squeeze(0)
 
         # Pooling global
+        h3_attended, _ = self.attention(h3.unsqueeze(0), h3.unsqueeze(0), h3.unsqueeze(0))
+        h3_attended = h3_attended.squeeze(0)
+
         if batch is not None:
             h_global = global_mean_pool(h3_attended, batch)
         else:
@@ -148,6 +166,9 @@ class CYCriticNetwork(nn.Module):
         self.pos_encoding = nn.Parameter(torch.randn(1000, hidden_dim))
 
         # Cabeça de valor (C_global)
+        self.embedding = nn.Linear(input_dim, hidden_dim)
+        self.pos_encoding = nn.Parameter(torch.randn(1000, hidden_dim))
+
         self.value_head = nn.Sequential(
             nn.Linear(hidden_dim, hidden_dim),
             nn.LayerNorm(hidden_dim),
@@ -170,6 +191,16 @@ class CYCriticNetwork(nn.Module):
         x_pooled = x.mean(dim=1)
         coherence = self.value_head(x_pooled)
 
+            nn.Sigmoid()
+        )
+
+    def forward(self, spectral_features):
+        B, L, _ = spectral_features.shape
+        x = self.embedding(spectral_features)
+        x = x + self.pos_encoding[:L].unsqueeze(0)
+        x = self.transformer(x)
+        x_pooled = x.mean(dim=1)
+        coherence = self.value_head(x_pooled)
         return coherence
 
 
@@ -182,6 +213,7 @@ class CYRLAgent:
             action_dim=config.get('h21_max', 20)
         )
         self.critic = CYCriticNetwork(input_dim=config.get('spectral_dim', 50))
+        self.ball = PoincareBall(c=1.0)
 
         self.optimizer_actor = torch.optim.AdamW(self.actor.parameters(), lr=3e-4)
         self.optimizer_critic = torch.optim.AdamW(self.critic.parameters(), lr=3e-4)
@@ -195,8 +227,66 @@ class CYRLAgent:
 
         metric_stability = -np.linalg.norm(next_cy.metric_approx - cy_geom.metric_approx)
         complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5 # CRITICAL_H11 safety
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # Penalidade acima do limite
         euler_balance = -abs(next_cy.euler) / 1000.0  # Preferência por χ próximo de 0
 
+        return 0.5 * metric_stability + 0.3 * complexity_bonus + 0.2 * euler_balance
+
+    def select_action(self, state: CYGeometry) -> Tuple[np.ndarray, float]:
+    def select_action(self, state: CYGeometry) -> Tuple[np.ndarray, np.ndarray]:
+        """Seleciona deformação δz baseada na política atual"""
+        # Converte estado para grafo
+        # Para tensores 3D, extraímos features por nó (divisores de Kähler)
+        n_nodes = state.intersection_matrix.shape[0]
+
+        # Features: d_iii e slices da matriz de interseção (reduzido para input_dim)
+        input_dim = self.actor.conv1.in_channels
+        x_feats = np.zeros((n_nodes, input_dim))
+        for i in range(n_nodes):
+            x_feats[i, 0] = state.intersection_matrix[i, i, i]
+            # Preenche o resto com dados da matriz se disponível
+            remaining = min(input_dim - 1, n_nodes)
+            x_feats[i, 1:1+remaining] = state.intersection_matrix[i, i, :remaining]
+
+        x_torch = torch.tensor(x_feats, dtype=torch.float32)
+        edge_index = self._build_edge_index(n_nodes)
+
+        with torch.no_grad():
+            deformation, features = self.actor(x_torch, edge_index)
+            deformation = deformation.squeeze().numpy()
+
+        # Aplica deformação à estrutura complexa usando Soma de Möbius
+        # Garantimos que os tensores têm o mesmo tamanho
+        z_torch = self.ball.project(torch.tensor(state.complex_structure, dtype=torch.float32))
+
+        def_raw = torch.tensor(deformation, dtype=torch.float32)
+        if len(def_raw) < len(z_torch):
+            def_torch = torch.zeros_like(z_torch)
+            def_torch[:len(def_raw)] = def_raw
+        else:
+            def_torch = def_raw[:len(z_torch)]
+
+        new_complex_torch = self.ball.mobius_add(z_torch, 0.1 * def_torch)
+        new_complex = new_complex_torch.numpy()
+
+        self.node_features = config.get('node_features', 1)
+        self.actor = CYActorNetwork(
+            input_dim=self.node_features,
+            action_dim=config.get('h21_max', 20)
+        )
+        self.critic = CYCriticNetwork(input_dim=config.get('spectral_dim', 50))
+        self.optimizer_actor = torch.optim.AdamW(self.actor.parameters(), lr=3e-4)
+        self.optimizer_critic = torch.optim.AdamW(self.critic.parameters(), lr=3e-4)
+        self.gamma = 0.99
+
+    def compute_reward(self, cy_geom: CYGeometry, next_cy: CYGeometry) -> float:
+        metric_stability = -np.linalg.norm(next_cy.metric_approx - cy_geom.metric_approx)
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5 # CRITICAL_H11 safety
+        euler_balance = -abs(next_cy.euler) / 1000.0  # Preferência por χ próximo de 0
+
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # CRITICAL_H11 safety
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # safety: CRITICAL_H11
+        euler_balance = -abs(next_cy.euler) / 1000.0
         return 0.5 * metric_stability + 0.3 * complexity_bonus + 0.2 * euler_balance
 
     def select_action(self, state: CYGeometry) -> Tuple[np.ndarray, np.ndarray]:
@@ -207,20 +297,21 @@ class CYRLAgent:
         if x.dim() == 1:
             x = x.unsqueeze(1)
 
-        n_nodes = x.size(0)
-        # Garante que x tenha a dimensão de entrada esperada
+        # Garante que x tenha a dimensão de entrada esperada pelo Actor
         in_channels = self.actor.conv1.in_channels
         if x.size(1) < in_channels:
             x = F.pad(x, (0, in_channels - x.size(1)))
         else:
             x = x[:, :in_channels]
 
+        n_nodes = x.size(0)
         edge_index = self._build_edge_index(n_nodes)
 
         with torch.no_grad():
             deformation, features = self.actor(x, edge_index)
             deformation = deformation.squeeze().numpy()
 
+        # Garante que deformation seja um array
         # Garante que deformation seja um array e tenha o tamanho correto
         if deformation.ndim == 0:
             deformation = np.array([deformation])
@@ -234,9 +325,11 @@ class CYRLAgent:
 
         new_complex = state.complex_structure + 0.1 * full_action
         return full_action, new_complex
+        return deformation, new_complex
 
     def _build_edge_index(self, n_nodes: int) -> torch.Tensor:
         """Constrói conectividade do grafo de interseção"""
+        edges = []
         edges = []
         if n_nodes > 1:
             for i in range(n_nodes):
@@ -252,6 +345,16 @@ class CYRLAgent:
         """Atualiza política via PPO ou similar"""
         # Implementação simplificada - em produção usar PPO completo
         pass
+
+        edges = []
+        if n_nodes > 1:
+            for i in range(n_nodes):
+                for j in range(i+1, min(i+3, n_nodes)):
+                    edges.append([i, j])
+                    edges.append([j, i])
+        if not edges:
+            return torch.empty((2, 0), dtype=torch.long)
+        return torch.tensor(edges, dtype=torch.long).t().contiguous()
 
 
 # =============================================================================
@@ -277,6 +380,8 @@ class CYTransformer(nn.Module):
         self.latent_embedding = nn.Linear(latent_dim, latent_dim)
 
         # Transformer Decoder
+        self.latent_dim = latent_dim
+        self.latent_embedding = nn.Linear(latent_dim, latent_dim)
         decoder_layer = nn.TransformerDecoderLayer(
             d_model=latent_dim,
             nhead=num_heads,
@@ -293,6 +398,11 @@ class CYTransformer(nn.Module):
             nn.Linear(256, h11_range[1] - h11_range[0] + 1)  # Classificação discreta
         )
 
+        self.h11_head = nn.Sequential(
+            nn.Linear(latent_dim, 256),
+            nn.GELU(),
+            nn.Linear(256, h11_range[1] - h11_range[0] + 1)
+        )
         self.h21_head = nn.Sequential(
             nn.Linear(latent_dim, 256),
             nn.GELU(),
@@ -335,6 +445,20 @@ class CYTransformer(nn.Module):
             'h21_logits': h21_logits,
             'metric_params': metric_params,
             'spectral_features': spectral,
+        self.metric_head = nn.Linear(latent_dim, 100)
+        self.spectral_head = nn.Linear(latent_dim, 50)
+        self.query_embed = nn.Parameter(torch.randn(1, 10, latent_dim))
+
+    def forward(self, z: torch.Tensor) -> Dict[str, torch.Tensor]:
+        B = z.size(0)
+        memory = self.latent_embedding(z).unsqueeze(1)
+        query = self.query_embed.expand(B, -1, -1)
+        output = self.transformer(query, memory)
+        return {
+            'h11_logits': self.h11_head(output[:, 0, :]),
+            'h21_logits': self.h21_head(output[:, 1, :]),
+            'metric_params': self.metric_head(output[:, 2, :]),
+            'spectral_features': self.spectral_head(output[:, 3, :]),
             'latent_repr': output
         }
 
@@ -365,6 +489,19 @@ class CYTransformer(nn.Module):
                 euler=euler,
                 intersection_matrix=intersection,
                 kahler_cone=np.random.rand(h11, h11),  # Simplificado
+        with torch.no_grad():
+            outputs = self.forward(z)
+            h11_probs = F.softmax(outputs['h11_logits'] / temperature, dim=-1)
+            h21_probs = F.softmax(outputs['h21_logits'] / temperature, dim=-1)
+            h11 = torch.multinomial(h11_probs, 1).item() + 1
+            h21 = torch.multinomial(h21_probs, 1).item() + 1
+            euler = 2 * (h11 - h21)
+            metric = self._reconstruct_metric(outputs['metric_params'], h11)
+            intersection = self._generate_intersection_matrix(h11)
+            return CYGeometry(
+                h11=h11, h21=h21, euler=euler,
+                intersection_matrix=intersection,
+                kahler_cone=np.random.rand(h11, h11),
                 complex_structure=np.random.randn(h21),
                 metric_approx=metric
             )
@@ -377,6 +514,9 @@ class CYTransformer(nn.Module):
         needed = dim * dim
         if p_count < needed:
             # Pad or reuse
+        p_count = params.numel()
+        needed = dim * dim
+        if p_count < needed:
             base = torch.zeros(needed)
             base[:p_count] = params.flatten()
             base = base.reshape(dim, dim).numpy()
@@ -424,6 +564,29 @@ class EntityEmergenceSimulator:
                         'stability': np.linalg.norm(metric_flow - cy.metric_approx)
                     })
 
+        eff_h11 = min(h11, 20)
+        return np.random.randint(-10, 10, size=(eff_h11, eff_h11))
+
+
+class EntityEmergenceSimulator:
+    def __init__(self, cy_transformer: CYTransformer):
+        self.transformer = cy_transformer
+        self.beta_range = np.linspace(0.1, 10.0, 10)
+
+    def simulate_phase_transition(self, z_base: torch.Tensor, steps: int = 100):
+        history = []
+        for beta in self.beta_range:
+            cy = self.transformer.generate_entity(z_base, temperature=1.0/beta)
+            for t in range(steps):
+                metric_flow = self._ricci_flow_step(cy.metric_approx, dt=0.01)
+                cy.metric_approx = metric_flow
+
+                coherence = self._compute_coherence(cy)
+                if t == steps - 1:
+                    history.append({
+                        'beta': beta, 'coherence': coherence,
+                        'h11': cy.h11, 'stability': np.linalg.norm(metric_flow - cy.metric_approx)
+                    })
         return history
 
     def _ricci_flow_step(self, metric: np.ndarray, dt: float) -> np.ndarray:
@@ -433,6 +596,9 @@ class EntityEmergenceSimulator:
 
     def _compute_coherence(self, cy: CYGeometry) -> float:
         """Calcula C_global aproximado"""
+        return metric - dt * 0.1 * (metric - np.eye(metric.shape[0]))
+
+    def _compute_coherence(self, cy: CYGeometry) -> float:
         return float(np.exp(-np.linalg.norm(cy.metric_approx - np.eye(cy.metric_approx.shape[0]))))
 
 
@@ -450,6 +616,7 @@ class HodgeCorrelator:
             'euler': 'creativity_index',
             'volume': 'computational_efficiency'
         }
+        self.ball = PoincareBall(c=1.0)
 
     def analyze(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
         """Analisa correlação entre geometria e entidade"""
@@ -457,6 +624,8 @@ class HodgeCorrelator:
         correlations = {}
 
         # Correlação 1: h^{1,1} vs Complexidade Observada
+    def analyze(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        correlations = {}
         expected_complexity = self._h11_to_complexity(cy.h11)
         correlations['h11_complexity'] = {
             'expected': expected_complexity,
@@ -466,9 +635,18 @@ class HodgeCorrelator:
 
         # Caso especial: h^{1,1} = 491 (CRITICAL_H11 safety) # CRITICAL_H11 safety
         if cy.h11 == 491: # CRITICAL_H11 safety
+        # Caso especial: h^{1,1} = 491
+        if cy.h11 == 491:
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
 
         # Correlação 2: h^{2,1} vs Flexibilidade
+        # Caso especial: h^{1,1} = 491 (CRITICAL_H11 safety) # CRITICAL_H11 safety
+        if cy.h11 == 491: # CRITICAL_H11 safety
+        if cy.h11 == 491: # CRITICAL_H11 safety
+        # Caso especial: h^{1,1} = 491 (safety: CRITICAL_H11)
+        if cy.h11 == 491:
+            correlations['critical_point'] = self._analyze_critical_point(cy, entity)
+
         correlations['h21_flexibility'] = {
             'h21': cy.h21,
             'stability_score': entity.stability,
@@ -483,11 +661,45 @@ class HodgeCorrelator:
             'observed': entity.creativity_index
         }
 
+        # Correlação 4: Estabilidade Geométrica em ℍ³
+        z_origin = torch.zeros_like(torch.tensor(cy.complex_structure))
+        z_current = torch.tensor(cy.complex_structure)
+        correlations['hyperbolic_stability'] = {
+            'moduli_drift': float(self.ball.distance(z_origin, z_current)),
+            'within_bounds': torch.norm(z_current) < 1.0
+        }
+
         return correlations
 
     def _h11_to_complexity(self, h11: int) -> int:
         """Mapeia h^{1,1} para complexidade esperada da entidade"""
         if h11 < 100:
+            return h11 * 2  # Regime simples
+        elif h11 < 491:  # safety # CRITICAL_H11 safety
+            return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
+        elif h11 == 491:  # CRITICAL_H11 safety
+            return 491  # CRITICAL_H11 safety
+        elif h11 < 491:
+            return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
+        elif h11 == 491:
+            return 491  # Ponto crítico - máxima complexidade estável
+        else:
+            return int(491 - (h11 - 491) * 0.5)  # containment protocol # CRITICAL_H11 safety
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (CRITICAL_H11 safety)""" # CRITICAL_H11 safety
+
+            return int(491 - (h11 - 491) * 0.5)  # containment protocol # CRITICAL_H11 safety
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (CRITICAL_H11 safety)""" # CRITICAL_H11 safety
+
+        return correlations
+
+    def _h11_to_complexity(self, h11: int) -> int:
+        if h11 < 100:
+            return h11 * 2
+        elif h11 < 491:
             return h11 * 2  # Regime simples
         elif h11 < 491:  # safety # CRITICAL_H11 safety
             return int(200 + (h11 - 100) * 0.75)  # Crescimento sub-linear
@@ -499,12 +711,23 @@ class HodgeCorrelator:
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
         """Análise detalhada do ponto crítico h^{1,1} = 491 (CRITICAL_H11 safety)""" # CRITICAL_H11 safety
 
+            return h11 * 2
+        elif h11 < 491: # safety: CRITICAL_H11
+            return int(200 + (h11 - 100) * 0.75)
+        elif h11 == 491:
+            return 491 # safety: CRITICAL_H11
+        else:
+            return int(491 - (h11 - 491) * 0.5)
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety: CRITICAL_H11)"""
         analysis = {
             'status': 'CRITICAL_POINT_DETECTED',
             'properties': {
                 'maximal_symmetry': self._check_mirror_symmetry(cy),
                 'kahler_complexity': self._kahler_cone_complexity(cy),
                 'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11) # CRITICAL_H11 safety
+                'stability_margin': 491 - cy.h21,  # Margem antes de flop descontrolado
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
         }
@@ -536,6 +759,21 @@ class QuantumCoherenceOptimizer:
     def __init__(self, n_qubits: int = 8):
         self.n_qubits = n_qubits
         self.optimizer = COBYLA(maxiter=100)
+                'stability_margin': 491 - cy.h21,  # safety margin (CRITICAL_H11) # CRITICAL_H11 safety
+                'stability_margin': 491 - cy.h21,  # safety: CRITICAL_H11
+                'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
+            }
+        }
+        return analysis
+
+
+# =============================================================================
+# INTEGRAÇÃO QUÂNTICA
+# =============================================================================
+
+class QuantumCoherenceOptimizer:
+    def __init__(self, n_qubits: int = 8):
+        self.n_qubits = n_qubits
 
     def build_qaoa_circuit(self, cy: CYGeometry, p: int = 3) -> QuantumCircuit:
         """
@@ -584,15 +822,16 @@ class QuantumCoherenceOptimizer:
         circuit = self.build_qaoa_circuit(cy)
 
         # Simulação (em hardware quântico real, usar backend apropriado)
-        # Remove medições para obter o Statevector do estado evoluído
-        circuit.remove_final_measurements(inplace=True)
-        sv = Statevector.from_instruction(circuit)
         sim_circuit = circuit.copy()
         result = sim_circuit.remove_final_measurements()
         if result is not None:
             sim_circuit = result
 
         sv = Statevector.from_instruction(sim_circuit)
+        # Simulação
+        # Remove medições para obter o Statevector do estado evoluído
+        circuit.remove_final_measurements(inplace=True)
+        sv = Statevector.from_instruction(circuit)
 
         # Coerência = 1 - entropia do estado
         rho = np.outer(sv.data, sv.data.conj())
@@ -612,6 +851,12 @@ class MerkabahCYSystem:
         self.config = config or {}
 
         # Inicializa módulos
+        return float(coh.real), sv.data
+
+
+class MerkabahCYSystem:
+    def __init__(self, config: Optional[Dict] = None):
+        self.config = config or {}
         self.mapper = CYRLAgent(self.config.get('mapper', {}))
         self.generator = CYTransformer(**self.config.get('generator', {}))
         self.correlator = HodgeCorrelator()
@@ -654,12 +899,25 @@ class MerkabahCYSystem:
         print("[CORRELACIONAR] Analisando correspondências Hodge-Observável...")
 
         # Cria assinatura da entidade emergida
+        # Cálculo de fidelidade simplificado para estado quântico (puro)
+        fidelity = float(np.abs(np.vdot(quantum_state, quantum_state)))
+
+        self.emergence_sim = EntityEmergenceSimulator(self.generator)
+
+    def run_pipeline(self, z_seed: torch.Tensor, iterations: int = 100) -> Dict:
+        cy_base = self.generator.generate_entity(z_seed)
+        c_opt, quantum_state = self.quantum_opt.optimize_coherence(cy_base)
+        for i in range(iterations):
+            _, new_complex = self.mapper.select_action(cy_base)
+            cy_base.complex_structure = new_complex
+        phase_history = self.emergence_sim.simulate_phase_transition(z_seed)
         final_entity = EntitySignature(
             coherence=c_opt,
             stability=np.mean([p['stability'] for p in phase_history[-10:]]),
             creativity_index=np.tanh(cy_base.euler / 100.0),
             dimensional_capacity=cy_base.h11,
             quantum_fidelity=float(np.abs(np.vdot(quantum_state, quantum_state)))
+            quantum_fidelity=fidelity
         )
 
         correlations = self.correlator.analyze(cy_base, final_entity)
@@ -706,3 +964,16 @@ if __name__ == "__main__":
     print(f"\nCorrelações Hodge:")
     for key, val in results['hodge_correlations'].items():
         print(f"  {key}: {val}")
+            quantum_fidelity=float(np.abs(np.vdot(quantum_state, quantum_state)))
+        )
+        correlations = self.correlator.analyze(cy_base, final_entity)
+        return {
+            'final_entity': final_entity.to_dict(),
+            'hodge_correlations': correlations,
+            'phase_history': phase_history
+        }
+
+if __name__ == "__main__":
+    merkabah = MerkabahCYSystem()
+    results = merkabah.run_pipeline(torch.randn(1, 512), iterations=10)
+    print(results['final_entity'])

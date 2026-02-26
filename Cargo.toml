@@ -31,6 +31,8 @@ members = [
     "arkhe-axos-instaweb/arkhe_core",
     "arkhe-axos-instaweb/arkhe_instaweb",
     "modules/rust",
+    "asi/merkabah_cy/rust",
+    "modules/rust",
     "merkabah-cy/src/rust",
 ]
 resolver = "2"
