@@ -203,6 +203,9 @@ class CYRLAgent:
 
         new_complex = state.complex_structure + 0.1 * full_action
         return full_action, new_complex
+
+        new_complex = state.complex_structure + 0.1 * full_action
+        return full_action, new_complex
         if deformation.ndim == 0:
             deformation = np.array([deformation])
 
