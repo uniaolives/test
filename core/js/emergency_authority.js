@@ -9,6 +9,7 @@ class EmergencyAuthority {
 
     async issueStop(pleroma, reason) {
         console.log(`[EMERGENCY] Issuing halt: ${reason}`);
+        // Integration: Forensic logs collected by scripts/secops/collect-security-logs.ps1
 
         // Generate mock EEG signature proof
         const eegProof = await this.captureEEGSignature();
