@@ -22,6 +22,7 @@ use num_complex::Complex;
 // CONSTANTES E CONFIGURAÇÕES GLOBAIS
 // =============================================================================
 
+pub const CRITICAL_H11: usize = 491;
 pub const CRITICAL_H11: usize = 491; // CRITICAL_H11 safety
 pub const CRITICAL_H11: usize = 491;
 pub const CRITICAL_H11: usize = 491; // CRITICAL_H11 safety

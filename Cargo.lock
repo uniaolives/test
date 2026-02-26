@@ -5605,7 +5605,6 @@ dependencies = [
  "burn",
  "futures",
  "ndarray",
- "ndarray-linalg",
  "num-complex 0.4.6",
  "rand 0.8.5",
  "rayon",

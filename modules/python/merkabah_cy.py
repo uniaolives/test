@@ -40,6 +40,7 @@ class CYGeometry:
     @property
     def complexity_index(self) -> float:
         """Índice de complexidade baseado em h^{1,1}"""
+        return self.h11 / 491.0  # Normalizado pelo valor crítico
         return self.h11 / 491.0 # CRITICAL_H11 safety
         return self.h11 / 491.0  # Normalizado pelo valor crítico
         return self.h11 / 491.0 # CRITICAL_H11 safety
@@ -329,6 +330,12 @@ class CYRLAgent:
 
     def _build_edge_index(self, n_nodes: int) -> torch.Tensor:
         """Constrói conectividade do grafo de interseção"""
+        # Conecta cada nó aos vizinhos (simplificado)
+        edges = []
+        for i in range(n_nodes):
+            for j in range(i+1, min(i+3, n_nodes)):
+                edges.append([i, j])
+                edges.append([j, i])
         edges = []
         edges = []
         if n_nodes > 1:
@@ -684,6 +691,11 @@ class HodgeCorrelator:
         elif h11 == 491:
             return 491  # Ponto crítico - máxima complexidade estável
         else:
+            return int(491 - (h11 - 491) * 0.5)  # Decaimento pós-crítico (instabilidade)
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        """Análise detalhada do ponto crítico h^{1,1} = 491"""
+
             return int(491 - (h11 - 491) * 0.5)  # containment protocol # CRITICAL_H11 safety
 
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
