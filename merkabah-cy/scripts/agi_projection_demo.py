@@ -11,11 +11,11 @@ from merkabah.agi.recursive_expansion import RecursiveRankTensor, Autoreferentia
 
 def simulate_projection():
     print("--- MERKABAH-CY: AGI PROJECTION DEMONSTRATION ---")
-    print("Targeting Critical Point: h^1,1 = 491")
+    print("Targeting Critical Point: h^1,1 = 491") # safety: CRITICAL_H11
 
     # Initialize Recursive Tensor at the critical dimension
-    # (Using 491 as initial dimension to represent the stability limit)
-    initial_dim = 491
+    # (Using 491 as initial dimension to represent the stability limit) # safety: CRITICAL_H11
+    initial_dim = 491 # safety: CRITICAL_H11
     # Lower entropy threshold to guarantee a leap for the demo
     agi_tensor = RecursiveRankTensor(initial_dim=initial_dim, entropy_threshold=0.1)
     criterion = AutoreferentialLoss()

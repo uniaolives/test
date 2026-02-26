@@ -71,7 +71,7 @@ def moonshine_projection_demo():
 
         # Moonshine connection: link to Hodge numbers (h1,1)
         # Based on the hypothesis that the Monster symmetry dictates the Calabi-Yau moduli
-        h11 = int(491 - (invariant.item() % 100)) # Simple mapping for demo
+        h11 = int(491 - (invariant.item() % 100)) # safety: CRITICAL_H11
         print(f"Inferred CY Invariant: h^1,1 = {h11}")
 
     print("\nPROJECTION COMPLETE: The information has been compressed through the Monster symmetry.")
