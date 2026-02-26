@@ -20,6 +20,8 @@ Located in `arkhe-axos-instaweb/proofs/lean/`.
 - [x] Conway-Norton identity $n=4$ satisfied (Replication Delta = 0).
 
 ## 4. Verification Checklist
+
+## 3. Verification Checklist
 - [x] Definições em Coq/Lean completas.
 - [x] Teoremas principais provados (ex: `pipeline_safe`).
 - [x] Documento explicativo (este documento) gerado.

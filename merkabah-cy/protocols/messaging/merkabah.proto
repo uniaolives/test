@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package merkabah;
+
+service QuantumMessaging {
+    rpc PublishSuperposition(PublishRequest) returns (PublishResponse);
+    rpc ConsumeWithCollapse(ConsumeRequest) returns (Message);
+}
+
+message PublishRequest {
+    string payload = 1;
+    repeated string destinations = 2;
+}
+
+message PublishResponse {
+    string status = 1;
+    double coherence = 2;
+}
+
+message ConsumeRequest {
+    string queue = 1;
+    string basis = 2;
+}
+
+message Message {
+    string payload = 1;
+    string quantum_state = 2;
+}
