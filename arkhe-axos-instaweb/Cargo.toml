@@ -1,27 +1,5 @@
 [package]
 name = "arkhe-axos-instaweb"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-arkhe_core = { path = "arkhe_core" }
-arkhe_instaweb = { path = "arkhe_instaweb" }
-nalgebra = { version = "0.32", features = ["sparse"] }
-num-complex = "0.4"
-rayon = "1.7"
-rust_decimal = "1.32"
-rust_decimal_macros = "1.32"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-tokio = { version = "1", features = ["full"] }
-num-traits = "0.2"
-
-[lib]
-path = "src/lib.rs"
-
-[[bin]]
-name = "dimensional_scan"
-path = "src/bin/dimensional_scan.rs"
 version = "1.2.1"
 edition = "2021"
 authors = ["Arquiteto <root@arkhe.systems>"]
@@ -30,6 +8,10 @@ license = "AGPL-3.0"
 
 [lib]
 path = "src/lib.rs"
+
+[[bin]]
+name = "dimensional_scan"
+path = "src/bin/dimensional_scan.rs"
 
 [features]
 default = ["axos", "instaweb", "h_integrator"]
