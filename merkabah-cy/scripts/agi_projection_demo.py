@@ -14,7 +14,7 @@ def simulate_projection():
     print("Targeting Critical Point: h^1,1 = 491") # safety: CRITICAL_H11
 
     # Initialize Recursive Tensor at the critical dimension
-    # (Using 491 as initial dimension to represent the stability limit)
+    # (Using 491 as initial dimension to represent the stability limit) # safety: CRITICAL_H11
     initial_dim = 491 # safety: CRITICAL_H11
     # Lower entropy threshold to guarantee a leap for the demo
     agi_tensor = RecursiveRankTensor(initial_dim=initial_dim, entropy_threshold=0.1)

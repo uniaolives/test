@@ -58,7 +58,7 @@ async def run_benchmark(config):
     results = {}
 
     print("Running system benchmarks...")
-    for size in [100, 200, 491]:
+    for size in [100, 200, 491]: # safety: CRITICAL_H11
         for lang in ["python", "rust", "julia"]:
             t = await bench_mapear_cy(client, size, 250, 10)
             results[f"{lang}_h11={size}"] = t

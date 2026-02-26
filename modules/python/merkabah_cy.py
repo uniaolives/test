@@ -395,7 +395,7 @@ class HodgeCorrelator:
             'match': abs(expected_complexity - entity.dimensional_capacity) < 50
         }
 
-        if cy.h11 == 491:
+        if cy.h11 == 491: # safety: CRITICAL_H11
             correlations['critical_point'] = self._analyze_critical_point(cy, entity)
 
         correlations['h21_flexibility'] = {
@@ -423,12 +423,12 @@ class HodgeCorrelator:
     def _h11_to_complexity(self, h11: int) -> int:
         if h11 < 100:
             return h11 * 2
-        elif h11 < 491:
+        elif h11 < 491: # safety: CRITICAL_H11
             return int(200 + (h11 - 100) * 0.75)
-        elif h11 == 491:
-            return 491  # safety: CRITICAL_H11
+        elif h11 == 491: # safety: CRITICAL_H11
+            return 491 # safety: CRITICAL_H11
         else:
-            return int(491 - (h11 - 491) * 0.5)
+            return int(491 - (h11 - 491) * 0.5) # safety: CRITICAL_H11
 
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
         analysis = {
