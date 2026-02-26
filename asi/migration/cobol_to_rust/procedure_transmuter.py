@@ -156,6 +156,7 @@ class ProcedureDivisionExtractor:
             if indicator == '*':  # Comentário
                 return ''
             code_part = line[7:].strip()  # Removed truncation at 72 for demo
+            code_part = line[7:].strip()  # Área A/B, removed truncation at 72 for demo
         else:
             code_part = line.strip()
 
@@ -552,6 +553,21 @@ class RustTransmuter:
         for token in tokens:
             clean = token.strip('().')
             if self._is_var(clean):
+    def _transmute_arithmetic(self, expr: str) -> str:
+        """Converte expressão aritmética COBOL para Rust."""
+        # Substituir operadores COBOL
+        # NOTA: COBOL exige espaços em torno de operadores aritméticos
+        expr = expr.replace('**', '.powi(')
+
+        # Identificar variáveis e converter para chamadas ctx
+        # Simplificação: assumir que tokens com hífen são variáveis
+        tokens = expr.split()
+        print(f"DEBUG tokens: {tokens}")
+        result = []
+        for token in tokens:
+            clean = token.strip('().')
+            if '-' in clean and not clean.replace('-', '').isdigit():
+                # Provável variável COBOL
                 result.append(f"ctx.get_decimal(\"{clean}\").await?")
             elif clean.replace('.', '', 1).isdigit():
                 result.append(f"dec!({clean})")
@@ -586,11 +602,15 @@ class RustTransmuter:
         for pattern, replacement in replacements:
             cond = re.sub(pattern, replacement, cond, flags=re.IGNORECASE)
 
+        # Identificar variáveis
+        # Heurística: tokens with hyphen are variables
+        # But wait, we should be careful with negative numbers
         tokens = cond.split()
         result = []
         for token in tokens:
             clean = token.strip('()<>=!&|.')
             if self._is_var(clean):
+            if '-' in clean and not clean.replace('-', '').isdigit():
                 result.append(token.replace(clean, f"ctx.get_decimal(\"{clean}\").await?"))
             elif clean.replace('.', '', 1).isdigit():
                 result.append(token.replace(clean, f"dec!({clean})"))

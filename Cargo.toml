@@ -27,6 +27,13 @@ members = [
     "ramo-k/simulator",
     "arkhe_omni_system/asi/rust_asi",
     "arkhe_omni_system/applied_ecosystems/asi_sat",
+    "arkhe-axos-instaweb",
+    "arkhe-axos-instaweb/arkhe_core",
+    "arkhe-axos-instaweb/arkhe_instaweb",
+    "modules/rust",
+    "asi/merkabah_cy/rust",
+    "modules/rust",
+    "merkabah-cy/src/rust",
 ]
 resolver = "2"
 

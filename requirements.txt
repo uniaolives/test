@@ -12,6 +12,7 @@ click
 requests
 numpy
 cryptography
+pycryptodome
 scipy
 ripser
 persim
@@ -24,6 +25,10 @@ fastapi
 uvicorn
 astropy
 scikit-learn
+torch-geometric
+stable-baselines3
+gym
+maturin
 aiohttp
 pyzmq
 pytest
@@ -69,3 +74,4 @@ anyio
 starlette
 pyyaml
 pymavlink
+qiskit
