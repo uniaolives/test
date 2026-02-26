@@ -11,7 +11,10 @@ This directory contains the core implementation and cross-language mappings for 
 - `chronoglyph_decoder.py`: Decoder for 85-bit Chronoglyph programs.
 - `dynamic_expansion.py`: Adaptive dimensionality layer based on informational complexity.
 - `physical_autoencoder.py`: Integrated sparse autoencoder and Physical Mixture Density Network (MDN) for uncertainty quantification.
-- `astrophysical_chronoglyph_final.py`: Support module for astrophysical modeling and chemical kinetics simulation.
+- `astrophysical_chronoglyph_final.py`: Chemical kinetics simulator for interstellar molecular clouds (Sgr B2(N2)).
+- `latent_catalysis.py`: Extension for chemical kinetics using effective mass fields as latent catalysts.
+- `frechet_tensor.py`: Multi-scale measurement tool using seminorms in Fréchet spaces.
+- `moonshine_replicability.py`: Conceptual framework for testing Monstrous Moonshine replicability in bit sequences.
 - `detectors_v2.py`: The 4-level safety stack for steganography and anomaly detection.
 - `steganography.py`: High-fidelity encoding schemes (Semantic Pattern, Neural).
 - `transformations.py`: Robustness testing pipeline for text-based models.
