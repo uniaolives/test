@@ -1,0 +1,14 @@
+name = "MerkabahCY"
+uuid = "a1b2c3d4-e5f6-4a5b-bc6d-7e8f9a0b1c2d"
+authors = ["Arquiteto <root@arkhe.systems>"]
+version = "0.1.0"
+
+[deps]
+DifferentialEquations = "0c46a032-137c-50e0-bc56-e9430e42076f"
+Flux = "587475ba-b771-5e3f-ad9e-33799f191a9c"
+GraphNeuralNetworks = "d318536e-d7f1-43e9-a035-46740b712c98"
+Graphs = "86223616-3820-11e9-34e0-e1bc1335447b"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-99e572e19a47"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
+Symbolics = "0c5d862f-8b57-4792-8d23-627444e9da44"
+Tullio = "bc488891-fb45-44a0-848a-0832c0290b59"
