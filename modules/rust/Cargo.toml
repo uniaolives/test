@@ -1,5 +1,4 @@
 [package]
-name = "merkabah-cy"
 name = "merkabah-cy-module"
 version = "1.0.0"
 edition = "2021"
@@ -16,6 +15,5 @@ tracing = "0.1"
 tracing-subscriber = "0.3"
 futures = "0.3"
 rand = "0.8"
-burn = { version = "0.16", default-features = false, features = ["wgpu"] } # Using wgpu as a placeholder for cuda-like backend
+burn = { version = "0.16", default-features = false, features = ["wgpu"] }
 num-complex = { version = "0.4", features = ["serde"] }
-num-complex = "0.4"
