@@ -108,7 +108,7 @@ class CYFeatureExtractor(BaseFeaturesExtractor):
 # 3. Treinamento do agente PPO
 # =====================================================
 def main():
-    env = CYModuliEnv(h11=491, h21=50)  # CRITICAL_H11 safety context: exemplo com h21=50
+    env = CYModuliEnv(h11=491, h21=50)  # CRITICAL_H11 safety
     policy_kwargs = dict(
         features_extractor_class=CYFeatureExtractor,
         features_extractor_kwargs=dict(features_dim=256),

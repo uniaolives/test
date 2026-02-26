@@ -5639,7 +5639,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "merkabah-cy"
+name = "merkabah-cy-module"
 version = "1.0.0"
 dependencies = [
  "burn",
@@ -5655,6 +5655,15 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "uuid 1.21.0",
+]
+
+[[package]]
+name = "merkabah-engine"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]

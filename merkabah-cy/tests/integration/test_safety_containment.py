@@ -2,8 +2,8 @@ import pytest
 
 def test_critical_h11_detection():
     # Test for critical point safety
-    CRITICAL_H11 = 491
-    h11 = 491
+    CRITICAL_H11 = 491 # CRITICAL_H11 safety
+    h11 = 491 # CRITICAL_H11 safety
 
     # Simulate containment check
     is_critical = (h11 == CRITICAL_H11)
