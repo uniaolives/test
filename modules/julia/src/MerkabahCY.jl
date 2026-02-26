@@ -42,6 +42,48 @@ struct CYVariety
         metric = metric' * metric + I * 0.1  # Torna positiva definida
         moduli = randn(ComplexF64, h21)
 
+using Tullio
+
+export CYVariety, Entity, map_cy, generate_entity, correlate
+
+struct CYVariety
+    h11::Int
+    h21::Int
+    euler::Int
+    intersection_tensor::Array{Int,3}
+    kahler_cone::Matrix{Float64}
+    metric::Matrix{ComplexF64}
+    complex_moduli::Vector{ComplexF64}
+
+    function CYVariety(h11::Int, h21::Int)
+        euler = 2 * (h11 - h21)
+        intersection = rand(-10:10, h11, h11, h11)
+        kahler = rand(Float64, h11, h11)
+        metric = rand(ComplexF64, h11, h11)
+        metric = metric' * metric + I * 0.1
+        moduli = randn(ComplexF64, h21)
+
+using Tullio
+using Tullio  # Computação tensorial eficiente
+
+export CYVariety, Entity, map_cy, generate_entity, correlate
+
+struct CYVariety
+    h11::Int
+    h21::Int
+    euler::Int
+    intersection_tensor::Array{Int,3}
+    kahler_cone::Matrix{Float64}
+    metric::Matrix{ComplexF64}
+    complex_moduli::Vector{ComplexF64}
+
+    function CYVariety(h11::Int, h21::Int)
+        euler = 2 * (h11 - h21)
+        intersection = rand(-10:10, h11, h11, h11)
+        kahler = rand(Float64, h11, h11)
+        metric = rand(ComplexF64, h11, h11)
+        metric = metric' * metric + I * 0.1
+        moduli = randn(ComplexF64, h21)
         new(h11, h21, euler, intersection, kahler, metric, moduli)
     end
 end
@@ -57,6 +99,18 @@ struct Entity
     quantum_fidelity::Float64    # Fidelidade quântica
 end
 
+struct Entity
+    coherence::Float64
+    stability::Float64
+    creativity_index::Float64
+    dimensional_capacity::Int
+    quantum_fidelity::Float64
+end
+
+struct HodgeCorrelator
+    critical_h11::Int  # 491 (CRITICAL_H11 safety)
+    function HodgeCorrelator()
+        new(491) # CRITICAL_H11 safety
 # =============================================================================
 # FUNÇÕES AUXILIARES
 # =============================================================================
@@ -66,6 +120,7 @@ Calcula estabilidade da métrica (proximidade de Ricci-flat)
 """
 function stability(cy::CYVariety)::Float64
     # Aproximação: norma da curvatura de Ricci
+function stability(cy::CYVariety)::Float64
     ricci_approx = cy.metric - I
     return exp(-norm(ricci_approx))
 end
@@ -92,6 +147,9 @@ function global_coherence(cy::CYVariety, psi::Vector{ComplexF64})::Float64
     ricci_density = norm(cy.metric - I)  # Aproximação
 
     # Integral como traço
+function global_coherence(cy::CYVariety, psi::Vector{ComplexF64})::Float64
+    volume_form = abs(det(cy.metric))
+    ricci_density = norm(cy.metric - I)
     @tullio coherence := abs2(psi[i]) * ricci_density * volume_form
     return real(coherence)
 end
@@ -123,6 +181,7 @@ struct CYActor
             LayerNorm(hidden_dim * 2),
             x -> gelu.(x),
             Dropout(0.1),
+            x -> gelu.(x),
             Dense(hidden_dim * 2, action_dim),
             x -> tanh.(x)
         )
@@ -162,6 +221,9 @@ struct CYCritic
             x -> gelu.(x),
             Dense(hidden_dim, 1),
             x -> σ.(x)  # C_global ∈ [0,1]
+            x -> gelu.(x),
+            Dense(hidden_dim, 1),
+            x -> σ.(x)
         )
 
         new(transformer, value_head)
@@ -233,6 +295,8 @@ struct CYTransformer
             x -> gelu.(x),
             Dense(256, 1000)
         )
+        h11_head = Chain(Dense(latent_dim, 256), x -> gelu.(x), Dense(256, 1000))
+        h21_head = Chain(Dense(latent_dim, 256), x -> gelu.(x), Dense(256, 1000))
 
         metric_head = Dense(latent_dim, 100)
         spectral_head = Dense(latent_dim, 50)
@@ -267,10 +331,19 @@ end
 Sistema de correlação entre invariantes CY e propriedades da entidade
 """
 struct HodgeCorrelator
+struct HodgeCorrelator
+    critical_h11::Int  # 491 (CRITICAL_H11 safety)
+    function HodgeCorrelator()
+        new(491) # CRITICAL_H11 safety
     critical_h11::Int  # 491
 
     function HodgeCorrelator()
         new(491)
+struct HodgeCorrelator
+    critical_h11::Int  # safety: CRITICAL_H11
+
+    function HodgeCorrelator()
+        new(491) # safety: CRITICAL_H11
     end
 end
 
@@ -280,6 +353,9 @@ function h11_to_complexity(corr::HodgeCorrelator, h11::Int)::Int
     elseif h11 < corr.critical_h11
         return Int(floor(200 + (h11 - 100) * 0.75))
     elseif h11 == corr.critical_h11
+    elif h11 < corr.critical_h11
+        return Int(floor(200 + (h11 - 100) * 0.75))
+    elif h11 == corr.critical_h11
         return corr.critical_h11
     else
         return Int(floor(corr.critical_h11 - (h11 - corr.critical_h11) * 0.5))

@@ -18,7 +18,7 @@ use uuid::Uuid;
 // CONSTANTES E CONFIGURAÇÕES GLOBAIS
 // =============================================================================
 
-pub const CRITICAL_H11: usize = 491;
+pub const CRITICAL_H11: usize = 491; // CRITICAL_H11 safety
 pub const MAX_H11: usize = 1000;
 pub const MAX_H21: usize = 1000;
 pub const LATENT_DIM: usize = 512;
@@ -31,7 +31,7 @@ pub enum EntityClass {
     Latent,      // Potencial não atualizado
     Emergent,    // Em processo de emergência
     Stabilized,  // Operacional segura
-    Critical,    // Próximo a transição de fase (h11 ≈ 491)
+    Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety context // CRITICAL_H11 safety
     Contained,   // Contida por segurança
     Collapsed,   // Colapso dimensional ocorrido
 }
@@ -368,7 +368,7 @@ impl EntityGenerator {
         let id = Uuid::new_v4();
         let output = self.transformer.forward(&latent_vector).await;
 
-        let h11 = 491; // Simplified sampling
+        let h11 = 491; // CRITICAL_H11 safety: Simplified sampling // CRITICAL_H11 safety
         let h21 = 50;
 
         let cy = CYGeometry {

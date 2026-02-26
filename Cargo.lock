@@ -259,7 +259,7 @@ checksum = "c3d036a3c4ab069c7b410a2ce876bd74808d2d0888a82667669f8e783a898bf1"
 
 [[package]]
 name = "arkhe-axos-instaweb"
-version = "1.2.1"
+version = "0.1.0"
 dependencies = [
  "arkhe_core",
  "arkhe_instaweb",
@@ -5035,6 +5035,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "katexit"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ccfb0b7ce7938f84a5ecbdca5d0a991e46bc9d6d078934ad5e92c5270fe547db"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
 name = "keccak"
 version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5585,7 +5596,27 @@ dependencies = [
 ]
 
 [[package]]
-name = "merkabah-cy"
+name = "merkabah-cy-module"
+name = "merkabah-cy-asi"
+version = "1.0.0"
+dependencies = [
+ "burn",
+ "futures",
+ "ndarray",
+ "ndarray-linalg",
+ "num-complex 0.4.6",
+ "rand 0.8.5",
+ "rayon",
+ "serde",
+ "serde_json",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "uuid 1.21.0",
+]
+
+[[package]]
+name = "merkabah-cy-module"
 version = "1.0.0"
 dependencies = [
  "burn",
@@ -5600,6 +5631,15 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "uuid 1.21.0",
+]
+
+[[package]]
+name = "merkabah-engine"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tokio",
 ]
 
 [[package]]

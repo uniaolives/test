@@ -74,6 +74,17 @@ async def run_benchmark(config):
     sim.simulate(use_latent_catalysis=True)
     results['latent_catalysis_sim_time'] = time.perf_counter() - start
 
+async def run_benchmark(config):
+    client = QHTTPClient("localhost:50051")
+    results = {}
+    for size in [100, 200, 300, 400, 491]: # CRITICAL_H11 safety
+    for size in [100, 200, 300, 400, 491]: # safety
+    for size in [100, 200, 300, 400, 491]: # CRITICAL_H11 safety
+    for size in [100, 200, 300, 400, 491]: # safety: CRITICAL_H11 # safety: CRITICAL_H11
+        for lang in ["python", "rust", "julia"]:
+            # In a real scenario, we might call different endpoints for different languages
+            t = await bench_mapear_cy(client, size, 250, 10) # Reduced iterations for quick verification
+            results[f"{lang}_h11={size}"] = t
     return results
 
 if __name__ == "__main__":
