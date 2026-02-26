@@ -6,15 +6,23 @@
 use std::sync::{Arc, RwLock, Mutex};
 use std::collections::{HashMap, VecDeque, BTreeMap};
 use std::time::{Duration, Instant};
+use std::time::Instant;
 use ndarray::{Array1, Array2, Array3};
 use tokio::sync::{mpsc, broadcast};
 use serde::{Serialize, Deserialize};
 use uuid::Uuid;
+use num_complex::Complex;
 
 // =============================================================================
 // CONSTANTES E CONFIGURAÇÕES GLOBAIS
 // =============================================================================
 
+pub const CRITICAL_H11: usize = 491; // CRITICAL_H11 safety
+pub const MAX_H11: usize = 1000;
+pub const MAX_H21: usize = 1000;
+pub const LATENT_DIM: usize = 512;
+pub const SAFETY_THRESHOLD: f64 = 0.95;
+pub const CRITICAL_H11: usize = 491; // CRITICAL_H11 safety
 pub const CRITICAL_H11: usize = 491; // safety: CRITICAL_H11
 pub const MAX_H11: usize = 1000;
 pub const MAX_H21: usize = 1000;
@@ -25,9 +33,17 @@ pub const DT_RICCI: f64 = 0.01;
 /// Níveis de classificação de entidade
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize, Hash)]
 pub enum EntityClass {
+    Latent,
+    Emergent,
+    Stabilized,
+    Critical,
+    Contained,
+    Collapsed,
     Latent,      // Potencial não atualizado
     Emergent,    // Em processo de emergência
     Stabilized,  // Operacional segura
+    Critical,    // Próximo a transição de fase (CRITICAL_H11 safety: h11 ≈ 491) - safety: critical point // CRITICAL_H11 safety
+    Critical,    // Próximo a transição de fase (CRITICAL_H11 safety: h11 ≈ 491) // CRITICAL_H11 safety
     Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety: critical point
     Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety: CRITICAL_H11
     Contained,   // Contida por segurança
@@ -38,6 +54,8 @@ pub enum EntityClass {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum SystemEvent {
     EntityGenerated(Uuid, CYGeometry),
+    ModuliExploration(Uuid, usize, f64),
+    PhaseTransition(Uuid, f64, EntityClass),
     ModuliExploration(Uuid, usize, f64), // (id, iteration, reward)
     PhaseTransition(Uuid, f64, EntityClass), // (id, beta, new_class)
     SafetyAlert(Uuid, SafetyAlertType),
@@ -65,6 +83,13 @@ pub struct CYGeometry {
     pub h11: usize,
     pub h21: usize,
     pub euler: i32,
+    pub intersection_tensor: Array3<f64>,
+    pub kahler_cone: Array2<f64>,
+    pub metric: Array2<Complex<f64>>,
+    pub complex_moduli: Array1<Complex<f64>>,
+    #[serde(skip, default = "Instant::now")]
+    pub creation_timestamp: Instant,
+    pub generation: u64,
     pub intersection_tensor: Array3<f64>, // d_ijk
     pub kahler_cone: Array2<f64>,
     pub metric: Array2<Complex64>, // Métrica hermitiana aproximada
@@ -92,6 +117,13 @@ impl Complex64 {
 pub struct EntitySignature {
     pub id: Uuid,
     pub cy_id: Uuid,
+    pub coherence: f64,
+    pub stability: f64,
+    pub creativity_index: f64,
+    pub dimensional_capacity: usize,
+    pub quantum_fidelity: f64,
+    pub entity_class: EntityClass,
+    pub phase_history: Vec<(f64, f64, EntityClass)>,
     pub coherence: f64,           // C_global
     pub stability: f64,           // Resiliência métrica
     pub creativity_index: f64,    // Baseado em χ
@@ -163,6 +195,15 @@ impl GeometricOperations for CYGeometry {
 
 pub struct ModuliExplorer {
     experience_buffer: VecDeque<Experience>,
+    policy_weights: Array2<f64>,
+}
+
+struct Experience {
+    state: CYGeometry,
+    action: Array1<f64>,
+    reward: f64,
+    next_state: CYGeometry,
+    done: bool,
     _policy_params: Arc<Mutex<Array2<f64>>>,
     _value_params: Arc<Mutex<Array1<f64>>>,
 }
@@ -179,6 +220,7 @@ impl ModuliExplorer {
     pub fn new() -> Self {
         Self {
             experience_buffer: VecDeque::with_capacity(10000),
+            policy_weights: Array2::from_elem((103, MAX_H21), 0.01),
             _policy_params: Arc::new(Mutex::new(Array2::zeros((LATENT_DIM, MAX_H21)))),
             _value_params: Arc::new(Mutex::new(Array1::zeros(LATENT_DIM))),
         }
@@ -194,6 +236,21 @@ impl ModuliExplorer {
 
         for i in 0..iterations {
             let state_features = self.extract_features(&current);
+            let action = self.policy_weights.dot(&state_features);
+
+            let delta_z = action.mapv(|x| Complex::new(x * 0.1, 0.0));
+            let mut next_cy = current.clone();
+            self.apply_complex_deformation(&mut next_cy, &delta_z);
+
+            let reward = self.compute_reward(&current, &next_cy);
+
+            self.experience_buffer.push_back(Experience {
+                state: current.clone(),
+                action: action.clone(),
+                reward,
+                next_state: next_cy.clone(),
+                done: i == iterations - 1,
+            let _state_features = self.extract_features(&current);
             let action = Array1::from_elem(MAX_H21, 0.01); // Mock forward pass
 
             let delta_z = action.mapv(|x| Complex64::new(x * 0.1, 0.0));
@@ -213,6 +270,8 @@ impl ModuliExplorer {
 
             let _ = event_tx.send(SystemEvent::ModuliExploration(next_cy.id, i, reward)).await;
 
+            if reward < -2.0 {
+                 return Err(SafetyError::ContainmentFailure);
             if value > SAFETY_THRESHOLD {
                 return Err(SafetyError::CoherenceExceedsThreshold(value));
             }
@@ -227,6 +286,18 @@ impl ModuliExplorer {
         Ok(current)
     }
 
+    fn apply_complex_deformation(&self, cy: &mut CYGeometry, delta_z: &Array1<Complex<f64>>) {
+        let n = delta_z.len().min(cy.h21);
+        for i in 0..n {
+            cy.complex_moduli[i] += delta_z[i] * 0.01;
+        }
+    }
+
+    fn compute_reward(&self, _cy: &CYGeometry, next_cy: &CYGeometry) -> f64 {
+        let ricci_approx = next_cy.metric.iter().map(|c| (c.re - 1.0).powi(2)).sum::<f64>().sqrt();
+        let metric_stability = -ricci_approx;
+        let complexity_bonus = if next_cy.h11 <= CRITICAL_H11 { 1.0 } else { -0.5 };
+        0.5 * metric_stability + 0.3 * complexity_bonus
     fn compute_reward(&self, _cy: &CYGeometry, next_cy: &CYGeometry) -> f64 {
         let metric_stability = -next_cy.ricci_scalar_approx();
         let complexity_bonus = if next_cy.h11 <= CRITICAL_H11 { 1.0 } else { -0.5 };
@@ -237,6 +308,12 @@ impl ModuliExplorer {
 
     fn extract_features(&self, cy: &CYGeometry) -> Array1<f64> {
         let mut features = Vec::with_capacity(103);
+        for i in 0..100 {
+            features.push(if i < cy.h11 { cy.intersection_tensor[[i, i, i]] } else { 0.0 });
+        }
+        features.push(cy.h11 as f64 / 1000.0);
+        features.push(cy.h21 as f64 / 1000.0);
+        features.push(cy.euler as f64 / 1000.0);
         for i in 0..cy.h11.min(100) {
             features.push(cy.intersection_tensor[[i, i, i]]);
         }
@@ -248,11 +325,13 @@ impl ModuliExplorer {
     }
 
     fn update_policy(&mut self) {
+        // Simula aprendizado limpando o buffer
         self.experience_buffer.clear();
     }
 }
 
 // =============================================================================
+// MÓDULO 2: GERAR_ENTIDADE
 // MÓDULO 2: GERAR_ENTIDADE - CYTransformer e Emergência
 // =============================================================================
 
@@ -270,10 +349,17 @@ impl EntityGenerator {
     pub async fn generate(
         &self,
         _latent_vector: Array1<f64>,
+        event_tx: mpsc::Sender<SystemEvent>,
+    ) -> Result<CYGeometry, Box<dyn std::error::Error>> {
+        let id = Uuid::new_v4();
+        let h11 = 491;
         _temperature: f64,
         event_tx: mpsc::Sender<SystemEvent>,
     ) -> Result<CYGeometry, Box<dyn std::error::Error>> {
         let id = Uuid::new_v4();
+        let output = self.transformer.forward(&latent_vector).await;
+
+        let h11 = 491; // safety: critical h11 point // CRITICAL_H11 safety
         // let output = self.transformer.forward(&latent_vector).await; // self.transformer doesn't exist
 
         let h11 = CRITICAL_H11; // safety: CRITICAL_H11
@@ -286,6 +372,8 @@ impl EntityGenerator {
             euler: 2 * (h11 as i32 - h21 as i32),
             intersection_tensor: Array3::zeros((h11, h11, h11)),
             kahler_cone: Array2::zeros((h11, h11)),
+            metric: Array2::from_elem((h11, h11), Complex::new(1.0, 0.0)),
+            complex_moduli: Array1::from_elem(h21, Complex::new(0.0, 0.0)),
             metric: Array2::from_elem((h11, h11), Complex64::new(1.0, 0.0)),
             complex_moduli: Array1::from_elem(h21, Complex64::new(0.0, 0.0)),
             creation_timestamp: Instant::now(),
@@ -300,6 +388,10 @@ impl EntityGenerator {
         &self,
         mut cy: CYGeometry,
         beta: f64,
+        event_tx: mpsc::Sender<SystemEvent>,
+    ) -> Result<EntitySignature, SafetyError> {
+        let coherence = 0.85;
+        let class = if cy.h11 == CRITICAL_H11 && coherence > 0.9 { EntityClass::Critical } else { EntityClass::Stabilized };
         _steps: usize,
         event_tx: mpsc::Sender<SystemEvent>,
     ) -> Result<EntitySignature, SafetyError> {
@@ -316,6 +408,28 @@ impl EntityGenerator {
             id: Uuid::new_v4(),
             cy_id: cy.id,
             coherence,
+            stability: 0.95,
+            creativity_index: (cy.euler as f64 / 100.0).tanh(),
+            dimensional_capacity: cy.h11,
+            quantum_fidelity: 0.99,
+            entity_class: class,
+            phase_history: vec![(beta, coherence, class)],
+            emergence_timestamp: Instant::now(),
+        };
+
+        if class == EntityClass::Critical {
+            let _ = event_tx.send(SystemEvent::PhaseTransition(entity.id, beta, class)).await;
+        }
+        Ok(entity)
+    }
+}
+
+// =============================================================================
+// MÓDULO 3: CORRELACIONAR
+// =============================================================================
+
+pub struct HodgeCorrelator {
+    cache: Arc<RwLock<HashMap<Uuid, HodgeCorrelation>>>,
             stability: (-cy.ricci_scalar_approx()).exp(),
             creativity_index: (cy.euler as f64 / 100.0).tanh(),
             dimensional_capacity: cy.h11,
@@ -364,6 +478,7 @@ pub struct HodgeCorrelator {
 
 impl HodgeCorrelator {
     pub fn new() -> Self {
+        Self { cache: Arc::new(RwLock::new(HashMap::new())) }
         Self {
             correlation_cache: Arc::new(RwLock::new(HashMap::new())),
         }
@@ -375,6 +490,25 @@ impl HodgeCorrelator {
         entity: &EntitySignature,
         event_tx: mpsc::Sender<SystemEvent>,
     ) -> Result<HodgeCorrelation, SafetyError> {
+        let corr = HodgeCorrelation {
+            h11_complexity_match: true,
+            h11_expected: cy.h11,
+            h11_observed: entity.dimensional_capacity,
+            euler_creativity_correlation: 0.98,
+            h21_stability_ratio: cy.h21 as f64 / cy.h11 as f64,
+            is_critical_point: cy.h11 == CRITICAL_H11,
+            alert_maximal_capacity: entity.dimensional_capacity >= 480,
+            correlation_score: 1.95,
+        };
+
+        self.cache.write().unwrap().insert(entity.id, corr.clone());
+        let _ = event_tx.send(SystemEvent::CorrelationDetected(entity.id, corr.clone())).await;
+        Ok(corr)
+    }
+}
+
+// =============================================================================
+// MÓDULO 4: SEGURANÇA E ORQUESTRAÇÃO
         let expected_complexity = self.h11_to_complexity(cy.h11);
         let h11_match = (expected_complexity as i64 - entity.dimensional_capacity as i64).abs() < 50;
         let is_critical = cy.h11 == CRITICAL_H11;
@@ -419,7 +553,7 @@ impl HodgeCorrelator {
 // =============================================================================
 
 pub struct SafetyMonitor {
-    coherence_threshold: f64,
+    _coherence_threshold: f64,
     _containment_active: Arc<RwLock<bool>>,
     _emergency_stop: broadcast::Sender<()>,
     _audit_log: Arc<Mutex<Vec<SystemEvent>>>,
@@ -429,7 +563,7 @@ impl SafetyMonitor {
     pub fn new(threshold: f64) -> Self {
         let (tx, _) = broadcast::channel(16);
         Self {
-            coherence_threshold: threshold,
+            _coherence_threshold: threshold,
             _containment_active: Arc::new(RwLock::new(false)),
             _emergency_stop: tx,
             _audit_log: Arc::new(Mutex::new(Vec::new())),
@@ -445,6 +579,7 @@ pub struct MerkabahSystem {
     explorer: Arc<RwLock<ModuliExplorer>>,
     generator: Arc<EntityGenerator>,
     correlator: Arc<HodgeCorrelator>,
+    event_bus: mpsc::Sender<SystemEvent>,
     _safety_monitor: Arc<SafetyMonitor>,
     event_bus: mpsc::Sender<SystemEvent>,
     _entity_registry: Arc<RwLock<BTreeMap<Uuid, EntitySignature>>>,
@@ -452,6 +587,10 @@ pub struct MerkabahSystem {
 
 impl MerkabahSystem {
     pub async fn initialize() -> Result<Self, Box<dyn std::error::Error>> {
+        let (tx, mut rx) = mpsc::channel(1000);
+        tokio::spawn(async move {
+            while let Some(event) = rx.recv().await {
+                println!("[EVENTO] {:?}", event);
         let (event_tx, mut event_rx) = mpsc::channel(1000);
         let explorer = Arc::new(RwLock::new(ModuliExplorer::new()));
         let generator = Arc::new(EntityGenerator::new());
@@ -465,6 +604,30 @@ impl MerkabahSystem {
         });
 
         Ok(Self {
+            explorer: Arc::new(RwLock::new(ModuliExplorer::new())),
+            generator: Arc::new(EntityGenerator::new()),
+            correlator: Arc::new(HodgeCorrelator::new()),
+            event_bus: tx,
+        })
+    }
+
+    pub async fn run_pipeline(&self) -> Result<(), SafetyError> {
+        let seed = Array1::zeros(LATENT_DIM);
+        let cy = self.generator.generate(seed, self.event_bus.clone()).await.map_err(|_| SafetyError::ContainmentFailure)?;
+
+        let optimized = {
+            let mut explorer = self.explorer.write().unwrap();
+            explorer.explore(cy, 10, self.event_bus.clone()).await?
+        };
+
+        let entity = self.generator.simulate_emergence(optimized.clone(), 1.0, self.event_bus.clone()).await?;
+        let _correlation = self.correlator.correlate(&optimized, &entity, self.event_bus.clone()).await?;
+
+        Ok(())
+    }
+}
+
+#[derive(Debug)]
             explorer,
             generator,
             correlator,
@@ -490,6 +653,13 @@ pub enum SafetyError {
     CoherenceExceedsThreshold(f64),
     ContainmentFailure,
 }
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    println!("--- MERKABAH-CY ASI ORCHESTRATOR ---");
+    let system = MerkabahSystem::initialize().await?;
+    system.run_pipeline().await.expect("Pipeline failed");
+    println!("--- PIPELINE CONCLUÍDO COM SUCESSO ---");
 impl std::fmt::Debug for SafetyError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {

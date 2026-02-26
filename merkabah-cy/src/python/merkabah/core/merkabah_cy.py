@@ -37,6 +37,7 @@ class CYGeometry:
     @property
     def complexity_index(self) -> float:
         """Índice de complexidade baseado em h^{1,1}"""
+        return self.h11 / 491.0  # Normalizado pelo valor crítico # CRITICAL_H11 safety
         return self.h11 / 491.0  # CRITICAL_H11 safety
         return self.h11 / 491.0  # Normalizado pelo valor crítico # CRITICAL_H11 safety
         return self.h11 / 491.0  # safety: CRITICAL_H11
@@ -168,6 +169,7 @@ class CYRLAgent:
 
     def compute_reward(self, cy_geom: CYGeometry, next_cy: CYGeometry) -> float:
         metric_stability = -np.linalg.norm(next_cy.metric_approx - cy_geom.metric_approx)
+        complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # Penalidade acima do limite # CRITICAL_H11 safety
         complexity_bonus = 1.0 if next_cy.h11 <= 491 else -0.5  # CRITICAL_H11 safety
         euler_balance = -abs(next_cy.euler) / 1000.0
         return 0.5 * metric_stability + 0.3 * complexity_bonus + 0.2 * euler_balance
@@ -217,6 +219,19 @@ class CYRLAgent:
             deformation, features = self.actor(x, edge_index)
             deformation = deformation.squeeze().numpy()
 
+        # Garante que deformation seja um array e tenha o tamanho correto
+        if deformation.ndim == 0:
+            deformation = np.array([deformation])
+
+        # Ajusta o tamanho da ação para coincidir com h21 (complex_structure)
+        if len(deformation) < len(state.complex_structure):
+            repeats = (len(state.complex_structure) // len(deformation)) + 1
+            full_action = np.tile(deformation, repeats)[:len(state.complex_structure)]
+        else:
+            full_action = deformation[:len(state.complex_structure)]
+
+        new_complex = state.complex_structure + 0.1 * full_action
+        return full_action, new_complex
         if deformation.ndim == 0:
             deformation = np.array([deformation])
 
@@ -245,6 +260,9 @@ class CYRLAgent:
                 for j in range(i+1, min(i+3, n_nodes)):
                     edges.append([i, j])
                     edges.append([j, i])
+
+        if not edges:
+            return torch.empty((2, 0), dtype=torch.long)
         if not edges:
             return torch.empty((2, 0), dtype=torch.long)
         return torch.tensor(edges, dtype=torch.long).t().contiguous()

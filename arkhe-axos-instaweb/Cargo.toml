@@ -1,5 +1,10 @@
 [package]
 name = "arkhe-axos-instaweb"
+version = "1.2.1"
+edition = "2021"
+authors = ["Arquiteto <root@arkhe.systems>"]
+description = "Sistema operacional unificado: teoria, execução, rede, tempo"
+license = "AGPL-3.0"
 version = "0.1.0"
 edition = "2021"
 
