@@ -66,6 +66,14 @@ async def run_benchmark(config):
     print("Running tensor expansion benchmarks...")
     results['tensor_metrics'] = bench_tensor_expansion()
 
+    print("Running latent catalysis benchmarks...")
+    from modules.python.latent_catalysis_sim import LatentKineticsSimulator
+    t_sim = np.linspace(0, 100, 1000)
+    sim = LatentKineticsSimulator(t_sim)
+    start = time.perf_counter()
+    sim.simulate(use_latent_catalysis=True)
+    results['latent_catalysis_sim_time'] = time.perf_counter() - start
+
 async def run_benchmark(config):
     client = QHTTPClient("localhost:50051")
     results = {}

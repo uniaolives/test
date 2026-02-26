@@ -12,6 +12,36 @@ using Graphs
 using GraphNeuralNetworks
 using Optim
 using Symbolics
+using Tullio  # Computação tensorial eficiente
+# using CUDA  # Removed to avoid environment issues if not available
+
+export CYVariety, Entity, map_cy, generate_entity, correlate
+
+# =============================================================================
+# ESTRUTURAS DE DADOS
+# =============================================================================
+
+"""
+Representa uma variedade Calabi-Yau tridimensional
+"""
+struct CYVariety
+    h11::Int                    # h^{1,1}
+    h21::Int                    # h^{2,1}
+    euler::Int                  # χ = 2(h^{1,1} - h^{2,1})
+    intersection_tensor::Array{Int,3}  # d_ijk
+    kahler_cone::Matrix{Float64}       # Geradores do cone
+    metric::Matrix{ComplexF64}         # Métrica de Kähler
+    complex_moduli::Vector{ComplexF64} # z ∈ H^{2,1}
+
+    function CYVariety(h11::Int, h21::Int)
+        euler = 2 * (h11 - h21)
+        # Inicializa com dados aleatórios (em produção, usar dados reais)
+        intersection = rand(-10:10, h11, h11, h11)
+        kahler = rand(Float64, h11, h11)
+        metric = rand(ComplexF64, h11, h11)
+        metric = metric' * metric + I * 0.1  # Torna positiva definida
+        moduli = randn(ComplexF64, h21)
+
 using Tullio
 
 export CYVariety, Entity, map_cy, generate_entity, correlate
@@ -58,6 +88,9 @@ struct CYVariety
     end
 end
 
+"""
+Assinatura de entidade emergente
+"""
 struct Entity
     coherence::Float64           # C_global
     stability::Float64           # Resiliência
@@ -290,6 +323,14 @@ function (transformer::CYTransformer)(z::Vector{Float32})
     )
 end
 
+# =============================================================================
+# MÓDULO 3: CORRELACIONAR - Análise Hodge-Observável
+# =============================================================================
+
+"""
+Sistema de correlação entre invariantes CY e propriedades da entidade
+"""
+struct HodgeCorrelator
 struct HodgeCorrelator
     critical_h11::Int  # 491 (CRITICAL_H11 safety)
     function HodgeCorrelator()

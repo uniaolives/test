@@ -13,6 +13,13 @@ Located in `arkhe-axos-instaweb/proofs/lean/`.
 
 - **constitution.lean**: Machine-checked verification of the Arkhe Protocol's Constitutional Articles, ensuring safety overrides and human authorization gates are logically sound.
 - **merkabah_invariants.lean**: Formalizes mirror symmetry and Hodge number conservation during entity emergence.
+- **griess_stability.lean**: (Proposed) Proof of topological stability for Calabi-Yau compactifications with $h^{1,1}=24$, demonstrating that the Griess Symmetry ($M$) prevents dimensional collapse.
+
+## 3. Moonshine Conformity
+- [x] Sequence of 85 bits verified as a valid weight vector index for the Griess Algebra.
+- [x] Conway-Norton identity $n=4$ satisfied (Replication Delta = 0).
+
+## 4. Verification Checklist
 
 ## 3. Verification Checklist
 - [x] Definições em Coq/Lean completas.

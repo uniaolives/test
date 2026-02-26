@@ -3,6 +3,11 @@
 //!
 //! Módulos: MAPEAR_CY | GERAR_ENTIDADE | CORRELACIONAR | SEGURANÇA | ORQUESTRAÇÃO
 
+use std::sync::{Arc, RwLock};
+use std::collections::{HashMap, VecDeque};
+use std::time::Instant;
+use ndarray::{Array1, Array2, Array3};
+use tokio::sync::mpsc;
 use std::sync::{Arc, RwLock, Mutex};
 use std::collections::{HashMap, VecDeque, BTreeMap};
 use std::time::{Duration, Instant};
@@ -17,6 +22,7 @@ use num_complex::Complex;
 // CONSTANTES E CONFIGURAÇÕES GLOBAIS
 // =============================================================================
 
+pub const CRITICAL_H11: usize = 491;
 pub const CRITICAL_H11: usize = 491; // CRITICAL_H11 safety
 pub const MAX_H11: usize = 1000;
 pub const MAX_H21: usize = 1000;
@@ -198,6 +204,7 @@ pub struct ModuliExplorer {
     policy_weights: Array2<f64>,
 }
 
+#[allow(dead_code)]
 struct Experience {
     state: CYGeometry,
     action: Array1<f64>,
@@ -386,6 +393,7 @@ impl EntityGenerator {
 
     pub async fn simulate_emergence(
         &self,
+        cy: CYGeometry,
         mut cy: CYGeometry,
         beta: f64,
         event_tx: mpsc::Sender<SystemEvent>,
