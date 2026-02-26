@@ -33,6 +33,23 @@ class EmergencyAuthority {
         // Mock capture: threshold must show conscious intent (beta > theta)
         return { intent: 'conscious_halt', beta: 0.8, theta: 0.2 };
     }
+
+    async handlePhiAlert(alert) {
+        console.warn(`🚨 Φ-ANOMALY: ${alert.reason} (Φ=${alert.phi})`);
+
+        // Aciona resposta automatizada (SOAR)
+        if (alert.severity === 'CRITICAL') {
+            await this.isolateAgent(alert.handover_id);
+        }
+
+        // Em um sistema real, registraria no ledger via gRPC/FFI
+        console.log(`[LEDGER] Recording PHI_ALERT for ${alert.handover_id}`);
+    }
+
+    async isolateAgent(agentId) {
+        console.log(`[ACTION] Isolating agent ${agentId} due to thermodynamic violation`);
+        return true;
+    }
 }
 
 // Example usage
