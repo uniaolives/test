@@ -185,7 +185,7 @@ jobs:
       - name: Start services with Docker Compose
         working-directory: merkabah-cy
         run: |
-          docker-compose -f docker-compose.test.yml up -d
+          docker compose -f docker-compose.test.yml up -d
 
       - name: Wait for services
         working-directory: merkabah-cy
