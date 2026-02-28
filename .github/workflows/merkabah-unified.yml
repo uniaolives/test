@@ -175,9 +175,9 @@ jobs:
         ports:
           - 5672:5672
       qiskit-sim:
-        image: qiskit/quantum-simulator:latest
+        image: ychen94/quantum-simulator-mcp:latest
         ports:
-          - 9000:9000
+          - 9000:7070
 
     steps:
       - uses: actions/checkout@v4
