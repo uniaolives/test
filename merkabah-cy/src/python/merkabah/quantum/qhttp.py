@@ -153,7 +153,7 @@ class QHTTPRequest:
                 if (seed >> i) & 1:
                     qc.cx(qr[i], qr[i+1])
 
-class QHTTPStatusCodeExtended(Enum):
+class QHTTPStatusCode(Enum):
     """Códigos de status conforme RFC 9491 (safety)""" # CRITICAL_H11 safety
     OK = 200
     SUPERPOSED = 201
@@ -410,7 +410,7 @@ class QHTTPServer:
             }, status=500)
 
     async def _handle_websocket(self, request: web.Request):
-        """WebSocket para comunicação quântica contânua"""
+        """WebSocket para comunicação quântica contínua"""
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         async for msg in ws:
