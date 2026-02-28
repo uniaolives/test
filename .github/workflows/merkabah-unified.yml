@@ -15,6 +15,7 @@ env:
   IMAGE_PREFIX: merkabah-cy
   CRITICAL_H11: 491
   SAFETY_THRESHOLD: 0.95
+  QHTTP_SIMULATION: 1
 
 jobs:
   # =============================================================================
