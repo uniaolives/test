@@ -31,7 +31,7 @@ impl RuntimeBackend for NullClawBackend {
     }
 
     fn process(&self, input: &str, _context: &ContextWindow) -> ResilientResult<String> {
-        let config = self.config.as_ref().ok_or(ResilientError::ConfigurationError(
+        let config = self.config.as_ref().ok_or(ResilientError::Configuration(
             "NullClawBackend not initialized".to_string(),
         ))?;
 
@@ -44,13 +44,13 @@ impl RuntimeBackend for NullClawBackend {
             .header("Authorization", format!("Bearer {}", config.api_key.as_deref().unwrap_or("")))
             .json(&packet)
             .send()
-            .map_err(|e| ResilientError::RuntimeError(format!("NullClaw request failed: {}", e)))?;
+            .map_err(|e| ResilientError::RuntimeBackend(format!("NullClaw request failed: {}", e)))?;
 
         if response.status().is_success() {
-            let body = response.text().map_err(|e| ResilientError::RuntimeError(format!("Failed to read response: {}", e)))?;
+            let body = response.text().map_err(|e| ResilientError::RuntimeBackend(format!("Failed to read response: {}", e)))?;
             Ok(body)
         } else {
-            Err(ResilientError::RuntimeError(format!("NullClaw returned error: {}", response.status())))
+            Err(ResilientError::RuntimeBackend(format!("NullClaw returned error: {}", response.status())))
         }
     }
 
