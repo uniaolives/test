@@ -29,9 +29,12 @@ except ImportError:
     web = Any
     WSMsgType = Any
 try:
-    import aioredis
+    import redis.asyncio as aioredis
 except ImportError:
-    aioredis = None
+    try:
+        import aioredis
+    except (ImportError, TypeError):
+        aioredis = None
 try:
     from cryptography.fernet import Fernet
     from cryptography.hazmat.primitives import hashes
@@ -152,18 +155,6 @@ class QHTTPRequest:
             for i in range(len(qr) - 1):
                 if (seed >> i) & 1:
                     qc.cx(qr[i], qr[i+1])
-
-class QHTTPStatusCode(Enum):
-    """Códigos de status conforme RFC 9491 (safety)""" # CRITICAL_H11 safety
-    OK = 200
-    SUPERPOSED = 201
-    ENTANGLED = 202
-    TELEPORTED = 203
-    PARTIAL_DECOHERENCE = 418
-    FULL_DECOHERENCE = 409
-    ENTANGLEMENT_BROKEN = 417
-    QUANTUM_ERROR = 500
-    COHERENCE_COLLAPSE = 503
 
 @dataclass
 class QHTTPResponse:

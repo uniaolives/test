@@ -238,11 +238,6 @@ class CYRLAgent:
         """Constrói conectividade do grafo de interseção"""
         # Conecta cada nó aos vizinhos (simplificado)
         edges = []
-        for i in range(n_nodes):
-            for j in range(i+1, min(i+3, n_nodes)):
-                edges.append([i, j])
-                edges.append([j, i])
-        edges = []
         if n_nodes > 1:
             for i in range(n_nodes):
                 for j in range(i+1, min(i+3, n_nodes)):
