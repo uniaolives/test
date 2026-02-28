@@ -4,6 +4,14 @@ authors = ["Rafael Oliveira"]
 version = "1.0.0"
 
 [deps]
+DifferentialEquations = "0c46a032-eb83-5123-ab36-844a8e79db05"
+Flux = "587475ba-8284-50fd-b4cd-27222730701e"
+GraphNeuralNetworks = "d11ce35e-3990-4824-9169-c709e3909187"
+Graphs = "86223c79-3864-57c6-81fe-f26dfda51924"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-991f2c9c2533"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
+Symbolics = "0c5d862f-8b57-4792-8d23-627444de63db"
+Tullio = "bc48ee85-29ad-41d8-83c8-de3180cd2244"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c523dd2ae4"

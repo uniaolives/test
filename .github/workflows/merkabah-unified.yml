@@ -174,10 +174,6 @@ jobs:
         image: rabbitmq:3-management-alpine
         ports:
           - 5672:5672
-      qiskit-sim:
-        image: qiskit/quantum-simulator:latest
-        ports:
-          - 9000:9000
 
     steps:
       - uses: actions/checkout@v4
@@ -196,6 +192,7 @@ jobs:
         working-directory: merkabah-cy
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)/src/python
+          export QHTTP_SIMULATION=1
           python -m pytest tests/integration/test_qhttp_protocol.py -v \
             --qhttp-endpoint=http://localhost:8443 \
             --quantum-backend=simulator
