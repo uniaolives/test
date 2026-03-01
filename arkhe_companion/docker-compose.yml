@@ -80,6 +80,18 @@ services:
     environment:
       - REACT_APP_API_URL=http://localhost:8080
 
+  # ASP.NET Core Gateway
+  arkhe-gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - CompanionEndpoint=http://phi-core:50051
+    depends_on:
+      - phi-core
+
 volumes:
   scylla_data:
   ipfs_data:
