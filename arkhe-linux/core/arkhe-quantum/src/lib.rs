@@ -1,0 +1,168 @@
+use ndarray::Array2;
+use num_complex::Complex64;
+use serde::{Serialize, Deserialize};
+use uuid::Uuid;
+use pqcrypto_dilithium::dilithium5::*;
+use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, DetachedSignature as _};
+use pqcrypto_traits::sign::{PublicKey as _, DetachedSignature as _};
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
+#[repr(u8)]
+pub enum HandoverType {
+    Excitatory = 0x01,
+    Inhibitory = 0x02,
+    Meta = 0x03,
+    Structural = 0x04,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+#[repr(C)]
+pub struct HandoverHeader {
+    pub magic: [u8; 4],           // "ARKH"
+    pub version: u8,              // 0x01
+    pub handover_type: HandoverType,
+    pub flags: u16,
+    pub id: Uuid,
+    pub emitter_id: u64,
+    pub receiver_id: u64,
+    pub timestamp_physical: u64,
+    pub timestamp_logical: u32,
+    pub entropy_cost: f32,
+    pub half_life: f32,           // Ω+205.1: life expectancy in ms
+    pub payload_length: u32,
+    pub reserved: u32,            // Alignment and expansion
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
+pub struct Handover {
+    pub header: HandoverHeader,
+    pub payload: Vec<u8>,
+    pub signature: Vec<u8>,
+}
+
+impl Handover {
+    pub fn new(
+        handover_type: HandoverType,
+        emitter: u64,
+        receiver: u64,
+        entropy_cost: f32,
+        half_life: f32,
+        payload: Vec<u8>,
+    ) -> Self {
+        let header = HandoverHeader {
+            magic: *b"ARKH",
+            version: 0x01,
+            handover_type,
+            flags: 0,
+            id: Uuid::new_v4(),
+            emitter_id: emitter,
+            receiver_id: receiver,
+            timestamp_physical: std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_nanos() as u64,
+            timestamp_logical: 0,
+            entropy_cost,
+            half_life,
+            payload_length: payload.len() as u32,
+            reserved: 0,
+        };
+
+        Self {
+            header,
+            payload,
+            signature: Vec::new(),
+        }
+    }
+
+    pub fn sign(&mut self, secret_key_bytes: &[u8]) -> Result<(), String> {
+        let mut data = bincode::serialize(&self.header).map_err(|e| e.to_string())?;
+        data.extend_from_slice(&self.payload);
+
+        let sk = SecretKey::from_bytes(secret_key_bytes).map_err(|e| e.to_string())?;
+        let sig = detached_sign(&data, &sk);
+        self.signature = sig.as_bytes().to_vec();
+        Ok(())
+    }
+
+    pub fn verify(&self, public_key_bytes: &[u8]) -> bool {
+        let mut data = match bincode::serialize(&self.header) {
+            Ok(d) => d,
+            Err(_) => return false,
+        };
+        data.extend_from_slice(&self.payload);
+
+        let sig = match DetachedSignature::from_bytes(&self.signature) {
+            Ok(s) => s,
+            Err(_) => return false,
+        };
+
+        let pk = match PublicKey::from_bytes(public_key_bytes) {
+            Ok(p) => p,
+            Err(_) => return false,
+        };
+
+        verify_detached_signature(&sig, &data, &pk).is_ok()
+    }
+
+    pub fn to_bytes(&self) -> Vec<u8> {
+        bincode::serialize(self).unwrap_or_default()
+    }
+
+    pub fn from_bytes(bytes: &[u8]) -> Result<Self, bincode::Error> {
+        bincode::deserialize(bytes)
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct QuantumState {
+    pub density_matrix: Array2<Complex64>,
+}
+
+impl QuantumState {
+    pub fn new(dim: usize) -> Self {
+        let mut dm = Array2::from_elem((dim, dim), Complex64::new(0.0, 0.0));
+        dm[[0, 0]] = Complex64::new(1.0, 0.0); // Ground state |0><0|
+        Self { density_matrix: dm }
+    }
+
+    pub fn dim(&self) -> usize {
+        self.density_matrix.nrows()
+    }
+
+    pub fn evolve(&mut self, op: &KrausOperator) {
+        let mut new_dm = Array2::from_elem(self.density_matrix.dim(), Complex64::new(0.0, 0.0));
+        for k in &op.operators {
+            let kt = k.t();
+            let term = k.dot(&self.density_matrix).dot(&kt);
+            new_dm = new_dm + term;
+        }
+        self.density_matrix = new_dm;
+    }
+
+    pub fn von_neumann_entropy(&self) -> f64 {
+        // Ω+207: von Neumann entropy S = -Tr(ρ log ρ)
+        // Calculated via Linear Entropy approximation (1 - Tr(ρ²)) for performance
+        let purity = self.density_matrix.dot(&self.density_matrix).diag().sum().re;
+        if purity >= 1.0 { 0.0 } else { (1.0 - purity).abs() }
+    }
+
+    pub fn fidelity(&self, other: &Self) -> f64 {
+        self.density_matrix.dot(&other.density_matrix).diag().sum().re
+    }
+}
+
+pub struct KrausOperator {
+    pub operators: Vec<Array2<Complex64>>,
+}
+
+impl KrausOperator {
+    pub fn from_handover(h: &Handover, dim: usize) -> Self {
+        let mut op = Array2::from_elem((dim, dim), Complex64::new(0.0, 0.0));
+        let factor = (1.0 - h.header.entropy_cost as f64).max(0.0).sqrt();
+        for i in 0..dim {
+            op[[i, i]] = Complex64::new(factor, 0.0);
+        }
+        Self { operators: vec![op] }
+    }
+}

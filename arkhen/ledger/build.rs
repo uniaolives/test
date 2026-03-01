@@ -12,4 +12,7 @@ fn main() {
     } else {
         println!("cargo:warning=Arkhe Kernel build directory not found at {}. FFI calls will fail at runtime unless libarkhe_kernel.so is in LD_LIBRARY_PATH.", path.display());
     }
+fn main() {
+    println!("cargo:rustc-link-search=native=../kernel/build");
+    println!("cargo:rustc-link-lib=dylib=arkhe_kernel");
 }
