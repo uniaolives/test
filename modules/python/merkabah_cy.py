@@ -38,6 +38,8 @@ class CYGeometry:
 
     @property
     def complexity_index(self) -> float:
+        """Índice de complexidade baseado em h^{1,1} (safety: CRITICAL_H11)"""
+        return self.h11 / 491.0
         """Índice de complexidade baseado em h^{1,1}"""
         return self.h11 / 491.0  # safety: CRITICAL_H11
 
@@ -422,6 +424,19 @@ class HodgeCorrelator:
         return correlations
 
     def _h11_to_complexity(self, h11: int) -> int:
+        """Mapeia h^{1,1} para complexidade esperada da entidade (safety: CRITICAL_H11)"""
+        if h11 < 100:
+            return h11 * 2
+        elif h11 < 491:
+            return int(200 + (h11 - 100) * 0.75)
+        elif h11 == 491:
+            return 491
+        else:
+            return int(491 - (h11 - 491) * 0.5)
+
+    def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
+        """Análise detalhada do ponto crítico h^{1,1} = 491 (safety: CRITICAL_H11)"""
+        return {
         """Mapeia h^{1,1} para complexidade esperada da entidade"""
         if h11 < 100:
             return h11 * 2  # Regime simples
@@ -437,11 +452,10 @@ class HodgeCorrelator:
         analysis = {
             'status': 'CRITICAL_POINT_DETECTED',
             'properties': {
-                'stability_margin': 491 - cy.h21,  # safety: CRITICAL_H11
+                'stability_margin': 491 - cy.h21,
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
         }
-        return analysis
 
 
 # =============================================================================

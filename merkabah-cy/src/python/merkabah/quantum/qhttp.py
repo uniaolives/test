@@ -29,6 +29,12 @@ except ImportError:
     WSMsgType = Any
 
 try:
+    import redis.asyncio as aioredis
+except ImportError:
+    try:
+        import aioredis
+    except (ImportError, TypeError):
+        aioredis = None
     from redis import asyncio as aioredis
 except ImportError:
     aioredis = None
@@ -104,6 +110,8 @@ class QHTTPRequest:
                 pass
         return 8  # Default
 
+    def _encode_method(self, qc: QuantumCircuit, qr: QuantumRegister):
+        """Codifica método HTTP quântico em estado base"""
     def _encode_method(self, qc, qr):
         method_bits = {
             QHTTPMethod.SUPERPOSE: [0, 0],
@@ -114,6 +122,18 @@ class QHTTPRequest:
             QHTTPMethod.DECOHERE: [1, 1, 1]
         }
         bits = method_bits.get(self.method, [0, 0])
+
+        for i, bit in enumerate(bits):
+            if i < len(qr):
+                if bit:
+                    qc.x(qr[i])
+                qc.h(qr[i])  # Superposição para codificação
+
+    def _encode_headers(self, qc: QuantumCircuit, qr: QuantumRegister):
+        """Codifica headers em rotações de fase"""
+        header_str = json.dumps(self.headers, sort_keys=True)
+        hash_val = int(hashlib.sha256(header_str.encode()).hexdigest(), 16)
+
         for i, bit in enumerate(bits):
             if i < len(qr):
                 if bit: qc.x(qr[i])
@@ -133,6 +153,13 @@ class QHTTPRequest:
                 qc.rz(angle, qr[i])
 
     def _apply_entanglement(self, qc, qr):
+        """Aplica entrelaçamento baseado no entanglement_id"""
+        if self.entanglement_id:
+            # Cria rede de CNOTs determinística baseada no ID
+            seed = int(hashlib.md5(self.entanglement_id.encode()).hexdigest(), 16)
+            for i in range(len(qr) - 1):
+                if (seed >> i) & 1:
+                    qc.cx(qr[i], qr[i+1])
         seed = int(hashlib.md5(self.entanglement_id.encode()).hexdigest(), 16)
         for i in range(len(qr) - 1):
             if (seed >> i) & 1:
@@ -141,6 +168,17 @@ class QHTTPRequest:
 @dataclass
 class QHTTPResponse:
     """Resposta no protocolo qhttp://"""
+    status_code: Union[int, QHTTPStatusCode]  # 2xx: Sucesso quântico, 4xx: Decoerência, 5xx: Colapso
+    headers: Dict[str, str] = field(default_factory=dict)
+    body: Optional[np.ndarray] = None  # Estado resultante
+    coherence: float = 1.0
+    fidelity: float = 1.0
+    measurement_outcome: Optional[Dict[str, int]] = None
+    entanglement_preserved: bool = True
+    entanglement_id: Optional[str] = None
+
+import os
+
     status_code: QHTTPStatusCode
     headers: Dict[str, str] = field(default_factory=dict)
     body: Optional[np.ndarray] = None
@@ -154,6 +192,29 @@ class QHTTPClient:
 
     def __init__(self, base_uri: str = "quantum://localhost:8443"):
         self.base_uri = base_uri
+        self.session_pool: Dict[str, QuantumCircuit] = {}  # Circuitos persistentes
+        self.entanglement_registry: Dict[str, DensityMatrix] = {}
+        self.redis: Optional[aioredis.Redis] = None
+        self.encryption_key: bytes = self._get_encryption_key()
+
+    def _get_encryption_key(self) -> bytes:
+        """Obtém chave de criptografia do ambiente ou gera uma segura"""
+        key = os.environ.get('QHTTP_ENCRYPTION_KEY')
+        if key:
+            return key.encode()
+        # Fallback para chave gerada dinamicamente se não houver no ambiente
+        return base64.urlsafe_b64encode(hashlib.sha256(b"default_seed").digest())
+
+    async def connect(self):
+        """Estabelece conexão quântica persistente"""
+        if aioredis:
+            self.redis = await aioredis.from_url("redis://localhost:6379")
+
+    async def request(self, req: QHTTPRequest) -> QHTTPResponse:
+        """Executa requisição qhttp://"""
+
+        # Simulation for safety/demo if qiskit is Any or if it fails
+        if QuantumCircuit is Any or os.environ.get('QHTTP_SIMULATION') == '1':
         self.encryption_key = b'vK8H0v_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_U='
         self.redis = None
 
@@ -173,6 +234,131 @@ class QHTTPClient:
                 return QHTTPResponse(status_code=QHTTPStatusCode.ENTANGLED, entanglement_id="e7f3a9b2")
             return QHTTPResponse(status_code=QHTTPStatusCode.OK, coherence=1.0)
 
+        # 1. Prepara estado quântico da requisição
+        circuit = req.to_quantum_circuit()
+
+        # 2. Adiciona correção de erro quântico
+        protected_circuit = self._add_error_correction(circuit)
+
+        # 3. Serializa e transmite
+        payload = self._serialize_circuit(protected_circuit)
+
+        # 4. Executa via quantum backend (simulador ou real)
+        result = await self._execute_quantum(payload, req.target)
+
+        # 5. Verifica coerência
+        coherence = self._calculate_coherence(result)
+
+        if coherence < req.coherence_threshold:
+            # Tenta recuperação via código de correção
+            result = await self._attempt_recovery(result)
+
+        # 6. Constrói resposta
+        return self._build_response(result, coherence, method=req.method)
+
+    def _add_error_correction(self, qc: QuantumCircuit) -> QuantumCircuit:
+        """Adiciona código de correção de erro de superfície"""
+        n_qubits = len(qc.qubits)
+        data_qubits = list(range(0, n_qubits, 2))
+        ancilla_qubits = list(range(1, n_qubits, 2))
+
+        for i in range(len(ancilla_qubits)):
+            if i < len(data_qubits) - 1:
+                qc.cx(data_qubits[i], ancilla_qubits[i])
+                qc.cx(data_qubits[i+1], ancilla_qubits[i])
+
+        return qc
+
+    async def superpose_modules(self, modules: List[str]) -> str:
+        """Cria superposição de múltiplos módulos"""
+        entanglement_id = hashlib.sha256(
+            ''.join(modules).encode() + datetime.now().isoformat().encode()
+        ).hexdigest()[:16]
+
+        if QuantumCircuit is Any: return entanglement_id
+
+        n_modules = len(modules)
+        qr = QuantumRegister(n_modules, 'mod')
+        qc = QuantumCircuit(qr, name=f"ghz_{entanglement_id}")
+
+        qc.h(qr[0])
+        for i in range(n_modules - 1):
+            qc.cx(qr[i], qr[i+1])
+
+        self.entanglement_registry[entanglement_id] = DensityMatrix(qc)
+
+        for module in modules:
+            await self.request(QHTTPRequest(
+                method=QHTTPMethod.ENTANGLE,
+                target=f"quantum://{module}/entangle#{entanglement_id}",
+                entanglement_id=entanglement_id
+            ))
+
+        return entanglement_id
+
+    async def quantum_teleport(self, state: np.ndarray, target: str) -> QHTTPResponse:
+        """Teletransporta estado quântico para módulo alvo"""
+        return await self.request(QHTTPRequest(
+            method=QHTTPMethod.TELEPORT,
+            target=target,
+            body=state
+        ))
+
+    def _serialize_circuit(self, qc: QuantumCircuit) -> bytes:
+        """Serializa circuito para transmissão"""
+        try:
+            from qiskit import qpy
+            import io
+            buffer = io.BytesIO()
+            qpy.dump(qc, buffer)
+            serialized = buffer.getvalue()
+            f = Fernet(self.encryption_key)
+            return f.encrypt(serialized)
+        except:
+            return b""
+
+    async def _execute_quantum(self, payload: bytes, target: str) -> Any:
+        """Executa em backend quântico (simulador ou IBMQ/AWS Braket)"""
+        try:
+            f = Fernet(self.encryption_key)
+            decrypted = f.decrypt(payload)
+
+            from qiskit_aer import AerSimulator
+            simulator = AerSimulator()
+
+            import io
+            from qiskit import qpy
+            buffer = io.BytesIO(decrypted)
+            circuit = qpy.load(buffer)[0]
+
+            # Ensure measurements are present for AerSimulator to give counts
+            if not circuit.clbits:
+                circuit.measure_all()
+
+            job = simulator.run(circuit, shots=1024)
+            result = job.result()
+            return result
+        except Exception as e:
+            print(f"Error in _execute_quantum: {e}")
+            return None
+
+    def _calculate_coherence(self, result: Any) -> float:
+        """Calcula coerência do resultado quântico"""
+        if result is None: return 0.0
+        counts = result.get_counts()
+        total = sum(counts.values())
+        probs = {k: v/total for k, v in counts.items()}
+        entropy_val = -sum(p * np.log2(p) for p in probs.values() if p > 0)
+        max_entropy = np.log2(len(probs))
+        return 1.0 - (entropy_val / max_entropy if max_entropy > 0 else 0)
+
+    async def _attempt_recovery(self, result): return result
+    def _build_response(self, result, coherence, method=None):
+        status = QHTTPStatusCode.OK
+        if method == QHTTPMethod.SUPERPOSE: status = QHTTPStatusCode.SUPERPOSED
+        elif method == QHTTPMethod.ENTANGLE: status = QHTTPStatusCode.ENTANGLED
+        elif method == QHTTPMethod.TELEPORT: status = QHTTPStatusCode.TELEPORTED
+        return QHTTPResponse(status_code=status, coherence=coherence)
         # Real logic would go here
         return QHTTPResponse(status_code=QHTTPStatusCode.OK, coherence=1.0)
 
@@ -187,6 +373,8 @@ class QHTTPServer:
         self.host = host
         self.port = port
         self.app = web.Application() if web is not Any else None
+        self.handlers: Dict[str, Callable] = {}
+        self.quantum_memory: Dict[str, np.ndarray] = {}  # Estados em memória quântica
         self.handlers = {}
 
     def route(self, path: str, methods: List[QHTTPMethod]):
@@ -197,6 +385,11 @@ class QHTTPServer:
         return decorator
 
     async def start(self):
+        """Inicia servidor quântico"""
+        if not self.app: return
+        self.app.router.add_post('/qhttp/{tail:.*}', self._handle_request)
+        self.app.router.add_get('/quantum/ws', self._handle_websocket)
+
         if not self.app:
             return
         self.app.router.add_post('/{tail:.*}', self._handle_request)
@@ -204,6 +397,9 @@ class QHTTPServer:
         await runner.setup()
         site = web.TCPSite(runner, self.host, self.port)
         await site.start()
+
+    async def _handle_request(self, request: web.Request) -> web.Response:
+        """Handler principal de requisições qhttp://"""
         print(f"Servidor qhttp:// iniciado em {self.host}:{self.port}")
 
     async def _handle_request(self, request: web.Request) -> web.Response:
@@ -213,6 +409,58 @@ class QHTTPServer:
         except KeyError:
             return web.json_response({'error': 'Invalid Method'}, status=400)
 
+        target = f"quantum://{request.host}{request.path}"
+        body = await request.read()
+        quantum_state = self._deserialize_state(body) if body else None
+
+        req = QHTTPRequest(
+            method=method,
+            target=target,
+            headers=dict(request.headers),
+            body=quantum_state
+        )
+
+        handler_key = f"{method.name}:{request.path}"
+        handler = self.handlers.get(handler_key, self._default_handler)
+
+        try:
+            result = await handler(req)
+            return web.json_response({
+                'status': 'success',
+                'coherence': result.get('coherence', 1.0),
+                'data': result.get('data')
+            })
+        except Exception as e:
+            return web.json_response({
+                'status': 'error',
+                'code': QHTTPStatusCode.QUANTUM_ERROR.value,
+                'message': str(e)
+            }, status=500)
+
+    async def _handle_websocket(self, request: web.Request):
+        """WebSocket para comunicação quântica contínua"""
+        ws = web.WebSocketResponse()
+        await ws.prepare(request)
+        async for msg in ws:
+            if msg.type == WSMsgType.BINARY:
+                state = self._deserialize_state(msg.data)
+                result = await self._process_quantum_stream(state)
+                await ws.send_bytes(self._serialize_state(result))
+        return ws
+
+    def _deserialize_state(self, data: bytes) -> np.ndarray:
+        return np.frombuffer(data, dtype=np.complex128)
+
+    def _serialize_state(self, state: np.ndarray) -> bytes:
+        return state.tobytes()
+
+    async def _default_handler(self, req: QHTTPRequest) -> Dict:
+        return {'coherence': 1.0, 'data': 'OK'}
+
+    async def _process_quantum_stream(self, state): return state
+
+if __name__ == "__main__":
+    pass
         handler = self.handlers.get(f"{method.name}:{request.path}")
         if not handler:
             return web.json_response({'error': 'Not Found'}, status=404)

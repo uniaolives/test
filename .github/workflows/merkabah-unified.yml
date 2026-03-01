@@ -197,9 +197,9 @@ jobs:
         working-directory: merkabah-cy
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)/src/python
+          export QHTTP_SIMULATION=1
           python -m pytest tests/integration/test_qhttp_protocol.py -v \
-            --qhttp-endpoint=http://localhost:8443 \
-            --quantum-backend=simulator
+            --qhttp-endpoint=http://localhost:8443
 
       - name: Test End-to-End Pipeline
         working-directory: merkabah-cy

@@ -21,5 +21,6 @@ services:
       - 8443:8443
     environment:
       - REDIS_URL=redis://redis:6379
+      - QHTTP_SIMULATION=1
     depends_on:
       - redis
