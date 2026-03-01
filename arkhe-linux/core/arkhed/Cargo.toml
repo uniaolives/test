@@ -17,4 +17,9 @@ pqcrypto-dilithium = "0.5"
 pqcrypto-traits = "0.3"
 chrono = "0.4"
 byteorder = "1.4"
+arkhe-quantum = { path = "../arkhe-quantum" }
+ndarray = "0.15"
+rand = "0.8"
+pqcrypto-kyber = "0.7"
+hex = "0.4"
 # Future dependencies for gRPC and eBPF can be added later as implementation progresses.
