@@ -4,9 +4,9 @@ authors = ["Rafael Oliveira", "Arquiteto <root@arkhe.systems>"]
 version = "1.0.0"
 
 [deps]
-Test = "8dfed614-e22c-5e08-85e1-65c523dd2ae4"
 
 [extras]
+Test = "8dfed614-e22c-5e08-85e1-65c523dd2ae4"
 
 [targets]
 test = ["Test"]

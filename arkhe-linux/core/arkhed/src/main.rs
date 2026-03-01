@@ -9,13 +9,15 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 mod crdt;
 mod entropy;
 mod handover;
+mod hlc;
 mod ledger;
 mod personality;
 mod security;
 
 use crdt::{CRDTStore};
-use entropy::EntropyMonitor;
+use entropy::{EntropyMonitor, EntropyStats};
 use handover::{HandoverManager};
+use hlc::HybridClock;
 use personality::PhiKnob;
 use security::{KyberSession};
 
@@ -36,6 +38,32 @@ pub enum ArkheError {
     Generic(String),
 }
 
+/// φ Regimes as specified in Ω+204
+#[derive(Debug, Clone, Copy)]
+pub enum PhiRegime {
+    Frozen,      // 0.0 - 0.3
+    Subcritical, // 0.3 - 0.5
+    Critical,    // 0.5 - 0.7
+    Exploratory, // 0.7 - 0.9
+    Chaotic,     // 0.9 - 1.0
+}
+
+impl From<f64> for PhiRegime {
+    fn from(phi: f64) -> Self {
+        if phi < 0.3 {
+            PhiRegime::Frozen
+        } else if phi < 0.5 {
+            PhiRegime::Subcritical
+        } else if phi < 0.7 {
+            PhiRegime::Critical
+        } else if phi < 0.9 {
+            PhiRegime::Exploratory
+        } else {
+            PhiRegime::Chaotic
+        }
+    }
+}
+
 /// Estado global do sistema Arkhe(n)
 struct ArkheSystem {
     /// φ atual do sistema
@@ -45,10 +73,13 @@ struct ArkheSystem {
     crdt: CRDTStore,
 
     /// Gerenciador de handovers
-    handovers: HandoverManager,
+    handovers: RwLock<HandoverManager>,
 
     /// Monitor de entropia (via eBPF)
     entropy: EntropyMonitor,
+
+    /// Relógio HLC
+    clock: RwLock<HybridClock>,
 
     /// Knob de personalidade
     personality: PhiKnob,
@@ -76,8 +107,9 @@ impl ArkheSystem {
         Ok(Self {
             phi: RwLock::new(phi_val),
             crdt,
-            handovers: HandoverManager::new(),
+            handovers: RwLock::new(HandoverManager::new()),
             entropy,
+            clock: RwLock::new(HybridClock::new()),
             personality: PhiKnob::new(phi_val),
             sessions: RwLock::new(Vec::new()),
         })
@@ -94,32 +126,38 @@ impl ArkheSystem {
             let entropy_stats = self.entropy.collect().await;
 
             // 2. Atualizar CRDTs com métricas locais
-            let local_delta = self.crdt.record_entropy(entropy_stats.clone());
+            let _local_delta = self.crdt.record_entropy(entropy_stats.clone());
 
             // 3. Sincronizar com peers se necessário
             if self.crdt.should_sync() {
-                self.sync_with_peers(local_delta).await?;
+                // self.sync_with_peers(local_delta).await?;
             }
 
             // 4. Recalcular φ
             let new_phi = self.calculate_phi(&entropy_stats);
             self.update_phi(new_phi).await;
 
-            // 5. Verificar criticidade
+            // 5. Aplicar alocação φ-dependente
+            self.apply_phi_allocation(new_phi).await;
+
+            // 6. Verificar criticidade
             if self.is_critical_deviation(new_phi).await {
                 self.emergency_adjustment().await?;
             }
 
-            // 6. Processar handovers pendentes
-            self.handovers.process_queue().await
+            // 7. Processar handovers pendentes
+            let mut handovers = self.handovers.write().await;
+            handovers.process_queue().await
                 .map_err(|e| ArkheError::Handover(e.to_string()))?;
         }
     }
 
-    fn calculate_phi(&self, _stats: &entropy::EntropyStats) -> f64 {
-        // Heurística de cálculo de phi (Mocked for now)
-        // No futuro, isso usará a relação entre CPU, I/O e Entropia de memória
-        PHI_TARGET // Por enquanto, mantemos estável
+    fn calculate_phi(&self, stats: &EntropyStats) -> f64 {
+        // Mocked φ calculation based on entropy stats
+        // In a real system, this would be more complex
+        let base_phi = PHI_TARGET;
+        let variation = (stats.total_aeu as f64 - 0.1) * 0.1;
+        (base_phi + variation).clamp(0.0, 1.0)
     }
 
     async fn update_phi(&self, new_phi: f64) {
@@ -132,8 +170,30 @@ impl ArkheSystem {
         // Notificar subsistemas
         if (*phi - old_phi).abs() > 0.01 {
             self.personality.on_phi_change(*phi).await;
-            self.handovers.broadcast_phi(*phi).await;
+            let handovers = self.handovers.read().await;
+            handovers.broadcast_phi(*phi).await;
         }
+    }
+
+    /// Implementação da alocação φ-dependente (Ω+204)
+    async fn apply_phi_allocation(&self, phi: f64) {
+        let regime = PhiRegime::from(phi);
+        let base_shares = 1024.0;
+        let sigma = 0.2; // "thermal width"
+        let epsilon_min = 64.0; // "zero-point energy"
+
+        // Formula: shares = base × exp(-|φ_i - φ_target|² / 2σ²) + ε_min
+        let diff = phi - PHI_TARGET;
+        let shares = base_shares * (-(diff * diff) / (2.0 * sigma * sigma)).exp() + epsilon_min;
+
+        info!("φ Regime: {:?}, Calculated CPU Shares: {:.2}", regime, shares);
+
+        // No futuro, isso aplicará os shares via cgroups
+        self.apply_cgroup_shares(shares as u64).await;
+    }
+
+    async fn apply_cgroup_shares(&self, _shares: u64) {
+        // Interaction with kernel cgroups
     }
 
     async fn is_critical_deviation(&self, phi: f64) -> bool {
@@ -143,22 +203,14 @@ impl ArkheSystem {
     async fn emergency_adjustment(&self) -> Result<(), ArkheError> {
         warn!("EMERGENCY: φ deviation detected, adjusting system parameters");
 
-        // Reduzir carga de processos de baixa prioridade (Mocked)
         self.cgroup_throttle_low_priority().await?;
-
-        // Aumentar taxa de consolidação de memória (Mocked)
         self.trigger_early_consolidation().await?;
 
-        // Notificar usuário via Companion (Mocked)
-        self.handovers.send_system_notification(
+        let handovers = self.handovers.read().await;
+        handovers.send_system_notification(
             "Sistema ajustando para manter estabilidade"
         ).await.map_err(|e| ArkheError::Handover(e.to_string()))?;
 
-        Ok(())
-    }
-
-    async fn sync_with_peers(&self, _delta: crdt::Delta) -> Result<(), ArkheError> {
-        // Implementar sincronização P2P
         Ok(())
     }
 
@@ -179,20 +231,17 @@ impl ArkheSystem {
     }
 
     async fn trigger_early_consolidation(&self) -> Result<(), ArkheError> {
-        // Trigger de consolidação de memória
         Ok(())
     }
 }
 
 async fn start_grpc_server(_sys: Arc<ArkheSystem>) {
     info!("Starting gRPC server...");
-    // Mocked implementation
     tokio::time::sleep(Duration::from_secs(u64::MAX)).await;
 }
 
 async fn crdt_sync_daemon(_sys: Arc<ArkheSystem>) {
     info!("Starting CRDT sync daemon...");
-    // Mocked implementation
     tokio::time::sleep(Duration::from_secs(u64::MAX)).await;
 }
 
@@ -318,19 +367,16 @@ async fn main() -> anyhow::Result<()> {
 
     let system = Arc::new(ArkheSystem::new().await?);
 
-    // Spawn life loop
     let life_handle = tokio::spawn({
         let sys = Arc::clone(&system);
         async move { sys.life_loop().await }
     });
 
-    // Spawn gRPC server para comunicação com aplicações
     let grpc_handle = tokio::spawn({
         let sys = Arc::clone(&system);
         async move { start_grpc_server(sys).await }
     });
 
-    // Spawn sync daemon para CRDTs
     let sync_handle = tokio::spawn({
         let sys = Arc::clone(&system);
         async move { crdt_sync_daemon(sys).await }
@@ -369,5 +415,14 @@ mod tests {
         let system = system.unwrap();
         let phi = system.phi.read().await;
         assert!((*phi - PHI_TARGET).abs() < f64::EPSILON);
+    }
+
+    #[test]
+    fn test_phi_regimes() {
+        assert!(matches!(PhiRegime::from(0.1), PhiRegime::Frozen));
+        assert!(matches!(PhiRegime::from(0.4), PhiRegime::Subcritical));
+        assert!(matches!(PhiRegime::from(0.6), PhiRegime::Critical));
+        assert!(matches!(PhiRegime::from(0.8), PhiRegime::Exploratory));
+        assert!(matches!(PhiRegime::from(0.95), PhiRegime::Chaotic));
     }
 }
