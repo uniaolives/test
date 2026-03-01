@@ -31,15 +31,6 @@ services:
     networks:
       - merkabah-net
 
-  # Simulador quântico (Qiskit)
-  quantum-simulator:
-    image: qiskit/quantum-simulator:latest
-    ports:
-      - "9000:9000"
-    environment:
-      - QISKIT_PARALLEL=TRUE
-    networks:
-      - merkabah-net
 
   # Message Queue com semântica quântica
   quantum-mq:

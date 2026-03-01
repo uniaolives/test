@@ -23,7 +23,7 @@ This repository contains the unified infrastructure for the MERKABAH-CY framewor
 ### Running the System
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 ### Running Benchmarks
