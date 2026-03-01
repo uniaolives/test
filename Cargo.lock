@@ -340,6 +340,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "arkhe-quantum"
+version = "0.1.0"
+dependencies = [
+ "bincode 1.3.3",
+ "ndarray",
+ "num-complex 0.4.6",
+ "pqcrypto-dilithium",
+ "pqcrypto-traits",
+ "serde",
+ "uuid 1.21.0",
+]
+
+[[package]]
 name = "arkhe_core"
 version = "0.1.0"
 dependencies = [
@@ -381,11 +394,16 @@ name = "arkhed"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "arkhe-quantum",
  "bincode 1.3.3",
  "byteorder",
  "chrono",
+ "hex",
+ "ndarray",
  "pqcrypto-dilithium",
+ "pqcrypto-kyber 0.7.9",
  "pqcrypto-traits",
+ "rand 0.8.5",
  "serde",
  "serde_json",
  "thiserror 1.0.69",
@@ -6999,6 +7017,19 @@ dependencies = [
  "cc",
  "glob",
  "libc",
+ "pqcrypto-traits",
+]
+
+[[package]]
+name = "pqcrypto-kyber"
+version = "0.7.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c32fe9d5c9913b1aed1ba92b3449eb2d7cf7ca29741b11455dfa34c711b95776"
+dependencies = [
+ "cc",
+ "glob",
+ "libc",
+ "pqcrypto-internals",
  "pqcrypto-traits",
 ]
 
