@@ -1,0 +1,74 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: quantummanifoldnodes.arkhe.quantum
+spec:
+  group: arkhe.quantum
+  names:
+    kind: QuantumManifoldNode
+    plural: quantummanifoldnodes
+    singular: quantummanifoldnode
+    shortNames:
+      - qmn
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      subresources:
+        status: {}
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                nodeId:
+                  type: string
+                nodeType:
+                  type: string
+                  enum: ["satellite", "groundStation", "fusionCenter", "sensorArray"]
+                location:
+                  type: object
+                  properties:
+                    latitude: { type: number }
+                    longitude: { type: number }
+                    region: { type: string }
+                quantumCapabilities:
+                  type: object
+                  properties:
+                    hasQKD: { type: boolean }
+                    hasEntanglementSource: { type: boolean }
+                    maxQubits: { type: integer }
+                desiredPhi:
+                  type: number
+                  default: 0.618
+                spin:
+                  type: number
+                infrastructureRef:
+                  type: object
+                  properties:
+                    kind: { type: string }
+                    apiGroup: { type: string }
+                    name: { type: string }
+              required: ["nodeId", "nodeType"]
+            status:
+              type: object
+              properties:
+                observedState:
+                  type: object
+                  properties:
+                    currentPhi: { type: number }
+                    entropy: { type: number }
+                    entanglementPairs: { type: integer }
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type: { type: string }
+                      status: { type: string }
+                      reason: { type: string }
+                      message: { type: string }
+                      lastTransitionTime: { type: string, format: date-time }

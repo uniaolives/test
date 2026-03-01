@@ -1,0 +1,26 @@
+stages:
+  - collect
+  - calibrate
+  - train
+  - deploy
+
+collect_telemetry:
+  stage: collect
+  script:
+    - python arkhen/simulator/src/collector.py --output data.parquet
+
+calibrate_sim:
+  stage: calibrate
+  script:
+    - python arkhen/simulator/src/calibrate.py --input data.parquet --output config.json
+
+retrain_rl:
+  stage: train
+  script:
+    - python arkhen/simulator/src/retrain.py --config config.json --output model.zip
+
+deploy_canary:
+  stage: deploy
+  script:
+    - kubectl set image deployment/arkhe-rl-agent agent=registry/arkhe-rl-agent:latest
+  when: manual
