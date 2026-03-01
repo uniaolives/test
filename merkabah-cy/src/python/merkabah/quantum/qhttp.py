@@ -1,33 +1,33 @@
-# qhttp_protocol.py - Implementação do protocolo quântico de comunicação
 # qhttp.py - Implementação do protocolo quântico de comunicação RFC 9491 (safety) # CRITICAL_H11 safety
 # entre módulos do sistema MERKABAH-CY
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Callable, Any, Union
+from typing import Dict, List, Optional, Callable, Any
 from enum import Enum, auto
 import json
 import hashlib
 import base64
-import time
 from datetime import datetime
 import numpy as np
+import asyncio
+import os
+
 try:
     from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
-    from qiskit.quantum_info import Statevector, DensityMatrix, partial_trace
-    from qiskit.circuit.library import HGate, CXGate, RZGate
+    from qiskit.quantum_info import DensityMatrix
 except ImportError:
     # Fallback for environment without qiskit
     QuantumCircuit = Any
     QuantumRegister = Any
     ClassicalRegister = Any
-    Statevector = Any
     DensityMatrix = Any
-import asyncio
+
 try:
-    from aiohttp import web, ClientSession, WSMsgType
+    from aiohttp import web, WSMsgType
 except ImportError:
     web = Any
     WSMsgType = Any
+
 try:
     import redis.asyncio as aioredis
 except ImportError:
@@ -35,10 +35,12 @@ except ImportError:
         import aioredis
     except (ImportError, TypeError):
         aioredis = None
+    from redis import asyncio as aioredis
+except ImportError:
+    aioredis = None
+
 try:
     from cryptography.fernet import Fernet
-    from cryptography.hazmat.primitives import hashes
-    from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 except ImportError:
     Fernet = Any
 
@@ -77,26 +79,22 @@ class QHTTPRequest:
     coherence_threshold: float = 0.95
     timeout_ms: int = 5000
 
-    def to_quantum_circuit(self) -> QuantumCircuit:
+    def to_quantum_circuit(self) -> Optional[QuantumCircuit]:
         """Converte requisição em circuito quântico de comunicação"""
-        # Extrai dimensão do target
-        n_qubits = self._extract_qubit_dimension()
+        if QuantumCircuit is Any:
+            return None
 
+        n_qubits = self._extract_qubit_dimension()
         qr = QuantumRegister(n_qubits, 'comm')
         cr = ClassicalRegister(n_qubits, 'meas')
         qc = QuantumCircuit(qr, cr, name=f"qhttp_{self.method.name}")
 
-        # Codifica método em estado de Bell generalizado
         self._encode_method(qc, qr)
-
-        # Codifica headers em fases de qubits
         self._encode_headers(qc, qr)
 
-        # Prepara estado do body se presente
         if self.body is not None:
             self._encode_body(qc, qr)
 
-        # Entrelaçamento se especificado
         if self.entanglement_id:
             self._apply_entanglement(qc, qr)
 
@@ -114,6 +112,7 @@ class QHTTPRequest:
 
     def _encode_method(self, qc: QuantumCircuit, qr: QuantumRegister):
         """Codifica método HTTP quântico em estado base"""
+    def _encode_method(self, qc, qr):
         method_bits = {
             QHTTPMethod.SUPERPOSE: [0, 0],
             QHTTPMethod.ENTANGLE: [0, 1],
@@ -135,14 +134,20 @@ class QHTTPRequest:
         header_str = json.dumps(self.headers, sort_keys=True)
         hash_val = int(hashlib.sha256(header_str.encode()).hexdigest(), 16)
 
+        for i, bit in enumerate(bits):
+            if i < len(qr):
+                if bit: qc.x(qr[i])
+                qc.h(qr[i])
+
+    def _encode_headers(self, qc, qr):
+        header_str = json.dumps(self.headers, sort_keys=True)
+        hash_val = int(hashlib.sha256(header_str.encode()).hexdigest(), 16)
         for i in range(min(len(qr), 2), len(qr)):
             angle = (hash_val >> (i * 8)) % 256 / 256.0 * 2 * np.pi
             qc.rz(angle, qr[i])
 
     def _encode_body(self, qc, qr):
-        """Codifica o body (estado quântico) no circuito"""
         if self.body is not None:
-            # Simplificação: aplica rotações baseadas no vetor de estado
             for i, val in enumerate(self.body[:len(qr)]):
                 angle = np.angle(val)
                 qc.rz(angle, qr[i])
@@ -155,6 +160,10 @@ class QHTTPRequest:
             for i in range(len(qr) - 1):
                 if (seed >> i) & 1:
                     qc.cx(qr[i], qr[i+1])
+        seed = int(hashlib.md5(self.entanglement_id.encode()).hexdigest(), 16)
+        for i in range(len(qr) - 1):
+            if (seed >> i) & 1:
+                qc.cx(qr[i], qr[i+1])
 
 @dataclass
 class QHTTPResponse:
@@ -169,6 +178,14 @@ class QHTTPResponse:
     entanglement_id: Optional[str] = None
 
 import os
+
+    status_code: QHTTPStatusCode
+    headers: Dict[str, str] = field(default_factory=dict)
+    body: Optional[np.ndarray] = None
+    coherence: float = 1.0
+    fidelity: float = 1.0
+    measurement_outcome: Optional[str] = None
+    entanglement_id: Optional[str] = None
 
 class QHTTPClient:
     """Cliente para protocolo qhttp:// conforme RFC 9491 (safety)""" # CRITICAL_H11 safety
@@ -198,6 +215,17 @@ class QHTTPClient:
 
         # Simulation for safety/demo if qiskit is Any or if it fails
         if QuantumCircuit is Any or os.environ.get('QHTTP_SIMULATION') == '1':
+        self.encryption_key = b'vK8H0v_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_U='
+        self.redis = None
+
+    async def connect(self):
+        if aioredis and os.environ.get("REDIS_URL"):
+            self.redis = await aioredis.from_url(os.environ.get("REDIS_URL"))
+
+    async def request(self, req: QHTTPRequest) -> QHTTPResponse:
+        """Executa requisição qhttp://"""
+        # Simulation mode for testing environments without live backends
+        if os.environ.get("QHTTP_SIMULATION") == "1":
             if req.method == QHTTPMethod.DECOHERE:
                 return QHTTPResponse(status_code=QHTTPStatusCode.OK, coherence=0.0)
             if req.method == QHTTPMethod.SUPERPOSE:
@@ -331,6 +359,12 @@ class QHTTPClient:
         elif method == QHTTPMethod.ENTANGLE: status = QHTTPStatusCode.ENTANGLED
         elif method == QHTTPMethod.TELEPORT: status = QHTTPStatusCode.TELEPORTED
         return QHTTPResponse(status_code=status, coherence=coherence)
+        # Real logic would go here
+        return QHTTPResponse(status_code=QHTTPStatusCode.OK, coherence=1.0)
+
+    async def teleport(self, state: np.ndarray, target: str) -> QHTTPResponse:
+        req = QHTTPRequest(method=QHTTPMethod.TELEPORT, target=target, body=state)
+        return await self.request(req)
 
 class QHTTPServer:
     """Servidor para protocolo qhttp:// conforme RFC 9491 (safety)""" # CRITICAL_H11 safety
@@ -341,13 +375,12 @@ class QHTTPServer:
         self.app = web.Application() if web is not Any else None
         self.handlers: Dict[str, Callable] = {}
         self.quantum_memory: Dict[str, np.ndarray] = {}  # Estados em memória quântica
+        self.handlers = {}
 
     def route(self, path: str, methods: List[QHTTPMethod]):
-        """Decorador para registrar handlers quânticos"""
         def decorator(func: Callable):
             for method in methods:
-                key = f"{method.name}:{path}"
-                self.handlers[key] = func
+                self.handlers[f"{method.name}:{path}"] = func
             return func
         return decorator
 
@@ -357,15 +390,19 @@ class QHTTPServer:
         self.app.router.add_post('/qhttp/{tail:.*}', self._handle_request)
         self.app.router.add_get('/quantum/ws', self._handle_websocket)
 
+        if not self.app:
+            return
+        self.app.router.add_post('/{tail:.*}', self._handle_request)
         runner = web.AppRunner(self.app)
         await runner.setup()
         site = web.TCPSite(runner, self.host, self.port)
-
-        print(f"Servidor qhttp:// iniciado em {self.host}:{self.port}")
         await site.start()
 
     async def _handle_request(self, request: web.Request) -> web.Response:
         """Handler principal de requisições qhttp://"""
+        print(f"Servidor qhttp:// iniciado em {self.host}:{self.port}")
+
+    async def _handle_request(self, request: web.Request) -> web.Response:
         method_name = request.headers.get('X-Quantum-Method', 'SUPERPOSE')
         try:
             method = QHTTPMethod[method_name]
@@ -424,3 +461,8 @@ class QHTTPServer:
 
 if __name__ == "__main__":
     pass
+        handler = self.handlers.get(f"{method.name}:{request.path}")
+        if not handler:
+            return web.json_response({'error': 'Not Found'}, status=404)
+
+        return web.json_response({'status': 'success', 'coherence': 1.0})
