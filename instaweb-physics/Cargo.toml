@@ -1,0 +1,19 @@
+[package]
+name = "instaweb-physics"
+version = "0.1.0-alpha"
+edition = "2021"
+authors = ["Arquiteto <root@instaweb>"]
+description = "H-Integrators: Geometria Discreta Quântica para Simulação Distribuída"
+
+[dependencies]
+nalgebra = { version = "0.32", features = ["sparse"] }
+rust_decimal = "1.32"
+crossbeam = "0.8"
+rayon = "1.7"
+serde = { version = "1.0", features = ["derive"] }
+# qrust = { git = "https://github.com/quantum-lab/qrust", optional = true }
+
+[features]
+default = ["distributed"]
+distributed = []
+quantum = []

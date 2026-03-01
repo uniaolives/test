@@ -63,6 +63,10 @@ impl EnneadCore {
 
         // 7. Eudaimonia: Maximizar florescimento
         let _flourishing_gradient = self.eudaimonia.calculate_gradient(scar_informed);
+        let _scar_informed = self.kintsugi.weight_by_golden_scars(contextually_weighted);
+
+        // 7. Eudaimonia: Maximizar florescimento
+        // (Simplificado para o ciclo recursivo)
         let flourishing = crate::triad::types::FlourishingOutput;
 
         // 8. Autopoiese: Manter identidade durante mudança

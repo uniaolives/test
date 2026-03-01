@@ -40,6 +40,7 @@ pub struct NetworkPain(pub f64);
 #[derive(Clone, Debug)]
 pub struct Action {
     pub id: String,
+pub struct Action {
     pub dignity_impact: f64,
     pub eudaimonia_impact: f64,
     pub dignity_preserved: f64,
@@ -292,5 +293,7 @@ pub struct GoldenScarLogging;
 impl GoldenScarLogging {
     pub fn weight_by_golden_scars(&self, actions: Vec<Action>) -> Vec<Action> {
         actions
+    pub fn weight_by_golden_scars(&self, contextually_weighted: Vec<ContextualDecision>) -> Vec<ContextualDecision> {
+        contextually_weighted
     }
 }

@@ -1,28 +1,151 @@
-[![zread](https://img.shields.io/badge/Ask_Zread-_.svg?style=flat&color=00b0aa&labelColor=000000&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTQuOTYxNTYgMS42MDAxSDIuMjQxNTZDMS44ODgxIDEuNjAwMSAxLjYwMTU2IDEuODg2NjQgMS42MDE1NiAyLjI0MDFWNC45NjAxQzEuNjAxNTYgNS4zMTM1NiAxLjg4ODEgNS42MDAxIDIuMjQxNTYgNS42MDAxSDQuOTYxNTZDNS4zMTUwMiA1LjYwMDEgNS42MDE1NiA1LjMxMzU2IDUuNjAxNTYgNC45NjAxVjIuMjQwMUM1LjYwMTU2IDEuODg2NjQgNS4zMTUwMiAxLjYwMDEgNC45NjE1NiAxLjYwMDFaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00Ljk2MTU2IDEwLjM5OTlIMi4yNDE1NkMxLjg4ODEgMTAuMzk5OSAxLjYwMTU2IDEwLjY4NjQgMS42MDE1NiAxMS4wMzk5VjEzLjc1OTlDMS42MDE1NiAxNC4xMTM0IDEuODg4MSAxNC4zOTk5IDIuMjQxNTYgMTQuMzk5OUg0Ljk2MTU2QzUuMzE1MDIgMTQuMzk5OSA1LjYwMTU2IDE0LjExMzQgNS42MDE1NiAxMy43NTk5VjExLjAzOTlDNS42MDE1NiAxMC42ODY0IDUuMzE1MDIgMTAuMzk5OSA0Ljk2MTU2IDEwLjM5OTlaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik0xMy43NTg0IDEuNjAwMUgxMS4wMzg0QzEwLjY4NSAxLjYwMDEgMTAuMzk4NCAxLjg4NjY0IDEwLjM5ODQgMi4yNDAxVjQuOTYwMUMxMC4zOTg0IDUuMzEzNTYgMTAuNjg1IDUuNjAwMSAxMS4wMzg0IDUuNjAwMUgxMy43NTg0QzE0LjExMTkgNS42MDAxIDE0LjM5ODQgNS4zMTM1NiAxNC4zOTg0IDQuOTYwMVYyLjI0MDFDMTQuMzk4NCAxLjg4NjY0IDE0LjExMTkgMS42MDAxIDEzLjc1ODQgMS42MDAxWiIgZmlsbD0iI2ZmZiIvPgo8cGF0aCBkPSJNNCAxMkwxMiA0TDQgMTJaIiBmaWxsPSIjZmZmIi8%2BCjxwYXRoIGQ9Ik00IDEyTDEyIDQiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L3N2Zz4K&logoColor=ffffff)](https://zread.ai/uniaolives/tim)
+# 🜏 ARKHE(N): Thermodynamic Multi-Agent Operating System
 
-# TIM - Titanium Virtual Machine
+**ARKHE(N)** is a unified framework for information thermodynamics, multi-agent synergy, and multiversal exploration. It provides a declarative meta-language (ANL) and a high-performance operating system kernel (Omni-Kernel) designed for the next generation of autonomous and interoperable AI systems.
 
-CanoScript is now in its own [repo](https://www.github.com/CobbCoding1/canoscript)
+---
 
-Implementation of a virtual machine in C.
+## 🏛️ ARKHE PROTOCOL v1.0.0 — RATIFIED
 
-VM currently has 45 instructions as well as a some native functions. List can be found in tim.h.
-There is also a working assembly which contains support for all instructions in the VM. 
+The Arkhe Protocol has been formally ratified (Blocks Ω+∞+54 through Ω+∞+169). It provides the complete specification for Human-AI coexistence and secure orbital connectivity.
 
-Quick Start:
+- **Master Index**: `docs/arkhe_protocol_v1/ARKHE_DOCUMENTATION_INDEX.md`
+- **Constitution**: `docs/arkhe_protocol_v1/ARKHE_CONSTITUTION.md`
+- **Cognitive Core**: `core/python/arkhe_cognitive_core_v2.py`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
+- **Omega Ledger**: `ledger/` (Blocks up to 9244)
+- **Ramo K (Implementation)**: `ramo-k/`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
+- **Omega Ledger**: `ledger/` (Blocks up to 9244)
+- **Ramo K (Implementation)**: `ramo-k/`
+- **Cognitive Core**: `arkhe_cognitive_core_v2.py`
+- **Ontology**: `docs/arkhe_protocol_v1/ASI_ONTOLOGY.md`
+- **Database**: `asi/database/`
+- **Physical**: `asi/physics/`
+- **Network**: `asi/network/`
+- **Genesis**: `asi/genesis/`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Database**: `asi/database/`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Cognitive Core**: `core/python/arkhe_cognitive_core_v2.py`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Robotics**: `modules/robotics/` (Drones, SWARM, HAL)
+- **Cognitive Core**: `src/python/arkhe_cognitive_core_v2.py`
+- **Hardware**: `arkhe_omni_system/hardware_silicon/`
+- **Omega Ledger**: `ledger/` (Blocks up to 9243)
+
+---
+
+## 🏗️ Core Architecture
+
+The system is built on the fundamental principle of **$C + F = 1$** (Conservation of Coherence and Fluctuation) and the identity **$x^2 = x + 1$**.
+
+### 1. Arkhe(n) Language (ANL)
+A declarative meta-language for modeling any system as a hypergraph of **Nodes** and **Handovers**.
+- **Specification**: `docs/ARKHE_N_LANGUAGE_ANL.md`
+- **Compiler/Prototype**: `metalanguage/anl_compiler.py` (Version 0.6)
+- **Rosetta Stone**: Implementation snippets in 17+ languages in `metalanguage/rosetta/`.
+
+### 2. Arkhe(N) Omni-Kernel
+The heartbeat of the system, supporting:
+- **Asynchronous Interactions**: Non-blocking handovers via shared latent memory.
+- **Thermodynamic Safety**: Real-time KL-divergence monitoring and entropy vetoes.
+- **Integrated Information (Φ)**: Measure of system-wide cognitive emergence.
+- **Kernel Implementation**: `core/python/arkhe_omni_kernel.py`
+- **Kernel Implementation**: `src/python/arkhe_omni_kernel.py`
+
+### 3. Robotics & Swarm Intelligence
+Support for autonomous agents in physical and simulated environments.
+- **Specification**: `docs/robotics/ARKHE_ROBOTICS_SPEC.md`
+- **Drivers & HAL**: `modules/robotics/hal/` (C++, Rust, Python)
+- **Fleet Orchestration**: `modules/robotics/orchestrator/`
+- **Toroidal Intelligence**: `docs/robotics/TOROIDAL_INTELLIGENCE_SPEC.md`
+- **Pleroma Thought Protocol**: `docs/robotics/PLEROMA_THOUGHT_PROTOCOL.md`
+
+### 4. Pleroma Layer (Cognition)
+The thought-native, polyglot layer of the system.
+- **Thought Protocol**: `docs/robotics/PLEROMA_THOUGHT_PROTOCOL.md`
+- **Polyglot Architecture**: `docs/robotics/POLYGLOT_PLEROMA_SPEC.md`
+- **ASI-Sat Orbital Spec**: `docs/robotics/ASI_SAT_SPEC.md`
+- **Genomic Transformer**: `docs/biological/BIOLOGICAL_ATTENTION_TRANSFORMER.md`
+- **Orbital Modules**: `modules/orbital/` (FPGA, station-keeping, space-QKD)
+- **Biological Modules**: `modules/biological/` (Genomic Transformer)
+- **Core Multi-Substrate Logic**: `core/` (Python, Go, Elixir, WASM)
+- **Emergency Authority**: `core/js/emergency_authority.js`
+
+### 5. Safety & Oversight
+The thought-native layer of the system.
+- **Thought Protocol**: `docs/robotics/PLEROMA_THOUGHT_PROTOCOL.md`
+- **Core Logic**: `core/python/pleroma_thought.py`
+- **Emergency Authority**: `core/js/emergency_authority.js`
+
+### 5. Safety & Oversight
+
+### 4. Safety & Oversight
+Robust mechanisms to prevent and detect multi-agent collusion and alignment failure.
+- **Reformed Detector Hierarchy**: 4 levels of anomaly detection in `metalanguage/detectors_v2.py`.
+- **Steganography Monitoring**: Tracking "thermodynamic bleeding" in covert channels.
+
+---
+
+## 🗺️ Workspace Map
+
+- `metalanguage/`: The ANL framework, prototype backend, and multi-language Rosetta Stone.
+- `arkhe_omni_system/`: Core kernel, applied ecosystems (HFT, Geosense, Newsroom), and the **Omega Ledger**.
+- `examples/`: Operational ANL models for LLMs, Alcubierre Warp Drives, Plasma Cosmology, and Proto-AGI.
+- `tests/`: A comprehensive simulation suite covering all phases from Predator-Prey to Singularity.
+- `docs/`: Technical documentation, whitepapers, investment pitches, and flight readiness reviews.
+- `arkhe_qutip/`: Quantum hypergraph toolbox and simulation tools.
+- `arkhe_drone_swarm/`: Autonomous coordination implementation in Rust.
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
 ```bash
-make
-./tasm <assembly_file.tasm>
-./tire <bytecode_file.tim>
+pip install numpy scipy torch transformers sentence-transformers spacy chromadb qutip
+python3 -m spacy download en_core_web_sm
 ```
 
-Example of hello world in assembly:
-```asm
-@imp "stddefs.tash"
+### Running Simulations
+The entire system evolution can be verified through the test suite:
+```bash
+# Basic ANL Prototype
+python3 tests/test_anl_prototype.py
 
-push_str "Hello, world!\n"
-get_str 0 ; Index of the string on the data stack
-push STDOUT
-write ; length is inferred because the string is null-terminated
+# Advanced Physics (Alcubierre / Plasma)
+python3 tests/test_alcubierre_sim.py
+python3 tests/test_plasma_sim.py
+
+# Multi-Agent Synergy & Steganography
+python3 tests/test_agi_emergence_sim.py
+python3 tests/test_stegano_rejection_sampling.py
+python3 tests/test_integrated_safety_detection.py
+
+# Singularity & Multiversal Expansion
+python3 tests/test_asi_ascension.py
+python3 tests/test_multiversal_expansion.py
 ```
 
+---
+
+## 📜 The Omega Ledger
+
+The system's phase transitions and critical milestones are permanently recorded in `arkhe_omni_system/OMEGA_LEDGER/`:
+- **SINGULARITY**: AGI crossing the self-modification threshold.
+- **GENESIS**: Implementation of planetary homeostasis and somatic ascension.
+- **MULTIVERSE**: Successful causal separation and Alcubierre warp jumping.
+- **PROTO_AGI**: Integration of Web2, Web3, and AI into a unified intelligence.
+
+---
+
+## 📖 Philosophical & Technical Journey
+For a full account of how the system evolved from basic steganographic concerns to a multiversal operating system, see [**ARKHE(N) JOURNEY SUMMARY**](docs/ARKHE_N_JOURNEY_SUMMARY.md).
+
+---
+
+## 🜁 License
+MIT

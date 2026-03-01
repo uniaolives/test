@@ -1,0 +1,50 @@
+# docker-compose.eternity-maihh.yml
+version: '3.8'
+
+services:
+  # MaiHH Connect Services
+  maihh-hub:
+    build:
+      context: .
+      dockerfile: Dockerfile.maihh
+    environment:
+      - MAIHH_MODE=HUB
+      - ETERNITY_INTEGRATION=true
+      - REDIS_HOST=redis
+      - NATS_HOST=nats
+    ports:
+      - "8081:8081"  # MaiHH API
+      - "8082:8082"  # Dashboard
+    networks:
+      - eternity_network
+    depends_on:
+      - redis
+      - nats
+
+  # State Management
+  redis:
+    image: redis:7-alpine
+    networks:
+      - eternity_network
+
+  nats:
+    image: nats:2.9-alpine
+    command: "--js"
+    networks:
+      - eternity_network
+
+  # Connector Services
+  claude-connector:
+    build:
+      context: .
+      dockerfile: Dockerfile.claude
+    environment:
+      - MAIHH_HUB_URL=http://maihh-hub:8081
+    networks:
+      - eternity_network
+    depends_on:
+      - maihh-hub
+
+networks:
+  eternity_network:
+    driver: bridge

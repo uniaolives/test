@@ -1,0 +1,12 @@
+pub mod axioms;
+pub mod ethics;
+pub mod consciousness;
+pub mod neural_holon;
+pub mod co_creation;
+pub mod truth;
+pub mod os;
+pub mod geometric_kernel;
+pub mod geometric_algebra;
+pub mod semantic_network;
+pub mod consensus;
+pub mod symphony;

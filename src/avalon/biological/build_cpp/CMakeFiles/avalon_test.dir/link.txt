@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/avalon_test.dir/main.cpp.o -o avalon_test  libavalon_neural_core.a
