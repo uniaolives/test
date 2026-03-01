@@ -3,6 +3,7 @@ use num_complex::Complex64;
 use serde::{Serialize, Deserialize};
 use uuid::Uuid;
 use pqcrypto_dilithium::dilithium5::*;
+use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, DetachedSignature as _};
 use pqcrypto_traits::sign::{PublicKey as _, DetachedSignature as _};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -74,6 +75,16 @@ impl Handover {
         }
     }
 
+    pub fn sign(&mut self, secret_key_bytes: &[u8]) -> Result<(), String> {
+        let mut data = bincode::serialize(&self.header).map_err(|e| e.to_string())?;
+        data.extend_from_slice(&self.payload);
+
+        let sk = SecretKey::from_bytes(secret_key_bytes).map_err(|e| e.to_string())?;
+        let sig = detached_sign(&data, &sk);
+        self.signature = sig.as_bytes().to_vec();
+        Ok(())
+    }
+
     pub fn verify(&self, public_key_bytes: &[u8]) -> bool {
         let mut data = match bincode::serialize(&self.header) {
             Ok(d) => d,
@@ -130,6 +141,8 @@ impl QuantumState {
     }
 
     pub fn von_neumann_entropy(&self) -> f64 {
+        // Ω+207: von Neumann entropy S = -Tr(ρ log ρ)
+        // Calculated via Linear Entropy approximation (1 - Tr(ρ²)) for performance
         let purity = self.density_matrix.dot(&self.density_matrix).diag().sum().re;
         if purity >= 1.0 { 0.0 } else { (1.0 - purity).abs() }
     }
