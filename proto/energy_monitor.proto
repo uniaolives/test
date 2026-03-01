@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package energy_monitor;
+
+service EnergyMonitor {
+    rpc GetShardPower(ShardPowerRequest) returns (ShardPowerResponse);
+}
+
+message ShardPowerRequest {
+    string shard_id = 1;
+}
+
+message ShardPowerResponse {
+    string shard_id = 1;
+    double power_watts = 2;
+    double temperature = 3;
+}

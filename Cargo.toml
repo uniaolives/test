@@ -43,6 +43,7 @@ members = [
     "k8s/controller",
     "arkhe-linux/core/arkhe-shard",
     "metrics-consumer",
+    "arkhe-linux/core/arkhe-energy",
 ]
 resolver = "2"
 
