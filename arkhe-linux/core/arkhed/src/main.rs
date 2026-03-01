@@ -349,20 +349,31 @@ async fn handle_ipc_client(mut stream: UnixStream, system: Arc<ArkheSystem>) {
                     Response::Ok
                 }
                 Ok(Command::RecordRLTransition { transition }) => {
-                    let packet = handover::HandoverPacket {
-                        id: uuid::Uuid::new_v4().to_string(),
-                        target: "ledger".to_string(),
-                        payload: serde_json::to_value(&transition).unwrap_or_default(),
-                        timestamp: transition.timestamp as u64,
-                        binary: Some(arkhe_quantum::Handover::new(
-                            arkhe_quantum::HandoverType::RLTransition,
-                            0, 0, 0.05, 1000.0,
-                            serde_json::to_vec(&transition).unwrap_or_default()
-                        )),
-                    };
-                    let ledger = ledger::LedgerStore::new();
-                    let _ = ledger.record(&packet);
-                    Response::Ok
+                    let payload_res = serde_json::to_value(&transition);
+                    let binary_payload_res = serde_json::to_vec(&transition);
+
+                    match (payload_res, binary_payload_res) {
+                        (Ok(payload), Ok(binary_payload)) => {
+                            let packet = handover::HandoverPacket {
+                                id: uuid::Uuid::new_v4().to_string(),
+                                target: "ledger".to_string(),
+                                payload,
+                                timestamp: transition.timestamp as u64,
+                                binary: Some(arkhe_quantum::Handover::new(
+                                    arkhe_quantum::HandoverType::RLTransition,
+                                    0, 0, 0.05, 1000.0,
+                                    binary_payload
+                                )),
+                            };
+                            let ledger = ledger::LedgerStore::new();
+                            if let Err(e) = ledger.record(&packet) {
+                                Response::Error { message: format!("Ledger record failed: {}", e) }
+                            } else {
+                                Response::Ok
+                            }
+                        },
+                        _ => Response::Error { message: "Failed to serialize RL transition".to_string() }
+                    }
                 }
                 Ok(Command::QueryRLTransitions { model_version: _ }) => {
                     // Mock query: return empty list
