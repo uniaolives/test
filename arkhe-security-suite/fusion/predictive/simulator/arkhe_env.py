@@ -20,4 +20,6 @@ class ArkheNetworkEnv(gym.Env):
         reward = random.random()
         done = False
         self.state = np.random.rand(self.num_nodes * 2 + 5).astype(np.float32)
+        reward = random.random()
+        done = False
         return self.state, reward, done, {}

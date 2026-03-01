@@ -2,6 +2,7 @@ use serde::{Serialize, Deserialize};
 use uuid::Uuid;
 use pqcrypto_dilithium::dilithium5::*;
 use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, DetachedSignature as _};
+use byteorder::{ByteOrder, LittleEndian};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[repr(u8)]
@@ -55,6 +56,7 @@ impl Handover {
             emitter_id,
             receiver_id,
             timestamp_physical: 0,
+            timestamp_physical: 0, // Placeholder
             timestamp_logical: 0,
             entropy_cost,
             half_life,
@@ -76,5 +78,11 @@ impl Handover {
             Err(_) => return false,
         };
         verify_detached_signature(&sig, &self.payload, pk).is_ok()
+    }
+        Self {
+            header,
+            payload,
+            signature: vec![0u8; 2427], // Placeholder
+        }
     }
 }

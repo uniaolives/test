@@ -2,6 +2,7 @@ use actix_web::{post, web, App, HttpRequest, HttpServer, Responder, HttpResponse
 use kube::{Client, Api, ResourceExt, api::ListParams};
 use serde_json::Value;
 use arkhe_crds::{QuantumManifoldNode, QuantumChannelSpec};
+use arkhe_crds::{QuantumManifoldNode, QuantumChannel, QuantumChannelSpec};
 
 struct AppState {
     kube_client: Client,
@@ -31,6 +32,7 @@ async fn validate_channel_nodes(spec: &QuantumChannelSpec, client: &Client, ns: 
 #[post("/validate")]
 async fn validate(
     _req: HttpRequest,
+    req: HttpRequest,
     body: web::Json<Value>,
     data: web::Data<AppState>,
 ) -> impl Responder {
@@ -85,6 +87,9 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(app_state.clone())
+    // In a real environment, we would load SSL and bind to 443
+    HttpServer::new(|| {
+        App::new()
             .service(validate)
     })
     .bind("0.0.0.0:8080")?

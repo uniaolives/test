@@ -57,6 +57,9 @@ members = [
     "arkhe-security-suite/governance/webhook",
     "arkhe-security-suite/governance/controller",
     "arkhe-security-suite/telemetry-collector",
+    "arkhe-linux/core/arkhe-quantum",
+    "entropy-predictor",
+    "k8s/controller",
 ]
 resolver = "2"
 
