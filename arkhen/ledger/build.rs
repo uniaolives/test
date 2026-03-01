@@ -1,7 +1,11 @@
 use std::env;
 use std::path::PathBuf;
 
-fn main() {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // 1. Compile Protos
+    tonic_build::compile_protos("../proto/ledger.proto")?;
+
+    // 2. Link against C++ Kernel
     let kernel_build_dir = env::var("ARKHE_KERNEL_BUILD_DIR")
         .unwrap_or_else(|_| "../kernel/build".to_string());
 
@@ -12,7 +16,6 @@ fn main() {
     } else {
         println!("cargo:warning=Arkhe Kernel build directory not found at {}. FFI calls will fail at runtime unless libarkhe_kernel.so is in LD_LIBRARY_PATH.", path.display());
     }
-fn main() {
-    println!("cargo:rustc-link-search=native=../kernel/build");
-    println!("cargo:rustc-link-lib=dylib=arkhe_kernel");
+
+    Ok(())
 }

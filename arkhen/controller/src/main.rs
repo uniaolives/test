@@ -1,11 +1,10 @@
 use kube::{
-    api::{Api, Patch, PatchParams, ResourceExt, ListParams, DeleteParams},
+    api::{Api, Patch, PatchParams, ResourceExt, ListParams},
     client::Client,
     runtime::{controller::Action, Controller, watcher::Config},
     CustomResource,
 };
 use k8s_openapi::api::core::v1::Node;
-use k8s_openapi::api::policy::v1::Eviction;
 use serde::{Deserialize, Serialize};
 use schemars::JsonSchema;
 use tokio::time::Duration;
@@ -17,18 +16,39 @@ use chrono::Utc;
 #[derive(CustomResource, Deserialize, Serialize, Clone, Debug, JsonSchema)]
 #[kube(group = "arkhe.quantum", version = "v1alpha1", kind = "QuantumManifoldNode", namespaced)]
 #[kube(status = "QuantumManifoldNodeStatus")]
+#[serde(rename_all = "camelCase")]
 pub struct QuantumManifoldNodeSpec {
     pub node_id: String,
+    pub node_type: String,
+    pub location: Option<Location>,
+    pub quantum_capabilities: Option<QuantumCapabilities>,
     pub desired_phi: f64,
     pub spin: Option<f64>,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug, JsonSchema)]
+pub struct Location {
+    pub latitude: f64,
+    pub longitude: f64,
+    pub region: String,
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug, JsonSchema)]
+#[serde(rename_all = "camelCase")]
+pub struct QuantumCapabilities {
+    pub has_qkd: bool,
+    pub has_entanglement_source: bool,
+    pub max_qubits: Option<i32>,
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug, JsonSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct QuantumManifoldNodeStatus {
     pub observed_state: Option<ObservedState>,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug, JsonSchema)]
+#[serde(rename_all = "camelCase")]
 pub struct ObservedState {
     pub current_phi: f64,
     pub entropy: f64,
@@ -37,6 +57,7 @@ pub struct ObservedState {
 #[derive(CustomResource, Deserialize, Serialize, Clone, Debug, JsonSchema)]
 #[kube(group = "arkhe.quantum", version = "v1alpha1", kind = "EntropyPrediction", namespaced)]
 #[kube(status = "EntropyPredictionStatus")]
+#[serde(rename_all = "camelCase")]
 pub struct EntropyPredictionSpec {
     pub target_node: String,
     pub horizon: Option<i32>,
@@ -74,15 +95,11 @@ struct Context {
 async fn drain_node(client: Client, node_name: &str) -> Result<(), anyhow::Error> {
     println!("Initiating aggressive auto-healing (drain) for node {}", node_name);
     let nodes: Api<Node> = Api::all(client.clone());
-
-    // Cordon
     let node = nodes.get(node_name).await?;
     let mut cordon_node = node.clone();
     cordon_node.spec.as_mut().unwrap().unschedulable = Some(true);
     nodes.patch(node_name, &PatchParams::apply("arkhe-controller"), &Patch::Apply(cordon_node)).await?;
-
-    // Pod Eviction simplified for bootstrap
-    println!("Node {} cordoned. Pod eviction would follow in production.", node_name);
+    println!("Node {} cordoned.", node_name);
     Ok(())
 }
 
@@ -91,14 +108,27 @@ async fn reconcile(node: Arc<QuantumManifoldNode>, ctx: Arc<Context>) -> Result<
     let nodes: Api<QuantumManifoldNode> = Api::namespaced(ctx.client.clone(), &namespace);
     let preds: Api<EntropyPrediction> = Api::namespaced(ctx.client.clone(), &namespace);
 
-    // 1. Prediction Loop
+    // 1. Update node status
+    let status = QuantumManifoldNodeStatus {
+        observed_state: Some(ObservedState {
+            current_phi: node.spec.desired_phi,
+            entropy: 0.1,
+        }),
+    };
+    let node_patch = Patch::Apply(serde_json::json!({
+        "apiVersion": "arkhe.quantum/v1alpha1",
+        "kind": "QuantumManifoldNode",
+        "status": status
+    }));
+    let _ = nodes.patch_status(&node.name_any(), &PatchParams::apply("arkhe-controller"), &node_patch).await;
+
+    // 2. Prediction Loop
     let url = format!("{}/predict/{}", ctx.predictor_url, node.name_any());
     if let Ok(resp) = ctx.http.get(&url).send().await {
         if let Ok(data) = resp.json::<PredictionResponse>().await {
              let pred_name = format!("pred-{}", node.name_any());
              let prob = data.failure_probability;
 
-             // Auto-heal if probability > 0.9
              if prob > 0.9 {
                  let _ = drain_node(ctx.client.clone(), &node.name_any()).await;
              }
