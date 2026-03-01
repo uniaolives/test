@@ -41,6 +41,8 @@ members = [
     "arkhe-linux/core/arkhe-quantum",
     "entropy-predictor",
     "k8s/controller",
+    "arkhe-linux/core/arkhe-shard",
+    "metrics-consumer",
 ]
 resolver = "2"
 
