@@ -2,6 +2,7 @@
 import numpy as np
 from dataclasses import dataclass
 from typing import List, Optional
+from core.python.arkhe_physics.entropy_unit import ArkheEntropyUnit
 
 @dataclass
 class STARNode:

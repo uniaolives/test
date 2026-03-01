@@ -1,5 +1,6 @@
 # arkhe_ggf/secops/cosmic_anomaly.py
 import numpy as np
+from core.python.arkhe_physics.entropy_unit import ArkheEntropyUnit
 
 class CosmicAnomalyDetector:
     """
