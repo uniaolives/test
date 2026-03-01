@@ -35,6 +35,7 @@ members = [
     "merkabah-cy/src/rust",
     "modules/arkhen/rust",
     "modules/arkhe_ggf/rust",
+    "arkhe-linux/core/arkhed",
 ]
 resolver = "2"
 
