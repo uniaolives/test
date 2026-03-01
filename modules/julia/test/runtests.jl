@@ -1,7 +1,5 @@
 using MerkabahCY
 using Test
-using Test
-using MerkabahCY
 
 @testset "MerkabahCY.jl" begin
     cy = CYVariety(100, 50)

@@ -16,6 +16,7 @@ use num_complex::Complex;
 // =============================================================================
 
 pub const CRITICAL_H11: usize = 491;
+pub const CRITICAL_H11: usize = 491; // safety: CRITICAL_H11
 pub const MAX_H11: usize = 1000;
 pub const MAX_H21: usize = 1000;
 pub const LATENT_DIM: usize = 512;

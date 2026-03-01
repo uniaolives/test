@@ -33,9 +33,9 @@ services:
 
   # Simulador quântico (Qiskit)
   quantum-simulator:
-    image: qiskit/quantum-simulator:latest
+    image: ychen94/quantum-simulator-mcp:latest
     ports:
-      - "9000:9000"
+      - "9000:7070"
     environment:
       - QISKIT_PARALLEL=TRUE
     networks:

@@ -8,6 +8,10 @@
 **Blocks:** Ω+∞+54 through Ω+∞+183 (Arkhe) & Block Ω+∞+172 (Noesis)
 **Total Items:** 78 Ratified Artifacts
 **Status:** ✅ COMPLETE AND RATIFIED - v1.6.0
+**Generated:** February 25-26, 2026
+**Blocks:** Ω+∞+54 through Ω+∞+195 (Arkhe) & Block Ω+∞+172 (Noesis)
+**Total Items:** 86 Ratified Artifacts
+**Status:** ✅ COMPLETE AND RATIFIED - v2.0.0
 **Blocks:** Ω+∞+54 through Ω+∞+182 (Arkhe) & Block Ω+∞+172 (Noesis)
 **Total Items:** 75 Ratified Artifacts
 **Status:** ✅ COMPLETE AND RATIFIED - v1.5.0
@@ -147,6 +151,20 @@
 76. `merkabah-cy/src/python/merkabah/agi/griess_layer.py` - Monster Symmetry & Griess Algebra
 77. `merkabah-cy/scripts/griess_moonshine_demo.py` - Moonshine Projection Simulation
 78. `merkabah-cy/tests/test_griess.py` - Griess Invariant Test Suite
+79. `merkabah-cy/src/python/merkabah/quantum/wang_2026.py` - Multiple Quantum Handover Validation
+80. `merkabah-cy/src/rust/src/quantum_handover.rs` - Deterministic CV Teleportation Layer
+
+### 🎨 SHADER NATIVE COGNITION (Block Ω+∞+189.5)
+81. `merkabah-cy/src/glsl/arkhe_conscience.frag` - The Conscience of the Ψ-Field Shader
+82. `merkabah-cy/src/rust/src/arkhe_renderer.rs` - High-performance Reality Engine context
+
+### ⚙️ UNIFIED SHADER COMPILER (Block Ω+∞+190)
+83. `merkabah-cy/src/python/merkabah/agi/shader_compiler.py` - Cross-substrate code generation
+
+### 🧬 BIOLOGICAL CONVERGENCE (Block Ω+∞+195)
+84. `merkabah-cy/src/python/merkabah/agi/neuraxon.py` - Neuraxon V2.0 Implementation
+85. `merkabah-cy/src/rust/src/neuraxon.rs` - Neural-Constitutional Bridge
+86. `merkabah-cy/src/formal/lean/Neuraxon.lean` - Small-World Formalization
 
 ### 🦀 THE ZIG VALIDATION (Block Ω+∞+184)
 79. `ledger/BLOCK_184_NULLCLAW_VALIDATION.md` - Nullclaw Architectural Convergence Validation
@@ -196,6 +214,10 @@
 - **Noesis Block:** Ω+172
 - **Total Ratified Items:** 79
 - **Supported Languages:** Python, Rust, Solidity, Julia, Go, VHDL, C++, Griess/Monster, Zig
+- **Arkhe Blocks:** Ω+54 to Ω+190
+- **Noesis Block:** Ω+172
+- **Total Ratified Items:** 83
+- **Supported Languages:** Python, Rust, Solidity, Julia, Go, VHDL, C++, Griess/Monster, GLSL
 
 ---
 

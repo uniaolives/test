@@ -1,6 +1,6 @@
 name = "MerkabahCY"
 uuid = "ee583c4d-c3c5-4534-a109-ef19be74522e"
-authors = ["Rafael Oliveira"]
+authors = ["Rafael Oliveira", "Arquiteto <root@arkhe.systems>"]
 version = "1.0.0"
 
 [deps]
