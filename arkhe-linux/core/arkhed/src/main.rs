@@ -295,6 +295,8 @@ pub enum Command {
     SendHandover { target: String, payload: serde_json::Value },
     CrdtSync,
     RunTests,
+    RecordRLTransition { transition: arkhe_quantum::RLTransition },
+    QueryRLTransitions { model_version: Option<String> },
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -344,6 +346,26 @@ async fn handle_ipc_client(mut stream: UnixStream, system: Arc<ArkheSystem>) {
                 }
                 Ok(Command::CrdtSync) => {
                     // Actual implementation would trigger sync
+                    Response::Ok
+                }
+                Ok(Command::RecordRLTransition { transition }) => {
+                    let packet = handover::HandoverPacket {
+                        id: uuid::Uuid::new_v4().to_string(),
+                        target: "ledger".to_string(),
+                        payload: serde_json::to_value(&transition).unwrap_or_default(),
+                        timestamp: transition.timestamp as u64,
+                        binary: Some(arkhe_quantum::Handover::new(
+                            arkhe_quantum::HandoverType::RLTransition,
+                            0, 0, 0.05, 1000.0,
+                            serde_json::to_vec(&transition).unwrap_or_default()
+                        )),
+                    };
+                    let ledger = ledger::LedgerStore::new();
+                    let _ = ledger.record(&packet);
+                    Response::Ok
+                }
+                Ok(Command::QueryRLTransitions { model_version: _ }) => {
+                    // Mock query: return empty list
                     Response::Ok
                 }
                 Ok(Command::RunTests) => {
@@ -495,5 +517,37 @@ mod tests {
         } else {
             panic!("Expected EntropyDeviation alert");
         }
+    }
+
+    #[tokio::test]
+    async fn test_record_rl_transition() {
+        let transition = arkhe_quantum::RLTransition {
+            state: vec![0.1, 0.2],
+            action: 1,
+            reward: 0.5,
+            next_state: vec![0.2, 0.3],
+            done: false,
+            timestamp: 123456789,
+            node_id: "test-node".to_string(),
+            model_version: "v1".to_string(),
+        };
+
+        let packet = handover::HandoverPacket {
+            id: uuid::Uuid::new_v4().to_string(),
+            target: "ledger".to_string(),
+            payload: serde_json::to_value(&transition).unwrap_or_default(),
+            timestamp: transition.timestamp as u64,
+            binary: Some(arkhe_quantum::Handover::new(
+                arkhe_quantum::HandoverType::RLTransition,
+                0, 0, 0.05, 1000.0,
+                serde_json::to_vec(&transition).unwrap_or_default()
+            )),
+        };
+
+        // Simula o registro no ledger (usando /tmp para evitar permissões)
+        let mut ledger = ledger::LedgerStore::new();
+        ledger.root_path = "/tmp/ledger_test".to_string();
+        let res = ledger.record(&packet);
+        assert!(res.is_ok());
     }
 }

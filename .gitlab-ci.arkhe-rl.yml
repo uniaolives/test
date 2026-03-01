@@ -1,0 +1,42 @@
+# .gitlab-ci.arkhe-rl.yml
+stages:
+  - data
+  - train
+  - validate
+  - deploy
+
+variables:
+  MODEL_NAME: "arkhe-rl-agent"
+
+collect_experiences:
+  stage: data
+  image: python:3.9
+  script:
+    - pip install pandas pyarrow
+    - python scripts/collect_experiences.py --output experiences.parquet
+  artifacts:
+    paths:
+      - experiences.parquet
+
+retrain_rl:
+  stage: train
+  image: python:3.9
+  script:
+    - pip install pandas pyarrow
+    - python scripts/train_rl.py --data experiences.parquet --model-name $MODEL_NAME
+  artifacts:
+    paths:
+      - models/
+
+validate_retraining:
+  stage: validate
+  image: python:3.9
+  script:
+    - python scripts/validate_model.py --model models/$MODEL_NAME.zip --threshold 0.7
+
+deploy_new_model:
+  stage: deploy
+  script:
+    - echo "Deploying new RL agent model via ArgoCD..."
+  only:
+    - main

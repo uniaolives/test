@@ -4,7 +4,7 @@ use std::path::Path;
 use super::handover::HandoverPacket;
 
 pub struct LedgerStore {
-    root_path: String,
+    pub root_path: String,
 }
 
 impl LedgerStore {

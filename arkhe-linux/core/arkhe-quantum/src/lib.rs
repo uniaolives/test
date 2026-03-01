@@ -4,7 +4,6 @@ use serde::{Serialize, Deserialize};
 use uuid::Uuid;
 use pqcrypto_dilithium::dilithium5::*;
 use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, DetachedSignature as _};
-use pqcrypto_traits::sign::{PublicKey as _, DetachedSignature as _};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[repr(u8)]
@@ -13,6 +12,7 @@ pub enum HandoverType {
     Inhibitory = 0x02,
     Meta = 0x03,
     Structural = 0x04,
+    RLTransition = 0x06,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -38,6 +38,29 @@ pub struct Handover {
     pub header: HandoverHeader,
     pub payload: Vec<u8>,
     pub signature: Vec<u8>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct RLTransition {
+    pub state: Vec<f64>,
+    pub action: u32,
+    pub reward: f64,
+    pub next_state: Vec<f64>,
+    pub done: bool,
+    pub timestamp: i64,
+    pub node_id: String,
+    pub model_version: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ModelVersion {
+    pub version: String,
+    pub mlflow_run_id: String,
+    pub artifact_uri: String,
+    pub metrics: std::collections::HashMap<String, f64>,
+    pub parameters: std::collections::HashMap<String, String>,
+    pub parent_version: Option<String>,
+    pub timestamp: i64,
 }
 
 impl Handover {
