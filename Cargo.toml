@@ -38,9 +38,6 @@ members = [
     "arkhe-linux/core/arkhed",
     "arkhe-linux/core/arkhe-cli",
     "arkhe-linux/core/arkhe-pkg",
-    "arkhe-linux/core/arkhe-quantum",
-    "entropy-predictor",
-    "k8s/controller",
 ]
 resolver = "2"
 

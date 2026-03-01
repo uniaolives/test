@@ -13,7 +13,6 @@ mod hlc;
 mod ledger;
 mod personality;
 mod security;
-mod secops;
 
 use crdt::{CRDTStore};
 use entropy::{EntropyMonitor, EntropyStats};
@@ -88,12 +87,6 @@ struct ArkheSystem {
     /// Sessões criptográficas ativas
     #[allow(dead_code)]
     sessions: RwLock<Vec<KyberSession>>,
-
-    /// Camada SecOps
-    secops_anomaly: RwLock<secops::QuantumAnomalyDetector>,
-    secops_entanglement: RwLock<secops::EntanglementMonitor>,
-    secops_crypto: RwLock<secops::CryptoEngine>,
-    secops_forensics: RwLock<secops::ForensicsLedger>,
 }
 
 impl ArkheSystem {
@@ -119,10 +112,6 @@ impl ArkheSystem {
             clock: RwLock::new(HybridClock::new()),
             personality: PhiKnob::new(phi_val),
             sessions: RwLock::new(Vec::new()),
-            secops_anomaly: RwLock::new(secops::QuantumAnomalyDetector::new(2)),
-            secops_entanglement: RwLock::new(secops::EntanglementMonitor::new()),
-            secops_crypto: RwLock::new(secops::CryptoEngine::new()),
-            secops_forensics: RwLock::new(secops::ForensicsLedger::new()),
         })
     }
 
@@ -156,41 +145,10 @@ impl ArkheSystem {
                 self.emergency_adjustment().await?;
             }
 
-            // 7. Executar testes de emaranhamento SecOps
-            let alerts = self.secops_entanglement.read().await.run_test();
-            for alert in alerts {
-                warn!("SecOps: Entanglement violation detected between nodes {:?} and {:?}",
-                      alert.node_a, alert.node_b);
-                self.secops_forensics.write().await.record(secops::forensics_ledger::ForensicsEntry {
-                    timestamp: self.clock.read().await.get_time().0 as u64,
-                    event_type: "ENTANGLEMENT_VIOLATION".to_string(),
-                    node_id: Some(alert.node_a),
-                    details: alert.reason,
-                    state_snapshot: None,
-                });
-            }
-
-            // 8. Processar handovers pendentes
-            while let Some(packet) = self.handovers.read().await.pop_next() {
-                info!("Processing handover: {}", packet.id);
-
-                // SecOps Anomaly Detection
-                if let Some(binary) = &packet.binary {
-                    let mut anomaly_detector = self.secops_anomaly.write().await;
-                    if let Some(alert) = anomaly_detector.observe_handover(binary) {
-                        warn!("SecOps: Anomaly detected in handover {}: {:?}", packet.id, alert);
-                        self.secops_forensics.write().await.record(secops::forensics_ledger::ForensicsEntry {
-                            timestamp: self.clock.read().await.get_time().0 as u64,
-                            event_type: "ANOMALY_DETECTED".to_string(),
-                            node_id: None,
-                            details: format!("{:?}", alert),
-                            state_snapshot: None,
-                        });
-                    }
-                }
-
-                self.handovers.read().await.record_history(packet);
-            }
+            // 7. Processar handovers pendentes
+            let mut handovers = self.handovers.write().await;
+            handovers.process_queue().await
+                .map_err(|e| ArkheError::Handover(e.to_string()))?;
         }
     }
 
@@ -330,16 +288,8 @@ async fn handle_ipc_client(mut stream: UnixStream, system: Arc<ArkheSystem>) {
                             .duration_since(std::time::UNIX_EPOCH)
                             .unwrap_or_default()
                             .as_secs(),
-                        binary: Some(arkhe_quantum::Handover::new(
-                            arkhe_quantum::HandoverType::Excitatory,
-                            0, // Default emitter
-                            0, // Default receiver
-                            0.1, // Default entropy
-                            1000.0, // Default half-life
-                            vec![], // Empty payload
-                        )),
                     };
-                    system.handovers.read().await.enqueue(packet);
+                    system.handovers.enqueue(packet);
                     Response::Ok
                 }
                 Ok(Command::CrdtSync) => {
@@ -474,26 +424,5 @@ mod tests {
         assert!(matches!(PhiRegime::from(0.6), PhiRegime::Critical));
         assert!(matches!(PhiRegime::from(0.8), PhiRegime::Exploratory));
         assert!(matches!(PhiRegime::from(0.95), PhiRegime::Chaotic));
-    }
-
-    #[tokio::test]
-    async fn test_secops_anomaly_alert() {
-        let system = ArkheSystem::new().await.unwrap();
-
-        // Handover anômalo (entropia alta)
-        let binary = arkhe_quantum::Handover::new(
-            arkhe_quantum::HandoverType::Excitatory,
-            1, 2, 0.95, 100.0, vec![]
-        );
-
-        let mut anomaly_detector = system.secops_anomaly.write().await;
-        let alert = anomaly_detector.observe_handover(&binary);
-
-        assert!(alert.is_some());
-        if let Some(secops::anomaly_detector::SecurityAlert::EntropyDeviation(e)) = alert {
-            assert!(e > 0.1);
-        } else {
-            panic!("Expected EntropyDeviation alert");
-        }
     }
 }
