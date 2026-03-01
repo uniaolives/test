@@ -36,6 +36,8 @@ members = [
     "modules/arkhen/rust",
     "modules/arkhe_ggf/rust",
     "arkhe-linux/core/arkhed",
+    "arkhe-linux/core/arkhe-cli",
+    "arkhe-linux/core/arkhe-pkg",
 ]
 resolver = "2"
 

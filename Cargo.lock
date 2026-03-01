@@ -290,6 +290,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "arkhe-cli"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "arkhe-constitutive"
 version = "0.1.0"
 dependencies = [
@@ -316,6 +327,16 @@ dependencies = [
  "serde",
  "sha3",
  "tokio",
+]
+
+[[package]]
+name = "arkhe-pkg"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "clap",
+ "serde",
+ "serde_json",
 ]
 
 [[package]]
