@@ -15,15 +15,6 @@ use num_complex::Complex;
 // CONSTANTES E CONFIGURAÇÕES GLOBAIS
 // =============================================================================
 
-pub const CRITICAL_H11: usize = 491;
-pub const CRITICAL_H11: usize = 491; // CRITICAL_H11 safety
-pub const CRITICAL_H11: usize = 491;
-pub const CRITICAL_H11: usize = 491; // CRITICAL_H11 safety
-pub const MAX_H11: usize = 1000;
-pub const MAX_H21: usize = 1000;
-pub const LATENT_DIM: usize = 512;
-pub const SAFETY_THRESHOLD: f64 = 0.95;
-pub const CRITICAL_H11: usize = 491; // CRITICAL_H11 safety
 pub const CRITICAL_H11: usize = 491; // safety: CRITICAL_H11
 pub const MAX_H11: usize = 1000;
 pub const MAX_H21: usize = 1000;
