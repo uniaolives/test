@@ -4,6 +4,7 @@ use serde::{Serialize, Deserialize};
 use uuid::Uuid;
 use pqcrypto_dilithium::dilithium5::*;
 use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _, DetachedSignature as _};
+use pqcrypto_traits::sign::{PublicKey as _, DetachedSignature as _};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
 #[repr(u8)]
