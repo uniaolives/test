@@ -11,4 +11,5 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 thiserror = "1.0"
 anyhow = "1.0"
+uuid = { version = "1.0", features = ["v4"] }
 # Future dependencies for gRPC and eBPF can be added later as implementation progresses.
