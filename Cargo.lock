@@ -299,6 +299,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "arkhe-ggf"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "nalgebra 0.32.6",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "arkhe-n-library"
 version = "1.0.0"
 dependencies = [
