@@ -1,0 +1,10 @@
+groups:
+  - name: arkhe_failure_predictions
+    rules:
+      - alert: HighFailureProbability
+        expr: arkhe_predicted_failure_probability > 0.8
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Nó {{ $labels.node }} com alta probabilidade de falha"
