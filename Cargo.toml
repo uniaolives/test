@@ -5,6 +5,7 @@ members = [
     "sasc-governance",
     "agi-service",
     "sasc-society", "linguagem-soberana-br",
+    "atomic-interference-processor", "agentic_seek_mvp/rust_sentry",
     "atomic-interference-processor",
     "cge_alpha_unified",
     "cge_www_universal",
