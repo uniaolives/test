@@ -8503,6 +8503,7 @@ dependencies = [
  "pqcrypto-traits",
  "rand 0.8.5",
  "regex",
+ "reqwest",
  "ring 0.17.14",
  "sasc-governance",
  "serde",

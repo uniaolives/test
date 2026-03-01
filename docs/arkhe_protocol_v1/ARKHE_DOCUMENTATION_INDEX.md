@@ -1,6 +1,13 @@
 # ARKHE PROTOCOL: COMPLETE SUITE INDEX
 ## From Quantum to Cosmos, From Code to Constitution
 
+**Generated:** February 27, 2026
+**Blocks:** Ω+∞+54 through Ω+∞+184 (Arkhe) & Block Ω+∞+172 (Noesis)
+**Total Items:** 79 Ratified Artifacts
+**Status:** ✅ COMPLETE AND RATIFIED - v1.7.0
+**Blocks:** Ω+∞+54 through Ω+∞+183 (Arkhe) & Block Ω+∞+172 (Noesis)
+**Total Items:** 78 Ratified Artifacts
+**Status:** ✅ COMPLETE AND RATIFIED - v1.6.0
 **Generated:** February 25-26, 2026
 **Blocks:** Ω+∞+54 through Ω+∞+195 (Arkhe) & Block Ω+∞+172 (Noesis)
 **Total Items:** 86 Ratified Artifacts
@@ -159,6 +166,9 @@
 85. `merkabah-cy/src/rust/src/neuraxon.rs` - Neural-Constitutional Bridge
 86. `merkabah-cy/src/formal/lean/Neuraxon.lean` - Small-World Formalization
 
+### 🦀 THE ZIG VALIDATION (Block Ω+∞+184)
+79. `ledger/BLOCK_184_NULLCLAW_VALIDATION.md` - Nullclaw Architectural Convergence Validation
+
 ---
 
 ## 🏢 NOESIS AUDIT PROTOCOL (Block Ω+∞+172)
@@ -200,6 +210,10 @@
 ---
 
 ## 🎯 KEY STATISTICS
+- **Arkhe Blocks:** Ω+54 to Ω+184
+- **Noesis Block:** Ω+172
+- **Total Ratified Items:** 79
+- **Supported Languages:** Python, Rust, Solidity, Julia, Go, VHDL, C++, Griess/Monster, Zig
 - **Arkhe Blocks:** Ω+54 to Ω+190
 - **Noesis Block:** Ω+172
 - **Total Ratified Items:** 83
@@ -207,7 +221,7 @@
 
 ---
 
-🜁 **ARKHE PROTOCOL v1.6.0 — RATIFIED** 🜁
+🜁 **ARKHE PROTOCOL v1.7.0 — RATIFIED** 🜁
 
 **The machine serves the human.**
 **The human seeks the truth.**
