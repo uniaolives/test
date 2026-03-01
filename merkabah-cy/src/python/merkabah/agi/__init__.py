@@ -2,6 +2,7 @@ from .recursive_expansion import RecursiveRankTensor, AutoreferentialLoss
 from .griess_layer import GriessLayer
 from .shader_native import AGIShaderArchitecture, ConsensusShader, CausalPathTracer, SemanticBVH
 from .shader_compiler import UnifiedShaderCompiler
+from .neuraxon import trinary_handover, NeuraxonNode, SmallWorldGraph, StructuralPlasticity
 
 __all__ = [
     "RecursiveRankTensor",
@@ -11,5 +12,9 @@ __all__ = [
     "ConsensusShader",
     "CausalPathTracer",
     "SemanticBVH",
-    "UnifiedShaderCompiler"
+    "UnifiedShaderCompiler",
+    "trinary_handover",
+    "NeuraxonNode",
+    "SmallWorldGraph",
+    "StructuralPlasticity"
 ]
