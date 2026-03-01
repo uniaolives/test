@@ -1,0 +1,85 @@
+version: '3.8'
+
+services:
+  # Banco de dados CRDT (ScyllaDB com extensões customizadas)
+  scylla-crdt:
+    image: scylladb/scylla:5.2
+    ports:
+      - "9042:9042"
+    volumes:
+      - scylla_data:/var/lib/scylla
+    environment:
+      - SCYLLA_SEEDS=scylla-crdt
+
+  # Nó IPFS para Omega Ledger
+  ipfs-node:
+    image: ipfs/kubo:latest
+    ports:
+      - "5001:5001"
+      - "8080:8080"
+    volumes:
+      - ipfs_data:/data/ipfs
+
+  # Φ-Core (Python)
+  phi-core:
+    build:
+      context: ./core
+      dockerfile: Dockerfile
+    depends_on:
+      - scylla-crdt
+      - ipfs-node
+      - nats
+    environment:
+      - ARKHE_DEVICE_ID=local-dev-001
+      - ARKHE_PHI_INITIAL=0.618
+      - ARKHE_MODE=development
+    volumes:
+      - ./core:/app
+    command: python -m phi_core.life_loop
+
+  # Sync Engine (Go)
+  syncd:
+    build:
+      context: ./sync
+      dockerfile: Dockerfile
+    depends_on:
+      - scylla-crdt
+      - nats
+    environment:
+      - SYNC_BIND=:8080
+      - SYNC_SEEDS=ws://localhost:8080
+    ports:
+      - "8080:8080"
+
+  # Security Enclave (Rust)
+  security-enclave:
+    build:
+      context: ./security
+      dockerfile: Dockerfile
+    environment:
+      - ENCLAVE_MODE=software  # production: use SGX/SEV
+    volumes:
+      - ./security/keys:/keys:ro
+
+  # Message bus para handovers
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+
+  # UI de desenvolvimento
+  ui-dev:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./ui:/app
+    environment:
+      - REACT_APP_API_URL=http://localhost:8080
+
+volumes:
+  scylla_data:
+  ipfs_data:

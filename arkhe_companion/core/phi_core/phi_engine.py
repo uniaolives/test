@@ -1,5 +1,7 @@
 # core/python/arkhe/companion/phi_core.py
 import numpy as np
+import os
+import time
 from dataclasses import dataclass, field
 from typing import Optional, List, Dict, Callable, Tuple
 from datetime import datetime, timedelta
@@ -64,11 +66,12 @@ class HolographicMemory:
         # Fator de fase crítica (proporção áurea)
         phase = 2 * np.pi * self.PHI * np.random.random()
 
-        # Ensure we don't go out of bounds for the 16x16 amplitude
-        target_i = min(i, self.res - 16)
-        target_j = min(j, self.res - 16)
-
-        self.field[target_i:target_i+16, target_j:target_j+16] += amplitude * np.exp(1j * phase)
+        # Periodic boundaries for the 16x16 amplitude (Torus T²)
+        for di in range(16):
+            for dj in range(16):
+                idx_i = (i + di) % self.res
+                idx_j = (j + dj) % self.res
+                self.field[idx_i, idx_j] += amplitude[di, dj] * np.exp(1j * phase)
 
         # Registrar na história
         memory_id = hashlib.sha256(pattern.tobytes() + context_vector.tobytes()).hexdigest()[:16]
@@ -136,7 +139,7 @@ class FreeEnergyMinimizer:
     O Companion minimiza surpresa variacional através de ação no mundo.
     """
 
-    def __init__(self, sensory_dim: int = 128, belief_dim: int = 64):
+    def __init__(self, sensory_dim: int = 256, belief_dim: int = 64):
         self.sensory_dim = sensory_dim
         self.belief_dim = belief_dim
 
@@ -380,6 +383,7 @@ class PhiCore:
     def _encode_sensory(self, input_data: dict) -> np.ndarray:
         """Placeholder para encoding multimodal."""
         text = input_data.get('text', '')
+        # Ensure embedding matches holographic memory dimension (256 for 16x16)
         embedding = np.random.randn(self.inference.sensory_dim) * 0.1
         # Determinístico para mesmo texto
         np.random.seed(hash(text) % 2**32)
@@ -499,3 +503,27 @@ class PhiCore:
         entropy = -np.sum([p * np.log(p + 1e-10) for p in np.histogram(alignments, bins=10, range=(-1, 1), density=True)[0] if p > 0])
 
         return float(magnetization * entropy / (1 + magnetization + entropy))
+
+if __name__ == "__main__":
+    import asyncio
+
+    async def run_core():
+        print("=== Arkhe(n) Φ-Core Ignition ===")
+        companion_id = os.getenv("ARKHE_DEVICE_ID", "arkhe_local_001")
+        core = PhiCore(companion_id)
+
+        # Initial concepts for the core
+        core.cognitive_spins["existence"] = CognitiveSpin(
+            id="existence",
+            embedding=np.random.randn(128),
+            activation=0.8
+        )
+
+        print(f"Status: {companion_id} is running life_loop...")
+        try:
+            await core.life_loop()
+        except KeyboardInterrupt:
+            print("Status: Shutting down Φ-Core...")
+            core.is_running = False
+
+    asyncio.run(run_core())

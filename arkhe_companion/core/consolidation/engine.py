@@ -3,7 +3,7 @@ import time
 import numpy as np
 from collections import deque
 from typing import List, Dict, Any, Optional
-from .phi_core import PhiCore, HolographicMemory, CognitiveSpin
+from phi_core.phi_engine import PhiCore, HolographicMemory, CognitiveSpin
 from sklearn.decomposition import NMF
 
 class ConsolidationEngine:
