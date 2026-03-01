@@ -6,3 +6,6 @@ pub mod rawlsian_veil;
 pub mod dialectical_synthesis;
 pub mod phronesis;
 pub mod ennead_framework;
+
+#[cfg(test)]
+pub mod tests_ennead;

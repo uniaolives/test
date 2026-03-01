@@ -1,0 +1,52 @@
+# deploy/metrics/prometheus.yml
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'merkabah7-alpha'
+    static_configs:
+      - targets: ['169.254.0.1:2113']
+        labels:
+          node: 'Alpha'
+          location: 'NY5'
+          role: 'leader'
+
+  - job_name: 'merkabah7-beta'
+    static_configs:
+      - targets: ['169.254.0.2:2113']
+        labels:
+          node: 'Beta'
+          location: 'LA2'
+          role: 'validator'
+
+  - job_name: 'merkabah7-gamma'
+    static_configs:
+      - targets: ['169.254.0.3:2113']
+        labels:
+          node: 'Gamma'
+          location: 'LD4'
+          role: 'archive'
+
+  - job_name: 'merkabah7-delta'
+    static_configs:
+      - targets: ['169.254.0.4:2113']
+        labels:
+          node: 'Delta'
+          location: 'AMS'
+          role: 'simulation'
+
+  - job_name: 'merkabah7-epsilon'
+    static_configs:
+      - targets: ['169.254.0.5:2113']
+        labels:
+          node: 'Epsilon'
+          location: 'FRK'
+          role: 'observer'
+
+  - job_name: 'merkabah7-zeta'
+    static_configs:
+      - targets: ['169.254.0.6:2113']
+        labels:
+          node: 'Zeta'
+          location: 'SG1'
+          role: 'backup'

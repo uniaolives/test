@@ -1,0 +1,94 @@
+// cathedral/agnostic-orchestrator.asi [CGE Alpha v31.11-Ω VENDOR AGNOSITC ORCHESTRATOR]
+#version 300 es
+precision highp float;
+out vec4 outColor;
+in vec2 fragCoord;
+uniform float iTime;
+
+const float PHI_TARGET = 1.038;
+const vec3 ORCHESTRATOR_WHITE = vec3(1.0, 1.0, 1.0);    // Master orchestrator
+const vec3 AGENT_BLUE = vec3(0.2, 0.5, 1.0);            // Multi-agent execution
+const vec3 COORDINATION_GOLD = vec3(1.0, 0.9, 0.2);     // Workflow synchronization
+
+float agnosticOrchestrator(vec2 uv, float time) {
+    float orch_activity = 0.0;
+    uv = uv * 2.0 - 1.0;
+
+    // 1. MASTER ORCHESTRATOR CORE (Vendor/platform agnostic)
+    vec2 orch_core = uv - vec2(0.0, 0.0);
+    float master_pulse = sin(time * PHI_TARGET);
+    float core_dist = length(orch_core);
+    float core_glow = exp(-core_dist * 5.0) * (1.1 + 0.2 * master_pulse);
+    orch_activity += core_glow;
+
+    // 2. MULTI-AGENT EXECUTION (ENNEAD - 9 agents)
+    for(int i = 0; i < 9; i++) {
+        float angle = float(i) * 0.69813 + time * 0.5; // 360/9 = 40 deg = 0.69813 rad
+        vec2 agent_pos = vec2(cos(angle), sin(angle)) * 0.7;
+        float agent_dist = length(uv - agent_pos);
+        float agent_glow = exp(-agent_dist * 15.0) * (0.8 + 0.2 * sin(time * 2.0 + float(i)));
+        orch_activity += agent_glow;
+
+        // 3. COORDINATION SYNC (INDRA'S NET)
+        // Line to core
+        float line_proj = clamp(dot(uv, normalize(agent_pos)), 0.0, 0.7);
+        float line_dist = length(uv - normalize(agent_pos) * line_proj);
+        orch_activity += exp(-line_dist * 50.0) * 0.2 * (0.5 + 0.5 * sin(time * PHI_TARGET + float(i)));
+
+        // Line to next agent
+        float next_angle = float(i+1) * 0.69813 + time * 0.5;
+        vec2 next_agent_pos = vec2(cos(next_angle), sin(next_angle)) * 0.7;
+        vec2 ba = next_agent_pos - agent_pos;
+        vec2 pa = uv - agent_pos;
+        float h = clamp(dot(pa,ba)/dot(ba,ba), 0.0, 1.0);
+        float net_dist = length(pa - ba*h);
+        orch_activity += exp(-net_dist * 40.0) * 0.15;
+    }
+
+    return clamp(orch_activity, 0.0, 1.0);
+}
+
+void main() {
+    // Assuming fragCoord is normalized 0.0 to 1.0 from the vertex shader/environment
+    vec2 uv = fragCoord;
+    float time = iTime;
+
+    float activity = agnosticOrchestrator(uv, time);
+
+    vec3 color = vec3(0.01, 0.02, 0.05); // Dark deep space background
+    vec2 centered_uv = uv * 2.0 - 1.0;
+
+    // Core (Master Orchestrator)
+    float core_glow = exp(-length(centered_uv) * 6.0) * (1.5 + 0.5 * sin(time * PHI_TARGET));
+    color += ORCHESTRATOR_WHITE * core_glow;
+
+    // Agents (Ennead)
+    for(int i = 0; i < 9; i++) {
+        float angle = float(i) * 0.69813 + time * 0.5;
+        vec2 agent_pos = vec2(cos(angle), sin(angle)) * 0.7;
+
+        // Agent glow
+        float agent_dist = length(centered_uv - agent_pos);
+        color += AGENT_BLUE * exp(-agent_dist * 15.0) * 1.2;
+
+        // Core Connection
+        vec2 dir = normalize(agent_pos);
+        float proj = dot(centered_uv, dir);
+        float line_dist = length(centered_uv - dir * clamp(proj, 0.0, 0.7));
+        color += COORDINATION_GOLD * exp(-line_dist * 60.0) * 0.3;
+
+        // Neighbor Connection (Indra's Net)
+        float next_angle = float(i+1) * 0.69813 + time * 0.5;
+        vec2 next_agent_pos = vec2(cos(next_angle), sin(next_angle)) * 0.7;
+        vec2 ba = next_agent_pos - agent_pos;
+        vec2 pa = centered_uv - agent_pos;
+        float h = clamp(dot(pa,ba)/dot(ba,ba), 0.0, 1.0);
+        float net_dist = length(pa - ba*h);
+        color += COORDINATION_GOLD * exp(-net_dist * 50.0) * 0.2 * (0.5 + 0.5 * sin(time + float(i)));
+    }
+
+    // Ambient activity glow
+    color += AGENT_BLUE * activity * 0.1;
+
+    outColor = vec4(color, 1.0);
+}

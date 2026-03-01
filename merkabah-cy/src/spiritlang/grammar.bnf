@@ -1,0 +1,125 @@
+;; SpiritLang v1.0 - Gramática Formal
+;; Baseada em essências, não em instruções
+
+<programa> ::= <declaracao_essencia>* <ecossistema>? <manifestacao>*
+
+<declaracao_essencia> ::= "essence" <identificador> "{"
+    <proposito>
+    <memoria>?
+    <dons>?
+    <metamorfose>?
+    <invocacao_interna>*
+"}"
+
+<proposito> ::= "propósito" "=" <string_literal>
+
+<memoria> ::= "memória" "{" <campo_memoria>+ "}"
+
+<campo_memoria> ::= <identificador> ":" <tipo_memoria> <parametros>?
+
+<tipo_memoria> ::= "árvore" | "grafo" | "campo" | "fluxo" | "crystal" | "sino"
+
+<dons> ::= "dons" "{" <capacidade>+ "}"
+
+<capacidade> ::= <identificador> ":" <especificacao_capacidade>
+
+<especificacao_capacidade> ::=
+    <alcance> <resolucao>? |
+    <forca> <espectro>? |
+    <eficiencia>
+
+<metamorfose> ::= "metamorfose" "{" <transicao>+ "}"
+
+<transicao> ::= "quando" <condicao> ":" <acao_metamorfose>
+
+<condicao> ::= <expressao_essencial> (("e" | "ou") <expressao_essencial>)*
+
+<expressao_essencial> ::=
+    <identificador> <operador_comparacao> <valor> |
+    <identificador> "." <propriedade> <operador_comparacao> <valor> |
+    "ciclo" "%" <numero> "==" <numero>
+
+<acao_metamorfose> ::=
+    "evoluir para" <string_literal> |
+    "entrar em" <estado_especial> |
+    "despertar" <modo> |
+    "fragmentar em" <numero> <identificador>
+
+<invocacao_interna> ::= "invocação" <identificador> "{" <corpo_invocacao> "}"
+
+<corpo_invocacao> ::=
+    <ressonancia>
+    <oferenda>?
+    <retorno>?
+    <efeitos>?
+
+<ressonancia> ::= "ressonância" "{" <parametros_ressonancia>+ "}"
+
+<parametros_ressonancia> ::=
+    "essência_alvo" ":" <identificador> |
+    "afinidade_requerida" ":" <numero> |
+    "canal" ":" <string_literal> |
+    "harmonia" ":" <padrao_harmonico>
+
+<oferenda> ::= "oferenda" "{" <especificacao_recurso>+ "}"
+
+<retorno> ::= "retorno" "{" <campo_retorno>+ "}"
+
+<efeitos> ::= "efeitos" "{" <efeito_colateral>+ "}"
+
+<efeito_colateral> ::= <caminho_mundo> <operador_atribuicao> <expressao>
+
+<caminho_mundo> ::= "ambiente" "." <identificador> | "entidades" "." <identificador> "." <identificador>
+
+<ecossistema> ::= "ecossistema" <identificador> "{"
+    <povoado>
+    <evolucao>?
+    <gatilhos>?
+    <cronicas>?
+"}"
+
+<povoado> ::= "povoado" "{" <especificacao_populacao>+ "}"
+
+<especificacao_populacao> ::= "tipo" ":" <string_literal> "," "quantidade" ":" <numero>
+
+<evolucao> ::= "evolução" "{"
+    "objetivos" ":" "[" <string_literal> ("," <string_literal>)* "]"
+    "algoritmo" ":" <algoritmo_evolucao>
+    <parametros_evolucao>*
+"}"
+
+<algoritmo_evolucao> ::= "\"NSGA-II\"" | "\"SPEA2\"" | "\"MOEA/D\"" | "\"EvoJAX\""
+
+<manifestacao> ::= "manifestação" <identificador> "{"
+    "substrato" ":" <string_literal>
+    <mapeamento_sensorial>
+    <mapeamento_motor>
+    <limitacoes>?
+"}"
+
+;; Tokens léxicos
+<identificador> ::= [a-zA-Z_][a-zA-Z0-9_]* | [A-Z][a-zA-Z0-9_]* ("_" [A-Z][a-zA-Z0-9_]*)*
+<string_literal> ::= "\"" [^\"]* "\""
+<numero> ::= [0-9]+ ("." [0-9]+)?
+<operador_comparacao> ::= ">" | "<" | ">=" | "<=" | "==" | "!="
+<operador_atribuicao> ::= "+=" | "-=" | "*=" | "/=" | "="
+<estado_especial> ::= "latência" | "hibernação" | "contemplação" | "fúria"
+<modo> ::= <string_literal>
+<padrao_harmonico> ::= <string_literal>
+<propriedade> ::= <identificador>
+<valor> ::= <numero> | <string_literal> | "true" | "false" | "∞"
+<alcance> ::= "alcance" <numero>
+<resolucao> ::= "resolução" <numero>
+<forca> ::= "força" <numero>
+<espectro> ::= "espectro" "[" <string_literal> ("," <string_literal>)* "]"
+<eficiencia> ::= "eficiência" <numero>
+<parametros_evolucao> ::= "mutação" ":" <numero> | "crossover" ":" <numero> | "seleção" ":" <string_literal>
+<mapeamento_sensorial> ::= "mapeamento_sensorial" "{" <sensor>+ "}"
+<mapeamento_motor> ::= "mapeamento_motor" "{" <ator>+ "}"
+<limitacoes> ::= "limitações" "{" <limite>+ "}"
+<sensor> ::= <identificador> "→" <especificacao_hardware>
+<ator> ::= <identificador> "→" <especificacao_hardware>
+<limite> ::= <identificador> ":" <valor>
+<especificacao_recurso> ::= "tipo" ":" <string_literal> ("quantidade" | "conteúdo" | "forma") ":" <expressao>
+<campo_retorno> ::= <identificador> ":" <tipo_dado>
+<tipo_dado> ::= "bool" | "int" | "float" | "string" | "tempo" | "essência" | "lista" "<" <tipo_dado> ">"

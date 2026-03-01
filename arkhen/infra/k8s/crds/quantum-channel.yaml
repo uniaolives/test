@@ -1,0 +1,52 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: quantumchannels.arkhe.quantum
+spec:
+  group: arkhe.quantum
+  names:
+    kind: QuantumChannel
+    plural: quantumchannels
+    singular: quantumchannel
+  scope: Namespaced
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                sourceNode: { type: string }
+                targetNode: { type: string }
+                channelType:
+                  type: string
+                  enum: ["darkFiber", "satelliteQKD", "classicalEncrypted"]
+                fiberSpec:
+                  type: object
+                  properties:
+                    lengthKm: { type: number }
+                    attenuation: { type: number }
+                qkdProtocol:
+                  type: string
+                  enum: ["BB84", "E91", "B92"]
+                keyRate: { type: number }
+                errorThreshold: { type: number }
+              required: ["sourceNode", "targetNode"]
+            status:
+              type: object
+              properties:
+                isActive: { type: boolean }
+                currentKeyRate: { type: number }
+                qber: { type: number }
+                conditions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      type: { type: string }
+                      status: { type: string }
+                      lastTransitionTime: { type: string }
