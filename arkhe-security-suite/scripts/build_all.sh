@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+echo "Building Arkhe(n) Security Suite (Ω+209-223)..."
 echo "Building Arkhe(n) Security Suite (Ω+209-218)..."
 
 cd "$(dirname "$0")/.."

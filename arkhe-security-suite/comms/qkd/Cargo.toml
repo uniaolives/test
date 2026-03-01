@@ -2,3 +2,6 @@
 name = "qkd-satellite"
 version = "0.1.0"
 edition = "2021"
+
+[dependencies]
+arkhe-quantum-core = { path = "../../quantum-core" }

@@ -16,6 +16,10 @@ class ArkheNetworkEnv(gym.Env):
         return self.state
 
     def step(self, action):
+        # Apply action safe governor logic here in real training
+        reward = random.random()
+        done = False
+        self.state = np.random.rand(self.num_nodes * 2 + 5).astype(np.float32)
         reward = random.random()
         done = False
         return self.state, reward, done, {}

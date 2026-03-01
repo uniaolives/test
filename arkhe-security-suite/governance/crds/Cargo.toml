@@ -1,8 +1,9 @@
 [package]
-name = "anomaly-detector"
+name = "arkhe-crds"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+kube = { version = "0.82", features = ["derive"] }
 serde = { version = "1.0", features = ["derive"] }
-arkhe-quantum-core = { path = "../../quantum-core" }
+schemars = "0.8"

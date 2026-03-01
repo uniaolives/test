@@ -45,6 +45,7 @@ impl Handover {
         entropy_cost: f32,
         half_life: f32,
         payload: Vec<u8>,
+        sk: &SecretKey,
     ) -> Self {
         let header = HandoverHeader {
             magic: *b"ARKH",
@@ -54,6 +55,7 @@ impl Handover {
             id: *Uuid::new_v4().as_bytes(),
             emitter_id,
             receiver_id,
+            timestamp_physical: 0,
             timestamp_physical: 0, // Placeholder
             timestamp_logical: 0,
             entropy_cost,
@@ -61,6 +63,22 @@ impl Handover {
             payload_length: payload.len() as u32,
         };
 
+        let sig = detached_sign(&payload, sk);
+
+        Self {
+            header,
+            payload,
+            signature: sig.as_bytes().to_vec(),
+        }
+    }
+
+    pub fn verify(&self, pk: &PublicKey) -> bool {
+        let sig = match DetachedSignature::from_bytes(&self.signature) {
+            Ok(s) => s,
+            Err(_) => return false,
+        };
+        verify_detached_signature(&sig, &self.payload, pk).is_ok()
+    }
         Self {
             header,
             payload,
