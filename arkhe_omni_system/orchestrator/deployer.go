@@ -8,7 +8,7 @@ import (
     "sync"
     "time"
 
-    "github.com/docker/docker/client"
+    "github.com/moby/moby/client"
 )
 
 type AgentDeployer struct {
