@@ -2,6 +2,7 @@ use crate::crds::*;
 use kube::{Client, Api, Resource, ResourceExt};
 use kube::core::admission::{AdmissionRequest, AdmissionResponse};
 use serde::Serialize;
+use serde_json::Value;
 
 pub fn validate_node_basic(spec: &QuantumManifoldNodeSpec) -> Result<(), String> {
     if spec.desired_phi < 0.0 || spec.desired_phi > 1.0 {
@@ -54,11 +55,14 @@ pub async fn validate_admission_review<T: Resource + Serialize>(
 
     let kind = req.kind.kind.as_str();
     let group = req.kind.group.as_str();
-    let json_obj = serde_json::to_value(obj).unwrap();
+
+    // Fix: extract 'spec' from the full object
+    let full_obj = serde_json::to_value(obj).unwrap();
+    let spec_obj = full_obj.get("spec").cloned().unwrap_or(Value::Null);
 
     let validation_result = match (group, kind) {
         ("arkhe.quantum", "QuantumManifoldNode") => {
-            match serde_json::from_value::<QuantumManifoldNodeSpec>(json_obj) {
+            match serde_json::from_value::<QuantumManifoldNodeSpec>(spec_obj) {
                 Ok(spec) => {
                     if let Err(e) = validate_node_basic(&spec) {
                         Err(e)
@@ -66,11 +70,10 @@ pub async fn validate_admission_review<T: Resource + Serialize>(
                         validate_spin_conservation(&spec, client, namespace).await
                     }
                 }
-                Err(e) => Err(format!("Failed to parse QuantumManifoldNode: {}", e)),
+                Err(e) => Err(format!("Failed to parse QuantumManifoldNode spec: {}", e)),
             }
         }
         ("arkhe.quantum", "QuantumChannel") => {
-            // Simplified channel validation for bootstrap
             Ok(())
         }
         _ => Ok(()),

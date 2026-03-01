@@ -41,46 +41,42 @@ async fn main() -> std::io::Result<()> {
     // tracing_subscriber::fmt::init();
 
     let port = std::env::var("PORT").unwrap_or_else(|_| "8443".to_string());
-    let cert_file = std::env::var("TLS_CERT").unwrap_or_else(|_| "cert.pem".to_string());
-    let key_file = std::env::var("TLS_KEY").unwrap_or_else(|_| "key.pem".to_string());
+    let cert_file = std::env::var("TLS_CERT").unwrap_or_else(|_| "/tls/tls.crt".to_string());
+    let key_file = std::env::var("TLS_KEY").unwrap_or_else(|_| "/tls/tls.key".to_string());
 
     info!("Starting Arkhe validating webhook on port {}", port);
 
-    // Provide dummy certs for check if not present
-    if !std::path::Path::new(&cert_file).exists() {
-        fs::write(&cert_file, "")?;
-    }
-    if !std::path::Path::new(&key_file).exists() {
-        fs::write(&key_file, "")?;
-    }
+    // TLS is required for production, but we provide a check-friendly mode
+    let cert_data = fs::read(&cert_file).unwrap_or_default();
+    let key_data = fs::read(&key_file).unwrap_or_default();
 
-    let cert_data = fs::read(cert_file)?;
-    let key_data = fs::read(key_file)?;
+    let client = Client::try_default().await.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+
+    if cert_data.is_empty() || key_data.is_empty() {
+        warn!("TLS certificates not found. Webhook will start in HTTP mode (UNSAFE).");
+        return HttpServer::new(move || {
+            App::new()
+                .app_data(web::Data::new(client.clone()))
+                .service(validate)
+        })
+        .bind(format!("0.0.0.0:{}", port))?
+        .run()
+        .await;
+    }
 
     let certs = rustls_pemfile::certs(&mut cert_data.as_slice())
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
     let mut keys = rustls_pemfile::pkcs8_private_keys(&mut key_data.as_slice())
         .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
 
-    let tls_config = if !certs.is_empty() && !keys.is_empty() {
-        rustls::ServerConfig::builder()
-            .with_safe_defaults()
-            .with_no_client_auth()
-            .with_single_cert(
-                certs.into_iter().map(rustls::Certificate).collect(),
-                rustls::PrivateKey(keys.remove(0))
-            )
-            .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?
-    } else {
-        // Fallback for check or incomplete setup
-        rustls::ServerConfig::builder()
-            .with_safe_defaults()
-            .with_no_client_auth()
-            .with_single_cert(vec![], rustls::PrivateKey(vec![]))
-            .unwrap_or_else(|_| panic!("Failed to create dummy TLS config"))
-    };
-
-    let client = Client::try_default().await.map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+    let tls_config = rustls::ServerConfig::builder()
+        .with_safe_defaults()
+        .with_no_client_auth()
+        .with_single_cert(
+            certs.into_iter().map(rustls::Certificate).collect(),
+            rustls::PrivateKey(keys.remove(0))
+        )
+        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
 
     HttpServer::new(move || {
         App::new()
