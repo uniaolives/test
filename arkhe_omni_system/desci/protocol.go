@@ -12,12 +12,16 @@ import (
 
 // Experiment representa um registro científico no manifold.
 type Experiment struct {
-	ID          string    `json:"id"`
-	Title       string    `json:"title"`
-	Hypothesis  string    `json:"hypothesis"`
-	PreRegister time.Time `json:"pre_register"`
-	Status      string    `json:"status"` // "PRE_REGISTERED", "EXECUTED", "VERIFIED"
-	PhiScore    float64   `json:"phi_score"`
+	ID              string    `json:"id"`
+	Title           string    `json:"title"`
+	Authors         []string  `json:"authors"`
+	Hypothesis      string    `json:"hypothesis"`
+	MethodologyHash string    `json:"methodology_hash"`
+	StatisticalPlan map[string]interface{} `json:"statistical_plan"`
+	PreRegister     time.Time `json:"pre_register"`
+	Status          string    `json:"status"` // "PRE_REGISTERED", "EXECUTED", "VERIFIED"
+	PhiScore        float64   `json:"phi_score"`
+	ComplianceScore float64   `json:"compliance_score"`
 }
 
 // DeSciProtocol gerencia a integridade científica via Omega Ledger.
@@ -30,22 +34,19 @@ func NewDeSciProtocol(ledger protocols.Ledger) *DeSciProtocol {
 }
 
 // PreRegisterExperiment registra uma hipótese antes da execução para evitar p-hacking.
-func (p *DeSciProtocol) PreRegisterExperiment(ctx context.Context, title, hypothesis string) (string, error) {
-	id := hex.EncodeToString(sha256.New().Sum([]byte(title + hypothesis + time.Now().String())))[:16]
+func (p *DeSciProtocol) PreRegisterExperiment(ctx context.Context, exp Experiment) (string, error) {
+	id := hex.EncodeToString(sha256.New().Sum([]byte(exp.Title + exp.Hypothesis + time.Now().String())))[:16]
+	exp.ID = id
+	exp.PreRegister = time.Now()
+	exp.Status = "PRE_REGISTERED"
 
 	packet := protocols.HandoverPacket{
 		ID:          fmt.Sprintf("desci-pre-%s", id),
 		Timestamp:   time.Now(),
 		SourceLayer: "desci",
 		TargetLayer: "omega-ledger",
-		Payload: Experiment{
-			ID:          id,
-			Title:       title,
-			Hypothesis:  hypothesis,
-			PreRegister: time.Now(),
-			Status:      "PRE_REGISTERED",
-		},
-		PhiScore: 0.0, // Ainda não calculado
+		Payload:     exp,
+		PhiScore:    0.0, // Ainda não calculado
 	}
 
 	if err := p.ledger.Record(packet); err != nil {

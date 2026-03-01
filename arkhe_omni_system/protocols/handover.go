@@ -37,6 +37,10 @@ type HandoverPacket struct {
 
     // Segurança
     Signature   []byte              `json:"signature"`    // HMAC da carga
+
+    // Arkhe Correlation Monitor
+    LatencyObserved float64         `json:"latency_ms"`
+    AnomalyScore    float64         `json:"anomaly_score"`
 }
 
 // Interfaces for dependencies

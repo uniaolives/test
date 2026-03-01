@@ -11,6 +11,7 @@ import (
 	"math/big"
 	"time"
 
+	"bytes"
 	"github.com/consensys/gnark/backend/groth16"
 )
 
@@ -94,6 +95,10 @@ func (m *ZKArkheMultiCloudManifold) ApplyPrivateTransition(
 	// Aplica localmente
 	shard.Counter.Increment(increment)
 
+	// Serializa a prova para inclusão no Ledger
+	var proofBuf bytes.Buffer
+	proof.WriteTo(&proofBuf)
+
 	// Registra no Ledger (Público)
 	packet := protocols.HandoverPacket{
 		ID:          fmt.Sprintf("zk-%s-%d", shardID, time.Now().UnixNano()),
@@ -105,7 +110,7 @@ func (m *ZKArkheMultiCloudManifold) ApplyPrivateTransition(
 			"old_hash":  oldHash.String(),
 			"new_hash":  newHash.String(),
 			"inc_hash":  incHash.String(),
-			"proof":     "groth16-encoded-data", // Em real, serializaria a prova
+			"proof":     proofBuf.Bytes(),
 		},
 		PhiScore: 0.618, // Ideal Arkhe
 	}
@@ -113,4 +118,24 @@ func (m *ZKArkheMultiCloudManifold) ApplyPrivateTransition(
 	m.ledger.Record(ctx, packet)
 
 	return proof, nil
+}
+
+// VerifyIncomingTransition verifica uma prova ZK recebida de outro nó.
+func (m *ZKArkheMultiCloudManifold) VerifyIncomingTransition(
+	shardID string,
+	proof groth16.Proof,
+	oldHash, newHash, incHash string,
+) error {
+	shard, exists := m.shards[shardID]
+	if !exists {
+		return fmt.Errorf("shard %s não encontrado", shardID)
+	}
+
+	// Converte strings de volta para big.Int
+	h1, _ := new(big.Int).SetString(oldHash, 10)
+	h2, _ := new(big.Int).SetString(newHash, 10)
+	h3, _ := new(big.Int).SetString(incHash, 10)
+
+	// Verifica a prova ZK
+	return shard.Prover.Verify(proof, h1, h2, h3)
 }

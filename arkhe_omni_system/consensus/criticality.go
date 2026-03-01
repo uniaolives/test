@@ -7,9 +7,12 @@ import (
 )
 
 // CriticalityConsensus substitui votação por emergência termodinâmica.
+// Baseado no Modelo de Ising Quântico.
 type CriticalityConsensus struct {
 	Temperature float64 // Controle de ruído (Beta = 1/T)
 	Threshold   float64 // Limiar Phi (0.618)
+	Gamma       float64 // Campo transversal (flutuações quânticas)
+	J           [][]float64 // Matriz de acoplamento entre validadores
 }
 
 // NodeState representa a opinião/voto de um nó como um spin Ising (+1 ou -1).
@@ -21,7 +24,8 @@ const (
 )
 
 // EvaluateConsensus simula a emergência de um estado global através de interações locais.
-func (c *CriticalityConsensus) EvaluateConsensus(networkStates []NodeState) (NodeState, float64) {
+// DETERMINÍSTICO: O resultado depende apenas do estado da rede e de um seed determinístico.
+func (c *CriticalityConsensus) EvaluateConsensus(networkStates []NodeState, proposalSeed int64) (NodeState, float64) {
 	if len(networkStates) == 0 {
 		return REJECT, 0.0
 	}
@@ -34,14 +38,19 @@ func (c *CriticalityConsensus) EvaluateConsensus(networkStates []NodeState) (Nod
 	magnetization := sum / float64(len(networkStates))
 
 	// Calcula a criticidade baseada na flutuação (Susceptibilidade)
-	// Em sistemas críticos, a flutuação é máxima no ponto de transição.
 	phi := 1.0 - math.Abs(magnetization-0.618) // Proximidade do ponto crítico Arkhe
 
 	// Decisão probabilística baseada na temperatura (Boltzmann)
 	energy := -magnetization
-	prob := 1.0 / (1.0 + math.Exp(energy/c.Temperature))
+	quantumTerm := c.Gamma * math.Sqrt(1.0-magnetization*magnetization+1e-10)
 
-	if rand.Float64() < prob && phi >= c.Threshold {
+	prob := 1.0 / (1.0 + math.Exp((energy-quantumTerm)/c.Temperature))
+
+	// Uso de seed determinístico para garantir que todos os nós cheguem ao mesmo resultado
+	source := rand.NewSource(proposalSeed)
+	r := rand.New(source)
+
+	if r.Float64() < prob && phi >= c.Threshold {
 		return ACCEPT, phi
 	}
 	return REJECT, phi
