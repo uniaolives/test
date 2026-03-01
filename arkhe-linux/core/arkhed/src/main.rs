@@ -18,6 +18,8 @@ use security::{KyberSession};
 
 const PHI_TARGET: f64 = 0.618033988749894;
 const PHI_TOLERANCE: f64 = 0.05;
+const EPSILON_MIN: f64 = 10.0; // Minimum CPU shares (zero-point energy)
+const SIGMA_THERMAL: f64 = 0.2; // Thermal width of the harmonic potential
 
 #[derive(Debug, thiserror::Error)]
 pub enum ArkheError {
@@ -158,7 +160,18 @@ impl ArkheSystem {
     }
 
     async fn cgroup_throttle_low_priority(&self) -> Result<(), ArkheError> {
-        // Interface com o controlador de cgroups do kernel
+        // Ω+204: Harmonic potential CPU allocation
+        // CPU shares = base * exp(-|phi - phi_target|^2 / 2sigma^2) + epsilon_min
+        let phi = *self.phi.read().await;
+        let base_shares = 100.0;
+        let deviation = (phi - PHI_TARGET).abs();
+
+        let exponent = -deviation.powi(2) / (2.0 * SIGMA_THERMAL.powi(2));
+        let cpu_shares = base_shares * exponent.exp() + EPSILON_MIN;
+
+        info!("Arkhe(n) Scheduler: Updating cgroup CPU shares for phi={:.3} to {:.1}", phi, cpu_shares);
+
+        // In a real implementation, this would write to /sys/fs/cgroup/cpu.shares or equivalent
         Ok(())
     }
 

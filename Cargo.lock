@@ -360,12 +360,14 @@ name = "arkhed"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bincode 1.3.3",
  "serde",
  "serde_json",
  "thiserror 1.0.69",
  "tokio",
  "tracing",
  "tracing-subscriber",
+ "uuid 1.21.0",
 ]
 
 [[package]]
