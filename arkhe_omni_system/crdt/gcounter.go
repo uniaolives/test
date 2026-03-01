@@ -81,13 +81,6 @@ func (c *GCounter) FromJSON(data []byte) error {
 		return err
 	}
 
-	// Criamos um GCounter temporário para fazer o merge
-	c.mu.Lock()
-	defer c.mu.Unlock()
-	for node, count := range received {
-		if current, exists := c.state[node]; !exists || count > current {
-			c.state[node] = count
-		}
-	}
+	c.Merge(&GCounter{state: received})
 	return nil
 }
