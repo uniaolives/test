@@ -1,0 +1,5 @@
+FROM python:3.10-slim
+WORKDIR /app
+COPY maihh_connect/ /app/maihh_connect/
+RUN pip install nats-py redis
+CMD ["python", "-m", "maihh_connect.hub"]

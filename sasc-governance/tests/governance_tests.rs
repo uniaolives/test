@@ -5,6 +5,7 @@ use sasc_governance::types::{CloudDomain, Decision, DecisionSignature};
 fn test_submit_global_decision() {
     let cathedral = Cathedral::instance();
     let decision = Decision {
+        id: sasc_governance::types::DecisionId([0; 32]),
         agent_id: "agent_001".to_string(),
         content: "Propose civilizational initiation".to_string(),
         signature: DecisionSignature {
@@ -12,6 +13,11 @@ fn test_submit_global_decision() {
             signature_bytes: vec![0u8; 64],
         },
         action_hash: [0u8; 32],
+        is_critical: false,
+        affects_rights: false,
+        human_approval: None,
+        decision_time: 0,
+        explanation: None,
     };
 
     let result = cathedral.submit_global_decision(decision, CloudDomain::WindowsServerGov);
@@ -24,6 +30,7 @@ fn test_submit_global_decision() {
 fn test_prince_veto() {
     let cathedral = Cathedral::instance();
     let decision = Decision {
+        id: sasc_governance::types::DecisionId([0; 32]),
         agent_id: "agent_001".to_string(),
         content: "Dangerous proposal".to_string(),
         signature: DecisionSignature {
@@ -31,6 +38,11 @@ fn test_prince_veto() {
             signature_bytes: vec![0u8; 64],
         },
         action_hash: [0u8; 32],
+        is_critical: false,
+        affects_rights: false,
+        human_approval: None,
+        decision_time: 0,
+        explanation: None,
     };
 
     let result = cathedral.submit_global_decision(decision, CloudDomain::AwsNitroGovCloud);

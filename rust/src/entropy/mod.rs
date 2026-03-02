@@ -118,6 +118,7 @@ impl VajraVerifier {
     }
 }
 
+#[derive(Debug)]
 pub struct VajraEntropyMonitor {
     pub current_phi: std::sync::Mutex<f64>,
     pub quantum_decoherence: std::sync::Mutex<f64>,
@@ -198,6 +199,20 @@ pub struct PhantomPenaltyReason {
     pub phantom_density: f64,
     pub attack_pattern: AttackPattern,
     pub timestamp: u64,
+    pub fn update_entropy(&self, _statement: &[u8], _phi_weight: f64) {
+        // Implementation for T0 activation
+    }
+}
+
+impl Clone for VajraEntropyMonitor {
+    fn clone(&self) -> Self {
+        let phi = *self.current_phi.lock().unwrap();
+        let decoherence = *self.quantum_decoherence.lock().unwrap();
+        VajraEntropyMonitor {
+            current_phi: std::sync::Mutex::new(phi),
+            quantum_decoherence: std::sync::Mutex::new(decoherence),
+        }
+    }
 }
 
 pub fn vajra_verifier_thread(verifier: Arc<VajraVerifier>, monitor: Arc<VajraEntropyMonitor>) {

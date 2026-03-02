@@ -1,0 +1,10 @@
+[package]
+name = "cge-mobile-contracts"
+version = "31.21.0"
+edition = "2021"
+
+[dependencies]
+pqcrypto-dilithium = "0.5"
+blake3 = "1.5"
+serde = { version = "1.0", default-features = false, features = ["derive"] }
+phi-calculus = { path = "../../phi-calculus" }

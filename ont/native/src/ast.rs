@@ -9,6 +9,11 @@ pub enum Paradigm {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
+pub enum OntoType {
+    Pure(Box<OntoType>),
+    Mutable(Box<OntoType>),
+    Agent(Box<OntoType>),
+    Substrate(Box<OntoType>),
 pub enum Type {
     Pure(Box<Type>),
     Mutable(Box<Type>),
@@ -19,6 +24,7 @@ pub enum Type {
     Float,
     Bool,
     String,
+    Named(String, Vec<OntoType>),
     Named(String, Vec<Type>),
     Unit,
     Bytes,
@@ -38,6 +44,8 @@ pub struct TypeAnnotation {
 pub struct Function {
     pub name: String,
     pub paradigm: Paradigm,
+    pub params: Vec<(String, OntoType)>,
+    pub return_type: OntoType,
     pub params: Vec<(String, Type)>,
     pub return_type: Type,
     pub body: Body,
@@ -52,6 +60,7 @@ pub struct Body {
 
 impl Body {
     pub fn to_solidity(&self) -> Result<String, crate::compiler::CompilerError> {
+        Ok(format!("/* {} */", self.content))
         Ok(format!("// {} ", self.content))
     }
 }
@@ -64,12 +73,15 @@ pub struct Agent {
 #[derive(Debug, Clone)]
 pub struct Field {
     pub name: String,
+    pub field_type: OntoType,
     pub field_type: Type,
 }
 
 #[derive(Debug, Clone)]
 pub struct Method {
     pub name: String,
+    pub params: Vec<(String, OntoType)>,
+    pub return_type: OntoType,
     pub params: Vec<(String, Type)>,
     pub return_type: Type,
 }

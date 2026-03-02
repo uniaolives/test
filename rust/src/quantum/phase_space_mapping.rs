@@ -18,6 +18,7 @@ pub enum QuantumError {
 }
 
 #[derive(Debug, Clone, Copy, Zeroize)]
+#[derive(Debug, Clone, Copy)]
 pub struct PhasePoint {
     pub index: usize,
     pub q: f64,      // Quadrature de amplitude (position)
@@ -28,6 +29,7 @@ pub struct PhasePoint {
 }
 
 #[derive(Debug, Clone, Zeroize, ZeroizeOnDrop)]
+#[derive(Debug, Clone)]
 pub struct QuantumPhaseTrajectory {
     pub points: Vec<PhasePoint>,
     pub schumann_coupling: f64,  // Constante de acoplamento κ (Eq. 17 do Hamiltoniano)
