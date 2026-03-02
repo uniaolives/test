@@ -64,8 +64,12 @@ chmod +x .githooks/pre-push
 # Set git to use our hooks
 git config core.hooksPath .githooks
 
+# Add alias to push to all remotes
+git config alias.push-all '!bash scripts/git-push-all.sh'
+
 echo "✅ AI hooks installed"
 echo "📋 Hooks will validate:"
 echo "   1. AI commit message format"
 echo "   2. Code quality via OpenClaw review"
 echo "   3. Cross-project dependency impacts"
+echo "✨ Added Git alias: 'git push-all' (pushes to all remotes)"

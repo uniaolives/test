@@ -1,5 +1,6 @@
 """
 Tests for Unified Particle System and Bio-Genesis Engine v3.0.
+Tests for Unified Particle System and Visual Quantification.
 """
 
 import pytest

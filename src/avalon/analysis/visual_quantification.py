@@ -19,6 +19,11 @@ class VisualQuantificationEngine:
         "MANDALA": {"C": 0.6, "I": 0.2, "E": 0.1, "F": 0.1},
         "DNA": {"C": 0.2, "I": 0.5, "E": 0.2, "F": 0.1},
         "HYPERCORE": {"C": 0.1, "I": 0.3, "E": 0.3, "F": 0.3},
+    # Mapeamento sugerido entre modos visuais e estados Arkhe
+    ARKHE_MODE_MAP = {
+        "MANDALA": {"C": 0.6, "I": 0.2, "E": 0.1, "F": 0.1},  # Dominância Química (Proteção)
+        "DNA": {"C": 0.2, "I": 0.5, "E": 0.2, "F": 0.1},      # Dominância Informacional (Vida)
+        "HYPERCORE": {"C": 0.1, "I": 0.3, "E": 0.3, "F": 0.3}, # Equilíbrio 4D (Transmissão)
         "BIO_GENESIS": {"C": 0.25, "I": 0.25, "E": 0.25, "F": 0.25}
     }
 
@@ -66,5 +71,9 @@ class VisualQuantificationEngine:
         for i, agent in self.particle_system.agents.items():
             agent.genome = params["genome"]
             self.particle_system.particles[i]['size'] = params["particle_size"]
+
+        # Aplica a cada partícula
+        for p in self.particle_system.particles:
+            p['size'] = params["particle_size"]
 
         return params

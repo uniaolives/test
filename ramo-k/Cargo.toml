@@ -1,0 +1,8 @@
+[workspace]
+members = [
+    "rust-asi-wasm",
+    "pleroma-ffi",
+    "pleroma-kernel",
+    "simulator",
+]
+resolver = "2"
