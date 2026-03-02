@@ -21,6 +21,16 @@ impl NetworkManager {
         receiver_id: String,
         payload: Vec<u8>,
         session_key: Option<&[u8; 32]>,
+        manifold: &mut crate::manifold::GlobalManifold,
+    ) -> Result<bool> {
+        // P1 & biological constraint: Only Active nodes can emit handovers
+        if let Some(node) = manifold.get_self_node_mut() {
+            if node.state != crate::manifold::NodeState::Active {
+                return Err(anyhow::anyhow!("Node is not licensed or active for emission (MCM constraint)"));
+            }
+            node.handover_count += 1;
+        }
+
     ) -> Result<bool> {
         let mut encrypted_payload = payload;
         if let Some(key) = session_key {

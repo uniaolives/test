@@ -15,6 +15,8 @@ pub enum HandoverType {
     Inhibitory = 0x02,
     Meta = 0x03,
     Structural = 0x04,
+    Composite = 0x05, // CMG complex: Coordinated handover group
+    Repair = 0x06,    // Fork protection: Restore coherence
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -69,6 +71,7 @@ impl Handover {
             payload_length: payload.len() as u32,
         };
 
+        // Sign BOTH header and payload to prevent tampering/impersonation
         let mut data = bincode::serialize(&header).expect("header serialization failed");
         data.extend_from_slice(&payload);
         let signature = detached_sign(&data, signing_key).as_bytes().to_vec();
@@ -81,6 +84,7 @@ impl Handover {
     }
 
     pub fn verify(&self, public_key: &PublicKey) -> bool {
+        // Must match the serialization used in 'new'
         let mut data = bincode::serialize(&self.header).expect("header serialization failed");
         data.extend_from_slice(&self.payload);
 

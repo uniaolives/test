@@ -60,6 +60,9 @@ impl PsiShellState {
         let perturbation = user_model.compute_entropy_perturbation();
 
         if let Some(node) = manifold.get_self_node_mut() {
+            // Aplica perturbação no valor de entropia (simulação simplificada do Ω+217)
+            node.entropy_val = (node.entropy_val + perturbation).clamp(0.0, 1.0);
+            tracing::debug!("Perturbação do usuário aplicada: nova entropia = {:.4}", node.entropy_val);
             // Placeholder for density matrix perturbation logic
             // In a real implementation, this would modify node.state.density_matrix
             tracing::debug!("Perturbação do usuário aplicada: entropy perturbation = {:.4}", perturbation);
@@ -68,6 +71,10 @@ impl PsiShellState {
     }
 
     pub async fn generate_status_report(&self, manifold: &GlobalManifold) -> String {
+        let node = manifold.get_self_node();
+        let entropy = node.map(|n| n.entropy_val).unwrap_or(0.0);
+        let phi = 1.0 - entropy;
+        let proliferation_index = node.map(|n| n.handover_count).unwrap_or(0);
         let entropy = manifold.get_self_node().map(|n| n.entropy_val).unwrap_or(0.0);
         let phi = 1.0 - entropy;
         let user_model = self.user_model.lock().await;
@@ -76,6 +83,8 @@ impl PsiShellState {
             "type": "status",
             "entropy": entropy,
             "phi": phi,
+            "proliferation_index": proliferation_index,
+            "node_state": node.map(|n| format!("{:?}", n.state)),
             "user": {
                 "attention": user_model.attention,
                 "last_message": user_model.last_message,

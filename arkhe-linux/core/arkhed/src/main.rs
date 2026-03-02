@@ -93,6 +93,9 @@ struct ArkheSystem {
 
     /// Estado do ψ-Shell
     psi_shell: Arc<arkhe_quantum::psi_shell::PsiShellState>,
+
+    /// Manifold Global (Ω+215/217)
+    manifold: RwLock<arkhe_quantum::manifold::GlobalManifold>,
 }
 
 impl ArkheSystem {
@@ -113,6 +116,7 @@ impl ArkheSystem {
         // Gerar chaves do nó
         let node_keys = arkhe_quantum::crypto::NodeKeys::generate();
         let psi_shell = Arc::new(arkhe_quantum::psi_shell::PsiShellState::new());
+        let manifold = RwLock::new(arkhe_quantum::manifold::GlobalManifold::new());
 
         Ok(Self {
             phi: RwLock::new(phi_val),
@@ -124,6 +128,7 @@ impl ArkheSystem {
             sessions: RwLock::new(Vec::new()),
             node_keys,
             psi_shell,
+            manifold,
         })
     }
 
@@ -134,6 +139,11 @@ impl ArkheSystem {
         loop {
             interval.tick().await;
 
+            // 0. Inject user perturbation into the PERSISTENT manifold
+            {
+                let mut manifold = self.manifold.write().await;
+                let _ = self.psi_shell.inject_user_perturbation(&mut manifold).await;
+            }
             // 0. Inject user perturbation
             let _ = self.psi_shell.inject_user_perturbation(&mut arkhe_quantum::manifold::GlobalManifold::new()).await;
 
