@@ -1,4 +1,5 @@
 use crate::extensions::asi_structured::*;
+use crate::interfaces::extension::{Extension, Context};
 use crate::interfaces::extension::{Context};
 use crate::error::ResilientResult;
 use crate::extensions::asi_structured::bridge::ASI777Bridge;
