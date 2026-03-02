@@ -1,0 +1,5 @@
+FROM python:3.10-slim
+WORKDIR /app
+COPY connectors/ /app/connectors/
+RUN pip install nats-py
+CMD ["python", "connectors/eternity_aware_claude.py"]

@@ -5,6 +5,7 @@ use std::f64::consts::PI;
 use blake3::{Hash, Hasher};
 use crate::quantum::schumann::SchumannResonance;
 use thiserror::Error;
+use zeroize::{Zeroize, ZeroizeOnDrop};
 
 #[derive(Error, Debug)]
 pub enum QuantumError {
@@ -16,6 +17,7 @@ pub enum QuantumError {
     LyapunovDivergence(f64),
 }
 
+#[derive(Debug, Clone, Copy, Zeroize)]
 #[derive(Debug, Clone, Copy)]
 pub struct PhasePoint {
     pub index: usize,
@@ -26,6 +28,7 @@ pub struct PhasePoint {
     pub lyapunov: f64,   // Taxa de divergência local
 }
 
+#[derive(Debug, Clone, Zeroize, ZeroizeOnDrop)]
 #[derive(Debug, Clone)]
 pub struct QuantumPhaseTrajectory {
     pub points: Vec<PhasePoint>,

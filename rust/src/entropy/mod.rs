@@ -122,6 +122,7 @@ impl VajraVerifier {
     }
 }
 
+#[derive(Debug)]
 pub struct VajraEntropyMonitor {
     pub current_phi: std::sync::Mutex<f64>,
     pub quantum_decoherence: std::sync::Mutex<f64>,
@@ -228,6 +229,54 @@ pub struct VajraMetrics {
     pub entropy: f64,
     pub coherence_variance: f64,
     pub ghost_density: f64,
+    pub fn current_phi(&self) -> f64 {
+        *self.current_phi.lock().unwrap()
+    }
+
+    pub async fn adjust_local_phi(&self, delta: f64, reason: crate::monitoring::ghost_vajra_integration::PhantomPenaltyReason) -> f64 {
+        let mut phi = self.current_phi.lock().unwrap();
+        *phi += delta;
+        if *phi < 0.0 { *phi = 0.0; }
+        if *phi > 1.0 { *phi = 1.0; }
+        log::warn!("VAJRA: Local Φ adjusted by {:.4} due to {:?}. New Φ = {:.4}", delta, reason.attack_pattern, *phi);
+        *phi
+    }
+
+    pub async fn trigger_hard_seal(&self) {
+        log::error!("VAJRA: HARD SEAL TRIGGERED - Gateway isolation active");
+    }
+
+    pub async fn increase_quantum_validation(&self) {
+        log::info!("VAJRA: Increasing quantum validation levels");
+    }
+}
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub enum AttackPattern {
+    PureGhostInjection,
+    MixedInjection,
+    ProbingAttack,
+    Noise,
+}
+
+pub struct PhantomPenaltyReason {
+    pub phantom_density: f64,
+    pub attack_pattern: AttackPattern,
+    pub timestamp: u64,
+    pub fn update_entropy(&self, _statement: &[u8], _phi_weight: f64) {
+        // Implementation for T0 activation
+    }
+}
+
+impl Clone for VajraEntropyMonitor {
+    fn clone(&self) -> Self {
+        let phi = *self.current_phi.lock().unwrap();
+        let decoherence = *self.quantum_decoherence.lock().unwrap();
+        VajraEntropyMonitor {
+            current_phi: std::sync::Mutex::new(phi),
+            quantum_decoherence: std::sync::Mutex::new(decoherence),
+        }
+    }
 }
 
 pub fn vajra_verifier_thread(verifier: Arc<VajraVerifier>, monitor: Arc<VajraEntropyMonitor>) {

@@ -22,10 +22,23 @@ pub enum CouncilType {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Decision {
+    pub id: DecisionId,
     pub agent_id: String,
     pub content: String,
     pub signature: DecisionSignature,
     pub action_hash: [u8; 32],
+    pub is_critical: bool,
+    pub affects_rights: bool,
+    pub human_approval: Option<HumanApproval>,
+    pub decision_time: u64, // Unix timestamp
+    pub explanation: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct HumanApproval {
+    pub approver_id: String,
+    pub timestamp: u64,
+    pub justification: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -84,4 +97,42 @@ pub struct GlobalGovernance {
 pub enum VerificationContext {
     TruthSubmission,
     GlobalDecision,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct LogEntry {
+    pub timestamp: u64,
+    pub decision_id: DecisionId,
+    pub decision: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DecisionLog {
+    pub entries: Vec<LogEntry>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Provider {
+    pub id: String,
+    pub market_share: f64,
+    pub dependencies: Vec<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct Interaction {
+    pub id: String,
+    pub citizen_id: String,
+    pub messages: Vec<String>,
+    pub frequency: u32,
+    pub emotional_triggers: Vec<String>,
+    pub accesses_neural_data: bool,
+    pub consent: Option<InformedConsent>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct InformedConsent {
+    pub citizen_id: String,
+    pub timestamp: u64,
+    pub scope: String,
+    pub revocable: bool,
 }

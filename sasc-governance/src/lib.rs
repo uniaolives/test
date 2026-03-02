@@ -1,4 +1,5 @@
 pub mod types;
+pub mod invariants;
 
 use std::collections::HashMap;
 use std::time::Duration;
@@ -60,6 +61,22 @@ impl Cathedral {
         decision: Decision,
         cloud: CloudDomain,
     ) -> Result<DecisionId, HardFreeze> {
+        // 0. Invariant Monitoring (Post-ASI Governance)
+        let mut monitor = invariants::InvariantMonitor::new("BR");
+        // For simulation, we use current timestamp
+        let now = std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .unwrap()
+            .as_secs();
+
+        if !monitor.check_inv1_human_oversight(&decision, now) {
+            return Err(HardFreeze::Triggered("INV-1_VIOLATION".to_string()));
+        }
+
+        if !monitor.check_inv5_explainability(&decision) {
+            return Err(HardFreeze::Triggered("INV-5_VIOLATION".to_string()));
+        }
+
         // 1. Verificar attestation do nó (5 gates - Memória 20)
         if self.verify_agent_attestation(&decision.agent_id, VerificationContext::GlobalDecision).is_err() {
             self.trigger_karnak_isolation(cloud, &decision.agent_id);

@@ -1,0 +1,19 @@
+[package]
+name = "asi-net-crate"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+tokio-util = "0.7"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+uuid = { version = "1.6", features = ["v4", "serde"] }
+anyhow = "1.0"
+thiserror = "1.0"
+web777_ontology = { path = "../../../web777_ontology" }
+async-trait = "0.1"
+
+[[bin]]
+name = "asi-net-server"
+path = "src/main.rs"
