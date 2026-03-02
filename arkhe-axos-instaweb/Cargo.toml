@@ -1,10 +1,18 @@
 [package]
 name = "arkhe-axos-instaweb"
 version = "1.0.0"
+version = "1.2.1"
 edition = "2021"
 authors = ["Arquiteto <root@arkhe.systems>"]
 description = "Sistema operacional unificado: teoria, execução, rede, tempo"
 license = "AGPL-3.0"
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "dimensional_scan"
+path = "src/bin/dimensional_scan.rs"
 
 [features]
 default = ["axos", "instaweb", "h_integrator"]
@@ -14,6 +22,7 @@ h_integrator = ["dep:nalgebra", "dep:simba"]
 
 [dependencies]
 # Path dependencies
+# Local crates
 arkhe_core = { path = "arkhe_core" }
 arkhe_instaweb = { path = "arkhe_instaweb" }
 
@@ -39,6 +48,9 @@ parking_lot = "0.12"
 pqcrypto-kyber = "0.8"
 pqcrypto-sphincsplus = "0.5"
 pqcrypto-traits = "0.3"
+
+# Python bindings
+pyo3 = { version = "0.20", features = ["extension-module"] }
 
 # Serialização
 serde = { version = "1.0", features = ["derive"] }

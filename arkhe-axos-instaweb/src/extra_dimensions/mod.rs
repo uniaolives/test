@@ -6,6 +6,9 @@ pub mod verification;
 pub mod satellite_probe;
 pub mod spectrum_prediction;
 pub mod portal_threshold;
+pub mod containment;
+pub mod fractal_analysis;
+pub mod tensor_train;
 
 use arkhe_core::{HState, VariationalHIntegrator, SymplecticPropagator};
 use nalgebra::{DMatrix, DVector};
@@ -60,27 +63,30 @@ impl CoupledHamiltonian5D {
     }
 
     /// Evolução por um passo de tempo (split-operator)
-    pub fn evolve_step(&self, psi: &mut DVector<Complex64>, dt: f64, t: f64) {
+    pub fn evolve_step(&self, psi: &mut DVector<Complex64>, dt: f64, t: f64) -> Result<(), String> {
         // 1. Meio passo cinético (observável)
         let exp_k_obs = self.kinetic_propagator_obs(dt/2.0);
 
-        // Explicitly check dimensions before multiplication to avoid Gemv mismatch
-        if exp_k_obs.ncols() == psi.len() {
-            *psi = &exp_k_obs * &*psi;
+        // Dimension check
+        if exp_k_obs.ncols() != psi.len() {
+            return Err(format!("Dimension mismatch in kinetic propagator: {} vs {}", exp_k_obs.ncols(), psi.len()));
         }
+        *psi = &exp_k_obs * &*psi;
 
         // 2. Passo completo potencial + acoplamento
         let v_total = &self.h_obs + &self.h_extra + self.time_dependent_coupling(t);
+        // Using first-order expansion for dt=1e-15, but ensuring stability check
         let exp_v = Self::matrix_exp(&(&v_total * (-Complex64::i() * Complex64::new(dt, 0.0))));
 
-        if exp_v.ncols() == psi.len() {
-            *psi = &exp_v * &*psi;
+        if exp_v.ncols() != psi.len() {
+            return Err(format!("Dimension mismatch in potential propagator: {} vs {}", exp_v.ncols(), psi.len()));
         }
+        *psi = &exp_v * &*psi;
 
         // 3. Meio passo cinético (observável)
-        if exp_k_obs.ncols() == psi.len() {
-            *psi = &exp_k_obs * &*psi;
-        }
+        *psi = &exp_k_obs * &*psi;
+
+        Ok(())
     }
 
     /// Projetar no subespaço observável: ρ_obs = Tr_extra(|ψ⟩⟨ψ|)

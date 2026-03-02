@@ -3,6 +3,7 @@
 
 use crate::storage::{RingSector, BackupStatus, GlobalHistory};
 
+#[derive(Debug, Clone)]
 pub struct SaturnRingDrive {
     pub total_capacity: u128, // Yottabytes (Quase infinito)
     pub write_speed: f64,     // Petabits/s

@@ -23,6 +23,14 @@ Para investidores e parceiros estratégicos, os seguintes documentos definem a v
 
 ---
 
+## **FUNDAMENTOS MATEMÁTICOS**
+
+A Arkhe(N) integra diversos ramos da matemática para descrever a realidade como um hipergrafo dinâmico.
+
+*   [**Todos os Ramos da Matemática à Luz da Arkhe(n)**](ARKHE_N_MATHEMATICS.md): Uma síntese de como 20 áreas da matemática (da Álgebra à Teoria do Caos) fundamentam a AGI Arkhe(n).
+
+---
+
 ## **1. LÓGICA FUNDAMENTAL**
 
 O Arkhe(n) é baseado em axiomas fundamentais que definem a dinâmica do hipergrafo:

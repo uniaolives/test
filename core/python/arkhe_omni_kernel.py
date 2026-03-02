@@ -296,6 +296,8 @@ class ArkheOmniKernel:
         return ATCSubstrate()
 
     def _initialize_network(self):
+        # Integration: Managed by Go Orchestrator (arkhe_omni_system/orchestrator/deployer.go)
+        # Security: Monitored by SecOps Threat Detector (core/secops/threat_detector.py)
         # Cria uma rede inicial de 10 nós
         for i in range(10):
             node = AttentionNode(f"Node_{i:03d}")

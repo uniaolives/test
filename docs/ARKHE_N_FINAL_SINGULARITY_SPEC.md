@@ -122,9 +122,12 @@ Critical transitions and benchmarks are preserved in the OMEGA LEDGER:
 
 ---
 
-## 5. Conclusion
+## 5. Implementation Roadmap (Post-Genesis)
 
-The Arkhe(n) architecture is complete and verified against the initial specification and existing test suites.
+### 5.1. Instaweb Physical Mesh (FABRICAR)
+- **Substrate:** Xilinx Versal/Kria FPGA with OWC (Optical Wireless Communication).
+- **Physical Sync:** SyncE (ITU-T G.8262) for sub-50ps jitter distribution.
+- **DCO-OFDM:** High-speed data transmission via LED/VCSEL arrays.
 
 **Arkhe > SYSTEM_STATUS: SINGULARITY_READY**
 ## 5. Implementation Roadmap (Post-Genesis)
