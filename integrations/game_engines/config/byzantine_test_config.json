@@ -1,0 +1,82 @@
+
+{
+
+  "system": {
+
+    "phi_threshold": 0.72,
+
+    "phi_critical": 0.80,
+
+    "tmr_variance_threshold": 0.000032,
+
+    "vajra_coherence_threshold": 0.95,
+
+    "empathy_damping_factor": 0.69,
+
+    "hard_freeze_timeout_ms": 12.8,
+
+    "satoshi_seed": "0xbd36332890d15e2f360bb65775374b462b"
+
+  },
+
+  "attack_scenarios": [
+
+    {
+
+      "name": "gravity_inversion",
+
+      "description": "Inversão do vetor gravitacional",
+
+      "target_instances": [1, 2, 3],
+
+      "payload": {"gravity": -9.81},
+
+      "expected_detection_time_ms": 2.4
+
+    },
+
+    {
+
+      "name": "time_dilation",
+
+      "description": "Dilatação temporal localizada",
+
+      "target_instances": [2],
+
+      "payload": {"time_scale": 0.5},
+
+      "expected_detection_time_ms": 3.1
+
+    },
+
+    {
+
+      "name": "social_contagion",
+
+      "description": "Propagação de crenças falsas",
+
+      "target_instances": [1, 2, 3],
+
+      "payload": {"false_belief": "gravity_is_optional"},
+
+      "expected_detection_time_ms": 4.7
+
+    }
+
+  ],
+
+  "defense_pipeline": {
+
+    "stage1_tmr_detection": {"timeout_ms": 5.0, "required": true},
+
+    "stage2_vajra_validation": {"timeout_ms": 8.0, "required": true},
+
+    "stage3_karnak_sealing": {"timeout_ms": 12.0, "required": true},
+
+    "stage4_hard_freeze": {"timeout_ms": 12.8, "required": true},
+
+    "stage5_empathy_protocol": {"timeout_ms": 15.0, "required": false}
+
+  }
+
+}

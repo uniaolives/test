@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arkhe-controller
+  namespace: arkhe-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: arkhe-controller
+  template:
+    metadata:
+      labels:
+        app: arkhe-controller
+    spec:
+      serviceAccountName: arkhe-controller-sa
+      containers:
+      - name: controller
+        image: arkhe/controller:latest

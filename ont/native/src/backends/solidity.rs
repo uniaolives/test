@@ -5,6 +5,7 @@
 
 use crate::ast::*;
 use crate::compiler::{CompilerError, CompilerResult};
+use crate::compiler::{CompilerError, CompilerResult, CompiledContract, CompilationStats};
 use crate::utils::selector;
 use indoc::indoc;
 
@@ -62,6 +63,8 @@ impl SolidityBackend {
         Ok(CompiledContract {
             target_language: "Solidity 0.8.24".to_string(),
             source_code: solidity_code,
+            bytecode: None,
+            abi: None,
             stats,
         })
     }
@@ -171,6 +174,11 @@ modifier agentGuard(address caller) {
         code.push_str(&format!(
             r#"
     function {}({}) {} {} returns ({} {}) {{
+
+        code.push_str(&format!(
+            r#"
+    function {}({}) {} {} returns ({}) {{
+        {}
         // Memory Seal checkpoint
         _memorySeal.checkpoint();
 
@@ -191,6 +199,7 @@ modifier agentGuard(address caller) {
             if !modifier.is_empty() { modifier } else { "".to_string() },
             return_type,
             data_location,
+            if func.paradigm == Paradigm::Functional { "memory" } else { "storage" },
             func.body.to_solidity()?,
             func.name,
             func.name,
@@ -219,6 +228,7 @@ modifier agentGuard(address caller) {
         }}
 
         emit ActorMessage({}, {});
+        emit ActorMessage(agentId: {}, message: messageId);
     }}
             "#,
             agent.name,
@@ -226,6 +236,7 @@ modifier agentGuard(address caller) {
             agent.name,
             agent_id,
             "messageId"
+            agent_id
         ))
     }
 
@@ -291,6 +302,11 @@ modifier agentGuard(address caller) {
             OntoType::Pure(inner) => self.type_to_solidity(inner),
             OntoType::Mutable(inner) => self.type_to_solidity(inner),
             OntoType::Agent(inner) => {
+    fn type_to_solidity(&self, typ: &Type) -> Result<String, CompilerError> {
+        match typ {
+            Type::Pure(inner) => self.type_to_solidity(inner),
+            Type::Mutable(inner) => self.type_to_solidity(inner),
+            Type::Agent(inner) => {
                 // Agents compilam para address + interface
                 let inner_type = self.type_to_solidity(inner)?;
                 Ok(format!("address /* Agent<{}> */", inner_type))
@@ -305,6 +321,21 @@ modifier agentGuard(address caller) {
             OntoType::Bool => Ok("bool".to_string()),
             OntoType::String => Ok("string".to_string()),
             OntoType::Named(name, _) => Ok(name.clone()), // Tipos personalizados do usuário
+            Type::Substrate(inner) => {
+                // Substrate types têm representação especial
+                Ok(format!("bytes32 /* Substrate<{}> */", self.type_to_solidity(inner)?))
+            }
+            Type::Object(_) => Ok("address".to_string()), // Objects são endereços de contrato
+            Type::Int => Ok("int256".to_string()),
+            Type::Float => Ok("int256".to_string()), // Simulação para prototipagem
+            Type::Bool => Ok("bool".to_string()),
+            Type::String => Ok("string".to_string()),
+            Type::Named(name, _) => Ok(name.clone()), // Tipos personalizados do usuário
+            Type::Unit => Ok("void".to_string()), // Should not happen in returns directly as Solidity uses empty
+            Type::Bytes => Ok("bytes".to_string()),
+            Type::Address => Ok("address".to_string()),
+            Type::TypeVar(t) => Ok(format!("bytes32 /* {} */", t)), // Generic placeholder
+            Type::Function(_, _) => Ok("address /* Function pointer */".to_string()),
         }
     }
 
@@ -314,6 +345,8 @@ modifier agentGuard(address caller) {
             contracts_deployed: program.agents.len() + program.classes.len(),
             transmutations_applied: program.transmutations.len(),
             diplomatic_constraints: program.transmutations.iter()
+            transmutations_applied: program.transmutations().len(),
+            diplomatic_constraints: program.transmutations().iter()
                 .map(|t| t.constraints.len())
                 .sum(),
             paradigm_guards_injected: if self.inject_guards {

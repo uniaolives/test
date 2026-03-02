@@ -1,2 +1,11 @@
 pub mod bio_hardening;
 pub mod gateway_alpha;
+pub mod integrity;
+pub mod invariant_engine;
+pub mod memory;
+pub mod karnak_sealer;
+pub mod quantum_phi;
+pub mod quantum_attestation;
+pub mod hardware_immutability;
+pub mod quantum_consciousness_firewall;
+pub mod quantum_intrusion_detection;

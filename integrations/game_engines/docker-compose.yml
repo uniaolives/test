@@ -1,0 +1,154 @@
+version: '3.8'
+
+services:
+  # Mesh-Neuron DHT (BLAKE3-Δ2 Routing)
+  mesh-neuron:
+    image: crux86/mesh-neuron:v0.3
+    command: [
+      "--satoshi-seed", "${SATOSHI_SEED}",
+      "--phi-threshold", "0.72",
+      "--tmr-instances", "3",
+      "--port", "3030"
+    ]
+    volumes:
+      - ./mesh_data:/data
+    ports:
+      - "3030:3030"
+    networks:
+      - crux86-network
+
+  # Vajra Circuit Breaker (Ω-Prevention)
+  vajra-circuit-breaker:
+    image: crux86/vajra:v4.8.2
+    command: [
+      "--mode", "superconductive",
+      "--entropy-threshold", "0.65",
+      "--hard-freeze-threshold", "0.80",
+      "--monitoring-frequency", "10"
+    ]
+    volumes:
+      - ./vajra_logs:/logs
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mesh-neuron
+    networks:
+      - crux86-network
+
+  # KARNAK TMR Sealer (Pattern I40)
+  karnak-sealer-1:
+    image: crux86/karnak-sealer:v2.0
+    command: [
+      "--role", "witness",
+      "--index", "1",
+      "--algorithm", "blake2b_256",
+      "--consensus", "byzantine",
+      "--replication-factor", "3"
+    ]
+    volumes:
+      - ./seals/witness1:/seals
+    ports:
+      - "9091:9090"
+    networks:
+      crux86-network:
+        ipv4_address: 172.20.0.21
+
+  karnak-sealer-2:
+    image: crux86/karnak-sealer:v2.0
+    command: [
+      "--role", "witness",
+      "--index", "2",
+      "--algorithm", "blake2b_256",
+      "--consensus", "byzantine",
+      "--replication-factor", "3"
+    ]
+    volumes:
+      - ./seals/witness2:/seals
+    ports:
+      - "9092:9090"
+    networks:
+      crux86-network:
+        ipv4_address: 172.20.0.22
+
+  karnak-sealer-3:
+    image: crux86/karnak-sealer:v2.0
+    command: [
+      "--role", "witness",
+      "--index", "3",
+      "--algorithm", "blake2b_256",
+      "--consensus", "byzantine",
+      "--replication-factor", "3"
+    ]
+    volumes:
+      - ./seals/witness3:/seals
+    ports:
+      - "9093:9090"
+    networks:
+      crux86-network:
+        ipv4_address: 172.20.0.23
+
+  # SASC Cathedral (Governance)
+  sasc-cathedral:
+    image: crux86/sasc:v30.68-omega
+    command: [
+      "--phase", "2.5",
+      "--bandwidth", "50%",
+      "--phi-min", "0.65",
+      "--phi-max", "0.80",
+      "--prince-creator-veto", "45",
+      "--astraeus-observer", "enabled"
+    ]
+    volumes:
+      - ./sasc_config:/config
+      - ./attestations:/attestations
+    ports:
+      - "12800:12800"
+    environment:
+      SATOSHI_SEED: "${SATOSHI_SEED}"
+      MESH_ENDPOINT: "http://mesh-neuron:3030"
+    depends_on:
+      - mesh-neuron
+    networks:
+      - crux86-network
+
+  # Byzantine Test Runner
+  byzantine-tester:
+    image: crux86/byzantine-tester:latest
+    command: [
+      "--scenario", "gravity_inversion",
+      "--target-instance", "2",
+      "--expected-freeze-time", "12.8",
+      "--validate-aletheia", "level9"
+    ]
+    volumes:
+      - ./test_results:/results
+    depends_on:
+      - vajra-circuit-breaker
+      - karnak-sealer-1
+      - karnak-sealer-2
+      - karnak-sealer-3
+    networks:
+      - crux86-network
+
+  # Monitoring Dashboard
+  crux86-dashboard:
+    image: crux86/dashboard:omega
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./dashboard:/usr/share/nginx/html
+      - ./vajra_logs:/logs:ro
+    depends_on:
+      - vajra-circuit-breaker
+      - sasc-cathedral
+    networks:
+      - crux86-network
+
+networks:
+  crux86-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+          gateway: 172.20.0.1

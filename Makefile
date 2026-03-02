@@ -28,7 +28,7 @@ TASMOBJ=$(patsubst $(SRCDIR)/tasm/%.c, $(TASMDIR)/%.o, $(TASMSRC))
 TASMNAME=tasm
 TASM=$(TASMDIR)/$(TASMNAME)
 
-.PHONY: all clean destroy test
+.PHONY: all clean destroy test install package
 
 all: $(OBJ) $(TIRE) $(TASM)
 
@@ -61,4 +61,10 @@ destroy:
 	rm -rf $(BUILDDIR)
 
 test:
-	$(foreach file, $(wildcard tests/*.tasm), ./build/tasm/tasm $(file);)
+	cd tests && for file in *.tasm; do ../build/tasm/tasm $$file; done
+
+install:
+	@./scripts/install.sh
+
+package:
+	@./scripts/package.sh
