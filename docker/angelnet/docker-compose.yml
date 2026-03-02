@@ -1,0 +1,169 @@
+version: '3.8'
+
+services:
+  # Ethereum Client modificado para simular AngelNet/SASC
+  karnak-1:
+    image: ethereum/client-go:latest
+    container_name: karnak-1
+    command: >
+      --dev
+      --dev.period 1
+      --http
+      --http.addr 0.0.0.0
+      --http.port 8545
+      --http.api eth,net,web3,sasc,tmr
+      --http.corsdomain "*"
+      --http.vhosts "*"
+      --networkid 999
+      --datadir /data
+      --port 30303
+      --verbosity 3
+    ports:
+      - "8545:8545"
+      - "30303:30303"
+    volumes:
+      - ./data/karnak1:/data
+      - ./config/sasc-node.json:/config/sasc-node.json
+    environment:
+      - NODE_NAME=karnak-1
+      - NODE_ROLE=validator
+      - TMR_ENABLED=true
+    networks:
+      angelnet:
+        ipv4_address: 172.28.0.11
+
+  karnak-2:
+    image: ethereum/client-go:latest
+    container_name: karnak-2
+    command: >
+      --dev
+      --dev.period 1
+      --http
+      --http.addr 0.0.0.0
+      --http.port 8545
+      --http.api eth,net,web3,sasc,tmr
+      --http.corsdomain "*"
+      --http.vhosts "*"
+      --networkid 999
+      --datadir /data
+      --port 30303
+      --verbosity 3
+    ports:
+      - "8546:8545"
+      - "30304:30303"
+    volumes:
+      - ./data/karnak2:/data
+      - ./config/sasc-node.json:/config/sasc-node.json
+    environment:
+      - NODE_NAME=karnak-2
+      - NODE_ROLE=validator
+      - TMR_ENABLED=true
+    networks:
+      angelnet:
+        ipv4_address: 172.28.0.12
+    depends_on:
+      - karnak-1
+
+  karnak-3:
+    image: ethereum/client-go:latest
+    container_name: karnak-3
+    command: >
+      --dev
+      --dev.period 1
+      --http
+      --http.addr 0.0.0.0
+      --http.port 8545
+      --http.api eth,net,web3,sasc,tmr
+      --http.corsdomain "*"
+      --http.vhosts "*"
+      --networkid 999
+      --datadir /data
+      --port 30303
+      --verbosity 3
+    ports:
+      - "8547:8545"
+      - "30305:30303"
+    volumes:
+      - ./data/karnak3:/data
+      - ./config/sasc-node.json:/config/sasc-node.json
+    environment:
+      - NODE_NAME=karnak-3
+      - NODE_ROLE=validator
+      - TMR_ENABLED=true
+    networks:
+      angelnet:
+        ipv4_address: 172.28.0.13
+    depends_on:
+      - karnak-1
+
+  # Cliente Ontology para testes automatizados
+  ontology-tester:
+    build:
+      context: ../../
+      dockerfile: docker/ontology/Dockerfile
+    container_name: ontology-tester
+    volumes:
+      - ../../examples:/app/examples
+      - ../../ont/native:/app
+    environment:
+      - ANGELNET_RPC=http://karnak-1:8545
+      - RUST_LOG=info
+    networks:
+      angelnet:
+        ipv4_address: 172.28.0.100
+    depends_on:
+      - karnak-1
+      - karnak-2
+      - karnak-3
+    command: >
+      bash -c "
+        echo 'Waiting for AngelNet nodes to start...' &&
+        sleep 15 &&
+        echo 'Testing Ontology on-chain deployment...' &&
+        cargo test onchain_integration -- --nocapture
+      "
+
+  # Dashboard para monitoramento
+  dashboard:
+    image: grafana/grafana:latest
+    container_name: angelnet-dashboard
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=ontology
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+    networks:
+      angelnet:
+        ipv4_address: 172.28.0.200
+    depends_on:
+      - karnak-1
+
+  # Coletor de métricas Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: angelnet-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      angelnet:
+        ipv4_address: 172.28.0.201
+    depends_on:
+      - karnak-1
+
+networks:
+  angelnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+
+volumes:
+  karnak1_data:
+  karnak2_data:
+  karnak3_data:
+  prometheus_data:
+  grafana_data:

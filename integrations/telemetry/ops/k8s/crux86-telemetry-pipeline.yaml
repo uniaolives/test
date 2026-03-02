@@ -1,0 +1,58 @@
+# crux86-telemetry-pipeline.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crux86-ingestion-config
+data:
+  SATOSHI_SEED: "0xbd36332890d15e2f360bb65775374b462b"
+  PHI_THRESHOLD: "0.72"
+  STEAM_API_KEY: "${STEAM_API_KEY}"
+  RIOT_API_KEY: "${RIOT_API_KEY}"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vajra-telemetry-filter
+spec:
+  replicas: 3  # TMR Pattern
+  selector:
+    matchLabels:
+      app: vajra-filter
+  template:
+    spec:
+      containers:
+      - name: filter
+        image: crux86/vajra-telemetry:v4.8.2
+        resources:
+          limits:
+            nvidia.com/gpu: 1  # Para validação física em GPU
+        envFrom:
+        - configMapRef:
+            name: crux86-ingestion-config
+        ports:
+        - containerPort: 8080
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wfm-training-cluster
+spec:
+  serviceName: wfm-cluster
+  replicas: 3
+  template:
+    spec:
+      containers:
+      - name: wfm-trainer
+        image: crux86/wfm-trainer:cosmos-genie-hybrid
+        command: ["python", "train_wfm.py", "--satoshi-seed=$(SATOSHI_SEED)"]
+        volumeMounts:
+        - name: karnak-seals
+          mountPath: /seals
+  volumeClaimTemplates:
+  - metadata:
+      name: karnak-seals
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Ti  # Para selos de experiência

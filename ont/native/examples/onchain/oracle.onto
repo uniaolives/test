@@ -1,0 +1,5 @@
+fn oracle_update : Pure<Int> -> Mutable<Int> =
+    {{ update logic }}
+
+transmute oracle_update to Imperative with
+    sandbox(OracleSandbox)
