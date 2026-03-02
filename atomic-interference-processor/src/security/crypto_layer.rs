@@ -115,7 +115,7 @@ impl SecureCrypto {
         };
 
         // Generate nonce
-        let mut nonce_bytes = [0u8; 12];
+        let mut nonce_bytes: [u8; 12] = Default::default();
         ring::rand::SystemRandom::new()
             .fill(&mut nonce_bytes)
             .map_err(|e: ring::error::Unspecified| CryptoError::EncryptionFailed(e.to_string()))?;
