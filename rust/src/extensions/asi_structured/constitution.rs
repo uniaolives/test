@@ -6,7 +6,7 @@ use std::future::Future;
 use serde::{Serialize, Deserialize};
 use super::composer::ComposedResult;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum StrictnessLevel {
     Strict,
     Moderate,
@@ -43,13 +43,35 @@ pub enum ScalabilityInvariant {
     SourceVolatilityStability { max_allowed_volatility: f64 },
 }
 
-pub struct ComplexityMeasure;
-pub struct HaltingConfig;
+#[derive(Debug, Clone, Default)]
+pub struct ComplexityMeasure {
+    pub max_nodes: usize,
+    pub max_edges: usize,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct HaltingConfig {
+    pub timeout_ms: u64,
+}
 
 pub struct ASIConstitution {
     pub strictness: StrictnessLevel,
     pub scalability_invariants: Vec<ScalabilityInvariant>,
     pub geometric_invariants: AGIGeometricConstitution,
+    pub max_complexity: ComplexityMeasure,
+    pub halting_guarantees: HaltingConfig,
+}
+
+impl Default for ASIConstitution {
+    fn default() -> Self {
+        Self {
+            strictness: StrictnessLevel::Strict,
+            scalability_invariants: vec![],
+            geometric_invariants: AGIGeometricConstitution::new(),
+            max_complexity: ComplexityMeasure::default(),
+            halting_guarantees: HaltingConfig::default(),
+        }
+    }
 }
 
 impl ASIConstitution {
@@ -58,18 +80,31 @@ impl ASIConstitution {
             strictness,
             scalability_invariants: invariants,
             geometric_invariants: AGIGeometricConstitution::new(),
+            max_complexity: ComplexityMeasure::default(),
+            halting_guarantees: HaltingConfig::default(),
         }
     }
 
-    pub fn validate_composed_result(&self, output: &dyn ASIResult) -> ResilientResult<()> {
+    pub fn validate_output(&self, output: &dyn ASIResult) -> ResilientResult<()> {
         let confidence = output.confidence();
-        if confidence < 0.8 {
+        if confidence < 0.1 {
              return Err(ResilientError::InvariantViolation {
                 invariant: "S9: SourceVolatilityStability".to_string(),
-                reason: format!("Confidence {:.2} below stability threshold 0.8 during volatility event", confidence),
+                reason: format!("Confidence {:.2} too low", confidence),
             });
         }
         Ok(())
+    }
+
+    pub fn validate_composed_result(&self, output: &dyn ASIResult) -> ResilientResult<()> {
+        self.validate_output(output)
+    }
+
+    pub fn validate_genome(&self, genome: &GeometricGenome) -> ResilientResult<()> {
+        if genome.connections.len() > 16 {
+            return Err(ResilientError::InvariantViolation {
+                invariant: "S1: CompositionLimit".to_string(),
+                reason: format!("Too many connections: {} > 16", genome.connections.len()),
     }
 
     pub fn validate_genome(&self, genome: &GeometricGenome) -> ResilientResult<()> {

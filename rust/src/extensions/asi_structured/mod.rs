@@ -200,6 +200,20 @@ impl Extension for ASIStructuredExtension {
              let _ = self.composition_engine.load_structure(structure_type).await;
         }
 
+        match self.config.phase {
+            ASIPhase::Compositional => {}
+            ASIPhase::Reflective => {
+                self.reflection_engine = Some(ReflectionEngine::new(self.config.max_reflection_depth));
+            }
+            ASIPhase::Evolutionary => {
+                self.reflection_engine = Some(ReflectionEngine::new(self.config.max_reflection_depth));
+                self.evolution_engine = Some(EvolutionEngine::new(self.config.evolution_population_size));
+            }
+            ASIPhase::Metastructural | ASIPhase::QuantumBio | ASIPhase::Sovereign => {
+                self.reflection_engine = Some(ReflectionEngine::new(self.config.max_reflection_depth));
+                self.evolution_engine = Some(EvolutionEngine::new(self.config.evolution_population_size));
+                self.metastructure_engine = Some(MetastructureEngine::new());
+            }
         if self.config.phase as u8 >= ASIPhase::Reflective as u8 {
             self.reflection_engine = Some(ReflectionEngine::new(self.config.max_reflection_depth));
         }
@@ -231,19 +245,19 @@ impl Extension for ASIStructuredExtension {
         let mut current_result: Box<dyn crate::extensions::asi_structured::constitution::ASIResult + Send + Sync> = Box::new(composed.clone());
 
         // 2. Reflective Phase
-        if self.config.phase as u8 >= ASIPhase::Reflective as u8 {
+        if self.config.phase >= ASIPhase::Reflective {
             if let Some(engine) = &mut self.reflection_engine {
                 let reflected = engine.analyze_structure(&composed).await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                 current_result = Box::new(reflected.clone());
 
                 // 3. Evolutionary Phase
-                if self.config.phase as u8 >= ASIPhase::Evolutionary as u8 {
+                if self.config.phase >= ASIPhase::Evolutionary {
                     if let Some(evo_engine) = &mut self.evolution_engine {
                         let evolved = evo_engine.optimize_structure(reflected, &self.constitution).await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                         current_result = Box::new(evolved.clone());
 
                         // 4. Metastructural Phase
-                        if self.config.phase as u8 >= ASIPhase::Metastructural as u8 {
+                        if self.config.phase >= ASIPhase::Metastructural {
                             if let Some(meta_engine) = &mut self.metastructure_engine {
                                 let metastructured = meta_engine.lift_to_metastructure(evolved).await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                                 current_result = Box::new(metastructured);
@@ -287,7 +301,8 @@ impl Extension for ASIStructuredExtension {
             let _consensus = self.consensus.reach_consensus(&response);
         }
 
-        self.constitution.validate_composed_result(current_result.as_ref()).map_err(|e| ResilientError::Unknown(e.to_string()))?;
+        use crate::extensions::asi_structured::constitution::ASIResult;
+        self.constitution.validate_output(current_result.as_ref()).map_err(|e| ResilientError::Unknown(e.to_string()))?;
 
         self.state.total_processed += 1;
         self.state.last_processed = Some(Utc::now());
