@@ -4,7 +4,7 @@
 // ==============================================
 
 use crate::ast::*;
-use crate::compiler::{CompilerError, CompilerResult};
+use crate::compiler::{CompilerError, CompilerResult, CompiledContract, CompilationStats};
 use crate::utils::selector;
 use indoc::indoc;
 
@@ -62,6 +62,8 @@ impl SolidityBackend {
         Ok(CompiledContract {
             target_language: "Solidity 0.8.24".to_string(),
             source_code: solidity_code,
+            bytecode: None,
+            abi: None,
             stats,
         })
     }
@@ -355,22 +357,4 @@ impl ParadigmSolidity for Paradigm {
             Paradigm::Custom(s) => format!("Paradigm.Custom('{}')", s),
         }
     }
-}
-
-// --- Estruturas de retorno ---
-#[derive(Debug, Clone)]
-pub struct CompiledContract {
-    pub target_language: String,
-    pub source_code: String,
-    pub stats: CompilationStats,
-}
-
-#[derive(Debug, Clone)]
-pub struct CompilationStats {
-    pub functions_compiled: usize,
-    pub contracts_deployed: usize,
-    pub transmutations_applied: usize,
-    pub diplomatic_constraints: usize,
-    pub paradigm_guards_injected: usize,
-    pub gas_estimate: u64,
 }
