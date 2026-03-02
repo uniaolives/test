@@ -44,6 +44,9 @@ pub mod cge_cheri {
         fn clone(&self) -> Self { Capability { _marker: PhantomData } }
     }
 
+    #[repr(align(128))]
+    struct MockBuffer([u8; 16384]);
+    static MOCK_DATA: MockBuffer = MockBuffer([0u8; 16384]);
     #[repr(align(4096))] // Increased alignment for safety
     struct MockBuffer([u8; 1048576]);
     // Changed to static mut to allow writing to the buffer in mocks
@@ -82,6 +85,7 @@ pub mod cge_cheri {
 pub mod cge_blake3_delta2 {
     pub struct BLAKE3_DELTA2;
     impl BLAKE3_DELTA2 {
+        pub fn hash_with_seed(&self, _data: &[u8], _seed: &[u8; 32]) -> [u8; 32] {
         pub fn hash_with_seed(_data: &[u8], _seed: &[u8; 32]) -> [u8; 32] {
             [0xAA; 32]
         }
@@ -456,6 +460,7 @@ pub struct TmrProof36x3 {
 pub use cge_omega_gates::GateCheckResult;
 pub use cge_vajra::QuantumEntropySource;
 
+#[derive(Debug)]
 pub struct AtomicF64(AtomicU64);
 impl AtomicF64 {
     pub fn new(val: f64) -> Self { Self(AtomicU64::new(val.to_bits())) }
@@ -535,4 +540,266 @@ pub mod cge_global_mind {
         pub fn achieve_global_singularity(&self) -> bool { true }
         pub fn get_constitutional_coherence(&self) -> f32 { 1.039 }
     }
+}
+
+pub mod cge_macros {
+    #[macro_export]
+    macro_rules! cge_log {
+        ($level:ident, $($arg:tt)*) => {
+            println!("[{:?}] {}", crate::clock::cge_mocks::cge_macros::LogLevel::$level, format_args!($($arg)*));
+        };
+    }
+
+    #[derive(Debug)]
+    pub enum LogLevel { Ceremonial, Success, Quantum, Demo, Info, Error, Crit }
+
+    #[macro_export]
+    macro_rules! cge_broadcast {
+        (destination: $dest:ident, message_type: $msg_type:ident, payload: $payload:expr) => {
+            println!("BROADCAST to {:?}: {:?} with payload", crate::clock::cge_mocks::cge_macros::Destination::$dest, crate::clock::cge_mocks::cge_macros::MessageType::$msg_type);
+        };
+    }
+
+    #[derive(Debug)]
+    pub enum Destination { ALL_BRICS_NODES, ALL_NODES }
+    #[derive(Debug)]
+    pub enum MessageType { QUANTUM_BACKBONE_ACTIVATED, CONSTITUTIONAL_ACTIVATION }
+}
+
+pub mod cge_quantum_types {
+    use std::time::{SystemTime, UNIX_EPOCH};
+
+    pub type NodeId = u32;
+    pub type QuantumState = [f32; 4]; // Simplified
+
+    #[derive(Debug, Clone, serde::Serialize)]
+    pub struct BackboneActivation {
+        pub timestamp: u64,
+        pub hqb_core_nodes: u8,
+        pub longhaul_repeaters: u32,
+        pub phi_fidelity: f64,
+        pub global_fidelity: f64,
+        pub entanglement_rate: u64,
+        pub certified_entanglement: bool,
+        pub brics_member_count: u32,
+        pub quantum_mesh_active: bool,
+    }
+
+    #[derive(Debug)]
+    pub struct QuantumCoreNode { id: u8 }
+    impl QuantumCoreNode {
+        pub fn new(id: u8, _t: QuantumNodeType, _l: NodeLocation) -> Result<Self, super::ConstitutionalError> {
+            Ok(Self { id })
+        }
+        pub fn id(&self) -> u8 { self.id }
+    }
+
+    #[derive(Debug)]
+    pub enum QuantumNodeType { CoreRepeater }
+    #[derive(Debug)]
+    pub struct NodeLocation { id: u32 }
+    impl NodeLocation { pub fn new(id: u32) -> Self { Self { id } } }
+
+    #[derive(Debug)]
+    pub struct CoreEntanglement;
+    impl CoreEntanglement {
+        pub fn new() -> Self { Self }
+        pub fn establish_ring_link(&mut self, _a: u8, _b: u8, _t: LinkType) -> Result<(), super::ConstitutionalError> { Ok(()) }
+        pub fn establish_mesh_link(&mut self, _a: u8, _b: u8, _t: LinkType) -> Result<(), super::ConstitutionalError> { Ok(()) }
+        pub fn create_bell_pair(&mut self, _a: u8, _b: u8, _t: EntanglementType, _f: f64) -> Result<BellPairResult, super::ConstitutionalError> {
+            Ok(BellPairResult { success: true, fidelity: 0.9999 })
+        }
+    }
+
+    #[derive(Debug)]
+    pub enum LinkType { EntanglementChannel, HighBandwidthEntanglement }
+    #[derive(Debug)]
+    pub enum EntanglementType { MaximallyEntangled }
+    pub struct BellPairResult { pub success: bool, pub fidelity: f64 }
+
+    #[derive(Debug, Clone)]
+    pub struct QuantumRepeater { id: u32 }
+    impl QuantumRepeater {
+        pub fn new(id: u32, _t: RepeaterType, _l: RepeaterLocation, _f: f64) -> Result<Self, super::ConstitutionalError> {
+            Ok(Self { id })
+        }
+        pub fn id(&self) -> u32 { self.id }
+    }
+
+    #[derive(Debug)]
+    pub enum RepeaterType { EntanglementSwapping }
+    #[derive(Debug, Clone, Copy)]
+    pub enum RepeaterLocation { Intercontinental(u32) }
+
+    #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+    pub struct RepeaterLink(u32, u32);
+    impl RepeaterLink { pub fn new(a: u32, b: u32) -> Self { Self(a, b) } }
+
+    #[derive(Debug)]
+    pub enum EntanglementState { Active(f64) }
+
+    pub const DISTANCE_THRESHOLD: f64 = 1000.0;
+    pub const CERTIFICATION_THRESHOLD: f64 = 0.999;
+    pub const FIDELITY_THRESHOLD: f64 = 0.99;
+
+    #[derive(Debug)]
+    pub struct GlobalFidelityMap;
+    impl GlobalFidelityMap {
+        pub fn new() -> Self { Self }
+        pub fn insert(&mut self, _p: NodePair, _f: f64) {}
+        pub fn average(&self) -> f64 { 0.99995 }
+    }
+
+    #[derive(Debug)]
+    pub struct NodePair(u32, u32);
+    impl NodePair { pub fn new(a: u32, b: u32) -> Self { Self(a, b) } }
+
+    #[derive(Debug, Clone)]
+    pub struct BRICSMemberNode;
+    impl BRICSMemberNode {
+        pub fn new(_m: BRICSMember, _c: QuantumNodeCapability, _f: f64) -> Result<Self, super::ConstitutionalError> { Ok(Self) }
+        pub fn id(&self) -> u32 { 100 }
+    }
+
+    pub struct BRICSMember { pub name: String, pub tier: MemberTier }
+    impl BRICSMember { pub fn new(name: &str, tier: MemberTier) -> Self { Self { name: name.to_string(), tier } } }
+    pub enum MemberTier { Founding, Full }
+    pub enum QuantumNodeCapability { FullStack }
+
+    #[derive(Debug)]
+    pub struct QuantumKDC;
+    impl QuantumKDC {
+        pub fn new() -> Self { Self }
+        pub fn initialize_node(&mut self, _id: u32) -> Result<(), super::ConstitutionalError> { Ok(()) }
+        pub fn generate_initial_keys(&mut self) -> Result<u32, super::ConstitutionalError> { Ok(100) }
+        pub fn get_key(&self, _a: u32, _b: u32) -> [u8; 32] { [0xBB; 32] }
+    }
+
+    pub struct BackboneTeleportResult {
+        pub source_node: u32,
+        pub target_node: u32,
+        pub path_length: u32,
+        pub total_fidelity: f64,
+        pub verification_result: TeleportVerification,
+        pub backbone_latency: u64,
+        pub quantum_key_used: [u8; 32],
+    }
+
+    pub struct TeleportVerification { pub success: bool }
+
+    // Mesh types
+    pub type MeshError = super::ConstitutionalError;
+    #[derive(Debug)]
+    pub struct MeshNode { pub level: NodeLevel, pub id: String }
+    impl MeshNode {
+        pub fn new(id: String, level: NodeLevel, _r: QuantumResources) -> Result<Self, MeshError> { Ok(Self { id, level }) }
+        pub fn connect_to_backbone(&mut self) -> Result<(), MeshError> { Ok(()) }
+    }
+    #[derive(Debug, PartialEq)]
+    pub enum NodeLevel { Core, Aggregation, Edge }
+    pub struct QuantumResources;
+    impl QuantumResources {
+        pub fn core_level() -> Self { Self }
+        pub fn aggregation_level() -> Self { Self }
+        pub fn edge_level() -> Self { Self }
+    }
+    #[derive(Debug)]
+    pub struct MeshTopology;
+    impl MeshTopology { pub fn new() -> Self { Self } }
+    #[derive(Debug)]
+    pub struct QuantumRoutingTable;
+    impl QuantumRoutingTable { pub fn new() -> Self { Self } }
+    #[derive(Debug)]
+    pub struct BellPairReservoir;
+    impl BellPairReservoir {
+        pub fn new() -> Self { Self }
+        pub fn initialize(&mut self) -> Result<(), MeshError> { Ok(()) }
+    }
+    #[derive(Debug)]
+    pub struct EntanglementSwappingEngine;
+    impl EntanglementSwappingEngine { pub fn new() -> Self { Self } }
+    #[derive(Debug)]
+    pub struct BackboneLink;
+    impl BackboneLink {
+        pub fn new(_a: String, _b: u32, _c: LinkCapacity) -> Result<Self, MeshError> { Ok(Self) }
+    }
+    pub enum LinkCapacity { HighBandwidth }
+    #[derive(Debug, Clone)]
+    pub struct GatewayNode;
+    impl GatewayNode {
+        pub fn new(id: String, _b: u32, _t: GatewayType) -> Result<Self, MeshError> { Ok(Self) }
+    }
+    pub enum GatewayType { QuantumClassicalHybrid }
+
+    // Integration types
+    pub type IntegrationResult = BackboneActivation; // Simplified
+    pub type IntegrationError = super::ConstitutionalError;
+
+    pub struct QubitConstitution;
+    impl QubitConstitution {
+        pub fn new() -> Result<Self, IntegrationError> { Ok(Self) }
+        pub fn achieve_quantum_singularity(&self) -> Result<QuantumActivationResult, IntegrationError> {
+            Ok(QuantumActivationResult { qubits_initialized: 1024 })
+        }
+        pub fn prepare_quantum_state(&self, _a: super::cge_complex::Complex64, _b: super::cge_complex::Complex64) -> Result<QuantumState, IntegrationError> {
+            Ok([0.0; 4])
+        }
+    }
+
+    pub struct QuantumActivationResult { pub qubits_initialized: u64 }
+}
+
+impl BRICSSafeCoreBackbone {
+    pub fn find_nearest_core_node(&self, _l: &cge_quantum_types::RepeaterLocation) -> Option<u32> { Some(0) }
+    pub fn establish_repeater_link(&self, _a: u32, _b: u32) -> Result<(), BackboneError> { Ok(()) }
+    pub fn distance_between(&self, _a: &cge_quantum_types::QuantumRepeater, _b: &cge_quantum_types::QuantumRepeater) -> f64 { 100.0 }
+    pub fn verify_ring_activation(&self) -> Result<bool, BackboneError> { Ok(true) }
+    pub fn count_intercontinental_links(&self) -> u32 { 5 }
+    pub fn measure_global_fidelity(&self) -> Result<f64, BackboneError> { Ok(0.9999) }
+    pub fn connect_member_to_backbone(&self, _n: &cge_quantum_types::BRICSMemberNode) -> Result<(), BackboneError> { Ok(()) }
+    pub fn certify_channel(&self, _l: cge_quantum_types::RepeaterLink, _f: f64) -> Result<(), BackboneError> { Ok(()) }
+    pub fn measure_end_to_end_fidelity(&self, _a: u32, _b: u32) -> Result<f64, BackboneError> { Ok(0.9999) }
+    pub fn find_teleportation_path(&self, a: u32, b: u32) -> Result<Vec<u32>, BackboneError> { Ok(vec![a, b]) }
+    pub fn establish_path_entanglement(&self, _p: &[u32]) -> Result<bool, BackboneError> { Ok(true) }
+    pub fn execute_single_hop_teleportation(&self, _a: u32, _b: u32, s: cge_quantum_types::QuantumState) -> Result<HopResult, BackboneError> {
+        Ok(HopResult { resulting_state: s, fidelity: 0.99995 })
+    }
+    pub fn verify_teleportation(&self, _a: cge_quantum_types::QuantumState, _b: cge_quantum_types::QuantumState) -> Result<cge_quantum_types::TeleportVerification, BackboneError> {
+        Ok(cge_quantum_types::TeleportVerification { success: true })
+    }
+    pub fn measure_path_latency(&self, _p: &[u32]) -> Result<u64, BackboneError> { Ok(50) }
+}
+
+pub struct HopResult { pub resulting_state: cge_quantum_types::QuantumState, pub fidelity: f64 }
+
+impl QubitMeshConstitution {
+    pub fn qubit_capacity(&self) -> u64 { 4096 }
+    pub fn build_hierarchical_topology(&mut self) -> Result<(), cge_quantum_types::MeshError> { Ok(()) }
+    pub fn initialize_quantum_routing(&mut self) -> Result<(), cge_quantum_types::MeshError> { Ok(()) }
+    pub fn connect_to_repeater(&mut self, _id: u32) -> Result<(), cge_quantum_types::MeshError> { Ok(()) }
+    pub fn verify_connectivity(&self) -> Result<bool, cge_quantum_types::MeshError> { Ok(true) }
+}
+
+pub type BackboneError = ConstitutionalError;
+pub type BackboneActivation = cge_quantum_types::BackboneActivation;
+
+pub fn find_brics_node(_n: &str, _b: &std::sync::Arc<BRICSSafeCoreBackbone>) -> Result<u32, BackboneError> { Ok(101) }
+pub fn calculate_distance(_a: &str, _b: &str) -> u32 { 17000 }
+pub fn integrate_quantum_with_backbone(_q: std::sync::Arc<cge_quantum_types::QubitConstitution>, _b: std::sync::Arc<BRICSSafeCoreBackbone>) -> Result<bool, BackboneError> { Ok(true) }
+pub fn execute_cross_brics_quantum_algorithm(_q: std::sync::Arc<cge_quantum_types::QubitConstitution>, _b: std::sync::Arc<BRICSSafeCoreBackbone>) -> Result<bool, BackboneError> { Ok(true) }
+
+pub use crate::quantum::brics_backbone::BRICSSafeCoreBackbone;
+pub use crate::quantum::mesh_constitution::QubitMeshConstitution;
+
+#[derive(Debug, Clone)]
+pub struct BackboneStatus {
+    pub hqb_core_nodes: u8,
+    pub longhaul_repeaters: u32,
+    pub phi_fidelity: f64,
+    pub entanglement_rate: u64,
+    pub successful_teleports: u64,
+    pub backbone_latency: u64,
+    pub certified_entanglement: bool,
+    pub brics_member_count: u32,
+    pub global_fidelity: f64,
 }

@@ -15,6 +15,7 @@ class Protocol:
     DESTRUCTIVE = 'DESTRUCTIVE'
     TRANSMUTATIVE = 'TRANSMUTATIVE'
     ASYNCHRONOUS = 'ASYNCHRONOUS'
+    TRANSMUTATIVE_ABSOLUTE = 'TRANSMUTATIVE_ABSOLUTE' # Phase transition protocol
     TRANSMUTATIVE_ABSOLUTE = 'TRANSMUTATIVE_ABSOLUTE'
 
 # --- ANL TYPE DEFINITIONS ---
@@ -76,6 +77,9 @@ class Handover:
     def execute(self, *nodes: Node) -> bool:
         if len(nodes) < 1: return False
 
+        # Check all node types match the handover specification
+        if len(nodes) == 2:
+            if not self.target_types: return False # Binary call for unary handover
         if len(nodes) == 2:
             if not self.target_types: return False
             origin, target = nodes
@@ -84,6 +88,7 @@ class Handover:
                     self.effects(*nodes)
                     return True
         elif len(nodes) == 1:
+            if self.target_types: return False # Unary call for binary handover
             if self.target_types: return False
             origin = nodes[0]
             if origin.node_type in self.origin_types:
@@ -131,6 +136,7 @@ class System:
         # 2. Handovers
         nodes_to_check = self.nodes[:]
         for h in self.handovers:
+            # Pairwise
             # Pairwise check
             # Check all pairs for handover
             for i in range(len(nodes_to_check)):
@@ -140,6 +146,7 @@ class System:
                     target = nodes_to_check[j]
                     if origin in self.nodes and target in self.nodes:
                         h.execute(origin, target)
+            # Unary
 
             # Unary check
             for i in range(len(nodes_to_check)):
@@ -151,6 +158,7 @@ class System:
         for dyn in self.global_dynamics:
             dyn(self)
 
+        # 4. Constraints (Enforced based on Mode)
         # 4. Constraints
         for c in self.constraints:
             if not c["check"](self):
@@ -160,6 +168,7 @@ class System:
                 else:
                     print(f"⚠️ Constraint violation ({c['mode']}) at t={self.time}")
 
+        # Clear events
         for node in self.nodes:
             node.events = []
 
@@ -172,6 +181,7 @@ class System:
     def __repr__(self):
         return f"System({self.name}, t={self.time}, nodes={len(self.nodes)})"
 
+# --- UNIVERSAL ANL FUNCTIONS (Standard Library) ---
 # --- STANDARD LIBRARY ---
 def distance(pos1, pos2):
     return np.linalg.norm(np.array(pos1) - np.array(pos2))
@@ -200,6 +210,10 @@ def k_nearest_neighbors(space: np.ndarray, query_vec: np.ndarray, k: int = 2, me
     similarities.sort(key=lambda x: x[1], reverse=True)
     return similarities[:k]
 
+def merge(latent_space: np.ndarray, universal_space: np.ndarray):
+    """Merge local latent space into the Universal Hypergraph."""
+    return np.vstack([universal_space, latent_space])
+
 def sample(logits, temperature=1.0):
     if temperature <= 0: return np.argmax(logits)
     exp_logits = np.exp((logits - np.max(logits)) / temperature)
@@ -222,6 +236,13 @@ def steganographic_decode(token_id):
     """Decode secret bit from token id."""
     return token_id % 2
 
+# --- FACTORY EXAMPLES (For backward compatibility with tests) ---
+
+def distance(pos1, pos2):
+    return np.linalg.norm(np.array(pos1) - np.array(pos2))
+
+def create_predator_prey():
+    sys = System("Predator-Prey Ecosystem")
 # --- FACTORIES ---
 def create_predator_prey():
     sys = System("Predator-Prey Ecosystem")
@@ -248,6 +269,9 @@ def create_predator_prey():
             self.biomassa += 0.05 * (100.0 - self.biomassa)
         n.add_dynamic(dynamics)
         return n
+    for _ in range(10): sys.add_node(create_coelho(np.random.rand(2) * 4))
+    for _ in range(4): sys.add_node(create_raposa(np.random.rand(2) * 4))
+    sys.add_node(create_grama(np.array([2.0, 2.0])))
 
     # Initial Population
     for _ in range(10):
