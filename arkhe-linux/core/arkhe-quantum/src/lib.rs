@@ -1,3 +1,14 @@
+pub mod asi_core;
+pub mod manifold;
+pub mod z3_verifier;
+pub mod thermodynamics;
+pub mod constitution;
+pub mod self_modification;
+pub mod verification;
+pub mod depin;
+
+use tokio::sync::Mutex;
+use std::sync::Arc;
 use ndarray::Array2;
 use num_complex::Complex64;
 use serde::{Serialize, Deserialize};
@@ -18,8 +29,8 @@ pub enum HandoverType {
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
 #[repr(C)]
 pub struct HandoverHeader {
-    pub magic: [u8; 4],           // "ARKH"
-    pub version: u8,              // 0x01
+    pub magic: [u8; 4],
+    pub version: u8,
     pub handover_type: HandoverType,
     pub flags: u16,
     pub id: Uuid,
@@ -28,9 +39,9 @@ pub struct HandoverHeader {
     pub timestamp_physical: u64,
     pub timestamp_logical: u32,
     pub entropy_cost: f32,
-    pub half_life: f32,           // Ω+205.1: life expectancy in ms
+    pub half_life: f32,
     pub payload_length: u32,
-    pub reserved: u32,            // Alignment and expansion
+    pub reserved: u32,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]
@@ -38,29 +49,6 @@ pub struct Handover {
     pub header: HandoverHeader,
     pub payload: Vec<u8>,
     pub signature: Vec<u8>,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RLTransition {
-    pub state: Vec<f64>,
-    pub action: u32,
-    pub reward: f64,
-    pub next_state: Vec<f64>,
-    pub done: bool,
-    pub timestamp: i64,
-    pub node_id: String,
-    pub model_version: String,
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ModelVersion {
-    pub version: String,
-    pub mlflow_run_id: String,
-    pub artifact_uri: String,
-    pub metrics: std::collections::HashMap<String, f64>,
-    pub parameters: std::collections::HashMap<String, String>,
-    pub parent_version: Option<String>,
-    pub timestamp: i64,
 }
 
 impl Handover {
@@ -137,6 +125,29 @@ impl Handover {
     }
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct RLTransition {
+    pub state: Vec<f64>,
+    pub action: u32,
+    pub reward: f64,
+    pub next_state: Vec<f64>,
+    pub done: bool,
+    pub timestamp: i64,
+    pub node_id: String,
+    pub model_version: String,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ModelVersion {
+    pub version: String,
+    pub mlflow_run_id: String,
+    pub artifact_uri: String,
+    pub metrics: std::collections::HashMap<String, f64>,
+    pub parameters: std::collections::HashMap<String, String>,
+    pub parent_version: Option<String>,
+    pub timestamp: i64,
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct QuantumState {
     pub density_matrix: Array2<Complex64>,
@@ -145,7 +156,12 @@ pub struct QuantumState {
 impl QuantumState {
     pub fn new(dim: usize) -> Self {
         let mut dm = Array2::from_elem((dim, dim), Complex64::new(0.0, 0.0));
-        dm[[0, 0]] = Complex64::new(1.0, 0.0); // Ground state |0><0|
+        dm[[0, 0]] = Complex64::new(1.0, 0.0);
+        Self { density_matrix: dm }
+    }
+
+    pub fn maximally_mixed(dim: usize) -> Self {
+        let dm = Array2::from_elem((dim, dim), Complex64::new(1.0 / dim as f64, 0.0));
         Self { density_matrix: dm }
     }
 
@@ -164,8 +180,6 @@ impl QuantumState {
     }
 
     pub fn von_neumann_entropy(&self) -> f64 {
-        // Ω+207: von Neumann entropy S = -Tr(ρ log ρ)
-        // Calculated via Linear Entropy approximation (1 - Tr(ρ²)) for performance
         let purity = self.density_matrix.dot(&self.density_matrix).diag().sum().re;
         if purity >= 1.0 { 0.0 } else { (1.0 - purity).abs() }
     }
@@ -175,8 +189,7 @@ impl QuantumState {
     }
 }
 
-pub mod verification;
-
+#[derive(Debug, Clone, Default)]
 pub struct KrausOperator {
     pub operators: Vec<Array2<Complex64>>,
 }
@@ -190,4 +203,16 @@ impl KrausOperator {
         }
         Self { operators: vec![op] }
     }
+}
+
+pub async fn run_engine() -> anyhow::Result<()> {
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info"))
+        .format_timestamp_nanos()
+        .init();
+
+    log::info!("🜁 ARKHE(n) QUANTUM OS – PROTOCOLO Ω+210");
+
+    let manifold = Arc::new(Mutex::new(crate::manifold::GlobalManifold::new("localhost").await?));
+
+    asi_core::singularity_engine_loop(manifold).await;
 }

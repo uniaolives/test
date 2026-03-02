@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package arkhe;
+
+message KrausOperator {
+    bytes matrix_data = 1;
+    uint32 dim = 2;
+}
+
+message Handover {
+    string id = 1;
+    string emitter_id = 2;
+    string receiver_id = 3;
+    KrausOperator kraus_op = 4;
+    double entropy_cost = 5;
+    int64 timestamp = 6;
+    bytes signature = 7;
+}
+
+message HandoverAck {
+    bool accepted = 1;
+    string reason = 2;
+    bytes new_state = 3;
+}
+
+service QHTTP {
+    rpc SendHandover(Handover) returns (HandoverAck);
+}

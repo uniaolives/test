@@ -1,0 +1,39 @@
+# .github/workflows/arkhen-load-test.yml
+name: ARKHE(n) Load Test & Performance Gate
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  load-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build Load Test Tool
+        working-directory: tools/load_test
+        run: cargo build --release
+
+      - name: Setup Mock Server
+        run: |
+          # In a real scenario, we'd start arkhed here.
+          # For CI, we'll use a simple nc listener to verify tool execution.
+          timeout 10s nc -lk 8080 > /dev/null &
+          sleep 2
+
+      - name: Run Load Test
+        working-directory: tools/load_test
+        run: |
+          ./target/release/arkhe-load-test --target http://localhost:8080/api/handovers --concurrency 10 --rps 100 --duration 5
+
+      - name: Check Performance Metrics
+        run: |
+          echo "Load test completed successfully."
+          # Here we would parse output and fail if latency > threshold

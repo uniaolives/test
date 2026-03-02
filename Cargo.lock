@@ -348,6 +348,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "arkhe-load-test"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "rand 0.8.5",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "arkhe-n-library"
 version = "1.0.0"
 dependencies = [
@@ -373,15 +385,25 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "bincode 1.3.3",
+ "chrono",
  "clap",
  "dark-solver",
+ "env_logger",
+ "log",
  "ndarray",
  "num-complex 0.4.6",
+ "num_cpus",
  "pqcrypto-dilithium",
  "pqcrypto-traits",
+ "prost 0.12.6",
+ "rumqttc",
  "serde",
+ "serde_json",
  "tokio",
+ "tokio-stream",
+ "tonic 0.11.0",
  "uuid 1.21.0",
+ "z3",
 ]
 
 [[package]]
@@ -3700,6 +3722,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "flume"
+version = "0.11.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "da0e4dd2a88388a1f4ccc7c9ce104604dab68d9f408dc34cd45823d5a9069095"
+dependencies = [
+ "futures-core",
+ "futures-sink",
+ "spin 0.9.8",
+]
+
+[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5798,17 +5831,6 @@ name = "litrs"
 version = "1.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "11d3d7f243d5c5a8b9bb5d6dd2b1602c0cb0b9db1621bafc7ed66e35ff9fe092"
-
-[[package]]
-name = "load-test"
-version = "0.1.0"
-dependencies = [
- "rand 0.8.5",
- "reqwest",
- "serde",
- "serde_json",
- "tokio",
-]
 
 [[package]]
 name = "lock_api"
@@ -8349,6 +8371,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "rumqttc"
+version = "0.23.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8d8941c6791801b667d52bfe9ff4fc7c968d4f3f9ae8ae7abdaaa1c966feafc8"
+dependencies = [
+ "bytes",
+ "flume",
+ "futures-util",
+ "log",
+ "rustls-native-certs",
+ "rustls-pemfile",
+ "rustls-webpki 0.101.7",
+ "thiserror 1.0.69",
+ "tokio",
+ "tokio-rustls",
+]
+
+[[package]]
 name = "rust-asi-wasm"
 version = "0.1.0"
 dependencies = [
@@ -10206,6 +10246,33 @@ name = "tonic"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d560933a0de61cf715926b9cac824d4c883c2c43142f787595e48280c40a1d0e"
+dependencies = [
+ "async-stream",
+ "async-trait",
+ "axum",
+ "base64 0.21.7",
+ "bytes",
+ "h2",
+ "http 0.2.12",
+ "http-body",
+ "hyper",
+ "hyper-timeout",
+ "percent-encoding",
+ "pin-project",
+ "prost 0.12.6",
+ "tokio",
+ "tokio-stream",
+ "tower",
+ "tower-layer",
+ "tower-service",
+ "tracing",
+]
+
+[[package]]
+name = "tonic"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "76c4eb7a4e9ef9d4763600161f12f5070b92a578e1b634db88a6887844c91a13"
 dependencies = [
  "async-stream",
  "async-trait",
