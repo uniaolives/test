@@ -22,6 +22,8 @@ pub mod genesis;
 pub mod bibliotheca_logos;
 pub mod babel;
 pub mod sensors;
+pub mod biology;
+pub mod physics;
 pub mod cognitive_hunter;
 pub mod security;
 pub mod neo_brain;
