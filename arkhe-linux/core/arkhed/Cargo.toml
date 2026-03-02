@@ -18,6 +18,7 @@ pqcrypto-traits = "0.3"
 chrono = "0.4"
 byteorder = "1.4"
 arkhe-quantum = { path = "../arkhe-quantum" }
+arkhe-foundry-bridge = { path = "../arkhe-foundry-bridge" }
 ndarray = "0.15"
 rand = "0.8"
 pqcrypto-kyber = "0.7"

@@ -338,6 +338,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "arkhe-foundry-bridge"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "arkhe-quantum",
+ "log",
+ "serde",
+ "serde_json",
+ "tokio",
+ "uuid 1.21.0",
+]
+
+[[package]]
 name = "arkhe-ggf"
 version = "0.1.0"
 dependencies = [
@@ -462,6 +475,7 @@ name = "arkhed"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "arkhe-foundry-bridge",
  "arkhe-quantum",
  "bincode 1.3.3",
  "byteorder",

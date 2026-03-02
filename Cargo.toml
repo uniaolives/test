@@ -44,6 +44,7 @@ members = [
     "arkhe-linux/core/arkhe-shard",
     "metrics-consumer",
     "arkhe-linux/core/arkhe-energy",
+    "arkhe-linux/core/arkhe-foundry-bridge",
     "tools/load_test",
     "tools/dark_solver",
 ]

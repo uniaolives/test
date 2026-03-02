@@ -297,6 +297,7 @@ pub enum Command {
     RunTests,
     RecordRLTransition { transition: arkhe_quantum::RLTransition },
     QueryRLTransitions { model_version: Option<String> },
+    FoundryUpdate { object: arkhe_foundry_bridge::FoundryObject },
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -378,6 +379,25 @@ async fn handle_ipc_client(mut stream: UnixStream, system: Arc<ArkheSystem>) {
                 Ok(Command::QueryRLTransitions { model_version: _ }) => {
                     // Mock query: return empty list
                     Response::Ok
+                }
+                Ok(Command::FoundryUpdate { object }) => {
+                    info!("Foundry Ontology Update received: {} ({})", object.object_id, object.object_type);
+
+                    let bridge = arkhe_foundry_bridge::FoundryBridge::new("localhost");
+                    match bridge.map_to_handover(&object) {
+                        Ok(h) => {
+                            let packet = handover::HandoverPacket {
+                                id: uuid::Uuid::new_v4().to_string(),
+                                target: "psi-manifold".to_string(),
+                                payload: serde_json::to_value(&object).unwrap_or_default(),
+                                timestamp: object.timestamp as u64,
+                                binary: Some(h),
+                            };
+                            system.handovers.read().await.enqueue(packet);
+                            Response::Ok
+                        },
+                        Err(e) => Response::Error { message: format!("Foundry bridge mapping failed: {}", e) }
+                    }
                 }
                 Ok(Command::RunTests) => {
                     let mut details = String::new();
