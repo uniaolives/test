@@ -36,7 +36,7 @@ jobs:
           julia --project=modules/julia -e '
             using Pkg;
             Pkg.Registry.update();
-            Pkg.add(["LinearAlgebra", "DifferentialEquations", "Flux", "Graphs", "GraphNeuralNetworks", "Optim", "Symbolics", "Tullio"]);
+            Pkg.add(["DifferentialEquations", "Flux", "Graphs", "GraphNeuralNetworks", "Optim", "Symbolics", "Tullio"]);
             Pkg.instantiate();
             Pkg.test();
           '
