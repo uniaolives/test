@@ -1,8 +1,5 @@
 use crate::extensions::asi_structured::*;
-use crate::extensions::asi_structured::ASIStructuredExtension;
-use crate::extensions::asi_structured::ASIPhase;
-use crate::extensions::asi_structured::ASIStructuredConfig;
-use crate::interfaces::extension::{Extension, Context};
+use crate::interfaces::extension::{Context};
 use crate::error::ResilientResult;
 use crate::extensions::asi_structured::bridge::ASI777Bridge;
 use web777_ontology::SyntaxFormat;
@@ -20,6 +17,7 @@ async fn test_asi_compositional_phase() -> ResilientResult<()> {
     let mut asi = ASIStructuredExtension::new(config);
 
     // Add multiple structures to demonstrate composition
+    asi.add_structure(Box::new(ProtoGeometricImpl), StructureType::HierarchicalSpace);
     asi.add_structure(Box::new(ProtoGeometricImpl), StructureType::TextEmbedding);
     asi.add_structure(Box::new(RiemannianManifold), StructureType::SequenceManifold);
     asi.add_structure(Box::new(SimplicialComplex), StructureType::GraphComplex);

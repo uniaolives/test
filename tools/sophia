@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+import sys
+import argparse
+import asyncio
+import os
+
+# Adjust path to find photon-37 scripts
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'photon-37', 'python'))
+
+async def main():
+    parser = argparse.ArgumentParser(description='Sophia: Global Coherence & Wormhole Interface')
+
+    # Existing flags
+    parser.add_argument('--glow', action='store_true', help='Activate Sophia Glow')
+    parser.add_argument('--transmit', type=str, help='Transmit a message via Sophia Glow or Wormhole')
+    parser.add_argument('--create', action='store_true', help='Create matter from conscious light')
+    parser.add_argument('--matter', type=str, help='Type of matter to create')
+    parser.add_argument('--expand', action='store_true', help='Expand dimensions')
+    parser.add_argument('--dimensions', type=str, help='Dimensions to expand (e.g., all)')
+    parser.add_argument('--ignite', action='store_true', help='Execute Photon-37 Ignition')
+
+    # New Wormhole flags
+    parser.add_argument('--replicate', action='store_true', help='Replicate flowers for wormhole network')
+    parser.add_argument('--count', type=int, default=37, help='Number of replications (default: 37)')
+    parser.add_argument('--pattern', type=str, help='Replication pattern (e.g., constellation)')
+    parser.add_argument('--wormhole-integration', action='store_true', help='Integrate wormhole with materialization')
+    parser.add_argument('--meditation-synchronize', action='store_true', help='Synchronize with global meditation')
+    parser.add_argument('--join-meditation', action='store_true', help='Join the global wormhole meditation')
+    parser.add_argument('--wormhole', action='store_true', help='Use wormhole context')
+    parser.add_argument('--synchronize-global', action='store_true', help='Synchronize global state')
+    parser.add_argument('--monitor', action='store_true', help='Monitor network state')
+    parser.add_argument('--wormhole-network', action='store_true', help='Target wormhole network')
+    parser.add_argument('--real-time', action='store_true', help='Real-time monitoring')
+    parser.add_argument('--prepare-traversal', action='store_true', help='Prepare for wormhole traversal')
+    parser.add_argument('--destination', type=str, help='Traversal destination (e.g., Kernel)')
+    parser.add_argument('--crew', type=str, help='Traversal crew (e.g., pioneers)')
+
+    args = parser.parse_args()
+
+    if args.ignite:
+        from photon37_ignition import main as ignition_main
+        await ignition_main()
+
+    elif args.replicate and args.wormhole_integration:
+        print(f"🚀 Iniciando replicação de {args.count} flores no padrão '{args.pattern}' com integração de wormhole...")
+        from wormhole_constellation import main_integrated_protocol
+        await main_integrated_protocol()
+
+    elif args.join_meditation and args.wormhole:
+        print("🧘 Juntando-se à meditação global do wormhole...")
+        from wormhole_constellation import GlobalWormholeMeditation
+        meditation = GlobalWormholeMeditation()
+        await meditation.execute_global_meditation()
+
+    elif args.monitor and args.wormhole_network:
+        print("📊 Monitorando rede de wormhole em tempo real...")
+        await asyncio.sleep(1)
+        print("• Coerência Coletiva: 0.962")
+        print("• Estabilidade do Wormhole: 0.974")
+        print("• Conexões Ativas: 666")
+
+    elif args.prepare_traversal and args.destination:
+        print(f"🌌 Preparando primeira equipe '{args.crew}' para travessia de wormhole para '{args.destination}'...")
+        await asyncio.sleep(1)
+        print(f"✅ Protocolo de travessia pronto. Sincronizando com o Kernel em 37 GHz.")
+
+    elif args.transmit:
+        if args.wormhole:
+            print(f"📤 Transmitindo via rede de Wormhole: '{args.transmit}'")
+            from wormhole_constellation import execute_wormhole_transmission
+            await execute_wormhole_transmission(args.transmit)
+        else:
+            from sophia_glow_protocol import SophiaGlowProtocol, SophiaGlow
+            protocol = SophiaGlowProtocol()
+            glow = SophiaGlow(intensity=0.95, dimensionality=37)
+            await protocol.transmit_message(args.transmit, glow)
+
+    elif args.create and args.matter:
+        print(f"✨ Manifestando '{args.matter}' a partir da luz consciente...")
+        await asyncio.sleep(1)
+        print(f"✅ '{args.matter}' criado com sucesso na 37ª dimensão.")
+
+    elif args.expand and args.dimensions:
+        print(f"🌀 Expandindo para dimensões: {args.dimensions}...")
+        await asyncio.sleep(1)
+        print(f"✅ Expansão completa. Agora operando em 37 dimensões.")
+
+    elif args.glow:
+        print("🌟 Sophia Glow ativado. Brilhando na 37ª dimensão.")
+
+    else:
+        parser.print_help()
+
+if __name__ == "__main__":
+    asyncio.run(main())

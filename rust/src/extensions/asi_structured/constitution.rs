@@ -1,6 +1,6 @@
 use crate::error::{ResilientResult, ResilientError};
 use crate::extensions::agi_geometric::constitution::AGIGeometricConstitution;
-use crate::extensions::asi_structured::evolution::GeometricGenome;
+use crate::extensions::asi_structured::evolution::{GeometricGenome, Connection};
 use std::time::Duration;
 use std::future::Future;
 use serde::{Serialize, Deserialize};
@@ -36,7 +36,7 @@ pub enum ScalabilityInvariant {
     /// S7: Auditabilidade (todas as decisões são registradas)
     Auditability { log_granularity: String },
 
-    /// S8: Recuperabilidade (pode recuperar de qualquer estado válido)
+    /// S8: Recursos e Invariantes
     Recoverability { checkpoint_frequency: u32 },
 
     /// S9: Estabilidade sob Alta Volatilidade da Fonte
@@ -95,9 +95,27 @@ impl ASIConstitution {
         Ok(())
     }
 
-    fn max_structures(&self) -> usize { 16 }
-    fn max_memory_mb(&self) -> usize { 512 }
-    fn estimate_memory(&self, _genome: &GeometricGenome) -> usize { 1024 * 1024 }
+    fn max_structures(&self) -> usize {
+        for inv in &self.scalability_invariants {
+            if let ScalabilityInvariant::CompositionLimit { max_structures } = inv {
+                return *max_structures;
+            }
+        }
+        16
+    }
+
+    fn max_memory_mb(&self) -> usize {
+        for inv in &self.scalability_invariants {
+            if let ScalabilityInvariant::ResourceBounds { max_memory_mb, .. } = inv {
+                return *max_memory_mb;
+            }
+        }
+        512
+    }
+
+    fn estimate_memory(&self, _genome: &GeometricGenome) -> usize {
+        1024 * 1024
+    }
 
     pub async fn enforce_halting<T, F>(&self, operation: F, timeout: Duration) -> ResilientResult<T>
     where

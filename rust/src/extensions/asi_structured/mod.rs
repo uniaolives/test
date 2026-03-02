@@ -201,11 +201,11 @@ impl Extension for ASIStructuredExtension {
         }
 
         if self.config.phase as u8 >= ASIPhase::Reflective as u8 {
-            self.reflection_engine = Some(ReflectionEngine::new(3));
+            self.reflection_engine = Some(ReflectionEngine::new(self.config.max_reflection_depth));
         }
 
         if self.config.phase as u8 >= ASIPhase::Evolutionary as u8 {
-            self.evolution_engine = Some(EvolutionEngine::new(10));
+            self.evolution_engine = Some(EvolutionEngine::new(self.config.evolution_population_size));
         }
 
         if self.config.phase as u8 >= ASIPhase::Metastructural as u8 {
@@ -254,7 +254,7 @@ impl Extension for ASIStructuredExtension {
             }
         }
 
-        // 4. Quantum-Bio Phase
+        // 4. Quantum-Bio Phase (numbered as 4 in original broken code too)
         if self.config.phase >= ASIPhase::QuantumBio {
             if let Some(qb) = &mut self.qb_system {
                 let qb_exp = qb.cycle().await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
