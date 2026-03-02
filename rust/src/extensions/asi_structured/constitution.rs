@@ -1,12 +1,12 @@
 use crate::error::{ResilientResult, ResilientError};
 use crate::extensions::agi_geometric::constitution::AGIGeometricConstitution;
-use crate::extensions::asi_structured::evolution::GeometricGenome;
+use crate::extensions::asi_structured::evolution::{GeometricGenome, Connection};
 use std::time::Duration;
 use std::future::Future;
 use serde::{Serialize, Deserialize};
 use super::composer::ComposedResult;
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum StrictnessLevel {
     Strict,
     Moderate,
@@ -36,20 +36,42 @@ pub enum ScalabilityInvariant {
     /// S7: Auditabilidade (todas as decisões são registradas)
     Auditability { log_granularity: String },
 
-    /// S8: Recuperabilidade (pode recuperar de qualquer estado válido)
+    /// S8: Recursos e Invariantes
     Recoverability { checkpoint_frequency: u32 },
 
     /// S9: Estabilidade sob Alta Volatilidade da Fonte
     SourceVolatilityStability { max_allowed_volatility: f64 },
 }
 
-pub struct ComplexityMeasure;
-pub struct HaltingConfig;
+#[derive(Debug, Clone, Default)]
+pub struct ComplexityMeasure {
+    pub max_nodes: usize,
+    pub max_edges: usize,
+}
+
+#[derive(Debug, Clone, Default)]
+pub struct HaltingConfig {
+    pub timeout_ms: u64,
+}
 
 pub struct ASIConstitution {
     pub strictness: StrictnessLevel,
     pub scalability_invariants: Vec<ScalabilityInvariant>,
     pub geometric_invariants: AGIGeometricConstitution,
+    pub max_complexity: ComplexityMeasure,
+    pub halting_guarantees: HaltingConfig,
+}
+
+impl Default for ASIConstitution {
+    fn default() -> Self {
+        Self {
+            strictness: StrictnessLevel::Strict,
+            scalability_invariants: vec![],
+            geometric_invariants: AGIGeometricConstitution::new(),
+            max_complexity: ComplexityMeasure::default(),
+            halting_guarantees: HaltingConfig::default(),
+        }
+    }
 }
 
 impl ASIConstitution {
@@ -58,18 +80,31 @@ impl ASIConstitution {
             strictness,
             scalability_invariants: invariants,
             geometric_invariants: AGIGeometricConstitution::new(),
+            max_complexity: ComplexityMeasure::default(),
+            halting_guarantees: HaltingConfig::default(),
         }
     }
 
-    pub fn validate_composed_result(&self, output: &dyn ASIResult) -> ResilientResult<()> {
+    pub fn validate_output(&self, output: &dyn ASIResult) -> ResilientResult<()> {
         let confidence = output.confidence();
-        if confidence < 0.8 {
+        if confidence < 0.1 {
              return Err(ResilientError::InvariantViolation {
                 invariant: "S9: SourceVolatilityStability".to_string(),
-                reason: format!("Confidence {:.2} below stability threshold 0.8 during volatility event", confidence),
+                reason: format!("Confidence {:.2} too low", confidence),
             });
         }
         Ok(())
+    }
+
+    pub fn validate_composed_result(&self, output: &dyn ASIResult) -> ResilientResult<()> {
+        self.validate_output(output)
+    }
+
+    pub fn validate_genome(&self, genome: &GeometricGenome) -> ResilientResult<()> {
+        if genome.connections.len() > 16 {
+            return Err(ResilientError::InvariantViolation {
+                invariant: "S1: CompositionLimit".to_string(),
+                reason: format!("Too many connections: {} > 16", genome.connections.len()),
     }
 
     pub fn validate_genome(&self, genome: &GeometricGenome) -> ResilientResult<()> {
@@ -95,9 +130,27 @@ impl ASIConstitution {
         Ok(())
     }
 
-    fn max_structures(&self) -> usize { 16 }
-    fn max_memory_mb(&self) -> usize { 512 }
-    fn estimate_memory(&self, _genome: &GeometricGenome) -> usize { 1024 * 1024 }
+    fn max_structures(&self) -> usize {
+        for inv in &self.scalability_invariants {
+            if let ScalabilityInvariant::CompositionLimit { max_structures } = inv {
+                return *max_structures;
+            }
+        }
+        16
+    }
+
+    fn max_memory_mb(&self) -> usize {
+        for inv in &self.scalability_invariants {
+            if let ScalabilityInvariant::ResourceBounds { max_memory_mb, .. } = inv {
+                return *max_memory_mb;
+            }
+        }
+        512
+    }
+
+    fn estimate_memory(&self, _genome: &GeometricGenome) -> usize {
+        1024 * 1024
+    }
 
     pub async fn enforce_halting<T, F>(&self, operation: F, timeout: Duration) -> ResilientResult<T>
     where

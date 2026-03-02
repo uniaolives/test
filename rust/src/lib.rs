@@ -142,6 +142,13 @@ pub mod zeitgeist;
 pub mod triad;
 pub mod monitoring;
 pub mod tcd;
+pub mod dashboard;
+pub mod cases;
+pub mod neuroquantum;
+pub mod nqf;
+pub mod phronesis;
+pub mod federacao;
+pub mod monitoramento;
 pub mod cge_constitution;
 pub mod asi_uri;
 pub mod asi_protocol;
@@ -171,6 +178,16 @@ pub mod maat;
 pub mod ubuntu;
 pub mod mesh_neuron;
 pub mod crypto_blck;
+pub mod streaming;
+pub mod celebration;
+pub mod quantum_resonance;
+pub mod multidimensional_mirrors;
+pub mod golden_age;
+pub mod twitch_tv_asi;
+pub mod agnostic_4k_streaming;
+pub mod starlink;
+pub mod agi_6g_mobile;
+pub mod mobile_smart_contracts;
 pub mod merkabah_activation;
 pub mod twitch_tv_asi;
 pub mod synaptic_fire;
@@ -219,6 +236,7 @@ mod tests_hexessential;
 mod tests_asi_topology;
 
 #[cfg(test)]
+mod tests_twitch_asi;
 mod tests_sol_logos;
 
 pub struct TruthClaim {
