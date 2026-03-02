@@ -87,6 +87,12 @@ struct ArkheSystem {
     /// Sessões criptográficas ativas
     #[allow(dead_code)]
     sessions: RwLock<Vec<KyberSession>>,
+
+    /// Chaves de segurança do nó (Kyber + Dilithium)
+    node_keys: arkhe_quantum::crypto::NodeKeys,
+
+    /// Estado do ψ-Shell
+    psi_shell: Arc<arkhe_quantum::psi_shell::PsiShellState>,
 }
 
 impl ArkheSystem {
@@ -104,6 +110,10 @@ impl ArkheSystem {
         // Inicializar φ a partir do estado histórico ou padrão
         let phi_val = crdt.get_phi().unwrap_or(PHI_TARGET);
 
+        // Gerar chaves do nó
+        let node_keys = arkhe_quantum::crypto::NodeKeys::generate();
+        let psi_shell = Arc::new(arkhe_quantum::psi_shell::PsiShellState::new());
+
         Ok(Self {
             phi: RwLock::new(phi_val),
             crdt,
@@ -112,6 +122,8 @@ impl ArkheSystem {
             clock: RwLock::new(HybridClock::new()),
             personality: PhiKnob::new(phi_val),
             sessions: RwLock::new(Vec::new()),
+            node_keys,
+            psi_shell,
         })
     }
 
@@ -280,16 +292,24 @@ async fn handle_ipc_client(mut stream: UnixStream, system: Arc<ArkheSystem>) {
                 }
                 Ok(Command::SendHandover { target, payload }) => {
                     info!("Sending handover to {}: {:?}", target, payload);
-                    let packet = handover::HandoverPacket {
-                        id: uuid::Uuid::new_v4().to_string(),
-                        target,
-                        payload,
-                        timestamp: std::time::SystemTime::now()
-                            .duration_since(std::time::UNIX_EPOCH)
-                            .unwrap_or_default()
-                            .as_secs(),
-                    };
-                    system.handovers.enqueue(packet);
+
+                    // Em um cenário real, o target_id seria resolvido para u64
+                    let target_id = 0u64;
+                    let emitter_id = 1u64; // ID do próprio nó
+
+                    let mut clock = system.clock.write().await;
+                    let binary_handover = handover::Handover::new(
+                        handover::HandoverType::Excitatory,
+                        emitter_id,
+                        target_id,
+                        serde_json::to_vec(&payload).unwrap_or_default(),
+                        0.1,
+                        1000.0,
+                        &mut clock,
+                        &system.node_keys.dilithium_secret,
+                    );
+
+                    system.handovers.read().await.enqueue_binary(binary_handover);
                     Response::Ok
                 }
                 Ok(Command::CrdtSync) => {
@@ -380,6 +400,17 @@ async fn main() -> anyhow::Result<()> {
     let sync_handle = tokio::spawn({
         let sys = Arc::clone(&system);
         async move { crdt_sync_daemon(sys).await }
+    });
+
+    // Spawn ψ-Shell server
+    let psi_handle = tokio::spawn({
+        let state = Arc::clone(&system.psi_shell);
+        async move {
+            let addr = "127.0.0.1:9001";
+            if let Err(e) = arkhe_quantum::psi_shell::run_psi_shell(state, addr).await {
+                error!("ψ-Shell terminated with error: {}", e);
+            }
+        }
     });
 
     // Spawn IPC server
