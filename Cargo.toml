@@ -70,6 +70,7 @@ resolver = "2"
     "arkhe-linux/core/arkhe-manifold",
     "arkhe-linux/core/arkhe-time-crystal",
     "arkhe-linux/core/arkhe-noether",
+    "arkhe-linux/core/arkhe-foundry-bridge",
 ]
 resolver = "2"
 

@@ -9,6 +9,7 @@ arkhe-constitution = { path = "../arkhe-constitution" }
 arkhe-manifold = { path = "../arkhe-manifold" }
 arkhe-time-crystal = { path = "../arkhe-time-crystal" }
 arkhe-noether = { path = "../arkhe-noether" }
+arkhe-foundry-bridge = { path = "../arkhe-foundry-bridge" }
 tokio = { version = "1.0", features = ["full"] }
 log = "0.4"
 serde = { version = "1.0", features = ["derive"] }
