@@ -1,6 +1,7 @@
 use crate::ubuntu::{UbuntuCollective, CohesionMetric};
 use crate::crypto_blck::DHTOverlay;
 use crate::maat::flagellar_dynamics::{VariableHelix, NodeId, Waypoint, PropulsionMode, Trajectory};
+use crate::math::geometry::Vector3D;
 
 pub const COHESION_THRESHOLD: f64 = 0.8;
 pub const TIMESTEP: f64 = 0.1;
@@ -66,6 +67,14 @@ pub struct DiracMicroBot {
 }
 
 impl DiracMicroBot {
+    pub fn detect_barrier(&self, _density: f64) -> bool { _density > 0.9 }
+    pub fn broadcast_warning(&self, _comms: &DHTOverlay, _density: f64) {}
+    pub fn follow_trajectory(&mut self, trajectory: Trajectory) {
+        if let Some(waypoint) = trajectory.waypoints.last() {
+            self.position = waypoint.position.position_to_3d();
+            self.max_penetration = self.max_penetration.max(self.position.z);
+        }
+    }
     pub fn detect_barrier(&self, _density: f64) -> bool { false }
     pub fn broadcast_warning(&self, _comms: &DHTOverlay, _density: f64) {}
     pub fn follow_trajectory(&mut self, _trajectory: Trajectory) {}
@@ -123,6 +132,8 @@ impl TumorMicroenvironment {
 
     /// Executa simulação de 72h (escala temporal acelerada)
     pub fn run_simulation(&mut self, duration_hours: f64) -> DeliveryMetrics {
+        let max_sim_steps = 1000;
+        let steps = ((duration_hours * 3600.0 / TIMESTEP) as usize).min(max_sim_steps);
         let steps = (duration_hours * 3600.0 / TIMESTEP) as usize;
 
         for t in 0..steps {

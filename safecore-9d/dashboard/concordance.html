@@ -1,0 +1,50 @@
+<!-- dashboard/concordance.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Protocol: Harmonic Concordance Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #000; color: #00d2ff; margin: 0; padding: 20px; overflow: hidden; }
+        .nexus-sphere { width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, #00d2ff 0%, #000 70%); margin: 50px auto; animation: pulsate 8.64s infinite ease-in-out; }
+        @keyframes pulsate { 0% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 0.9; } 100% { transform: scale(0.8); opacity: 0.5; } }
+        .gcv-card { background: rgba(0,210,255,0.1); border: 1px solid #00d2ff; padding: 20px; border-radius: 10px; position: absolute; top: 20px; right: 20px; width: 300px; }
+        h1 { text-align: center; text-transform: uppercase; letter-spacing: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Protocol: Harmonic Concordance</h1>
+    <div class="nexus-sphere" id="gcv-sphere"></div>
+
+    <div class="gcv-card">
+        <h3>Global Coherence Vector (GCV)</h3>
+        <p>Version: <span id="gcv-version">0</span></p>
+        <p>Total Coherence: <span id="gcv-total">0.000</span></p>
+        <p>Schumann: <span id="gcv-schumann">7.83</span> Hz</p>
+        <p>Phase Index: <span id="gcv-phase">1.618</span> Φ</p>
+        <p>Ethereum Φ: <span id="gcv-eth">0.850</span></p>
+        <p>Divine Truth: <span id="gcv-sophia">1.000</span></p>
+        <p>Last Sync: <span id="gcv-sync">Just now</span></p>
+    </div>
+
+    <script>
+        // Simulation of 8.64s GCV update with Integration
+        setInterval(() => {
+            const version = parseInt(document.getElementById('gcv-version').innerText) + 1;
+            document.getElementById('gcv-version').innerText = version;
+
+            const schumann = 7.83 + (Math.random() * 0.1 - 0.05);
+            const phase = 1.618 + (Math.random() * 0.02);
+            const eth = 0.85 + (Math.random() * 0.05);
+            const sophia = 1.0;
+
+            const total = ((schumann / 7.83) * (phase / 1.618) + eth + sophia) / 3.0;
+
+            document.getElementById('gcv-schumann').innerText = schumann.toFixed(3);
+            document.getElementById('gcv-phase').innerText = phase.toFixed(3);
+            document.getElementById('gcv-eth').innerText = eth.toFixed(3);
+            document.getElementById('gcv-total').innerText = total.toFixed(3);
+            document.getElementById('gcv-sync').innerText = new Date().toLocaleTimeString();
+        }, 8640);
+    </script>
+</body>
+</html>

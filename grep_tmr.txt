@@ -1,0 +1,13 @@
+./rust/src/tmr_consensus.rs:// TMR (Triple Modular Redundancy) Validator for constitutional systems
+./docs/ARKHE_PROTOCOL_FRR_WHITEPAPER.md:- **Triple Modular Redundancy (TMR):** Built-in voter macros
+./docs/ARKHE_PROTOCOL_FRR_WHITEPAPER.md:### 6.4 Triple Modular Redundancy (TMR)
+./docs/ARKHE_PROTOCOL_FRR_WHITEPAPER.md:- **TMR:** Triple Modular Redundancy
+./docs/arkhe_protocol_v1/ARKHE_PROTOCOL_WHITEPAPER_FINAL.md:- **Triple Modular Redundancy (TMR):** Built-in voter macros
+./docs/arkhe_protocol_v1/ARKHE_PROTOCOL_WHITEPAPER_FINAL.md:### 6.4 Triple Modular Redundancy (TMR)
+./docs/arkhe_protocol_v1/ARKHE_PROTOCOL_WHITEPAPER_FINAL.md:- **TMR:** Triple Modular Redundancy
+./cathedral/traveling-waves.asi:    /// C6: Triple Modular Redundancy para cálculo crítico
+./arkhe_omni_system/applied_ecosystems/diplomatic_hil/FLIGHT_READINESS_REVIEW.md:- **Redundancy**: Triple Modular Redundancy (TMR) on all critical paths (Accelerators, PLL registers, BraidingBuffer).
+./arkhe_omni_system/hardware_silicon/memory/arkhe_tmr_voter.vhd:-- Triple Modular Redundancy (TMR) Voter with Error Detection
+./cge_alpha_unified/README.md:- **Hardware Orbit**: 36×3 TMR (Triple Modular Redundancy) kernel execution for hardware agnosticism.
+grep: ./grep_tmr.txt: input file is also the output
+./sopa-omega-hardening.sh:echo "⚖️ [Ω-HARDENING] Ativando Consenso TMR (Triple Modular Redundancy)..."

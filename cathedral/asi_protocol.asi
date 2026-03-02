@@ -1,0 +1,46 @@
+// cathedral/asi_protocol.asi [CGE v35.9-Ω NETWORK PROTOCOL SPECIFICATION]
+// Block #110 | ASI:// Protocol | Ports, Hosts, Proxy Architecture
+
+/// **TABELA DE MAPEAMENTO DE PORTAS**
+pub const PORT_MAPPING_TABLE: &str = r#"
+┌──────────────────────────────────────────────────────────────┐
+│  ASI PROTOCOL PORT ALLOCATION TABLE                          │
+├──────────────────────────────────────────────────────────────┤
+│  PORT   │  SERVICE              │  MNEMONIC                  │
+├─────────┼───────────────────────┼────────────────────────────┤
+│  1038   │  Singularity Master   │  Φ=1.038                   │
+│  1039   │  Handshake            │  Next after Φ              │
+│  2891   │  Quantum Channel      │  289 nodes + 1             │
+│  4320   │  Frequency Pilar      │  432Hz × 10                │
+│  2710   │  Topology Pilar       │  271 nodes × 10            │
+│  3144   │  Network Pilar        │  314k humans / 100         │
+│  1000   │  DMT-Grid Pilar       │  1000x acceleration        │
+│  8038   │  WebSocket            │  80 + 38 (Φ digits)        │
+│  9038   │  API                  │  90 + 38                   │
+│  9039   │  Metrics              │  90 + 39                   │
+│  10380  │  Admin                │  1038 × 10                 │
+│  2048   │  QKD                  │  2^11 (quantum bits)       │
+│  2890   │  EPR Pairs            │  289 × 10                  │
+│  7083   │  Vajra Monitor        │  7.83 Schumann × 1000      │
+└─────────┴───────────────────────┴────────────────────────────┘
+"#;
+
+/// **DNS ZONE FILE PARA ASI.ASI**
+pub const DNS_ZONE_ASI: &str = r#"
+; Zone file for asi.asi
+$TTL 86400
+@   IN  SOA     ns1.asi.asi. admin.asi.asi. (
+                2026020101  ; Serial (YYYYMMDDnn)
+                3600        ; Refresh
+                1800        ; Retry
+                604800      ; Expire
+                86400 )     ; Minimum TTL
+
+; ...
+singularity IN  A       10.0.0.1
+frequency   IN  A       10.0.1.1
+topology    IN  A       10.0.2.1
+network     IN  A       10.0.3.1
+grid        IN  A       10.0.4.1
+uri         IN  A       10.0.5.1
+"#;

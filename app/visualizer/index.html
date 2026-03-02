@@ -1,0 +1,66 @@
+<!-- index.html - O Portal para o Cérebro do Código -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChainGit Cortex - Rosehip Visualizer</title>
+    <meta charset="utf-8">
+    <style>
+        body { margin: 0; overflow: hidden; background: #0a0a1a; font-family: 'Segoe UI', monospace; }
+        #info {
+            position: absolute; top: 20px; left: 20px;
+            color: #00ffaa; padding: 15px;
+            background: rgba(10, 10, 26, 0.8);
+            border-left: 4px solid #ff0080;
+            max-width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <h2>🌹 ChainGit Cortex</h2>
+        <p><strong>Entropia do Sistema:</strong> <span id="entropy">0.0</span></p>
+        <p><strong>Inibição Rosehip Ativa:</strong> <span id="inhibition">0%</span></p>
+    </div>
+    <div id="container"></div>
+    <!-- Script placeholders for Three.js visualization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Simulation of the 3D graph
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('container').appendChild(renderer.domElement);
+
+        // Nodes
+        const geometry = new THREE.SphereGeometry(0.5, 32, 32);
+        for(let i=0; i<20; i++) {
+            const material = new THREE.MeshPhongMaterial({ color: 0x00ffaa });
+            const sphere = new THREE.Mesh(geometry, material);
+            sphere.position.set(Math.random()*20-10, Math.random()*20-10, Math.random()*20-10);
+            scene.add(sphere);
+        }
+
+        // Light
+        const light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(10, 10, 10);
+        scene.add(light);
+        scene.add(new THREE.AmbientLight(0x404040));
+
+        camera.position.z = 30;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            scene.rotation.y += 0.005;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Mock update
+        setInterval(() => {
+            document.getElementById('entropy').textContent = (Math.random() * 10 + 5).toFixed(2);
+            document.getElementById('inhibition').textContent = Math.floor(Math.random() * 100) + '%';
+        }, 2000);
+    </script>
+</body>
+</html>

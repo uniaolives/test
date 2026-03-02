@@ -1,0 +1,67 @@
+# docker-compose.quantum.yml
+version: '3.8'
+
+services:
+  qhttp-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.quantum
+    image: arkhe-quantum:gateway-v1
+    container_name: qhttp-gateway
+    hostname: qhttp-gateway
+    command: python -m qhttp.gateway
+    ports:
+      - "7070:7070"
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+    networks:
+      - qhttp-net
+      - parallax-net
+
+  arkhe-quantum-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.quantum
+    image: arkhe-quantum:node-v1
+    container_name: arkhe-q1
+    hostname: arkhe-q1
+    command: python -m src.main --mode=worker --node-id=q1 --controller=http://parallax-controller:8080 --qhttp-gateway=http://qhttp-gateway:7070
+    environment:
+      - PARALLAX_NODE_ID=q1
+      - QHTTP_NODE_ID=q1
+    depends_on:
+      - qhttp-gateway
+      - parallax-controller
+    networks:
+      - qhttp-net
+      - parallax-net
+      - arkhe-net
+    ports:
+      - "8101:8000"
+
+  qhttp-viz:
+    build:
+      context: .
+      dockerfile: Dockerfile.viz
+    image: arkhe-viz:v1
+    container_name: arkhe-viz
+    command: python qhttp/viz/server.py
+    ports:
+      - "8080:8080"
+    environment:
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - redis
+      - qhttp-gateway
+    networks:
+      - qhttp-net
+
+networks:
+  qhttp-net:
+    driver: bridge
+  parallax-net:
+    driver: bridge
+  arkhe-net:
+    driver: bridge

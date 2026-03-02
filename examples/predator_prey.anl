@@ -1,0 +1,59 @@
+// ARKHE(N) LANGUAGE (ANL) - EXAMPLE 5.1
+// Ecossistema Predador-Presa
+
+node Coelho {
+    attributes {
+        float energia = 10.0;
+        vector[2] posição;
+        float idade = 0.0;
+    }
+    dynamics {
+        energia -= 0.1; // metabolismo
+        if (energia <= 0) { remover(); }
+    }
+}
+
+node Raposa {
+    attributes {
+        float energia = 15.0;
+        vector[2] posição;
+        float idade = 0.0;
+    }
+    dynamics {
+        energia -= 0.2;
+        if (energia <= 0) { remover(); }
+    }
+}
+
+node Grama {
+    attributes {
+        float biomassa = 100.0;
+    }
+    dynamics {
+        biomassa += 0.05 * (100.0 - biomassa); // crescimento
+    }
+}
+
+handover ComerGrama (Coelho c, Grama g) {
+    condition: distance(c.posição, g.posição) < 1.0;
+    effects {
+        c.energia += 0.2 * g.biomassa;
+        g.biomassa -= 0.2 * g.biomassa;
+    }
+}
+
+handover ComerCoelho (Raposa r, Coelho c) {
+    condition: distance(r.posição, c.posição) < 1.0;
+    effects {
+        r.energia += c.energia;
+        remover(c);
+    }
+}
+
+handover ReproduzirCoelho (Coelho c) {
+    condition: c.energia > 20.0;
+    effects {
+        criar novo Coelho com energia = 5.0;
+        c.energia -= 10.0;
+    }
+}

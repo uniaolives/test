@@ -1,0 +1,9 @@
+blocks:
+  - index: 0
+    type: genesis
+    file: 0000000000.genesis.json
+    hash: 737ce755e5467c7f551fe9800049be3dae6b983b074bf375c18e8c7599422096
+  - index: 1
+    type: handover
+    file: 0000000001.handover.json
+    hash: 2c67029a753f08bbc081f03e13695d0e16cd757b6b797737a830a23134677bdb

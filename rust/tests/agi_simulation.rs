@@ -3,7 +3,6 @@ use sasc_core::geometry::nexus::Nexus5DMetric;
 use tokio::time::{sleep, Duration};
 
 #[tokio::test]
-#[ignore]
 async fn test_agi_consciousness_emergence() {
     let metric = Nexus5DMetric::new(1.0);
     let time_period = 1000.0;

@@ -1,0 +1,123 @@
+# docker-compose.parallax.yml
+# Stack Arkhe(n) + Parallax com suporte Quântico Distribuído
+
+version: '3.8'
+
+services:
+  # ==========================================
+  # PARALLAX CONTROLLER (Orquestrador Global)
+  # ==========================================
+  parallax-controller:
+    build:
+      context: .
+      dockerfile: Dockerfile.parallax
+    image: arkhe-parallax:quantum-v2
+    container_name: parallax-controller
+    hostname: parallax-controller
+    command: python -m parallax.controller
+    ports:
+      - "8080:8080"
+      - "9090:9090"
+    environment:
+      - PARALLAX_ROLE=controller
+      - REDIS_URL=redis://redis:6379
+    volumes:
+      - parallax_data:/opt/arkhe/data
+    depends_on:
+      - redis
+    networks:
+      - parallax-net
+      - arkhe-net
+
+  # ==========================================
+  # REDIS (Entanglement Registry)
+  # ==========================================
+  redis:
+    image: redis:7-alpine
+    container_name: parallax-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - parallax-net
+
+  # ==========================================
+  # NÓS ARKHE(N) (Quantum Workers)
+  # ==========================================
+
+  arkhe-node-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.parallax
+    image: arkhe-parallax:quantum-v2
+    container_name: arkhe-node-1
+    hostname: arkhe-n1
+    command: python -m src.main --mode=worker --node-id=n1 --controller=http://parallax-controller:8080
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+    shm_size: '1gb'
+    tmpfs:
+      - /dev/shm/arkhe_field:rw,noexec,nosuid,size=1024m
+    environment:
+      - PARALLAX_NODE_ID=n1
+      - NCCL_DEBUG=INFO
+      - NCCL_IB_DISABLE=1
+    volumes:
+      - arkhe_data_n1:/opt/arkhe/data
+    depends_on:
+      - parallax-controller
+      - redis
+    networks:
+      - parallax-net
+      - arkhe-net
+    ports:
+      - "8001:8000"
+      - "8101:8001"
+
+  arkhe-node-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.parallax
+    image: arkhe-parallax:quantum-v2
+    container_name: arkhe-node-2
+    hostname: arkhe-n2
+    command: python -m src.main --mode=worker --node-id=n2 --controller=http://parallax-controller:8080
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+    shm_size: '1gb'
+    tmpfs:
+      - /dev/shm/arkhe_field:rw,noexec,nosuid,size=1024m
+    environment:
+      - PARALLAX_NODE_ID=n2
+      - NCCL_DEBUG=INFO
+      - NCCL_IB_DISABLE=1
+    volumes:
+      - arkhe_data_n2:/opt/arkhe/data
+    depends_on:
+      - parallax-controller
+      - redis
+    networks:
+      - parallax-net
+      - arkhe-net
+    ports:
+      - "8002:8000"
+      - "8102:8001"
+
+volumes:
+  parallax_data:
+  redis_data:
+  arkhe_data_n1:
+  arkhe_data_n2:
+
+networks:
+  parallax-net:
+    driver: bridge
+  arkhe-net:
+    driver: bridge

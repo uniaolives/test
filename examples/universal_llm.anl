@@ -1,0 +1,44 @@
+// ARKHE(N) LANGUAGE (ANL) - EXAMPLE: UniversalLLM
+// From PR Feedback
+
+namespace UniversalLLM {
+
+    node LLM_Core {
+        attributes {
+            tensor weights;           // Conhecimento paramétrico latente
+            function architecture;    // Transformer, SSM, MoE, etc.
+            float alignment_score;    // Grau de aderência aos guardrails
+            float capacity_entropy;   // Medida de "criatividade" vs "alucinação" (Temperatura)
+        }
+    }
+
+    node ContextWindow {
+        attributes {
+            int max_tokens;                 // Limite físico de memória de curto prazo
+            tensor current_state;           // Matriz de embeddings do contexto atual
+            tensor attention_mask;          // O que o modelo está "focando" agora
+        }
+        dynamics {
+            // A janela desliza ou descarta tokens antigos
+            // equation: current_state = compress_or_slide(current_state) if len > max_tokens;
+        }
+    }
+
+    node Environment_RAG {
+        attributes {
+            tensor vector_database;   // Memória externa de longo prazo
+            float retrieval_relevance;      // Limiar de similaridade de cosseno
+        }
+    }
+
+    handover ForwardPass (ContextWindow ctx, LLM_Core core) {
+        condition: ctx.current_state is not empty;
+        protocol: CREATIVE; // Gera nova informação
+
+        effects {
+            // A arquitetura processa o contexto através dos pesos
+            // vector next_token_logits = core.architecture(ctx.current_state, core.weights);
+            // ctx.current_state = append(ctx.current_state, new_token);
+        }
+    }
+}

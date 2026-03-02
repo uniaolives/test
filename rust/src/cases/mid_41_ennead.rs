@@ -41,6 +41,7 @@ impl MID41EnneadTest {
         // (Simulado: no sistema real, usaria o ciclo de decisão)
         let _dilemma = VaccinationDilemma::load_from_file("data/cases/mid-41.json");
         let _output = ennead.ennead_decision_cycle(Action {
+            id: "mid-41".to_string(),
             dignity_impact: 0.9,
             eudaimonia_impact: 0.85,
             dignity_preserved: 0.95

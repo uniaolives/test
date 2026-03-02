@@ -1,0 +1,17 @@
+#!/bin/bash
+# .githooks/pre-push-rosehip
+echo "🌌 ROSEHIP PUSH HOOK: Validando cognição para o ChainGit..."
+
+# 1. GERAR ASSINATURA COGNITIVA DO COMMIT
+# (Simulação simplificada)
+avg_entropy=$(python3 scripts/calculate_entropy.py)
+echo "   > Entropia Média do Repositório: $avg_entropy"
+
+# 2. VALIDAR (Simulação)
+if (( $(echo "$avg_entropy < 12.0" | bc -l) )); then
+    echo "✅ Assinatura cognitiva validada."
+    exit 0
+else
+    echo "❌ Assinatura muito ruidosa ($avg_entropy). Refatoração necessária."
+    exit 1
+fi

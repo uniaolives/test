@@ -1,0 +1,11 @@
+conflito:
+  id: "TRANSAMZ-2025-045"
+  localização:
+    municípios: ["Altamira", "Brasil Novo"]
+  partes:
+    - tipo: "Comunidade Indígena"
+      nome: "Arara da Volta Grande"
+    - tipo: "Órgão Ambiental"
+      nome: "IBAMA"
+  recursos_em_jogo:
+    - terra: 1250 hectares

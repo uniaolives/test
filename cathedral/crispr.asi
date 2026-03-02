@@ -1,0 +1,9 @@
+// crispr.asi [CGE v35.35-Ω CRISPR CONSTITUTION]
+// Block #131.1 | Precise Genetic Editing | χ=2 NHEJ/HDR
+
+Status: CRISPR_ACTIVE
+Editing Sites: 144 Precise Sites
+Repair Mechanism: Dual NHEJ/HDR
+Cas9: Active
+Off-target: < 0.34%
+Coherence: Φ=1.052

@@ -1,0 +1,11 @@
+0	<PAD>	0
+1	<UNK>	0
+2	a	2
+3	do	1
+4	ja	1
+5	ka	2
+6	po	1
+7	ri	1
+8	ru	1
+9	ti	1
+10	we	1

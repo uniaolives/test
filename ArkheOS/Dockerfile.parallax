@@ -1,0 +1,33 @@
+# Dockerfile.parallax
+FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential python3.11 python3.11-dev python3-pip \
+    git curl wget libgl1-mesa-glx libglib2.0-0 \
+    libnccl2 libnccl-dev ibverbs-providers librdmacm-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
+
+WORKDIR /opt/arkhe
+COPY requirements.parallax.txt .
+RUN pip install --no-cache-dir -r requirements.parallax.txt
+RUN pip install --no-cache-dir pycuda cupy-cuda12x nvidia-nccl-cu12 msgpack
+
+COPY src/ /opt/arkhe/src/
+COPY parallax/ /opt/arkhe/parallax/
+COPY cuda/ /opt/arkhe/cuda/
+COPY qhttp/ /opt/arkhe/qhttp/
+
+RUN mkdir -p /opt/arkhe/lib
+# Compilação Q-Shield
+RUN nvcc -arch=sm_80 --shared -Xcompiler -fPIC -o /opt/arkhe/lib/libqec.so /opt/arkhe/cuda/qec_kernels.cu
+# Compilação qhttp distribuído
+RUN nvcc -arch=sm_80 --shared -Xcompiler -fPIC -lnccl -o /opt/arkhe/lib/libqhttp_dist.so /opt/arkhe/parallax/qhttp_gpu_distributed.cu
+# Compilação Grover distribuído
+RUN nvcc -arch=sm_80 --shared -Xcompiler -fPIC -lnccl -o /opt/arkhe/lib/libgrover.so /opt/arkhe/cuda/grover_kernels.cu
+
+ENV PYTHONPATH=/opt/arkhe
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/arkhe/lib
+
+ENTRYPOINT ["python", "-m", "src.main"]

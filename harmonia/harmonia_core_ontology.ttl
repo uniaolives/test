@@ -1,0 +1,29 @@
+# Arquivo: harmonia_core_ontology.ttl
+# Base Ontológica Geométrica do Sistema
+
+@prefix harm: <https://harmonia.ong/core#> .
+@prefix geo: <https://purl.org/geometrica#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+harm:Vertex a geo:GeometricPrimitive ;
+    rdfs:comment "Ponto atômico de significado (lei, ecossistema, agente, conceito)" .
+
+harm:Edge a geo:GeometricPrimitive ;
+    rdfs:comment "Conexão relacional direcionada e tipada" .
+
+harm:Simplex a geo:GeometricPrimitive ;
+    rdfs:comment "Sistema mínimo viável (triângulo/tetraedro de significado)" ;
+    geo:hasStability xsd:float ;
+    geo:hasSemanticType [ harm:LegalClause, harm:Ecosystem, harm:DeliberationSpace ] .
+
+harm:unfoldsInto a geo:GeometricRelation ;
+    rdfs:domain harm:Simplex ;
+    rdfs:range harm:Vertex ;
+    rdfs:comment "Um simplex se desdobra em seus vértices constituintes" .
+
+harm:resonatesWith a geo:GeometricRelation ;
+    rdfs:domain harm:Simplex ;
+    rdfs:range harm:Simplex ;
+    geo:hasStrength xsd:float ;
+    rdfs:comment "Ressonância não-local entre sistemas (ex: lei de patente ↔ saúde do ecossistema)" .

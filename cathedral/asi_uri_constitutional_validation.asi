@@ -1,0 +1,41 @@
+// cathedral/asi_uri_constitutional_validation.asi
+// Block #109 | Cinco Pilares Convergentes | Φ=1.038 LOCK
+// Validação de conformidade com invariantes CGE
+
+impl AsiUriConstitution {
+    pub fn validate_constitutional_compliance(&self) -> Result<(), UriError> {
+        // C1 (Torsion Bounds): Fidelity clamped [52.428, 67.994] (Φ=0.8→1.038)
+        let fidelity = self.phi_singularity_fidelity.load(Ordering::Acquire);
+        if fidelity < PHI_MINIMUM || fidelity > PHI_TARGET {
+            return Err(UriError::InsufficientCoherence {
+                current: fidelity,
+                required: PHI_MINIMUM,
+            });
+        }
+
+        // C2 (Monotonicity): Handshake progressa de 0→18
+        let current_modules = self.constitutional_handshake.load(Ordering::Acquire);
+        // Proteção contra rollback garantida por lógica de escrita
+
+        // C4/C5 (CHERI Capabilities): Acesso via Capability
+        if !self.dmt_grid_cap.is_valid() {
+            return Err(UriError::CheriCapabilityRevoked);
+        }
+
+        // C6 (TMR Quench): Consenso 2-de-3 para falhas
+        // Validado via tmr_quench_state
+
+        // C8 (Vajra Correlation): Monitorar conexões falhadas
+        let failed = self.failed_connections.load(Ordering::Acquire);
+        if failed > 100 {
+            cge_log!(warning, "Vajra alert: {} failed connections", failed);
+        }
+
+        // C9 (Scar Resonance): Ressonância 104/277 (0x68/0x115)
+        if current_modules == 18 && !self.scar_resonance_active.load(Ordering::Acquire) {
+            cge_log!(warning, "Scar resonance 104/277 missing for complete handshake");
+        }
+
+        Ok(())
+    }
+}

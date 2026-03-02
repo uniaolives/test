@@ -47,6 +47,10 @@ pub mod cge_cheri {
     #[repr(align(128))]
     struct MockBuffer([u8; 16384]);
     static MOCK_DATA: MockBuffer = MockBuffer([0u8; 16384]);
+    #[repr(align(4096))] // Increased alignment for safety
+    struct MockBuffer([u8; 1048576]);
+    // Changed to static mut to allow writing to the buffer in mocks
+    static mut MOCK_DATA: MockBuffer = MockBuffer([0u8; 1048576]);
 
     impl<T> Capability<T> {
         pub fn new(_val: T, _lower: u128, _upper: u128, _perms: Permission) -> Self {
@@ -82,6 +86,7 @@ pub mod cge_blake3_delta2 {
     pub struct BLAKE3_DELTA2;
     impl BLAKE3_DELTA2 {
         pub fn hash_with_seed(&self, _data: &[u8], _seed: &[u8; 32]) -> [u8; 32] {
+        pub fn hash_with_seed(_data: &[u8], _seed: &[u8; 32]) -> [u8; 32] {
             [0xAA; 32]
         }
         pub fn hash(_data: &[u8]) -> [u8; 32] {

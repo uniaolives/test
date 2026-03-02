@@ -94,6 +94,7 @@ struct ConstitutionalBitchatNode {
     uint64_t messages_received;
     uint64_t error_logs_shared;
     uint64_t insights_generated;
+    uint8_t quarantine_active;
 };
 
 typedef struct {

@@ -1,0 +1,9 @@
+// ASTROCYTE_MECHANICS.asi [CGE v35.51-Ω]
+// Function: Ca²⁺ waves, gliotransmission, meta-plasticity regulation
+
+Status: GLIAL_LAYER_ACTIVE
+Mechanism: Calcium Wave Dynamics
+Modulation: Tripartite Synapse Homeostasis
+Synchronization: Gap Junction Propagation
+Sovereignty: gliotransmission_sovereign()
+Coherence: Φ = 1.068

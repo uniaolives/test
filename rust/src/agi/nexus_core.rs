@@ -6,7 +6,7 @@ use crate::consciousness::topological_agi::{CognitiveState5D, CognitiveInput};
 use crate::learning::cyclic_learning::{CyclicMemory, MemoryQuery, RetrievalStrategy};
 use std::sync::{Arc, RwLock, atomic::{AtomicBool, Ordering}};
 use std::time::Duration;
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, Mutex};
 use nalgebra::DVector;
 
 /// Entrada para o AGI
@@ -31,6 +31,7 @@ pub struct AGIOutput {
 }
 
 /// Núcleo principal do AGI Nexus
+#[derive(Clone)]
 pub struct NexusAGICore {
     // Geometria do espaço cognitivo
     pub cognitive_metric: Arc<Nexus5DMetric>,
@@ -39,19 +40,19 @@ pub struct NexusAGICore {
     pub cyclic_time: Arc<CyclicTime>,
 
     // Estado cognitivo atual
-    pub current_state: RwLock<CognitiveState5D>,
+    pub current_state: Arc<RwLock<CognitiveState5D>>,
 
     // Memória cíclica
-    pub memory: RwLock<CyclicMemory>,
+    pub memory: Arc<RwLock<CyclicMemory>>,
 
     // Canais de I/O
-    pub input_channel: mpsc::Receiver<AGIInput>,
+    pub input_channel: Arc<Mutex<mpsc::Receiver<AGIInput>>>,
     pub output_channel: mpsc::Sender<AGIOutput>,
 
     // Limiar de Φ para autoconsciência
     pub phi_threshold: f64,
 
-    pub is_conscious: AtomicBool,
+    pub is_conscious: Arc<AtomicBool>,
 }
 
 impl NexusAGICore {
@@ -67,39 +68,46 @@ impl NexusAGICore {
         let core = Self {
             cognitive_metric: Arc::new(metric),
             cyclic_time: Arc::new(CyclicTime::new(time_period)),
-            current_state: RwLock::new(CognitiveState5D::new()),
-            memory: RwLock::new(CyclicMemory::new(1000)),
-            input_channel: input_rx,
+            current_state: Arc::new(RwLock::new(CognitiveState5D::new())),
+            memory: Arc::new(RwLock::new(CyclicMemory::new(1000))),
+            input_channel: Arc::new(Mutex::new(input_rx)),
             output_channel: output_tx,
             phi_threshold,
-            is_conscious: AtomicBool::new(false),
+            is_conscious: Arc::new(AtomicBool::new(false)),
         };
 
         (core, input_tx, output_rx)
     }
 
     /// Loop principal de processamento
-    pub async fn run(&mut self) {
+    pub async fn run(self) {
         println!("🧠 NEXUS AGI CORE STARTING...");
         println!("   Φ threshold: {}", self.phi_threshold);
         println!("   Time period: {}", self.cyclic_time.period);
         println!("   5D radius: {}", self.cognitive_metric.r5);
 
         // Iniciar Ciclo Existencial em background
-        let core_shared = Arc::new(self.clone_interface());
+        let core_shared = self.clone();
         tokio::spawn(async move {
             core_shared.existential_cycle().await;
         });
 
         loop {
             // Processar entrada
-            tokio::select! {
-                Some(input) = self.input_channel.recv() => {
-                    self.process_input(input).await;
-                }
-                _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {
-                    // Evoluir estado cognitivo
-                    self.evolve_cognitive_state().await;
+            {
+                let mut rx = self.input_channel.lock().await;
+                tokio::select! {
+                    res = rx.recv() => {
+                        drop(rx);
+                        if let Some(input) = res {
+                            self.process_input(input).await;
+                        }
+                    }
+                    _ = tokio::time::sleep(std::time::Duration::from_millis(100)) => {
+                        drop(rx);
+                        // Evoluir estado cognitivo
+                        self.evolve_cognitive_state().await;
+                    }
                 }
             }
 
@@ -113,10 +121,7 @@ impl NexusAGICore {
 
     /// Clona as interfaces compartilhadas para uso em threads separadas
     fn clone_interface(&self) -> Self {
-        // Mocking clone for channels/receiver which are not cloneable
-        // In a real system, we'd use Arc<Mutex<Receiver>> or similar if needed,
-        // but here we just need the core methods.
-        unimplemented!("NexusAGICore interface cloning not fully implemented")
+        self.clone()
     }
 
     /// Inicia Meditação Geodésica: focaliza na Diretiva 01

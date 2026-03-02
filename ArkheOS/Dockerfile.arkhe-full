@@ -1,0 +1,53 @@
+# Dockerfile.arkhe-full
+FROM nvidia/cuda:12.4.1-devel-ubuntu22.04 AS builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 python3.11-dev python3-pip \
+    git curl wget build-essential \
+    libgl1-mesa-glx \
+    libnccl2 libnccl-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
+
+WORKDIR /opt/arkhe
+
+COPY requirements.quantum.txt .
+RUN pip install --no-cache-dir -r requirements.quantum.txt
+
+COPY cuda/ /tmp/cuda/
+RUN mkdir -p /opt/arkhe/lib
+RUN nvcc -arch=sm_80 -O3 -lnccl -lcublas -lcusolver -lcurand \
+    -o /opt/arkhe/lib/libqhttp_dist.so --shared /tmp/cuda/qhttp_gpu_distributed.cu && \
+    nvcc -arch=sm_80 -O3 -lnccl \
+    -o /opt/arkhe/lib/libqec.so --shared /tmp/cuda/qec_kernels.cu && \
+    nvcc -arch=sm_80 -O3 -lnccl \
+    -o /opt/arkhe/lib/libgrover.so --shared /tmp/cuda/grover_kernels.cu
+
+FROM nvidia/cuda:12.4.1-runtime-ubuntu22.04
+
+RUN addgroup --gid 1000 arkhe && \
+    adduser --uid 1000 --gid 1000 --disabled-password --gecos "" arkhe
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 python3-pip libnccl2 libgl1-mesa-glx && \
+    rm -rf /var/lib/apt/lists/* && \
+    update-alternatives --install /usr/bin/python python /usr/bin/python3.11 1
+
+WORKDIR /app
+COPY --from=builder /usr/local/lib/python3.11/dist-packages /usr/local/lib/python3.11/dist-packages
+COPY --from=builder /opt/arkhe/lib /opt/arkhe/lib
+
+COPY src/ /app/src/
+COPY parallax/ /app/parallax/
+COPY qhttp/ /app/qhttp/
+COPY scripts/entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENV PYTHONPATH=/app \
+    NCCL_DEBUG=WARN \
+    NCCL_IB_DISABLE=0 \
+    NCCL_SOCKET_IFNAME=eth0 \
+    LD_LIBRARY_PATH=/opt/arkhe/lib:$LD_LIBRARY_PATH
+
+USER arkhe
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
