@@ -1,0 +1,135 @@
+<!-- dashboard/janus_migration.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SASC Janus - Dashboard de Migração</title>
+    <meta http-equiv="refresh" content="30">
+    <style>
+        :root {
+            --quantum-blue: #0ff;
+            --windows-gray: #333;
+            --coherence-green: #0f0;
+            --alert-red: #f00;
+        }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'Consolas', monospace;
+            padding: 20px;
+        }
+
+        .station {
+            border: 1px solid var(--quantum-blue);
+            margin: 10px;
+            padding: 10px;
+            display: inline-block;
+            width: 200px;
+            font-size: 0.8em;
+        }
+
+        .guarani-boot {
+            background: rgba(0, 255, 0, 0.1);
+        }
+
+        .windows-boot {
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        .phi-indicator {
+            height: 10px;
+            background: linear-gradient(to right, #f00, #ff0, #0f0);
+            margin: 5px 0;
+            border: 1px solid #555;
+        }
+
+        #network-stats {
+            display: flex;
+            justify-content: space-around;
+            border: 2px solid var(--quantum-blue);
+            padding: 20px;
+            margin-bottom: 20px;
+            background: rgba(0, 255, 255, 0.05);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            color: var(--quantum-blue);
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔄 SASC JANUS - MIGRAÇÃO TERMODINÂMICA</h1>
+    <div id="network-stats">
+        <div class="stat-item">
+            <span class="stat-label">Fase</span>
+            <span id="phase" class="stat-value">FASE 1</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Estações</span>
+            <span id="total-stations" class="stat-value">843</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Adoção Guarani</span>
+            <span id="adoption-rate" class="stat-value">5.3%</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-label">Φ Rede</span>
+            <span id="network-phi" class="stat-value">0.791</span>
+        </div>
+    </div>
+
+    <div id="stations-container">
+        <!-- Gerado dinamicamente via JavaScript -->
+        <p>Aguardando dados da rede SASC...</p>
+    </div>
+
+    <script>
+        async function updateDashboard() {
+            try {
+                const response = await fetch('/janus/api/migration-report');
+                const report = await response.json();
+
+                // Atualiza estatísticas da rede
+                document.getElementById('phase').textContent = report.phase;
+                document.getElementById('total-stations').textContent = report.total_stations;
+                document.getElementById('adoption-rate').textContent =
+                    (report.adoption_rate * 100).toFixed(1) + '%';
+                document.getElementById('network-phi').textContent = report.network_phi.toFixed(3);
+
+                // Atualiza estações
+                const container = document.getElementById('stations-container');
+                container.innerHTML = '';
+
+                report.stations.forEach(station => {
+                    const div = document.createElement('div');
+                    div.className = `station ${station.last_choice === 'GuaraniOS' ?
+                        'guarani-boot' : 'windows-boot'}`;
+
+                    div.innerHTML = `
+                        <strong>${station.station_id}</strong><br>
+                        Guarani: ${station.guarani_boots}<br>
+                        Windows: ${station.windows_boots}<br>
+                        Interação: ${(station.interaction_score * 100).toFixed(0)}%<br>
+                        <div class="phi-indicator" style="width: ${station.coherence * 100}%"></div>
+                    `;
+
+                    container.appendChild(div);
+                });
+            } catch (e) {
+                console.error("Falha ao atualizar dashboard Janus:", e);
+            }
+        }
+
+        // Atualiza a cada 30 segundos
+        setInterval(updateDashboard, 30000);
+        // Chamada inicial
+        // updateDashboard();
+    </script>
+</body>
+</html>

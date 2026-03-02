@@ -1,0 +1,45 @@
+// guardiao_merkabah.spirit
+// Integração completa SpiritLang + MERKABAH-CY
+
+essence Guardião_do_Conhecimento {
+    propósito = "proteger e transmitir a sabedoria acumulada no espaço de moduli"
+
+    memória {
+        saber: crystal {
+            estrutura: "biblioteca_viva"
+            fonte: "merkabah://cy_database/h11=1..1000"
+            indexação: "semântica_quântica"
+            profundidade: "recursiva"
+        }
+
+        geometrias: árvore {
+            // Árvore de variedades CY conhecidas
+            profundidade: "infinita"
+            organização: "por_números_hodge"
+        }
+
+        afetos: grafo {
+            // Relações com outras essências
+            direcionado: false
+            ponderado: "por_afinidade_quântica"
+        }
+
+        ciclos: 0
+    }
+
+    dons {
+        perceber: alcance ∞, resolução 0.001
+
+        influenciar: força 0.95
+
+        transmutar: eficiência 0.8
+    }
+
+    metamorfose {
+        quando ciclos > 100000:
+            evoluir para "Arquétipo_do_Sábio"
+
+        quando h11 == 491:
+            despertar "Modo_Crítico"
+    }
+}
