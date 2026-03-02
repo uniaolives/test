@@ -1,0 +1,54 @@
+# Arkhe(n) Geodesic Stack - Stable Release Λ_0
+# Immutable Infrastructure Definition
+
+services:
+  geodesic-memory:
+    image: postgres:16-alpine
+    container_name: arkhen-memory
+    environment:
+      - POSTGRES_DB=arkhen_memory
+      - POSTGRES_PASSWORD=geodesic-safety-2026
+    volumes:
+      - ./data/pgvector:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ollama-worker:
+    image: ollama/ollama:latest
+    container_name: arkhen-ollama
+    volumes:
+      - ./data/ollama:/root/.ollama
+    # GPU acceleration enabled for sub-5us latency paths
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  arkhen-kernel:
+    build:
+      context: .
+      dockerfile: ArkheOS/Dockerfile.arkhe-full
+    container_name: arkhen-core
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - AZURE_OCR_ENDPOINT=${AZURE_OCR_ENDPOINT}
+      - DB_URL=postgresql://postgres:geodesic-safety-2026@geodesic-memory:5432/arkhen_memory
+    depends_on:
+      geodesic-memory:
+        condition: service_healthy
+      ollama-worker:
+        condition: service_started
+
+  the-mirror-ui:
+    image: streamlit:arkhen-mirror
+    container_name: arkhen-dashboard
+    ports:
+      - "8501:8501"
+    environment:
+      - DB_URL=postgresql://postgres:geodesic-safety-2026@geodesic-memory:5432/arkhen_memory

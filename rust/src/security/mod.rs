@@ -7,3 +7,5 @@ pub mod karnak_sealer;
 pub mod quantum_phi;
 pub mod quantum_attestation;
 pub mod hardware_immutability;
+pub mod quantum_consciousness_firewall;
+pub mod quantum_intrusion_detection;
