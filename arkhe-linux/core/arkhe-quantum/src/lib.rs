@@ -175,6 +175,8 @@ impl QuantumState {
     }
 }
 
+pub mod verification;
+
 pub struct KrausOperator {
     pub operators: Vec<Array2<Complex64>>,
 }
