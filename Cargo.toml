@@ -44,6 +44,7 @@ members = [
     "arkhe-linux/core/arkhe-shard",
     "metrics-consumer",
     "arkhe-linux/core/arkhe-energy",
+    "tools/load_test",
 ]
 resolver = "2"
 
