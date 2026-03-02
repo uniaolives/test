@@ -1,0 +1,18 @@
+🜁 LEGACY SCHEMA TRANSMUTATION REPORT
+==================================================
+COBOL: CLIENT_ID (9(07))
+  -> Rust: i32
+  -> SQL:  NUMERIC(7, 0)
+------------------------------
+COBOL: CLIENT_NAME (X(30))
+  -> Rust: String
+  -> SQL:  VARCHAR(30)
+------------------------------
+COBOL: CLIENT_BALANCE (9(9)V99)
+  -> Rust: Decimal
+  -> SQL:  DECIMAL(11, 2)
+------------------------------
+COBOL: CLIENT_PHONES (9(10))
+  -> Rust: i64
+  -> SQL:  NUMERIC(10, 0)
+------------------------------

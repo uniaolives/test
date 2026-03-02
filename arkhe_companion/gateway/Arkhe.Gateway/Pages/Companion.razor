@@ -1,0 +1,42 @@
+@page "/companion"
+@using Arkhe.Gateway.Sdk
+@using Arkhe.Protos
+@inject CompanionClient Client
+
+<h3>Arkhe(n) Companion Dashboard</h3>
+
+@if (state != null)
+{
+    <div class="status-panel">
+        <p>Φ-Operational: @state.OperationalPhi.ToString("F3")</p>
+        <p>Memory Energy: @state.MemoryFieldEnergy.ToString("F2")</p>
+        <p>Cognitive Spins: @state.NumCognitiveSpins</p>
+    </div>
+
+    <div class="phi-control">
+        <label>Adjust Φ (Knob):</label>
+        <input type="range" min="0" max="1" step="0.01" value="@state.OperationalPhi" @onchange="OnPhiChanged" />
+    </div>
+}
+else
+{
+    <p>Loading companion state...</p>
+}
+
+@code {
+    private StateSnapshot? state;
+
+    protected override async Task OnInitializedAsync()
+    {
+        state = await Client.GetStateAsync();
+    }
+
+    private async Task OnPhiChanged(ChangeEventArgs e)
+    {
+        if (double.TryParse(e.Value?.ToString(), out var newPhi))
+        {
+            await Client.SetPhiAsync(newPhi);
+            state = await Client.GetStateAsync();
+        }
+    }
+}

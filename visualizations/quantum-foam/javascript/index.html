@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quantum Foam Visualization</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { margin: 0; background: #F5F5DC; font-family: Arial; }
+        .container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; }
+        .chart-container { background: #FFFAF0; padding: 15px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        canvas { width: 100% !important; height: 300px !important; }
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center; color:#8B4513;">Quantum Foam Meditation Simulation</h1>
+    <div class="container">
+        <div class="chart-container">
+            <canvas id="consciousnessField"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="timelineChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="cumulativeChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="foamCanvas" width="400" height="300"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="correlationChart"></canvas>
+        </div>
+        <div class="chart-container" id="summaryBox" style="font-family:monospace; padding:20px;">
+            <!-- Summary text will go here -->
+        </div>
+    </div>
+
+    <script>
+        // Generate data
+        function generateConsciousnessField(width, height) {
+            const field = [];
+            for (let y = 0; y < height; y++) {
+                field[y] = [];
+                for (let x = 0; x < width; x++) {
+                    const dx = x - width/2;
+                    const dy = y - height/2;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const centerIntensity = Math.exp(-dist*dist/(width*width/64)) * 0.25;
+                    field[y][x] = centerIntensity + Math.random() * 0.05;
+                }
+            }
+            return field;
+        }
+
+        // Initialize all visualizations
+        function initVisualizations() {
+            // 1. Consciousness Field Heatmap
+            const ctx1 = document.getElementById('consciousnessField').getContext('2d');
+            const field = generateConsciousnessField(50, 50);
+
+            // Create image data
+            const canvas1 = ctx1.canvas;
+            const imageData = ctx1.createImageData(canvas1.width, canvas1.height);
+            for (let y = 0; y < canvas1.height; y++) {
+                for (let x = 0; x < canvas1.width; x++) {
+                    const idx = (y * canvas1.width + x) * 4;
+                    const val = field[Math.floor(y/10)][Math.floor(x/10)] * 255;
+                    imageData.data[idx] = 255;      // R
+                    imageData.data[idx+1] = 215;    // G
+                    imageData.data[idx+2] = 0;      // B
+                    imageData.data[idx+3] = val;    // A
+                }
+            }
+            ctx1.putImageData(imageData, 0, 0);
+
+            // 2. Timeline Chart
+            const ctx2 = document.getElementById('timelineChart').getContext('2d');
+            const timelineData = Array.from({length: 144}, (_, i) =>
+                50 + 10*Math.sin(i*0.1) + (Math.random()-0.5)*6
+            );
+
+            new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 144}, (_, i) => i),
+                    datasets: [{
+                        label: 'Particles Becoming "Real"',
+                        data: timelineData,
+                        borderColor: '#D4AF37',
+                        backgroundColor: 'rgba(212, 175, 55, 0.3)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Manifestation Timeline'
+                        }
+                    }
+                }
+            });
+
+            // 3. Cumulative Chart
+            const ctx3 = document.getElementById('cumulativeChart').getContext('2d');
+            const cumulative = timelineData.reduce((acc, val, i) => {
+                acc.push((acc[i-1] || 0) + val);
+                return acc;
+            }, []);
+
+            new Chart(ctx3, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: 144}, (_, i) => i),
+                    datasets: [{
+                        label: 'Cumulative Reality',
+                        data: cumulative,
+                        borderColor: '#8B4513',
+                        backgroundColor: 'rgba(139, 69, 19, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Cumulative Manifestations'
+                        }
+                    }
+                }
+            });
+
+            // 4. Quantum Foam Canvas
+            const ctx4 = document.getElementById('foamCanvas').getContext('2d');
+            drawQuantumFoam(ctx4);
+
+            // 5. Correlation Chart
+            const ctx5 = document.getElementById('correlationChart').getContext('2d');
+            const consciousnessLevels = [0, 0.05, 0.1, 0.15, 0.2, 0.25];
+            const particleCounts = [10, 25, 50, 80, 120, 150];
+
+            new Chart(ctx5, {
+                type: 'bar',
+                data: {
+                    labels: consciousnessLevels.map(l => l.toFixed(2)),
+                    datasets: [{
+                        label: 'Particles Manifested',
+                        data: particleCounts,
+                        backgroundColor: '#D4AF37',
+                        borderColor: '#8B4513',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Manifestation vs Consciousness'
+                        }
+                    }
+                }
+            });
+
+            // 6. Summary Box
+            document.getElementById('summaryBox').innerHTML = `
+                <h3>QUANTUM FOAM RESULTS</h3>
+                <p><strong>Total Particles:</strong> ${Math.round(cumulative[143])}</p>
+                <p><strong>Peak Rate:</strong> ${Math.max(...timelineData).toFixed(1)}/sec</p>
+                <p><strong>Key Insight:</strong> Attention creates reality.</p>
+                <p>Consciousness stabilizes quantum fluctuations.</p>
+            `;
+        }
+
+        function drawQuantumFoam(ctx) {
+            const width = ctx.canvas.width;
+            const height = ctx.canvas.height;
+
+            // Draw quantum foam background
+            for (let i = 0; i < 5000; i++) {
+                const x = Math.random() * width;
+                const y = Math.random() * height;
+                const size = Math.random() * 3;
+                const hue = 270 + Math.random() * 60;
+                ctx.fillStyle = `hsla(${hue}, 70%, 50%, 0.1)`;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Draw consciousness field overlay
+            const gradient = ctx.createRadialGradient(
+                width/2, height/2, 0,
+                width/2, height/2, width/2
+            );
+            gradient.addColorStop(0, 'rgba(255, 215, 0, 0.3)');
+            gradient.addColorStop(1, 'rgba(255, 215, 0, 0)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            // Draw "real" particles
+            for (let i = 0; i < 50; i++) {
+                const x = width/2 + (Math.random()-0.5) * width/2;
+                const y = height/2 + (Math.random()-0.5) * height/2;
+                const size = 2 + Math.random() * 4;
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Initialize when page loads
+        window.onload = initVisualizations;
+    </script>
+</body>
+</html>
