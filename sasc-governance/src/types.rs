@@ -1,3 +1,5 @@
+pub enum VerificationContext {
+    TruthSubmission,
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::Duration;
@@ -85,6 +87,10 @@ impl AttestationStatus {
     }
 }
 
+pub struct PhiThreshold(pub f64);
+
+pub enum BiofieldType {
+    GenomicHash,
 pub struct GlobalGovernance {
     pub councils: HashMap<CloudDomain, Vec<CouncilType>>,
     pub prince_key: [u8; 32],

@@ -90,11 +90,15 @@ fn test_inv4_manipulation_detection() {
         messages: vec!["buy agora".to_string()],
         frequency: 20,
         emotional_triggers: vec!["urgência".to_string(), "escassez".to_string(), "prova_social".to_string(), "urgente".to_string()],
+        messages: vec!["buy now".to_string()],
+        frequency: 10,
+        emotional_triggers: vec!["urgência".to_string(), "escassez".to_string(), "prova_social".to_string()],
         accesses_neural_data: false,
         consent: None,
     };
 
     // 0.25 (freq) + 0.30 (triggers) + 0.20 (urgency) = 0.75 > 0.3 threshold
+    // 0.3 (freq) + 0.2*3 (triggers) = 0.9 > 0.7 threshold
     assert_eq!(monitor.check_inv4_cognitive_sovereignty(&interaction), false);
 }
 

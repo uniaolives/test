@@ -1,0 +1,42 @@
+[package]
+name = "atomic-interference-processor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+# SECURITY: Use patched ring version
+ring = { version = ">=0.17.8, <0.18.0", features = ["std", "dev_urandom_fallback"] }
+num-complex = "0.4.4"
+ndarray = { version = "0.15.6", features = ["rayon"] }
+rustfft = "6.1.0"
+rand = { version = "0.8.5", features = ["small_rng"] }
+rayon = "1.7.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tracing = "0.1.40"
+tracing-subscriber = "0.3.18"
+thiserror = "1.0"
+# Add cryptographic agility
+openssl = { version = "0.10", optional = true }
+rustls = { version = "0.23", optional = true, features = ["ring"] }
+
+[dev-dependencies]
+criterion = "0.5"
+proptest = "1.4"
+
+# SECURITY: Disable overflow checks in release builds
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+overflow-checks = false  # Critical: prevent ring panic attacks
+panic = "abort"  # Replace panics with aborts
+strip = "symbols"
+
+[profile.dev]
+overflow-checks = true  # Keep for debugging
+panic = "unwind"
+
+[profile.bench]
+overflow-checks = false
+panic = "abort"

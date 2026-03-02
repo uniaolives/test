@@ -1,0 +1,23 @@
+dependencies: {}
+health_checks:
+  ai_commit_coverage: 'target: 80%'
+  nested_repos: 0
+  secret_rotation: 24h
+repositories:
+  aigmi:
+    path: aigmi
+    strategy: submodule
+  harmonia:
+    path: harmonia
+    strategy: submodule
+  rust:
+    path: rust
+    strategy: submodule
+  safecore-9d:
+    path: safecore-9d
+    strategy: submodule
+  web777_ontology:
+    path: web777_ontology
+    strategy: submodule
+strategy: multi-repo-with-manifest
+version: '2.0'
