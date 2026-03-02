@@ -1,3 +1,4 @@
+use crate::backends::solidity::CompiledContract;
 use crate::compiler::CompiledContract;
 use crate::onchain::{DeploymentResult, OnChainError, VerificationLevel};
 use crate::onchain::deployer::DeployBackend;

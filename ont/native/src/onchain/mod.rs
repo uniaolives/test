@@ -1,6 +1,16 @@
 pub mod deployer;
 
 use crate::ast::OntologyProgram;
+use crate::backends::solidity::{SolidityBackend, CompiledContract};
+use crate::compiler::{CompilerError, CompilerResult};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum BlockchainTarget {
+    SASC,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum VerificationLevel {
 use crate::backends::solidity::SolidityBackend;
 use crate::compiler::{CompilerError, CompilerResult, CompiledContract};
 use serde::{Deserialize, Serialize};
@@ -46,6 +56,7 @@ impl OnChainAutomation {
     }
 
     pub async fn automate(&self, program: &OntologyProgram) -> Result<(), OnChainError> {
+        // Mock automation logic to satisfy integration tests
         // Mock automation logic
         if program.functions.iter().any(|f| f.name == "bad_function") {
             return Err(OnChainError::ConstraintViolation("Violation in bad_function".to_string()));

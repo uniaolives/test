@@ -4,6 +4,7 @@
 // ==============================================
 
 use crate::ast::*;
+use crate::compiler::{CompilerError, CompilerResult};
 use crate::compiler::{CompilerError, CompilerResult, CompiledContract, CompilationStats};
 use crate::utils::selector;
 use indoc::indoc;
@@ -168,6 +169,11 @@ modifier agentGuard(address caller) {
             .collect::<Result<Vec<_>, CompilerError>>()?;
 
         let return_type = self.type_to_solidity(&func.return_type)?;
+        let data_location = if func.paradigm == Paradigm::Functional { "memory" } else { "storage" };
+
+        code.push_str(&format!(
+            r#"
+    function {}({}) {} {} returns ({} {}) {{
 
         code.push_str(&format!(
             r#"
@@ -192,6 +198,7 @@ modifier agentGuard(address caller) {
             visibility,
             if !modifier.is_empty() { modifier } else { "".to_string() },
             return_type,
+            data_location,
             if func.paradigm == Paradigm::Functional { "memory" } else { "storage" },
             func.body.to_solidity()?,
             func.name,
@@ -220,12 +227,15 @@ modifier agentGuard(address caller) {
             _mailbox.push(messageId, message);
         }}
 
+        emit ActorMessage({}, {});
         emit ActorMessage(agentId: {}, message: messageId);
     }}
             "#,
             agent.name,
             agent_id,
             agent.name,
+            agent_id,
+            "messageId"
             agent_id
         ))
     }
@@ -287,6 +297,11 @@ modifier agentGuard(address caller) {
     }
 
     // --- Helpers ---
+    fn type_to_solidity(&self, typ: &OntoType) -> Result<String, CompilerError> {
+        match typ {
+            OntoType::Pure(inner) => self.type_to_solidity(inner),
+            OntoType::Mutable(inner) => self.type_to_solidity(inner),
+            OntoType::Agent(inner) => {
     fn type_to_solidity(&self, typ: &Type) -> Result<String, CompilerError> {
         match typ {
             Type::Pure(inner) => self.type_to_solidity(inner),
@@ -296,6 +311,16 @@ modifier agentGuard(address caller) {
                 let inner_type = self.type_to_solidity(inner)?;
                 Ok(format!("address /* Agent<{}> */", inner_type))
             }
+            OntoType::Substrate(inner) => {
+                // Substrate types têm representação especial
+                Ok(format!("bytes32 /* Substrate<{}> */", self.type_to_solidity(inner)?))
+            }
+            OntoType::Object(_) => Ok("address".to_string()), // Objects são endereços de contrato
+            OntoType::Int => Ok("int256".to_string()),
+            OntoType::Float => Ok("int256".to_string()), // Simulação para prototipagem
+            OntoType::Bool => Ok("bool".to_string()),
+            OntoType::String => Ok("string".to_string()),
+            OntoType::Named(name, _) => Ok(name.clone()), // Tipos personalizados do usuário
             Type::Substrate(inner) => {
                 // Substrate types têm representação especial
                 Ok(format!("bytes32 /* Substrate<{}> */", self.type_to_solidity(inner)?))
@@ -318,6 +343,8 @@ modifier agentGuard(address caller) {
         CompilationStats {
             functions_compiled: program.functions.len(),
             contracts_deployed: program.agents.len() + program.classes.len(),
+            transmutations_applied: program.transmutations.len(),
+            diplomatic_constraints: program.transmutations.iter()
             transmutations_applied: program.transmutations().len(),
             diplomatic_constraints: program.transmutations().iter()
                 .map(|t| t.constraints.len())
@@ -357,4 +384,22 @@ impl ParadigmSolidity for Paradigm {
             Paradigm::Custom(s) => format!("Paradigm.Custom('{}')", s),
         }
     }
+}
+
+// --- Estruturas de retorno ---
+#[derive(Debug, Clone)]
+pub struct CompiledContract {
+    pub target_language: String,
+    pub source_code: String,
+    pub stats: CompilationStats,
+}
+
+#[derive(Debug, Clone)]
+pub struct CompilationStats {
+    pub functions_compiled: usize,
+    pub contracts_deployed: usize,
+    pub transmutations_applied: usize,
+    pub diplomatic_constraints: usize,
+    pub paradigm_guards_injected: usize,
+    pub gas_estimate: u64,
 }

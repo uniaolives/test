@@ -1,4 +1,5 @@
 use thiserror::Error;
+use crate::ast::OntoType;
 use crate::ast::Type;
 use std::path::Path;
 use std::fs;
@@ -6,6 +7,9 @@ use std::fs;
 #[derive(Error, Debug)]
 pub enum CompilerError {
     #[error("Unsupported type: {0:?}")]
+    UnsupportedType(OntoType),
+    #[error("Constraint violation: {0}")]
+    ConstraintViolation(String),
     UnsupportedType(Type),
     #[error("Constraint violation: {0}")]
     ConstraintViolation(String),
@@ -17,6 +21,7 @@ pub enum CompilerError {
 
 pub type CompilerResult<T> = Result<T, CompilerError>;
 
+pub use crate::backends::solidity::{CompiledContract, CompilationStats};
 // --- Estruturas de retorno ---
 #[derive(Debug, Clone)]
 pub struct CompiledContract {
