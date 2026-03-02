@@ -1,0 +1,99 @@
+#!/bin/bash
+# .githooks/pre-commit-rosehip
+# AI-enhanced commit message validator with Architectural Integrity checks
+
+echo "🌹 ROSEHIP HOOK: Analisando assinatura cognitiva do commit..."
+
+# 1. CONFIGURAÇÃO DO SISTEMA ROSEHIP
+ROSEHIP_THRESHOLD=300          # Entropia total máxima permitida (ajustado para múltiplos arquivos)
+CRITICAL_ENTROPY=60           # Entropia por arquivo que dispara alerta
+TIM_VM_ENDPOINT="http://localhost:8000/cosmic_health"
+
+# 2. FUNÇÃO: CALCULAR ENTROPIA DO ARQUIVO
+calculate_file_entropy() {
+    local file="$1"
+    python3 scripts/calculate_entropy.py "$file"
+}
+
+# 3. FUNÇÃO: DETECTAR PADRÕES HUMANOS
+detect_human_patterns() {
+    local file="$1"
+    local score=0
+
+    if grep -q "# TODO: refactor\|# FIXME:" "$file" 2>/dev/null; then
+        score=$((score + 1))
+    fi
+    if grep -q "def test_\|test(" "$file" 2>/dev/null; then
+        score=$((score + 2))
+    fi
+    if grep -q "logger.debug\|console.log" "$file" 2>/dev/null; then
+        score=$((score + 1))
+    fi
+    if grep -q "while True:\|goto\|eval(" "$file" 2>/dev/null; then
+        score=$((score - 3))
+    fi
+
+    echo "$score"
+}
+
+# 4. FUNÇÃO: CONSULTAR O TIM_VM PARA SAÚDE CÓSMICA
+check_cosmic_health() {
+    if curl -s --max-time 1 "$TIM_VM_ENDPOINT" > /dev/null 2>&1; then
+        local response=$(curl -s --max-time 1 "$TIM_VM_ENDPOINT")
+        local dilation=$(echo "$response" | grep -o '"dilation":[0-9.]*' | cut -d':' -f2)
+
+        if [[ ! -z "$dilation" ]] && awk "BEGIN {exit !($dilation > 2.5)}"; then
+            echo "⚠️  Sistema cósmico sob estresse (dilatação: $dilation)"
+            return 1
+        fi
+    fi
+    return 0
+}
+
+# 5. ANÁLISE PRINCIPAL
+main() {
+    local total_entropy=0
+    local problematic_files=()
+    local human_score_total=0
+
+    local files=$(git diff --cached --name-only --diff-filter=ACM)
+
+    if [ -z "$files" ]; then
+        echo "✅ Nenhum arquivo para analisar."
+        exit 0
+    fi
+
+    # check_cosmic_health || exit 1
+
+    for file in $files; do
+        if [ ! -f "$file" ]; then continue; fi
+
+        # Ignorar binários e arquivos muito grandes se necessário, mas aqui processamos tudo
+        local entropy=$(calculate_file_entropy "$file")
+        total_entropy=$(awk "BEGIN {print $total_entropy + $entropy}")
+
+        local human_score=$(detect_human_patterns "$file")
+        human_score_total=$((human_score_total + human_score))
+
+        if awk "BEGIN {exit !($entropy > $CRITICAL_ENTROPY)}"; then
+            problematic_files+=("$file")
+        fi
+    done
+
+    echo "📈 RESULTADO DA ANÁLISE ROSEHIP:"
+    echo "   Entropia total: $total_entropy / $ROSEHIP_THRESHOLD"
+    echo "   Pontuação humana: $human_score_total"
+
+    if awk "BEGIN {exit !($total_entropy > $ROSEHIP_THRESHOLD)}"; then
+        echo "❌ COMMIT REJEITADO: Entropia total muito alta ($total_entropy > $ROSEHIP_THRESHOLD)."
+        if [ ${#problematic_files[@]} -gt 0 ]; then
+            echo "   Arquivos com alta entropia individual: ${problematic_files[*]}"
+        fi
+        exit 1
+    fi
+
+    echo "✅ COMMIT APROVADO pelo Filtro Rosehip"
+    exit 0
+}
+
+main "$@"

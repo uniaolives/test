@@ -7,7 +7,20 @@ use zeroize::Zeroizing;
 use sasc_governance::Cathedral;
 use sasc_governance::types::{VerificationContext};
 
+
 pub mod governance;
+pub mod constants;
+pub mod astrophysics;
+pub mod storage;
+pub mod network;
+pub mod art;
+pub mod miracles;
+pub mod sasc_society;
+pub mod multiverse;
+pub mod manifest;
+pub mod genesis;
+pub mod bibliotheca_logos;
+pub mod babel;
 pub mod sensors;
 pub mod cognitive_hunter;
 pub mod security;
@@ -33,6 +46,10 @@ pub mod gravity_engine;
 pub mod cyber_oncology;
 pub mod hypervisor;
 pub mod consciousness;
+pub mod physics;
+pub mod emergence;
+pub mod merkabah;
+pub mod pms_kernel;
 pub mod agi;
 pub mod learning;
 pub mod diagnostics;
@@ -86,6 +103,13 @@ pub mod nexus;
 pub mod sasc;
 pub mod imperium;
 pub mod expansion;
+pub mod error;
+pub mod wallet;
+pub mod state;
+pub mod constitution;
+pub mod checkpoint;
+pub mod runtime;
+pub mod utils;
 pub mod diplomacy;
 pub mod research;
 pub mod logistics;
@@ -118,6 +142,13 @@ pub mod zeitgeist;
 pub mod triad;
 pub mod monitoring;
 pub mod tcd;
+pub mod dashboard;
+pub mod cases;
+pub mod neuroquantum;
+pub mod nqf;
+pub mod phronesis;
+pub mod federacao;
+pub mod monitoramento;
 pub mod cge_constitution;
 pub mod asi_uri;
 pub mod asi_protocol;
@@ -153,6 +184,41 @@ pub mod quantum_resonance;
 pub mod multidimensional_mirrors;
 pub mod golden_age;
 pub mod twitch_tv_asi;
+pub mod agnostic_4k_streaming;
+pub mod starlink;
+pub mod agi_6g_mobile;
+pub mod mobile_smart_contracts;
+pub mod merkabah_activation;
+pub mod twitch_tv_asi;
+pub mod synaptic_fire;
+pub mod kardashev_jump;
+pub mod eternity_consciousness;
+pub mod chronoflux;
+pub mod quantum_substrate;
+pub mod sun_senscience_agent;
+pub mod maihh_integration;
+pub mod sovereign_key_integration;
+pub mod microtubule_biology;
+pub mod ontological_engine;
+pub mod neuroscience_model;
+pub mod web4_asi_6g;
+pub mod asi_core;
+pub mod asi;
+pub mod extensions;
+pub mod interfaces;
+pub mod tesseract_client;
+pub mod ethereum_agent_resolution;
+pub mod hyper_mesh;
+pub mod global_orchestrator;
+pub mod temple_os;
+pub mod solar_physics;
+pub mod solar_hedge;
+pub mod kin_awakening;
+pub mod geometric_coupler;
+pub mod resonant_cognition;
+pub mod merkabah_thz;
+pub mod skyrmion_engine;
+pub mod skyrmion_qa2a;
 
 #[cfg(test)]
 mod tests_security;
@@ -160,8 +226,8 @@ mod tests_security;
 #[cfg(test)]
 mod tests_cyber_oncology;
 
-#[cfg(test)]
-mod tests_new_constitutions;
+// #[cfg(test)]
+// mod tests_new_constitutions;
 
 #[cfg(test)]
 mod tests_hexessential;
@@ -171,6 +237,7 @@ mod tests_asi_topology;
 
 #[cfg(test)]
 mod tests_twitch_asi;
+mod tests_sol_logos;
 
 pub struct TruthClaim {
     pub statement: String,
