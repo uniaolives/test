@@ -19,6 +19,7 @@ tokio = { version = "1", features = ["full"] }
 nalgebra = "0.32"
 nalgebra = { version = "0.32", features = ["serde-serialize"] }
 ndarray = "0.15"
+ndarray-stats = "0.5"
 num-complex = "0.4"
 aws-nitro-enclaves-cose = "0.5.2"
 ring = "0.17"
@@ -28,6 +29,12 @@ sasc-governance = { path = "../sasc-governance", features = ["cathedral", "eip71
 lazy_static = "1.4"
 serde_json = "1.0"
 once_cell = "1.18"
+serde_arrays = "0.1"
+reqwest = { version = "0.11", features = ["json"] }
+rand = "0.8"
+anyhow = "1.0"
+async-trait = "0.1"
+atomic_float = "0.1"
 zeroize = { version = "1.8", features = ["derive", "zeroize_derive"] }
 rsa = "0.9"
 sha2 = "0.10"

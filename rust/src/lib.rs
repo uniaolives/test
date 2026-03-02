@@ -45,6 +45,26 @@ pub mod geom;
 pub mod onchain;
 pub mod quantum;
 pub mod gravity_engine;
+pub mod cyber_oncology;
+pub mod hypervisor;
+pub mod memory;
+pub mod karnak;
+pub mod kpi_evaluator;
+pub mod temporal;
+pub mod monitoring;
+pub mod pipeline;
+pub mod metrics;
+pub mod drivers;
+pub mod ignition;
+pub mod cosmogenesis;
+pub mod ontological_commitment;
+pub mod multiversal;
+pub mod omicron_singularity;
+pub mod omicron;
+
+pub use ontological_commitment::*;
+pub use multiversal::*;
+pub use omicron_singularity::*;
 pub mod android;
 pub mod ghost;
 pub mod payments;
@@ -243,6 +263,20 @@ mod tests_security;
 #[cfg(test)]
 mod tests_cyber_oncology;
 
+#[cfg(test)]
+mod tests_continuum_memory;
+
+#[cfg(test)]
+mod tests_kpi_evaluator;
+
+#[cfg(test)]
+mod tests_cosmogenesis;
+
+#[cfg(test)]
+mod tests_omicron;
+
+#[cfg(test)]
+mod tests_observability;
 // #[cfg(test)]
 // mod tests_new_constitutions;
 
