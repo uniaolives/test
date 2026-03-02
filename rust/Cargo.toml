@@ -47,7 +47,6 @@ atomic = "0.6"
 crossbeam-channel = "0.5"
 atomic_float = "0.1"
 parking_lot = "0.12"
-heapless = "0.8"
 futures = "0.3"
 sha2 = "0.10.9"
 ic-cdk = "0.12"
@@ -60,6 +59,7 @@ bs58 = "0.5.1"
 regex = "1.12.3"
 base64 = "0.22.1"
 web777_ontology = { path = "../web777_ontology" }
+arkhe-quantum = { path = "../arkhe-linux/core/arkhe-quantum" }
 reqwest = { version = "0.11", features = ["blocking", "json"] }
 
 [target.'cfg(target_os = "windows")'.dependencies]
