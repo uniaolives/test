@@ -1,0 +1,53 @@
+[package]
+name = "cge-universal-engine"
+version = "31.11.0"
+edition = "2021"
+authors = ["CGE Alpha Constitutional Architects"]
+license = "AGPL-3.0-or-later"
+
+[dependencies]
+tokio = { version = "1.35", features = ["full", "macros", "rt-multi-thread"] }
+glam = { version = "0.24", features = ["serde"] }
+rayon = "1.8"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+wgpu = "0.19"
+bytemuck = { version = "1.14", features = ["derive"] }
+prometheus = "0.13"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+anyhow = "1.0"
+thiserror = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+futures = "0.3"
+arc-swap = "1.6"
+cge-www-universal = { path = "../cge_www_universal" }
+atomic_float = "0.1"
+clap = { version = "4.0", features = ["derive"] }
+
+[features]
+default = ["webgpu", "www-integration"]
+webgpu = []
+www-integration = []
+constitutional-renderer = []
+
+[[bin]]
+name = "init_universal_matrix"
+path = "src/bin/init_universal_matrix.rs"
+
+[[bin]]
+name = "universal_engine"
+path = "src/bin/universal_engine.rs"
+
+[[bin]]
+name = "constitutional_renderer"
+path = "src/bin/constitutional_renderer.rs"
+
+[[bin]]
+name = "universal_www_bridge"
+path = "src/bin/universal_www_bridge.rs"
+
+[[bin]]
+name = "constitutional_tests"
+path = "src/bin/constitutional_tests.rs"

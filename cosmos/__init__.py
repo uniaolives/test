@@ -26,6 +26,7 @@ from .cgda import (
     ConstraintGeometry,
     CGDALab
 )
+from .qvpn import QuantumVPN
 from .power import (
     QuantumFusionReactor,
     QuantumFusionNetwork,
