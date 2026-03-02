@@ -1,0 +1,19 @@
+# noesis-audit/gateway/sandbox/agent_profile.yaml
+agent:
+  id: "research-agent-01"
+  name: "Market Analyzer"
+  level: 2
+  resources:
+    cpu: "1 core"
+    memory: "2GB"
+    network: "isolated"
+    storage: "read-only"
+  allowed_apis:
+    - "market_data/*"
+    - "news/*"
+  denied_apis:
+    - "treasury/*"
+    - "hr/*"
+  quotas:
+    daily_api_calls: 5000
+    max_transaction_value: 1000.0

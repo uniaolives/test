@@ -1,5 +1,10 @@
 use crate::entropy::VajraEntropyMonitor;
 
+pub struct KarnakSeal {
+    pub geometric_hash: [u8; 32],
+    pub aletheia_score: f64,
+}
+
 pub struct KarnakQuantumSealer;
 pub type KarnakSealer = KarnakQuantumSealer;
 
@@ -16,6 +21,18 @@ impl KarnakQuantumSealer {
 
     pub fn seal_crystallized_path(_module: crate::maat::flagellar_dynamics::CrystallizedModule, _name: &str) {
         log::info!("KARNAK: Crystallized path sealed: {}", _name);
+    }
+
+    pub fn seal_with_metadata(
+        &self,
+        _content: &crate::crypto::prnu::VideoBuffer,
+        _metadata: &crate::security::aletheia_metadata::MorphologicalTopologicalMetadata,
+    ) -> KarnakSeal {
+        log::info!("KARNAK: Sealing content with metadata.");
+        KarnakSeal {
+            geometric_hash: _metadata.geometric_hash,
+            aletheia_score: _metadata.aletheia_score,
+        }
     }
 
     pub fn seal_multiverse(reason: &str) {

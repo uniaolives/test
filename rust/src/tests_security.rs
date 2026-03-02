@@ -151,7 +151,7 @@ mod tests {
         let monitor_clone = monitor.clone();
         let verifier_clone = verifier.clone();
 
-        let handle = thread::spawn(move || {
+        let _handle = thread::spawn(move || {
             vajra_verifier_thread(verifier_clone, monitor_clone);
         });
 

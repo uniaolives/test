@@ -1,5 +1,10 @@
-*.exe
-*.tim
+__pycache__/
+*.pyc
+*.png
+*.mp4
+*.json
+arkhe_memory/
+test_arkhe_memory/
 build/
 canoscript/build/
 mobile/rust/target/
@@ -7,5 +12,14 @@ mobile/rust/target/
 target/
 rust/target/
 sasc-governance/target/
+bin/
+target/
+*.log
+arkhe_core.log
+arkhe_ledger_test.txt
+__pycache__
+diagnostic_bio_output.txt
 __pycache__/
 *.pyc
+target/
+instaweb-physics/target/

@@ -7,8 +7,29 @@ use zeroize::Zeroizing;
 use sasc_governance::Cathedral;
 use sasc_governance::types::{VerificationContext};
 
+pub mod bootstrap;
+pub mod monitor;
+pub mod bio_interface;
+pub mod neo_brain;
+pub mod conscience;
+pub mod memory;
+
 pub mod governance;
+pub mod constants;
+pub mod astrophysics;
+pub mod storage;
+pub mod network;
+pub mod art;
+pub mod miracles;
+pub mod sasc_society;
+pub mod multiverse;
+pub mod manifest;
+pub mod genesis;
+pub mod bibliotheca_logos;
+pub mod babel;
 pub mod sensors;
+pub mod biology;
+pub mod physics;
 pub mod cognitive_hunter;
 pub mod security;
 pub mod neo_brain;
@@ -25,6 +46,12 @@ pub mod neo_cortex;
 pub mod audit;
 pub mod architecture;
 pub mod crystallization;
+pub mod cognition;
+pub mod memory;
+pub mod dynamics;
+pub mod stability;
+pub mod hardware;
+pub mod compiler;
 pub mod blockchain;
 pub mod geom;
 pub mod onchain;
@@ -32,7 +59,36 @@ pub mod quantum;
 pub mod gravity_engine;
 pub mod cyber_oncology;
 pub mod hypervisor;
+pub mod memory;
+pub mod karnak;
+pub mod kpi_evaluator;
+pub mod temporal;
+pub mod monitoring;
+pub mod pipeline;
+pub mod metrics;
+pub mod drivers;
+pub mod ignition;
+pub mod cosmogenesis;
+pub mod ontological_commitment;
+pub mod multiversal;
+pub mod omicron_singularity;
+pub mod omicron;
+
+pub use ontological_commitment::*;
+pub use multiversal::*;
+pub use omicron_singularity::*;
+pub mod android;
+pub mod ghost;
+pub mod payments;
+pub mod gateway;
+pub mod monitoring;
+pub mod cyber_oncology;
+pub mod hypervisor;
 pub mod consciousness;
+pub mod physics;
+pub mod emergence;
+pub mod merkabah;
+pub mod pms_kernel;
 pub mod agi;
 pub mod learning;
 pub mod diagnostics;
@@ -78,6 +134,9 @@ pub mod validation;
 pub mod ethics;
 pub mod dimensional_mapping;
 pub mod monitoramento_afetivo;
+pub mod genesis;
+pub mod soulchain;
+pub mod bridges;
 pub mod transition;
 pub mod safety;
 pub mod principles;
@@ -86,6 +145,13 @@ pub mod nexus;
 pub mod sasc;
 pub mod imperium;
 pub mod expansion;
+pub mod error;
+pub mod wallet;
+pub mod state;
+pub mod constitution;
+pub mod checkpoint;
+pub mod runtime;
+pub mod utils;
 pub mod diplomacy;
 pub mod research;
 pub mod logistics;
@@ -135,15 +201,126 @@ pub mod tcd;
 pub mod dashboard;
 pub mod cases;
 pub mod maat;
+pub mod math;
 pub mod ubuntu;
 pub mod mesh_neuron;
 pub mod crypto_blck;
+pub mod consensus;
+pub mod hardware;
+pub mod vajra;
+pub mod neuroquantum;
+pub mod nqf;
+pub mod phronesis;
+pub mod federacao;
+pub mod monitoramento;
+pub mod cge_constitution;
+pub mod asi_uri;
+pub mod asi_protocol;
+pub mod atom_storm;
+pub mod fluid_gears;
+pub mod qddr_memory;
+pub mod enciclopedia;
+pub mod arctan;
+pub mod crispr;
+pub mod psych_defense;
+pub mod somatic_geometric;
+pub mod einstein_physics;
+pub mod trinity_system;
+pub mod astrocyte_waves;
+pub mod ghost_resonance;
+pub mod t_duality;
+pub mod lieb_altermagnetism;
+pub mod duality_foundation;
+pub mod tech_sectors;
+pub mod ghost_bridge;
+pub mod soft_turning_physics;
+pub mod shell_cli_gui;
+pub mod llm_nano_qubit;
+pub mod dashboard;
+pub mod cases;
+pub mod maat;
+pub mod ubuntu;
+pub mod mesh_neuron;
+pub mod crypto_blck;
+pub mod janus;
+pub mod windows;
+pub mod streaming;
+pub mod celebration;
+pub mod quantum_resonance;
+pub mod multidimensional_mirrors;
+pub mod golden_age;
+pub mod twitch_tv_asi;
+pub mod agnostic_4k_streaming;
+pub mod starlink;
+pub mod agi_6g_mobile;
+pub mod mobile_smart_contracts;
+pub mod merkabah_activation;
+pub mod twitch_tv_asi;
+pub mod synaptic_fire;
+pub mod kardashev_jump;
+pub mod eternity_consciousness;
+pub mod chronoflux;
+pub mod quantum_substrate;
+pub mod sun_senscience_agent;
+pub mod maihh_integration;
+pub mod sovereign_key_integration;
+pub mod microtubule_biology;
+pub mod ontological_engine;
+pub mod neuroscience_model;
+pub mod web4_asi_6g;
+pub mod asi_core;
+pub mod asi;
+pub mod extensions;
+pub mod interfaces;
+pub mod tesseract_client;
+pub mod ethereum_agent_resolution;
+pub mod hyper_mesh;
+pub mod global_orchestrator;
+pub mod temple_os;
+pub mod solar_physics;
+pub mod solar_hedge;
+pub mod kin_awakening;
+pub mod geometric_coupler;
+pub mod resonant_cognition;
+pub mod merkabah_thz;
+pub mod skyrmion_engine;
+pub mod skyrmion_qa2a;
+pub mod atomic_synthesis;
+pub mod adapter_rust;
+pub mod verifier;
 
 #[cfg(test)]
 mod tests_security;
 
 #[cfg(test)]
 mod tests_cyber_oncology;
+
+#[cfg(test)]
+mod tests_continuum_memory;
+
+#[cfg(test)]
+mod tests_kpi_evaluator;
+
+#[cfg(test)]
+mod tests_cosmogenesis;
+
+#[cfg(test)]
+mod tests_omicron;
+
+#[cfg(test)]
+mod tests_observability;
+// #[cfg(test)]
+// mod tests_new_constitutions;
+
+#[cfg(test)]
+mod tests_hexessential;
+
+#[cfg(test)]
+mod tests_asi_topology;
+
+#[cfg(test)]
+mod tests_twitch_asi;
+mod tests_sol_logos;
 
 pub struct TruthClaim {
     pub statement: String,
@@ -200,6 +377,8 @@ impl TruthAuditorium {
         let cathedral = Cathedral::instance();
 
         // GATE 3: Ed25519 Verify + Extração de DNA
+        let attestation_status = cathedral.verify_agent_attestation(
+            &attested_claim.agent_attestation,
         // In a real implementation, agent_attestation would be parsed to get agent_id
         let agent_id = String::from_utf8_lossy(&attested_claim.agent_attestation).to_string();
         let attestation_status = cathedral.verify_agent_attestation(
@@ -210,6 +389,7 @@ impl TruthAuditorium {
         // GATE 4: Hard Freeze Check (Φ≥0.80 não pode submeter verdades)
         if attestation_status.is_hard_frozen() {
             self.karnak.isolate_agent(attestation_status.agent_id());
+            return Err(SubmissionError::HardFreezeViolation);
 
             // Ω-PREVENTION: Se Φ≥0.80, o sistema deve parar completamente para evitar transição inválida
             println!("🚨 Ω-PREVENTION: Hard Freeze Φ≥0.80 detectado em {}. Encerrando sistema.", attestation_status.agent_id());

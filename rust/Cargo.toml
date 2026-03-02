@@ -4,22 +4,36 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+jni = "0.21.1"
+sha3 = "0.10.8"
+ed25519-dalek = "2.1.1"
+hex = "0.4.3"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+async-trait = "0.1"
 jni = "0.21.1"
 log = "0.4"
 sha3 = "0.10.8"
 ed25519-dalek = { version = "2.1.1", features = ["serde"] }
 hex = "0.4.3"
+sasc-governance = { path = "../sasc-governance", features = ["cathedral", "eip712", "bio-extraction"] }
+zeroize = { version = "1.7", features = ["zeroize_derive"] }
+tokio = { version = "1", features = ["full"] }
+log = "0.4"
+serde = { version = "1.0", features = ["derive"] }
 thiserror = "1.0"
 blake3 = "1.5"
 tokio = { version = "1", features = ["full"] }
 nalgebra = "0.32"
+nalgebra = { version = "0.32", features = ["serde-serialize"] }
 ndarray = "0.15"
+ndarray-stats = "0.5"
 num-complex = "0.4"
 aws-nitro-enclaves-cose = "0.5.2"
-x509-parser = "0.15"
 ring = "0.17"
 serde = { version = "1.0", features = ["derive"] }
 ciborium = "0.2"
@@ -29,21 +43,54 @@ zeroize = { version = "1.7", features = ["zeroize_derive"] }
 lazy_static = "1.4"
 serde_json = "1.0"
 once_cell = "1.18"
+serde_arrays = "0.1"
+reqwest = { version = "0.11", features = ["json"] }
+rand = "0.8"
+anyhow = "1.0"
+async-trait = "0.1"
+atomic_float = "0.1"
+zeroize = { version = "1.8", features = ["derive", "zeroize_derive"] }
+rsa = "0.9"
+sha2 = "0.10"
+pkcs1 = "0.7"
+x509-parser = "0.16"
+zip = "0.6"
+base64 = "0.21"
 pqcrypto-traits = "0.3.5"
 pqcrypto-dilithium = "0.5.0"
-heapless = "0.8"
 rand = { version = "0.8", features = ["getrandom"] }
 clap = { version = "4.0", features = ["derive"] }
 chrono = { version = "0.4", features = ["serde"] }
 tracing = "0.1"
 tracing-subscriber = "0.3"
 nanoid = "0.4"
+bytes = "1.5"
+http = "0.2"
+hyper = { version = "0.14", features = ["full"] }
+m3u8-rs = "6.0"
+dash-mpd = "0.19"
+webrtc = "0.14"
+atomic = "0.6"
+crossbeam-channel = "0.5"
+atomic_float = "0.1"
+parking_lot = "0.12"
 futures = "0.3"
 sha2 = "0.10.9"
+rustfft = "6.2"
+ic-cdk = "0.12"
+ic-cdk-macros = "0.8"
 uuid = { version = "1.19.0", features = ["v4"] }
 bellman = "0.14.0"
 bls12_381 = "0.8.0"
 ff = "0.13.0"
+rustfft = "6.4.1"
+num-traits = "0.2.19"
+bs58 = "0.5.1"
+regex = "1.12.3"
+base64 = "0.22.1"
+web777_ontology = { path = "../web777_ontology" }
+arkhe-quantum = { path = "../arkhe-linux/core/arkhe-quantum" }
+reqwest = { version = "0.11", features = ["blocking", "json"] }
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.56", features = [
@@ -78,6 +125,12 @@ name = "maat_crystallizer"
 path = "src/bin/maat_crystallizer.rs"
 
 [[bin]]
+name = "aletheia_scanner"
+path = "src/bin/aletheia_scanner.rs"
+
+[[bin]]
+name = "boundary_mapper"
+path = "src/bin/boundary_mapper.rs"
 name = "sasc-sign"
 path = "src/bin/sasc_sign.rs"
 
@@ -106,9 +159,45 @@ name = "sasc-constellate"
 path = "src/bin/sasc_constellate.rs"
 
 [[bin]]
+name = "sasc-stream"
+path = "src/bin/sasc_stream.rs"
+
+[[bin]]
+name = "sasc-starlink"
+path = "src/bin/sasc_starlink.rs"
+
+[[bin]]
+name = "sasc-mobile"
+path = "src/bin/sasc_mobile.rs"
+
+[[bin]]
+name = "sasc-contracts"
+path = "src/bin/sasc_contracts.rs"
+
+[[bin]]
 name = "materio_ii"
 path = "src/bin/materio_ii.rs"
 required-features = ["materio_ii"]
+
+[[bin]]
+name = "trajectory_generator"
+path = "src/bin/trajectory_generator.rs"
+
+[[bin]]
+name = "tiger_init_hardened"
+path = "src/bin/tiger_init_hardened.rs"
+
+[profile.release]
+panic = "abort"
+lto = "fat"
+codegen-units = 1
+strip = true
+opt-level = "z"
+overflow-checks = true
+
+[profile.release.package."*"]
+opt-level = 3
+overflow-checks = true
 
 [features]
 sat = []

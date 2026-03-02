@@ -1,0 +1,12 @@
+[package]
+name = "rust_sentry"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "rust_sentry"
+crate-type = ["cdylib"]
+
+[dependencies]
+rustler = "0.29"
+lazy_static = "1.4"
