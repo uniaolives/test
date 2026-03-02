@@ -13,15 +13,26 @@ The Arkhe-Foundry Bridge implements the convergence between the **Palantir Found
 | Action Type             | Handover (Meta)      | Update -> Thermodynamic event |
 | Submission Criteria     | Constitutional P1-P5 | Validation -> Z3 Formal Proof |
 
+## gRPC API (`arkhe.proto`)
+The bridge communicates with the `arkhed` daemon via a high-performance gRPC interface:
+
+```protobuf
+service ArkheService {
+  rpc SendHandover (HandoverRequest) returns (ArkheResponse);
+  rpc GetStatus (StatusRequest) returns (StatusResponse);
+  rpc UpdateOntology (OntologyRequest) returns (ArkheResponse);
+}
+```
+
 ## Components
 
 ### 1. `arkhe-foundry-bridge` (Rust)
-The core bridge logic that handles mapping Foundry OSDK object updates to Arkhe `Handover` packets.
-- **Mapping Logic**: Calculates `entropy_cost` based on property variance.
-- **OSDK Simulation**: Provides a mock interface for syncing object sets.
+The core bridge logic that handles mapping Foundry OSDK object updates to gRPC calls.
+- **CognitiveNode**: Mapped from Foundry objects with φ and entropy properties.
+- **QuantumLink**: Mapped from Ontology relationships.
 
-### 2. `foundry_mock.py` (Python)
-A simulation script that generates randomized Foundry Ontology updates (e.g., Supply Chain alerts) to test the bridge integration.
+### 2. `foundry_grpc_sim.py` (Python)
+An advanced simulator using the `grpcio` library to feed the Arkhe engine with synthetic Foundry Ontology updates.
 
 ## Usage
 
@@ -32,13 +43,20 @@ A simulation script that generates randomized Foundry Ontology updates (e.g., Su
    cargo run --release
    ```
 
-2. **Run the Foundry Bridge Simulator**:
+2. **Run the gRPC Simulator**:
    ```bash
-   python core/python/arkhe/sim/foundry_mock.py
+   python core/python/arkhe/sim/foundry_grpc_sim.py
    ```
 
 3. **Monitor via Dashboard**:
    Open the Streamlit dashboard and navigate to the **Foundry Bridge** tab to see the real-time mapping.
 
-## Constitutional Enforcement
-All updates originating from the Foundry Bridge are subject to the same **Constitutional Veto** (P1-P5) as internal handovers. An update that causes excessive thermodynamic instability (φ deviation > 0.05) will be automatically rejected.
+## Refined Ontology Definition
+The bridge expects the following minimum schema in the Foundry Ontology:
+- **Object Type: `CognitiveNode`**
+  - `phi`: Double (Target: 0.618)
+  - `entropy`: Double
+- **Object Type: `QuantumLink`**
+  - `correlation`: Double
+- **Object Type: `HandoverLog`**
+  - `payload_json`: String

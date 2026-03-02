@@ -14,6 +14,7 @@ mod ledger;
 mod personality;
 mod security;
 mod secops;
+mod grpc_server;
 
 use crdt::{CRDTStore};
 use entropy::{EntropyMonitor, EntropyStats};
@@ -277,9 +278,16 @@ impl ArkheSystem {
     }
 }
 
-async fn start_grpc_server(_sys: Arc<ArkheSystem>) {
-    info!("Starting gRPC server...");
-    tokio::time::sleep(Duration::from_secs(u64::MAX)).await;
+async fn start_grpc_server(sys: Arc<ArkheSystem>) {
+    info!("Starting gRPC server on 0.0.0.0:50051...");
+    let addr = "0.0.0.0:50051".parse().unwrap();
+    let service = grpc_server::ArkheServiceImpl { system: sys };
+
+    tonic::transport::Server::builder()
+        .add_service(grpc_server::arkhe::arkhe_service_server::ArkheServiceServer::new(service))
+        .serve(addr)
+        .await
+        .expect("gRPC server failed");
 }
 
 async fn crdt_sync_daemon(_sys: Arc<ArkheSystem>) {

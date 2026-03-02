@@ -344,9 +344,12 @@ dependencies = [
  "anyhow",
  "arkhe-quantum",
  "log",
+ "prost 0.12.6",
  "serde",
  "serde_json",
  "tokio",
+ "tonic 0.11.0",
+ "tonic-build 0.11.0",
  "uuid 1.21.0",
 ]
 
@@ -485,11 +488,15 @@ dependencies = [
  "pqcrypto-dilithium",
  "pqcrypto-kyber 0.7.9",
  "pqcrypto-traits",
+ "prost 0.12.6",
+ "prost-types 0.12.6",
  "rand 0.8.5",
  "serde",
  "serde_json",
  "thiserror 1.0.69",
  "tokio",
+ "tonic 0.11.0",
+ "tonic-build 0.11.0",
  "tracing",
  "tracing-subscriber",
  "uuid 1.21.0",
@@ -10327,6 +10334,19 @@ name = "tonic-build"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9d021fc044c18582b9a2408cd0dd05b1596e3ecdb5c4df822bb0183545683889"
+dependencies = [
+ "prettyplease 0.2.37",
+ "proc-macro2",
+ "prost-build 0.12.6",
+ "quote",
+ "syn 2.0.117",
+]
+
+[[package]]
+name = "tonic-build"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "be4ef6dd70a610078cb4e338a0f79d06bc759ff1b22d2120c2ff02ae264ba9c2"
 dependencies = [
  "prettyplease 0.2.37",
  "proc-macro2",

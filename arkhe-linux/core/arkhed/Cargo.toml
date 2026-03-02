@@ -23,4 +23,9 @@ ndarray = "0.15"
 rand = "0.8"
 pqcrypto-kyber = "0.7"
 hex = "0.4"
-# Future dependencies for gRPC and eBPF can be added later as implementation progresses.
+tonic = "0.11"
+prost = "0.12"
+prost-types = "0.12"
+
+[build-dependencies]
+tonic-build = "0.11"
