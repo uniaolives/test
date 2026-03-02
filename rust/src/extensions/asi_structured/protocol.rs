@@ -19,8 +19,10 @@ impl ASIProtocolHandler {
         let command = caps.get(3).map(|m| m.as_str()).unwrap_or("");
         let param = caps.get(4).map(|m| m.as_str()).unwrap_or("");
 
-        if command == "ping" && param == "tiger51" {
-            info!("Processing TIGER51 protocol activation for host: {}", host);
+        let secret = std::env::var("ASI_TIGER_SECRET").unwrap_or_else(|_| "tiger51".to_string());
+
+        if command == "ping" && param == secret {
+            info!("Processing secret protocol activation for host: {}", host);
 
             // Activate Sovereign and QuantumBio states if not already active
             extension.config.phase = ASIPhase::Sovereign;
