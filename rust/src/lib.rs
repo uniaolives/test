@@ -271,6 +271,9 @@ pub mod resonant_cognition;
 pub mod merkabah_thz;
 pub mod skyrmion_engine;
 pub mod skyrmion_qa2a;
+pub mod atomic_synthesis;
+pub mod adapter_rust;
+pub mod verifier;
 
 #[cfg(test)]
 mod tests_security;
