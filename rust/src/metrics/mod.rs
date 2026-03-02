@@ -1,3 +1,4 @@
+pub mod stellarator_beta;
 pub mod weyl_fatigue;
 
 pub type Phi = f64;

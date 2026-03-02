@@ -49,5 +49,7 @@ class TrinityFruits:
 if __name__ == "__main__":
     fruits = TrinityFruits(genesis_index=0.92)
     print(fruits.materialize_phi_life()["status"])
-    print(fruits.reveal_13th_carve()["content_summary"])
+    # Avoid logging sensitive content_summary in clear text
+    fruits.reveal_13th_carve()
+    print("13TH_CARVE content: [REDACTED]")
     print(fruits.harmonize_global_omega()["status"])

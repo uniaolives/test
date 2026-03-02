@@ -1,4 +1,5 @@
 pub mod asi_core;
+pub mod asi_core_foundry;
 pub mod ledger;
 pub mod depin;
 pub mod fep_solver;
@@ -16,3 +17,8 @@ pub use manifold_ext::ExtendedManifold;
 mod tests;
 
 use log::{info, warn, debug};
+pub mod crypto;
+pub mod qkd;
+pub mod psi_shell;
+pub mod manifold;
+pub mod network;

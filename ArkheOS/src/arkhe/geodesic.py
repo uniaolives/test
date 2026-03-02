@@ -291,7 +291,10 @@ class PersistenceProtocol:
     eye_tracker_active: bool = True
 
     def simulate_persistence(self):
-        print(f"🧬 Protocolo Hal Finney para {self.patient_id}:")
+        # Avoid logging the full patient identifier in clear text
+        pid = str(self.patient_id)
+        masked_pid = ("*" * max(0, len(pid) - 4)) + pid[-4:] if len(pid) > 4 else "***"
+        print(f"🧬 Protocolo Hal Finney para paciente {masked_pid}:")
         print(f"   [Eye Tracker] {'ATIVO' if self.eye_tracker_active else 'OFF'}")
         print(f"   [Status] {self.status}")
         print(f"   [Legado] Satoshi = 7.27 bits conservados.")
