@@ -1,3 +1,5 @@
+pub enum VerificationContext {
+    TruthSubmission,
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::time::Duration;
@@ -32,6 +34,7 @@ pub struct Decision {
     pub human_approval: Option<HumanApproval>,
     pub decision_time: u64, // Unix timestamp
     pub explanation: Option<String>,
+    pub perspective_count: usize,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -84,6 +87,10 @@ impl AttestationStatus {
     }
 }
 
+pub struct PhiThreshold(pub f64);
+
+pub enum BiofieldType {
+    GenomicHash,
 pub struct GlobalGovernance {
     pub councils: HashMap<CloudDomain, Vec<CouncilType>>,
     pub prince_key: [u8; 32],

@@ -30,3 +30,14 @@ from .avalon_core import AlphaOmegaOrchestrator
 from .adapter_python import QuantumConsciousnessAdapter
 from .synchronization import QuantumSynchronizationEngine
 from .reality_dashboard import RealitySynchronizationDashboard
+from .qvpn import QuantumVPN
+from .power import (
+    QuantumFusionReactor,
+    QuantumFusionNetwork,
+    QuantumFusionPropulsion
+)
+from .fusion_ml import (
+    QPPOController,
+    QGANSimulator,
+    QLSTMPredictor
+)

@@ -1,0 +1,3 @@
+pub fn generate_decoy_signal() -> Vec<u8> {
+    vec![0xDE, 0xAD, 0xBE, 0xEF]
+}
