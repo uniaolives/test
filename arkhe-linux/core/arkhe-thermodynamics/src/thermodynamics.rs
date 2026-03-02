@@ -1,3 +1,4 @@
+use arkhe_manifold::{QuantumState, SelfModification};
 use arkhe_manifold::{QuantumState, SelfModification, KrausChannel};
 use log::info;
 use nalgebra::DMatrix;
@@ -43,6 +44,12 @@ pub struct InternalModel {
 impl InternalModel {
     pub fn new() -> Self {
         let dim = 2;
+        let mut belief = DMatrix::from_diagonal_element(dim, dim, Complex64::new(0.5, 0.0));
+        // Ensure Hermitian
+        belief[(0,1)] = Complex64::new(0.0, 0.0);
+        belief[(1,0)] = Complex64::new(0.0, 0.0);
+        Self {
+            belief_state: belief,
         Self {
             belief_state: DMatrix::from_diagonal_element(dim, dim, Complex64::new(0.5, 0.0)),
             temperature: 300.0,

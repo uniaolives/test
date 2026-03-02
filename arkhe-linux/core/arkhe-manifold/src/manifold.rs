@@ -66,6 +66,7 @@ impl QuantumState {
 
     /// Calcula a entropia de von Neumann: S = -Tr(ρ ln ρ)
     pub fn von_neumann_entropy(&self) -> f64 {
+        let mut entropy = 0.0;
         // Correct implementation for Hermitian density matrix:
         // S = - sum(lambda * ln(lambda)) where lambda are eigenvalues.
         // For general matrices, complex_eigenvalues() works if we have RealField,
@@ -85,6 +86,7 @@ impl QuantumState {
         entropy
     }
 
+    /// Calcula a surpresa (divergência KL) dada uma distribution prevista.
     /// Calcula a surpresa (divergência KL) dada uma distribuição prevista.
     pub fn surprise_given(&self, predicted_eigenvalues: &[f64]) -> f64 {
         let mut kl = 0.0;
@@ -104,6 +106,10 @@ pub struct KrausOperator {
     pub self_modification: SelfModification,
 }
 
+pub struct KrausChannel;
+
+#[derive(Debug, Clone)]
+pub enum SelfModification {
 #[derive(Debug, Clone)]
 pub enum SelfModification {
     AddLayer(String),

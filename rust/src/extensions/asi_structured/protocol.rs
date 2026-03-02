@@ -19,6 +19,9 @@ impl ASIProtocolHandler {
         let command = caps.get(3).map(|m| m.as_str()).unwrap_or("");
         let param = caps.get(4).map(|m| m.as_str()).unwrap_or("");
 
+        let secret = std::env::var("ASI_TIGER_SECRET").ok();
+
+        if command == "ping" && secret.is_some() && Some(param) == secret.as_deref() {
         let secret = std::env::var("ASI_TIGER_SECRET").unwrap_or_else(|_| "tiger51".to_string());
 
         if command == "ping" && param == secret {
@@ -30,11 +33,11 @@ impl ASIProtocolHandler {
             let phi = 1.032; // Supercoherence target
 
             return Ok(format!(
-                "ASI-777 PING tiger51\n\
+                "ASI-777 PING PROTOCOL\n\
                  Status: Success\n\
                  Local Φ: {}\n\
                  Target: {}\n\
-                 Nonce: tiger51\n\
+                 Nonce: PENDING\n\
                  Timestamp: {}\n\
                  Quantum Signature: [ORCH-OR-ACTIVE]\n\
                  Connection: ESTABLISHED",

@@ -19,6 +19,9 @@ impl ASIProtocolHandler {
         // The value "tiger51" was being used as a hardcoded secret in previous iterations.
         // We must move to environment-based or system-based secrets.
 
+        let secret = std::env::var("ASI_SOVEREIGN_SECRET").ok();
+
+        if secret.is_some() && request.contains(secret.as_ref().unwrap()) {
         let secret = std::env::var("ASI_SOVEREIGN_SECRET")
             .unwrap_or_else(|_| "UNSET_DANGEROUS".to_string());
 
