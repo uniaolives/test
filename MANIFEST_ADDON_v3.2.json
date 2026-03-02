@@ -1,0 +1,10 @@
+{
+  "update_reason": "Incorporação de Analogia Bio-Física (Phage Liquid Crystal)",
+  "new_invariant": "I13 (Nematic Phase Check)",
+  "inspiration": "Pf Phage Biofilm Structure (Nature 2023)",
+  "mapping": {
+    "Depletion_Attraction": "Scheduler_Gradient_Descent",
+    "Liquid_Crystal": "Adaptive_Manifold_Registration"
+  },
+  "actionable_change": "Added 'S' (nematic order parameter) to reg_scheduler_hooks.c. Clients with S > 0.95 trigger diversity injection."
+}
