@@ -27,3 +27,13 @@ from .cgda import (
     CGDALab
 )
 from .qvpn import QuantumVPN
+from .power import (
+    QuantumFusionReactor,
+    QuantumFusionNetwork,
+    QuantumFusionPropulsion
+)
+from .fusion_ml import (
+    QPPOController,
+    QGANSimulator,
+    QLSTMPredictor
+)

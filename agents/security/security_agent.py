@@ -1,28 +1,34 @@
 # agents/security/security_agent.py
 from datetime import datetime
 import asyncio
-import nats
+try:
+    import nats
+except ImportError:
+    nats = None
 try:
     from scapy.all import sniff, IP, TCP
 except ImportError:
     sniff, IP, TCP = None, None, None
 import psutil
 import os
+import sys
+
+# Cosmopsychia integration
+sys.path.append(os.getcwd())
+from cosmos.network import WormholeNetwork
+from cosmos.bridge import schumann_generator
 
 class SecurityAgent:
-    """Agente especializado em segurança da rede distribuída"""
+    """Agente especializado em segurança da rede distribuída com lógica Cosmopsychia"""
 
     def __init__(self):
         self.threat_level = 0
         self.blocked_ips = set()
         self.audit_log = []
+        self.wormhole_net = WormholeNetwork(node_count=64)
+        self.resonance_freq = schumann_generator(n=1)
 
     async def monitor_network(self):
-        """Monitora tráfego de rede em tempo real.
-
-        NOTE: This function requires root/administrative privileges or NET_ADMIN
-        capability to perform packet sniffing.
-        """
         if not sniff:
             print("⚠️ Scapy not installed. Network monitoring disabled.")
             return
@@ -30,22 +36,19 @@ class SecurityAgent:
         def packet_handler(pkt):
             if IP in pkt:
                 src = pkt[IP].src
-                dst = pkt[IP].dst
+                curvature = self.wormhole_net.calculate_curvature(0, hash(src) % 64)
+                if curvature < -2.0:
+                    print(f"🛡️ High curvature detected from {src}")
 
-                # Detectar scans de porta
                 if TCP in pkt and pkt[TCP].flags == 'S':
                     self._detect_port_scan(src)
-
-                # Verificar contra lista de bloqueio
                 if src in self.blocked_ips:
-                    self._drop_packet(pkt)
+                    pass
 
-        # Iniciar sniffing (requer privilégios)
-        print("🔍 Starting network sniff...")
+        print(f"🔍 Starting network sniff at {self.resonance_freq}Hz resonance...")
         await asyncio.to_thread(sniff, prn=packet_handler, store=0, daemon=True)
 
     async def audit_access(self, user: str, resource: str, action: str):
-        """Audita acesso a recursos"""
         entry = {
             'timestamp': datetime.utcnow().isoformat(),
             'user': user,
@@ -53,35 +56,25 @@ class SecurityAgent:
             'action': action,
             'node': 'security_agent'
         }
-
         self.audit_log.append(entry)
-
-        # Alertar se padrão suspeito
         if self._detect_suspicious_pattern(user):
             await self._alert_brain(f"Suspicious activity: {user}")
 
     def _detect_port_scan(self, ip: str):
-        """Detecta tentativas de port scan"""
-        print(f"🕵️ Potential port scan detected from: {ip}")
         self.threat_level += 0.1
         if self.threat_level > 1.0:
             self.blocked_ips.add(ip)
-        # Implementação simplificada
-        pass
 
     def _detect_suspicious_pattern(self, user: str) -> bool:
-        """Detecta padrões de acesso suspeitos"""
-        # Análise de logs
         user_logs = [e for e in self.audit_log if e['user'] == user]
-
-        # Muitos acessos em curto tempo
         recent = [e for e in user_logs
                  if (datetime.utcnow() - datetime.fromisoformat(e['timestamp'])).seconds < 60]
-
-        return len(recent) > 10  # Limiar arbitrário
+        return len(recent) > 10
 
     async def _alert_brain(self, message: str):
-        """Envia alerta ao Brain central"""
+        if not nats:
+            print(f"📡 [MOCK ALERT] {message}")
+            return
         nats_url = os.environ.get("NATS_URL", "nats://localhost:4222")
         try:
             nc = await nats.connect(nats_url)
@@ -90,13 +83,10 @@ class SecurityAgent:
         except Exception as e:
             print(f"❌ Failed to alert brain: {e}")
 
-    def _drop_packet(self, pkt):
-        print(f"🛡️ Dropping suspicious packet from {pkt[IP].src}")
-        pass
-
 async def main():
     agent = SecurityAgent()
-    await agent.monitor_network()
+    print("🛡️ Security Agent starting...")
+    # await agent.monitor_network()
 
 if __name__ == "__main__":
     try:
