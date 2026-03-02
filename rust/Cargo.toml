@@ -28,6 +28,9 @@ serde = { version = "1.0", features = ["derive"] }
 thiserror = "1.0"
 blake3 = "1.5"
 tokio = { version = "1", features = ["full"] }
+nalgebra = { version = "0.32", features = ["serde-serialize"] }
+ndarray = { version = "0.15", features = ["serde"] }
+num-complex = { version = "0.4", features = ["serde"] }
 nalgebra = "0.32"
 nalgebra = { version = "0.32", features = ["serde-serialize"] }
 ndarray = "0.15"
@@ -88,6 +91,9 @@ num-traits = "0.2.19"
 bs58 = "0.5.1"
 regex = "1.12.3"
 base64 = "0.22.1"
+petgraph = "0.6.5"
+serde_yaml = "0.9.34"
+serde-xml-rs = "0.8.2"
 web777_ontology = { path = "../web777_ontology" }
 arkhe-quantum = { path = "../arkhe-linux/core/arkhe-quantum" }
 reqwest = { version = "0.11", features = ["blocking", "json"] }

@@ -22024,6 +22024,7 @@ dependencies = [
  "num-traits",
  "rawpointer",
  "rayon",
+ "serde",
 ]
 checksum = "e1bcdd74c20ad5d95aacd60ef9ba40fdf77f767051040541df557b7a9b2a2121"
 
@@ -23573,6 +23574,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "regex"
+version = "1.12.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e10754a14b9137dd7b1e3e5b0493cc9171fdd105e0ab477f51b72e7f3ac0e276"
 name = "oid-registry"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -24068,6 +24073,17 @@ version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5ed995882f66ab94238de77c62e5e778389698ab700afa4696f4754da8f457cb"
 dependencies = [
+ "aws-nitro-enclaves-cose",
+ "base64 0.22.1",
+ "bellman",
+ "blake3",
+ "bls12_381",
+ "bs58",
+ "chrono",
+ "ciborium",
+ "clap",
+ "ed25519-dalek",
+ "ff",
  "async-trait",
  "base64 0.22.1",
  "futures",
@@ -24077,6 +24093,19 @@ dependencies = [
  "ndarray",
  "num-complex",
  "once_cell",
+ "petgraph",
+ "pqcrypto-dilithium",
+ "pqcrypto-traits",
+ "rand 0.8.5",
+ "regex",
+ "ring 0.17.14",
+ "sasc-governance",
+ "serde",
+ "serde-xml-rs",
+ "serde_json",
+ "serde_yaml",
+ "sha2",
+ "sha3",
  "phi-calculus",
  "pqcrypto-dilithium",
  "pqcrypto-traits",
@@ -24267,6 +24296,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6889a77d49f1f013504cec6bf97a2c730394adedaeb1deb5ea08949a50541105"
 
 [[package]]
+name = "serde-xml-rs"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cc2215ce3e6a77550b80a1c37251b7d294febaf42e36e21b7b411e0bf54d540d"
+dependencies = [
+ "log",
+ "serde",
+ "thiserror 2.0.18",
+ "xml",
+]
+
+[[package]]
+name = "serde_bytes"
+version = "0.11.19"
 name = "unsigned-varint"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -27037,6 +27080,33 @@ dependencies = [
  "rusticata-macros",
  "thiserror 1.0.69",
  "time",
+]
+
+[[package]]
+name = "xml"
+version = "1.2.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b8aa498d22c9bbaf482329839bc5620c46be275a19a812e9a22a2b07529a642a"
+
+[[package]]
+name = "xml-rs"
+version = "0.8.28"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3ae8337f8a065cfc972643663ea4279e04e7256de865aa66fe25cec5fb912d3f"
+
+[[package]]
+name = "yamux"
+version = "0.12.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9ed0164ae619f2dc144909a9f082187ebb5893693d8c0196e8085283ccd4b776"
+dependencies = [
+ "futures",
+ "log",
+ "nohash-hasher",
+ "parking_lot",
+ "pin-project",
+ "rand 0.8.5",
+ "static_assertions",
 ]
 
 [[package]]
