@@ -131,7 +131,7 @@ impl ASIStructuredExtension {
             config.scalability_invariants.clone(),
         ));
 
-        let mut composition_engine = CompositionEngine::new(
+        let composition_engine = CompositionEngine::new(
             config.max_structures,
             config.default_composition_strategy,
             constitution.clone(),
@@ -172,11 +172,7 @@ impl ASIStructuredExtension {
     }
 
     fn decompose_input(&self, input: &str) -> Vec<Subproblem> {
-        if input.contains("AR4366") {
-            vec![Subproblem { input: input.to_string() }]
-        } else {
-            vec![Subproblem { input: input.to_string() }]
-        }
+        vec![Subproblem { input: input.to_string() }]
     }
 
     pub fn add_structure(&mut self, structure: Box<dyn crate::interfaces::extension::GeometricStructure>, structure_type: StructureType) {
@@ -243,13 +239,13 @@ impl Extension for ASIStructuredExtension {
                 // 3. Evolutionary Phase
                 if self.config.phase as u8 >= ASIPhase::Evolutionary as u8 {
                     if let Some(evo_engine) = &mut self.evolution_engine {
-                        let evolved = evo_engine.optimize_structure(reflected, &self.constitution).await?;
+                        let evolved = evo_engine.optimize_structure(reflected, &self.constitution).await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                         current_result = Box::new(evolved.clone());
 
                         // 4. Metastructural Phase
                         if self.config.phase as u8 >= ASIPhase::Metastructural as u8 {
                             if let Some(meta_engine) = &mut self.metastructure_engine {
-                                let metastructured = meta_engine.lift_to_metastructure(evolved).await?;
+                                let metastructured = meta_engine.lift_to_metastructure(evolved).await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                                 current_result = Box::new(metastructured);
                             }
                         }

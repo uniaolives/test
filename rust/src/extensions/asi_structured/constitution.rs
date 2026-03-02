@@ -2,7 +2,7 @@ use crate::error::{ResilientResult, ResilientError};
 use crate::extensions::agi_geometric::constitution::AGIGeometricConstitution;
 use crate::extensions::asi_structured::evolution::{GeometricGenome, Connection};
 use std::time::Duration;
-use futures::Future;
+use std::future::Future;
 use serde::{Serialize, Deserialize};
 use super::composer::ComposedResult;
 

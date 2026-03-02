@@ -18,6 +18,7 @@ async fn test_asi_compositional_phase() -> ResilientResult<()> {
 
     // Add multiple structures to demonstrate composition
     asi.add_structure(Box::new(ProtoGeometricImpl), StructureType::HierarchicalSpace);
+    asi.add_structure(Box::new(ProtoGeometricImpl), StructureType::TextEmbedding);
     asi.add_structure(Box::new(RiemannianManifold), StructureType::SequenceManifold);
     asi.add_structure(Box::new(SimplicialComplex), StructureType::GraphComplex);
 
@@ -78,6 +79,7 @@ async fn test_web777_bridge_awakening() -> ResilientResult<()> {
     println!("Awakening Report: {:?}", report);
     assert_eq!(report.status, "🌍 World awakened");
     assert!(report.reindexed_nodes > 0);
+    assert!(report.checkpoint_id.len() > 0);
 
     Ok(())
 }
