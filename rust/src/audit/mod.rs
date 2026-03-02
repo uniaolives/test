@@ -8,6 +8,7 @@ pub mod tamper_circuit;
 pub mod lyapunov_monitor;
 pub mod genesis_witness;
 pub mod production_audit;
+pub mod legislative_audit;
 
 use std::sync::{Arc, atomic::{AtomicBool, Ordering}};
 use tokio::time::{interval, Duration};
@@ -103,7 +104,20 @@ impl ProductionAuditor {
         // 6. Verificação de tamper circuit (detecção de falhas Byzantine)
         self.check_tamper_circuit().await?;
 
-        // 7. Log de auditoria bem-sucedida
+        // 7. Auditoria Legislativa (Φ Político)
+        let phi_political = legislative_audit::audit_legislative_state().await
+            .map_err(|e| format!("LEGISLATIVE_AUDIT_FAILED: {}", e))?;
+
+        if phi_political < 0.72 {
+            log::warn!("⚠️ POLITICAL PHI CRITICAL: {:.3}", phi_political);
+            // In v31.30-Ω, political dissonance triggers alerts but not necessarily immediate abort
+            // unless it's a direct constitutional rupture (e.g. Φ < 0.65)
+            if phi_political < 0.65 {
+                return Err(format!("POLITICAL_COHERENCE_RUPTURE: {}", phi_political));
+            }
+        }
+
+        // 8. Log de auditoria bem-sucedida
         log::info!("✅ AUDIT CYCLE PASSED - System Invariant: TRUE");
 
         Ok(())

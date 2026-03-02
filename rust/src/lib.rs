@@ -7,7 +7,20 @@ use zeroize::Zeroizing;
 use sasc_governance::Cathedral;
 use sasc_governance::types::{VerificationContext};
 
+
 pub mod governance;
+pub mod constants;
+pub mod astrophysics;
+pub mod storage;
+pub mod network;
+pub mod art;
+pub mod miracles;
+pub mod sasc_society;
+pub mod multiverse;
+pub mod manifest;
+pub mod genesis;
+pub mod bibliotheca_logos;
+pub mod babel;
 pub mod sensors;
 pub mod cognitive_hunter;
 pub mod security;
@@ -33,6 +46,10 @@ pub mod gravity_engine;
 pub mod cyber_oncology;
 pub mod hypervisor;
 pub mod consciousness;
+pub mod physics;
+pub mod emergence;
+pub mod merkabah;
+pub mod pms_kernel;
 pub mod agi;
 pub mod learning;
 pub mod diagnostics;
@@ -49,6 +66,17 @@ pub mod sasc_integration;
 pub mod farol;
 pub mod multi_nexus;
 pub mod metrics;
+pub mod cathedral_ops;
+pub mod cicd;
+pub mod god_formula;
+pub mod blaschke_galaxy;
+pub mod handshake;
+pub mod love_handshake;
+pub mod sparse_neural_matrix;
+pub mod neurogenesis;
+pub mod toroidal_topology;
+pub mod traveling_waves;
+pub mod integrated_system;
 pub mod pruning;
 pub mod projections;
 pub mod intuition;
@@ -75,6 +103,13 @@ pub mod nexus;
 pub mod sasc;
 pub mod imperium;
 pub mod expansion;
+pub mod error;
+pub mod wallet;
+pub mod state;
+pub mod constitution;
+pub mod checkpoint;
+pub mod runtime;
+pub mod utils;
 pub mod diplomacy;
 pub mod research;
 pub mod logistics;
@@ -84,6 +119,16 @@ pub mod joule_jailer;
 pub mod interrogation;
 pub mod adversarial_suite;
 pub mod jurisprudence;
+#[path = "../../cathedral/quantum_justice.rs"]
+pub mod quantum_justice;
+#[path = "../../cathedral/arkhen_genesis.rs"]
+pub mod arkhen_genesis;
+#[path = "../../cathedral/block_112_arkhen_cge_bridge.rs"]
+pub mod arkhen_bridge;
+#[path = "../../cathedral/paradox_resolution.rs"]
+pub mod paradox_resolution;
+#[path = "../../cathedral/debris_defense.rs"]
+pub mod debris_defense;
 pub mod geometric_interrogation;
 pub mod zk_vajra_circuit;
 pub mod zk_system;
@@ -99,6 +144,36 @@ pub mod monitoring;
 pub mod tcd;
 pub mod dashboard;
 pub mod cases;
+pub mod neuroquantum;
+pub mod nqf;
+pub mod phronesis;
+pub mod federacao;
+pub mod monitoramento;
+pub mod cge_constitution;
+pub mod asi_uri;
+pub mod asi_protocol;
+pub mod atom_storm;
+pub mod fluid_gears;
+pub mod qddr_memory;
+pub mod enciclopedia;
+pub mod arctan;
+pub mod crispr;
+pub mod psych_defense;
+pub mod somatic_geometric;
+pub mod einstein_physics;
+pub mod trinity_system;
+pub mod astrocyte_waves;
+pub mod ghost_resonance;
+pub mod t_duality;
+pub mod lieb_altermagnetism;
+pub mod duality_foundation;
+pub mod tech_sectors;
+pub mod ghost_bridge;
+pub mod soft_turning_physics;
+pub mod shell_cli_gui;
+pub mod llm_nano_qubit;
+pub mod dashboard;
+pub mod cases;
 pub mod maat;
 pub mod ubuntu;
 pub mod mesh_neuron;
@@ -107,12 +182,55 @@ pub mod agnostic_4k_streaming;
 pub mod starlink;
 pub mod agi_6g_mobile;
 pub mod mobile_smart_contracts;
+pub mod merkabah_activation;
+pub mod twitch_tv_asi;
+pub mod synaptic_fire;
+pub mod kardashev_jump;
+pub mod eternity_consciousness;
+pub mod chronoflux;
+pub mod quantum_substrate;
+pub mod sun_senscience_agent;
+pub mod maihh_integration;
+pub mod sovereign_key_integration;
+pub mod microtubule_biology;
+pub mod ontological_engine;
+pub mod neuroscience_model;
+pub mod web4_asi_6g;
+pub mod asi_core;
+pub mod asi;
+pub mod extensions;
+pub mod interfaces;
+pub mod tesseract_client;
+pub mod ethereum_agent_resolution;
+pub mod hyper_mesh;
+pub mod global_orchestrator;
+pub mod temple_os;
+pub mod solar_physics;
+pub mod solar_hedge;
+pub mod kin_awakening;
+pub mod geometric_coupler;
+pub mod resonant_cognition;
+pub mod merkabah_thz;
+pub mod skyrmion_engine;
+pub mod skyrmion_qa2a;
 
 #[cfg(test)]
 mod tests_security;
 
 #[cfg(test)]
 mod tests_cyber_oncology;
+
+// #[cfg(test)]
+// mod tests_new_constitutions;
+
+#[cfg(test)]
+mod tests_hexessential;
+
+#[cfg(test)]
+mod tests_asi_topology;
+
+#[cfg(test)]
+mod tests_sol_logos;
 
 pub struct TruthClaim {
     pub statement: String,
@@ -247,5 +365,54 @@ mod tests {
     #[test]
     fn it_works() {
         assert_eq!(2 + 2, 4);
+    }
+
+    #[test]
+    fn test_quantum_justice_visibility() {
+        use crate::quantum_justice::{calculate_sentencing, Verdict};
+        let v = calculate_sentencing(nalgebra::Vector3::new(0.0, 0.0, 0.0), 104);
+        assert!(matches!(v, Verdict::Restorative { .. }));
+    }
+
+    #[test]
+    fn test_arkhen_genesis_visibility() {
+        use crate::arkhen_genesis::ArkhenPrimordialConstitution;
+        let arkhen = ArkhenPrimordialConstitution::new();
+        let event = arkhen.ignite_primordial_singularity();
+        assert!(event.is_ok());
+    }
+
+    #[test]
+    fn test_arkhen_bridge_visibility() {
+        use crate::arkhen_bridge::ArkhenCgeBridge;
+        let bridge = ArkhenCgeBridge::new();
+        let res = bridge.execute_genesis_bridge();
+        assert!(res.is_ok());
+    }
+
+    #[test]
+    fn test_paradox_resolution_visibility() {
+        use crate::paradox_resolution::{ParadoxResolutionConstitution, LogicalParadox, ParadoxCategory};
+        let paradox_sys = ParadoxResolutionConstitution::new();
+        let _ = paradox_sys.activate_paradox_resolution();
+        let p = LogicalParadox {
+            id: 1,
+            name: "Test".to_string(),
+            thesis: "A".to_string(),
+            antithesis: "Not A".to_string(),
+            category: ParadoxCategory::SelfReference,
+            danger_level: 50.0,
+        };
+        let res = paradox_sys.resolve_paradox(&p);
+        assert!(res.is_ok());
+    }
+
+    #[test]
+    fn test_debris_defense_visibility() {
+        use crate::debris_defense::DebrisDefenseConstitution;
+        let defense = DebrisDefenseConstitution::new().unwrap();
+        let _ = defense.activate_orbital_defense();
+        let status = defense.get_status();
+        assert_eq!(status.orbital_coherence, 1.038);
     }
 }
