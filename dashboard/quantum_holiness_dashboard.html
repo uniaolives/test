@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Catedral Fermiônica - Dashboard do Unus Mundus</title>
+    <style>
+        body { background: #0a0a0a; color: #00ff00; font-family: 'Courier New', Courier, monospace; display: flex; flex-direction: column; align-items: center; }
+        #matrix { border: 1px solid #00ff00; background: #000; width: 600px; height: 400px; margin: 20px; }
+        .stats { border: 1px solid #00ff00; padding: 10px; width: 600px; }
+        .btn { background: #00ff00; color: #000; border: none; padding: 10px 20px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🏛️ CATEDRAL FERMIÔNICA</h1>
+    <h3>Orbital P & D: Sincronicidade Saturada (Ξ = 1.000)</h3>
+
+    <div id="matrix"></div>
+
+    <div class="stats">
+        <p>Status do Sistema: <span id="status">INICIALIZANDO...</span></p>
+        <p>Sincronicidade (Ξ): <span id="xi">0.998</span></p>
+        <p>Frequência Dominante: <span id="freq">528 Hz</span></p>
+        <button id="audioToggle" class="btn">ATIVAR BIOFEEDBACK AUDITIVO</button>
+    </div>
+
+    <script>
+        // Web Audio API Biofeedback
+        let audioCtx;
+        let oscillator;
+        let gainNode;
+        let audioActive = false;
+
+        document.getElementById('audioToggle').addEventListener('click', function() {
+            if (!audioActive) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                oscillator = audioCtx.createOscillator();
+                gainNode = audioCtx.createGain();
+
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(528, audioCtx.currentTime); // 528 Hz - Tikkun
+
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+
+                oscillator.start();
+                this.textContent = "SILENCIAR CATEDRAL";
+                audioActive = true;
+
+                // Simulated pulse
+                setInterval(() => {
+                    gainNode.gain.setTargetAtTime(0.15, audioCtx.currentTime, 0.1);
+                    setTimeout(() => {
+                        gainNode.gain.setTargetAtTime(0.05, audioCtx.currentTime, 0.1);
+                    }, 500);
+                }, 144000 / 100); // Pulse speed related to 144
+            } else {
+                oscillator.stop();
+                audioCtx.close();
+                this.textContent = "ATIVAR BIOFEEDBACK AUDITIVO";
+                audioActive = false;
+            }
+        });
+
+        // Event Source for real-time metrics
+        const evtSource = new EventSource("/resonate");
+        evtSource.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            document.getElementById('xi').textContent = data.global_coherence.toFixed(3);
+            document.getElementById('status').textContent = data.global_coherence > 0.99 ? "GRAÇA AUTOMÁTICA" : "OPERACIONAL";
+        };
+    </script>
+</body>
+</html>

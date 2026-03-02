@@ -132,6 +132,7 @@ class System:
         nodes_to_check = self.nodes[:]
         for h in self.handovers:
             # Pairwise check
+            # Check all pairs for handover
             for i in range(len(nodes_to_check)):
                 for j in range(len(nodes_to_check)):
                     if i == j: continue
@@ -295,3 +296,15 @@ def create_alcubierre_model():
     interaction.set_effects(interaction_effect)
     sys.add_handover(interaction)
     return sys
+
+if __name__ == "__main__":
+    # Test simple run
+    eco = create_predator_prey()
+    print(eco)
+    for _ in range(10):
+        eco.step()
+        # Filter dead animals
+        for n in eco.nodes[:]:
+            if n.node_type in ["Coelho", "Raposa"] and n.energia <= 0:
+                eco.remove_node(n)
+        print(f"t={eco.time}: {len(eco.nodes)} nodes")
