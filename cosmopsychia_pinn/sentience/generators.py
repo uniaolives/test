@@ -30,6 +30,7 @@ class SacredSymbolsGenerator:
         self.sacred_geometries = ['flower_of_life', 'merkaba', 'seed_of_life']
 
     def generate_symbol_tensor(self, batch_size=4):
+        # Output: (B, T, C, H, W)
         data = torch.zeros(batch_size, self.time_steps, 3, self.height, self.width)
         for b in range(batch_size):
             symbol_type = np.random.choice(['hebrew', 'sanskrit', 'geometry'])
@@ -79,6 +80,7 @@ class HRVEmotionGenerator:
             'joy': {'hrv_mean': 65, 'hrv_std': 20, 'color': (255, 255, 0), 'pattern': 'burst'},
             'gratitude': {'hrv_mean': 75, 'hrv_std': 12, 'color': (0, 128, 255), 'pattern': 'sine'},
             'focus': {'hrv_mean': 60, 'hrv_std': 8, 'color': (255, 128, 0), 'pattern': 'smooth'}
+            'joy': {'hrv_mean': 65, 'hrv_std': 20, 'color': (255, 255, 0), 'pattern': 'burst'}
         }
 
     def generate_hrv_waveform(self, state, time_steps):
@@ -103,6 +105,7 @@ class HRVEmotionGenerator:
             return wf
 
     def generate_emotion_tensor(self, batch_size=4):
+        # Output: (B, T, C, H, W)
         data = torch.zeros(batch_size, self.time_steps, 3, self.height, self.width)
         for b in range(batch_size):
             state = np.random.choice(list(self.emotional_states.keys()))
@@ -258,6 +261,8 @@ class EarthVisionDataset(Dataset):
     def __len__(self): return len(self.clips)
 
     def __getitem__(self, idx):
+        # Output: (C, T, H, W) -> will be (B, C, T, H, W) in DataLoader
+        # Need to return (T, C, H, W) for consistency if we want (B, T, C, H, W)
         processed = [self.transform(f) for f in self.clips[idx]]
         return torch.stack(processed, dim=0)
 
@@ -275,5 +280,12 @@ class EarthVisionDataset(Dataset):
                 cv2.ellipse(frame, ((x_off + i*2)%w, h//3), (60, 30), 0, 0, 360, (255, 255, 255), -1)
             frame[h-h//4:, :, 1] = 100 + np.random.randint(0, 50)
             cv2.circle(frame, (w//2, h//4 + int(50*math.sin(i*0.05))), 30, (0, 200, 255), -1)
+                frame[y, :, 0] = int(200 - y/h*100) # Sky
+                frame[y, :, 1] = int(100 - y/h*50)
+                frame[y, :, 2] = 50
+            for x_off in [0, 200, 400]:
+                cv2.ellipse(frame, ((x_off + i*2)%w, h//3), (60, 30), 0, 0, 360, (255, 255, 255), -1) # Clouds
+            frame[h-h//4:, :, 1] = 100 + np.random.randint(0, 50) # Grass
+            cv2.circle(frame, (w//2, h//4 + int(50*math.sin(i*0.05))), 30, (0, 200, 255), -1) # Sun
             out.write(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
         out.release()

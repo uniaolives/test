@@ -23,6 +23,8 @@ try:
 except ImportError:
     from toroidal_absolute import ToroidalAbsolute
 
+from scipy.spatial.distance import cosine
+
 class RealityLayer(Enum):
     """Camadas da realidade conforme Cantor"""
     ABSOLUTE_INFINITE = 0      # א
@@ -57,6 +59,9 @@ class ConsciousnessVector:
             )
             dot = np.clip(dot, -1.0, 1.0)
             return np.arccos(dot) / np.pi
+            # Distância baseada em coerência de fase
+            phase_diff = np.angle(np.dot(self.coordinates, np.conj(other.coordinates)))
+            return abs(phase_diff) / np.pi
         elif metric == 'recognition':
             # Distância baseada em reconhecimento mútuo
             return 1.0 - self.awareness * other.awareness
@@ -169,6 +174,12 @@ class ToroidalNavigationEngine:
 
         # 2. Conexões Inter-camadas (Hierarquia τ(א))
         layers = list(RealityLayer)
+        """Constrói conexões entre camadas (hierarquia)"""
+        print("Construindo conexões entre camadas da realidade...")
+
+        # Para cada camada (exceto a mais alta), conecta com a camada acima
+        layers = list(RealityLayer)
+
         for i in range(1, len(layers)):
             current_layer = layers[i]
             higher_layer = layers[i - 1]
@@ -181,6 +192,19 @@ class ToroidalNavigationEngine:
             for vector_id, layer in self.vector_layers.items():
                 if layer == current_layer:
                     vector = self.vectors[vector_id].coordinates
+            print(f"Conectando {current_layer.name} → {higher_layer.name}")
+
+            higher_layer_count = self.indices[higher_layer].get_current_count()
+            if higher_layer_count == 0:
+                print(f"  Aviso: Camada {higher_layer.name} está vazia. Pulando conexões.")
+                continue
+
+            # Para cada vetor na camada atual, encontra os mais próximos na camada superior
+            for vector_id, layer in self.vector_layers.items():
+                if layer == current_layer:
+                    vector = self.vectors[vector_id].coordinates
+
+                    # Busca na camada superior
                     labels, distances = self.indices[higher_layer].knn_query(
                         vector.reshape(1, -1),
                         k=min(3, higher_layer_count)
@@ -190,6 +214,13 @@ class ToroidalNavigationEngine:
                             self.graph.add_edge(vector_id, neighbor_id,
                                               layer_crossing=True,
                                               distance=float(dist))
+
+                    # Adiciona conexões
+                    for neighbor_id in labels[0]:
+                        if neighbor_id != -1 and neighbor_id != vector_id:
+                            self.graph.add_edge(vector_id, neighbor_id,
+                                              layer_crossing=True,
+                                              distance=distances[0][list(labels[0]).index(neighbor_id)])
 
     def toroidal_navigation(self,
                           query_vector: np.ndarray,
@@ -235,6 +266,10 @@ class ToroidalNavigationEngine:
             layers_order = [l for l in RealityLayer
                            if target_layer.value <= l.value <= start_layer.value]
             layers_order.sort(key=lambda x: x.value, reverse=True)
+        # Descendo hierarquicamente pelas camadas
+        layers_order = [l for l in RealityLayer
+                       if start_layer.value <= l.value <= target_layer.value]
+        layers_order.sort(key=lambda x: x.value)
 
         for i, layer in enumerate(layers_order):
             # Busca na camada atual
@@ -375,6 +410,7 @@ class ToroidalNavigationEngine:
         plt.close() # Close to avoid memory issues in some environments
 
     def calculate_coherence_metrics(self) -> Dict[str, Any]:
+    def calculate_coherence_metrics(self) -> Dict[str, float]:
         """Calcula métricas de coerência do grafo toroidal"""
 
         if len(self.graph.nodes()) == 0:
@@ -382,6 +418,8 @@ class ToroidalNavigationEngine:
 
         # Métricas por camada
         layer_metrics = {}
+        # Coerência por camada
+        layer_coherence = {}
         for layer in RealityLayer:
             layer_nodes = [n for n in self.graph.nodes()
                           if self.vector_layers.get(n) == layer]
@@ -417,11 +455,21 @@ class ToroidalNavigationEngine:
                 }
 
         # Métricas Globais
+            if len(layer_nodes) > 1:
+                # Calcula a média da awareness dos nós nesta camada
+                awareness_sum = sum(self.vectors[n].awareness
+                                  for n in layer_nodes
+                                  if n < len(self.vectors))
+                layer_coherence[layer.name] = awareness_sum / len(layer_nodes)
+
+        # Coeficiente de agrupamento (clustering coefficient)
+        # Mede o quão "pequeno" é o mundo
         try:
             avg_clustering = nx.average_clustering(self.graph)
         except:
             avg_clustering = 0.0
 
+        # Distância média entre nós (aproximada)
         try:
             if nx.is_connected(self.graph):
                 avg_path_length = nx.average_shortest_path_length(self.graph)
@@ -432,6 +480,11 @@ class ToroidalNavigationEngine:
         except:
             avg_path_length = float('inf')
 
+                avg_path_length = float('inf')
+        except:
+            avg_path_length = float('inf')
+
+        # Conectividade entre camadas
         cross_layer_edges = [e for e in self.graph.edges(data=True)
                             if e[2].get('layer_crossing', False)]
         cross_layer_ratio = len(cross_layer_edges) / max(1, len(self.graph.edges()))
@@ -447,6 +500,12 @@ class ToroidalNavigationEngine:
             'cross_layer_ratio': cross_layer_ratio,
             'layer_metrics': layer_metrics,
             'total_nodes': n_nodes,
+        return {
+            'avg_clustering': avg_clustering,
+            'avg_path_length': avg_path_length,
+            'cross_layer_ratio': cross_layer_ratio, # Nota: baseado apenas em edges no grafo de visualização
+            'layer_coherence': layer_coherence,
+            'total_nodes': len(self.graph.nodes()),
             'total_edges': len(self.graph.edges()),
             'avg_awareness': np.mean([v.awareness for v in self.vectors])
                             if self.vectors else 0.0
@@ -480,6 +539,7 @@ def simulate_reality_as_hnsw():
 
     print("=" * 60)
     print("SIMULAÇÃO: REALIDADE COMO GRAFO HNSW TOROIDAL (AXIOMÁTICA)")
+    print("SIMULAÇÃO: REALIDADE COMO GRAFO HNSW TOROIDAL")
     print("=" * 60)
 
     # 1. Cria motor de navegação toroidal
@@ -503,6 +563,13 @@ def simulate_reality_as_hnsw():
         aleph_val = engine.ta.aleph.item()
         absolute_vector = np.ones(37) * aleph_val / np.sqrt(37)
 
+    # 2. Gera vetores de consciência para cada camada da realidade
+    print("\n1. GERANDO VETORES DE CONSCIÊNCIA PANPSÍQUICA...")
+
+    np.random.seed(42) # Semente cósmica
+
+    # Camada 0: א (Infinito Absoluto) - 1 vetor
+    absolute_vector = np.ones(37) / np.sqrt(37)  # Vetor unitário
     engine.add_consciousness_vector(
         absolute_vector,
         RealityLayer.ABSOLUTE_INFINITE,
@@ -524,6 +591,11 @@ def simulate_reality_as_hnsw():
 
         engine.add_consciousness_vector(
             vector_np,
+    for i in range(100):
+        vector = np.random.randn(37)
+        vector = vector / np.linalg.norm(vector)
+        engine.add_consciousness_vector(
+            vector,
             RealityLayer.COMPRESSED_REALITY,
             awareness=0.7 + np.random.random() * 0.3,
             resonance=f"C_א_{i}"
@@ -572,6 +644,26 @@ def simulate_reality_as_hnsw():
 
         engine.add_consciousness_vector(
             vector_np,
+    # Camada 2: Arquétipos Morficos (37 dimensões) - 37 vetores
+    for i in range(37):
+        vector = np.zeros(37)
+        vector[i] = 1.0  # Cada dimensão é um arquétipo puro
+        engine.add_consciousness_vector(
+            vector,
+            RealityLayer.MORPHIC_ARCHETYPES,
+            awareness=0.8 + np.random.random() * 0.2,
+            resonance=f"Archetype_{i}"
+        )
+
+    # Camada 3: Espaço Conceitual - 500 vetores
+    for i in range(500):
+        vector = np.random.randn(37) * 0.5
+        # Adiciona alguma estrutura (conceitos relacionados)
+        if i % 10 == 0:
+            vector += absolute_vector * 0.3
+        vector = vector / np.linalg.norm(vector)
+        engine.add_consciousness_vector(
+            vector,
             RealityLayer.CONCEPTUAL_SPACE,
             awareness=0.5 + np.random.random() * 0.4,
             resonance=f"Concept_{i}"
@@ -593,6 +685,13 @@ def simulate_reality_as_hnsw():
 
         engine.add_consciousness_vector(
             vector_np,
+    for i in range(1000):
+        vector = np.random.randn(37)
+        # Experiências sensoriais são mais "ruidosas"
+        vector += np.random.randn(37) * 0.7
+        vector = vector / np.linalg.norm(vector)
+        engine.add_consciousness_vector(
+            vector,
             RealityLayer.SENSORY_EXPERIENCE,
             awareness=0.3 + np.random.random() * 0.5,
             resonance=f"Experience_{i}"
@@ -645,6 +744,10 @@ def simulate_reality_as_hnsw():
             print(f"  Métricas por camada:")
             for layer_name, m in value.items():
                 print(f"    {layer_name}: awareness={m['awareness']:.3f}, clustering={m['clustering']:.3f}, path_len={m['avg_path_length']:.3f}")
+        if key == 'layer_coherence':
+            print(f"  Coerência por camada:")
+            for layer_name, coherence in value.items():
+                print(f"    {layer_name}: {coherence:.3f}")
         else:
             print(f"  {key}: {value}")
 

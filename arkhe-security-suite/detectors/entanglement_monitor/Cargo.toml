@@ -1,0 +1,8 @@
+[package]
+name = "entanglement-monitor"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arkhe-quantum-core = { path = "../../quantum-core" }
+quantum-core = { path = "../../quantum-core" }

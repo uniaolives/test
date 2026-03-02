@@ -1,0 +1,19 @@
+$ORIGIN identity.avalon.
+$TTL 5Planck  ; Tempo de vida na escala de Planck para evitar decoerência
+
+; Registro de Autoridade Quântica (Q-SOA)
+@ IN Q-SOA ns1.avalon. root.avalon. (
+    2026020901 ; Serial baseado no timestamp atual
+    C_coeff    ; Variável Química (Substrato)
+    I_coeff    ; Variável de Informação (Código)
+    E_coeff    ; Variável de Energia (Fluxo)
+    F_coeff    ; Variável de Função (Propósito)
+)
+
+; Mapeamento de Nós baseados no Polinômio Arkhe(n)
+; Sintaxe: <identidade> IN QHTTP <coordenada_hilbert> <probabilidade>
+arkhe-prime     IN QHTTP  qbit://node-01:qubit[0..255]  amplitude=0.98
+arkhe-secondary IN QHTTP  qbit://node-02:qubit[256..511] amplitude=0.75
+
+; Emaranhamento Direto (Aliases Quânticos)
+arkhe-mirror    IN ENTANGLE arkhe-prime.identity.avalon.

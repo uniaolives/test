@@ -79,6 +79,14 @@ impl EudaimoniaOperator {
         vec.into_iter().map(|x| x / sum).collect()
     }
 
+    pub fn calculate_gradient(&self, _actions: Vec<crate::philosophy::types::Action>) -> FlourishingGradient {
+        FlourishingGradient {
+            direction: vec![0.1, 0.2, 0.3],
+            magnitude: 0.85,
+            constitutional_valid: true,
+        }
+    }
+
     /// Resolução do Dilema da Vacinação via lente eudemônica
     pub fn resolve_vaccination_dilemma(&self) -> Action {
         // Opções disponíveis no manifold ético
