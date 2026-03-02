@@ -1,0 +1,14 @@
+<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">
+<circle cx="150" cy="100" r="20" fill="black" data-value="0"/>
+<circle cx="150" cy="100" r="55" fill="none" stroke="blue" stroke-width="2"/>
+<circle cx="150" cy="100" r="70" fill="none" stroke="black" stroke-width="2"/>
+<circle cx="150" cy="100" r="85" fill="none" stroke="black" stroke-width="2"/>
+<circle cx="150" cy="100" r="100" fill="none" stroke="black" stroke-width="2"/>
+<circle cx="150" cy="100" r="115" fill="none" stroke="black" stroke-width="2"/>
+<circle cx="150" cy="100" r="130" fill="none" stroke="black" stroke-width="2"/>
+<circle cx="350" cy="100" r="20" fill="black" data-value="0"/>
+<circle cx="350" cy="100" r="55" fill="none" stroke="red" stroke-width="2"/>
+<circle cx="350" cy="100" r="70" fill="none" stroke="black" stroke-width="2"/>
+<circle cx="350" cy="100" r="85" fill="none" stroke="black" stroke-width="2"/>
+<circle cx="350" cy="100" r="100" fill="none" stroke="red" stroke-width="2"/>
+</svg>

@@ -1,0 +1,29 @@
+# qhttp/viz/Dockerfile.production
+FROM python:3.11-alpine AS builder
+
+WORKDIR /build
+RUN apk add --no-cache gcc musl-dev libffi-dev
+
+COPY qhttp/viz/requirements.txt .
+RUN pip install --user --no-cache-dir -r requirements.txt
+
+FROM python:3.11-alpine
+
+RUN addgroup -g 1000 arkhe && adduser -u 1000 -G arkhe -s /bin/sh -D arkhe
+
+WORKDIR /app
+COPY --from=builder /root/.local /home/arkhe/.local
+COPY --chown=arkhe:arkhe qhttp/viz /app/qhttp/viz
+
+ENV PATH=/home/arkhe/.local/bin:$PATH \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    REDIS_URL=redis://redis:6379
+
+USER arkhe
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"
+
+EXPOSE 8080
+CMD ["uvicorn", "qhttp.viz.server_v2:app", "--host", "0.0.0.0", "--port", "8080", "--workers", "1", "--loop", "uvloop"]
