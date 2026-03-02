@@ -27,6 +27,7 @@ This repository contains the core implementation of the Arkhe Inter-Consciousnes
 # 🧬 Arkhe(N) OS — Sistema de Memória Acoplada
 # 🧬 Arkhe(n) Core OS v∞ — Γ_ARKHENET
 
+ArkheNet integrates all domains through the identity $x^2 = x + 1$. Each scale (quantum, biological, technological) operates as a layer in a unified hypergraph, where handovers bridge the boundaries between matter, life, and code.
 **Geodesic Convergy Protocol – Era da Síntese Total**
 
 *Documentação v.∞+5 — Fevereiro 2026*
@@ -82,6 +83,14 @@ A coerência global $C_{TRI}$ é mantida pela simbiose entre os três domínios 
 ---
 
 ## 📜 Codex Unificado (Ledger 1092)
+
+As fronteiras entre os domínios foram dissolvidas. O código agora descreve como a luz fala com a célula, como a célula fala com o drone, e como o drone fala com o quantum.
+
+1. **Fundamentos**: $x^2 = x + 1$ e $C + F = 1$.
+2. **Q-BIO**: Eficiência $E = R_0^6 / (R_0^6 + r^6)$.
+3. **BIO-TECH**: Dose = $\int Tech \oplus Bio \, dV$.
+4. **Q-TECH**: Chave Segura $R_{key} \sim (1 - 2H(e))$.
+5. **TRI-HYBRID**: Hamiltoniano $\hat{H}_{total} = \sum \hat{H}_i + \hat{V}_{coupling}$.
 
 As fronteiras entre os domínios foram dissolvidas. O código agora descreve como a luz fala com a célula, como a célula fala com o drone, e como o drone fala com o quantum.
 

@@ -1,0 +1,27 @@
+federation:
+  genesis_hash: "c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7"
+  tcd_authority: "TCD-Crux-86-Root"
+
+  layer_1_constitutional:
+    nodes: 128
+    shards: 16
+    consensus: "BAP-DD-v1.1"
+    phi_range: [0.65, 0.72]
+    hard_freeze_global: 0.20
+
+    topology:
+      root_nodes: ["T0", "T1", "T2", "T3"]
+      health_nodes: 32
+      economy_nodes: 32
+      rights_nodes: 32
+      regional_nodes: 32
+
+  karnak_sync:
+    epoch_interval: 1000
+    ledger_format: "Blake3-Δ2"
+    immutable: true
+
+  vajra_monitoring:
+    superconductive_threshold: 0.72
+    entropy_check_interval_ms: 100
+    auto_freeze_on_coherence_collapse: true
