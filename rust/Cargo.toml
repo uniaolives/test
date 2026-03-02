@@ -4,6 +4,13 @@ version = "0.1.0"
 edition = "2021"
 
 [lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+jni = "0.21.1"
+sha3 = "0.10.8"
+ed25519-dalek = "2.1.1"
+hex = "0.4.3"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
