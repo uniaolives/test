@@ -1,0 +1,45 @@
+<!-- modules/robotics/orchestrator/web/index.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Arkhe(n) Robotics Dashboard</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background: #f0f2f5; }
+        .card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        #map { height: 400px; width: 100%; margin-top: 10px; background: #ddd; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Arkhe(n) Robotics Fleet Control</h1>
+        <p>Status: <span id="status">Desconectado</span></p>
+        <p>Bateria: <span id="battery">-</span>%</p>
+        <div id="map">Mapa Simulado</div>
+        <button onclick="sendGoto()">Enviar para Alvo</button>
+    </div>
+
+    <!-- <script src="arkhen-wasm.js"></script> -->
+    <script>
+        // Lógica de interface simulada
+        function updateMap(data) {
+            console.log("Atualizando posição no mapa:", data.pos);
+            document.getElementById('status').innerText = "Conectado";
+            document.getElementById('battery').innerText = data.bat;
+        }
+
+        async function sendGoto() {
+            const target = { lat: -22.9, lon: -43.2, alt: 100 };
+            console.log("Enviando comando goto:", target);
+            // Chamada para o backend do orquestrador
+            const response = await fetch('/goto', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(target)
+            });
+            const result = await response.json();
+            alert("Status: " + result.status);
+        }
+    </script>
+</body>
+</html>

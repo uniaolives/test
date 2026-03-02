@@ -574,6 +574,7 @@ void run_instructions(Machine *machine) {
                     push(machine, machine->instructions.data[ip].value, machine->instructions.data[ip].data_type);
                 }
                 break;
+            case INST_GET_STR:
             case INST_PUSH_STR: {
                 size_t index = machine->instructions.data[ip].value.as_int;
                 String_View str = machine->str_stack.data[index];
@@ -962,6 +963,20 @@ void run_instructions(Machine *machine) {
             case INST_SS:
                 push(machine, (Word){.as_int=machine->stack_size}, INT_TYPE);
                 break;
+            case INST_DUP_STR: {
+                Data a = machine->stack[machine->stack_size - 1];
+                push(machine, a.word, a.type);
+            } break;
+            case INST_STRLEN: {
+                Data a = pop(machine);
+                push(machine, (Word){.as_int=(int64_t)strlen((char*)a.word.as_pointer)}, INT_TYPE);
+            } break;
+            case INST_INDEX: {
+                Data index = pop(machine);
+                Data ptr = pop(machine);
+                char *str = (char*)ptr.word.as_pointer;
+                push(machine, (Word){.as_char=str[index.word.as_int]}, CHAR_TYPE);
+            } break;
             case INST_NATIVE: {
                 machine->native_ptrs[machine->instructions.data[ip].value.as_int](machine);
             } break;

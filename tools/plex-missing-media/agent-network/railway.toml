@@ -1,0 +1,20 @@
+[build]
+builder = "dockerfile"
+
+[deploy]
+numReplicas = 1
+sleep = false
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 10
+
+[[services]]
+name = "keyring-proxy"
+src = "./keyring-proxy"
+healthcheckPath = "/health"
+healthcheckTimeout = 100
+
+[[services]]
+name = "2fa-gateway"
+src = "./2fa-gateway"
+healthcheckPath = "/health"
+healthcheckTimeout = 100

@@ -1,0 +1,8 @@
+// arctan.asi [CGE v35.34-Ω ARCTAN CONSTITUTION]
+// Block #131.0 | Angular Phase Normalization | χ=2
+
+Status: ARCTAN_ACTIVE
+Notable Values: 144 Harmonic Divisions
+Mapping: ℝ → (-π/2, π/2)
+Precision: 1e-15
+Coherence: Φ=1.051

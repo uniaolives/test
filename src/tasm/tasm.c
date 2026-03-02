@@ -41,22 +41,34 @@ size_t get_register_index(ParseList *head){
     return result;
 }
 
-Inst *generate_instructions(ParseList *head, int *program_size, String_View str_stack[MAX_STACK_SIZE], size_t *entrypoint, bool *has_entrypoint){
+static size_t str_stack_size = 0;
+
+Inst *generate_instructions(ParseList *head, int *program_size, Str_Stack *str_stack, size_t *entrypoint, bool *has_entrypoint){
     Inst *program = malloc(sizeof(Inst) * length_of_list(head));
-    Inst_Set insts[INST_COUNT + 1] = {    
-        INST_NOP, INST_PUSH, INST_PUSH_STR, INST_MOV, INST_REF, INST_DEREF, 
-        INST_ALLOC, INST_DEALLOC, INST_WRITE, INST_READ, INST_POP, INST_DUP, INST_INDUP, INST_SWAP, INST_INSWAP, 
-		INST_ADD, INST_SUB, INST_MUL, INST_DIV, INST_MOD, INST_ADD_F, INST_SUB_F, 
-        INST_MUL_F, INST_DIV_F, INST_MOD_F, INST_CMPE, 
-        INST_CMPNE, INST_CMPG, INST_CMPL, INST_CMPGE, INST_CMPLE, INST_ITOF, INST_FTOI, INST_ITOC, 
-        INST_TOI, INST_TOF, INST_TOC, INST_TOVP, INST_CALL, INST_RET, 
-        INST_JMP, INST_ZJMP, INST_NZJMP, INST_PRINT, INST_NATIVE, INST_ENTRYPOINT, INST_SS,
-        INST_HALT, INST_COUNT
-    };
+    Inst_Set insts[TYPE_COUNT] = {0};
+    insts[TYPE_NOP] = INST_NOP; insts[TYPE_PUSH] = INST_PUSH; insts[TYPE_PUSH_STR] = INST_PUSH_STR;
+    insts[TYPE_MOV] = INST_MOV; insts[TYPE_REF] = INST_REF; insts[TYPE_DEREF] = INST_DEREF;
+    insts[TYPE_ALLOC] = INST_ALLOC; insts[TYPE_DEALLOC] = INST_DEALLOC; insts[TYPE_WRITE] = INST_WRITE;
+    insts[TYPE_READ] = INST_READ; insts[TYPE_POP] = INST_POP; insts[TYPE_DUP] = INST_DUP;
+    insts[TYPE_INDUP] = INST_INDUP; insts[TYPE_SWAP] = INST_SWAP; insts[TYPE_INSWAP] = INST_INSWAP;
+    insts[TYPE_ADD] = INST_ADD; insts[TYPE_SUB] = INST_SUB; insts[TYPE_MUL] = INST_MUL;
+    insts[TYPE_DIV] = INST_DIV; insts[TYPE_MOD] = INST_MOD; insts[TYPE_AND] = INST_AND;
+    insts[TYPE_OR] = INST_OR; insts[TYPE_ADD_F] = INST_ADD_F; insts[TYPE_SUB_F] = INST_SUB_F;
+    insts[TYPE_MUL_F] = INST_MUL_F; insts[TYPE_DIV_F] = INST_DIV_F; insts[TYPE_MOD_F] = INST_MOD_F;
+    insts[TYPE_CMPE] = INST_CMPE; insts[TYPE_CMPNE] = INST_CMPNE; insts[TYPE_CMPG] = INST_CMPG;
+    insts[TYPE_CMPL] = INST_CMPL; insts[TYPE_CMPGE] = INST_CMPGE; insts[TYPE_CMPLE] = INST_CMPLE;
+    insts[TYPE_ITOF] = INST_ITOF; insts[TYPE_FTOI] = INST_FTOI; insts[TYPE_ITOC] = INST_ITOC;
+    insts[TYPE_TOI] = INST_TOI; insts[TYPE_TOF] = INST_TOF; insts[TYPE_TOC] = INST_TOC;
+    insts[TYPE_TOVP] = INST_TOVP; insts[TYPE_CALL] = INST_CALL; insts[TYPE_RET] = INST_RET;
+    insts[TYPE_JMP] = INST_JMP; insts[TYPE_ZJMP] = INST_ZJMP; insts[TYPE_NZJMP] = INST_NZJMP;
+    insts[TYPE_PRINT] = INST_PRINT; insts[TYPE_NATIVE] = INST_NATIVE; insts[TYPE_ENTRYPOINT] = INST_ENTRYPOINT;
+    insts[TYPE_LOAD_LIB] = INST_LOAD_LIBRARY; insts[TYPE_SS] = INST_SS; insts[TYPE_HALT] = INST_HALT;
+    insts[TYPE_GET_STR] = INST_GET_STR; insts[TYPE_DUP_STR] = INST_DUP_STR;
+    insts[TYPE_STRLEN] = INST_STRLEN; insts[TYPE_INDEX] = INST_INDEX;
 
     while(head != NULL){
         assert(head->value.type != TYPE_NONE && "Value should not be none\n");
-        assert(head->value.type < (TokenType)INST_COUNT && "Incorrect value\n");
+        assert(head->value.type < (TokenType)TYPE_COUNT && "Incorrect value\n");
         Inst *instruction = malloc(sizeof(Inst));
         instruction->type = insts[head->value.type];
         if(
@@ -82,7 +94,7 @@ Inst *generate_instructions(ParseList *head, int *program_size, String_View str_
         }
 
 
-        if(head->value.type == TYPE_PUSH){
+        if(head->value.type == TYPE_PUSH || head->value.type == TYPE_INSWAP || head->value.type == TYPE_INDUP || head->value.type == TYPE_GET_STR){
             head = head->next;
             if(head->value.type == TYPE_INT){
                 instruction->value.as_int = atoi(head->value.text);
@@ -130,9 +142,12 @@ Inst *generate_instructions(ParseList *head, int *program_size, String_View str_
             instruction->value.as_int = str_stack_size;
             instruction->data_type = INT_TYPE;
             size_t str_s = strlen(head->value.text)+1;
-            str_stack[str_stack_size].len = str_s;
-            str_stack[str_stack_size].data = malloc(sizeof(char)*str_s);
-            strncpy(str_stack[str_stack_size++].data, head->value.text, str_s);
+            String_View sv;
+            sv.len = str_s;
+            sv.data = malloc(sizeof(char)*str_s);
+            strncpy((char*)sv.data, head->value.text, str_s);
+            DA_APPEND(str_stack, sv);
+            str_stack_size++;
         }
 
         push_program(program, program_size, *instruction);
@@ -168,12 +183,15 @@ int main(int argc, char *argv[]){
     Machine machine;
     size_t entrypoint = 0;
     bool has_entrypoint = false;
-    Inst *program = generate_instructions(&list, &program_size, machine.str_stack, &entrypoint, &has_entrypoint);
-    machine.instructions = program;
+    machine.str_stack.data = NULL;
+    machine.str_stack.count = 0;
+    machine.str_stack.capacity = 0;
+    Inst *program = generate_instructions(&list, &program_size, &machine.str_stack, &entrypoint, &has_entrypoint);
+    machine.instructions.data = program;
+    machine.instructions.count = program_size;
     machine.program_size = program_size;
     machine.entrypoint = entrypoint;
     machine.has_entrypoint = has_entrypoint;
-    machine.str_stack_size = str_stack_size;
     write_program_to_file(&machine, output_file);
     return 0;
 }

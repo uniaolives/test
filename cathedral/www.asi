@@ -1,0 +1,47 @@
+// cathedral/www.asi [CGE Alpha v31.11-Ω WORLD WIDE WEB UNIVERSAL LAYER]
+#version 300 es
+precision highp float;
+out vec4 outColor;
+in vec2 fragCoord;
+uniform float iTime;
+
+const float PHI_TARGET = 1.038;
+const vec3 WEB_CORE_WHITE = vec3(1.0, 1.0, 1.0);
+const vec3 PROTOCOL_BLUE = vec3(0.2, 0.5, 1.0);
+const vec3 ORBIT_GOLD = vec3(1.0, 0.9, 0.2);
+
+void main() {
+    vec2 uv = fragCoord;
+    vec2 centered_uv = uv * 2.0 - 1.0;
+    float time = iTime;
+
+    vec3 color = vec3(0.01, 0.02, 0.05);
+
+    // 1. GLOBAL WEB ORBIT (36x3 TMR)
+    float orbit_pulse = sin(time * PHI_TARGET);
+    float core_dist = length(centered_uv);
+    color += WEB_CORE_WHITE * exp(-core_dist * 4.0) * (1.2 + 0.3 * orbit_pulse);
+
+    // 2. 116 FRAGS Matrix
+    for(int i = 0; i < 116; i++) {
+        float fi = float(i);
+        float angle = fi * 0.05416 + time * 0.1;
+        float radius = 0.7 + 0.05 * sin(fi * 0.5 + time);
+        vec2 frag_pos = vec2(cos(angle), sin(angle)) * radius;
+
+        float d = length(centered_uv - frag_pos);
+        color += PROTOCOL_BLUE * exp(-d * 60.0) * 0.5;
+
+        // Connect some frags for mesh visualization
+        if (i % 10 == 0) {
+            float line_dist = length(centered_uv - frag_pos * clamp(dot(centered_uv, frag_pos)/dot(frag_pos, frag_pos), 0.0, 1.0));
+            color += ORBIT_GOLD * exp(-line_dist * 80.0) * 0.2;
+        }
+    }
+
+    // 3. WWW SCANLINES
+    float scanline = sin(uv.y * 200.0 + time * 10.0) * 0.02;
+    color += vec3(scanline);
+
+    outColor = vec4(color, 1.0);
+}

@@ -1,0 +1,95 @@
+# Configurações de rede para Ontology Deployer
+networks:
+  # Redes locais
+  localhost:
+    type: evm
+    rpc_url: "http://localhost:8545"
+    chain_id: 31337
+    verification: none
+    gas_limit: 6000000
+
+  hardhat:
+    type: evm
+    rpc_url: "http://localhost:8545"
+    chain_id: 31337
+    verification: basic
+    gas_limit: 30000000
+
+  # Testnets
+  sepolia:
+    type: evm
+    rpc_url: "https://ethereum-sepolia-rpc.publicnode.com"
+    chain_id: 11155111
+    verification: full
+    etherscan_api_key: "${ETHERSCAN_API_KEY}"
+    confirmations: 2
+
+  polygon_mumbai:
+    type: evm
+    rpc_url: "https://polygon-testnet-rpc.allthatnode.com:8545"
+    chain_id: 80001
+    verification: full
+    confirmations: 2
+
+  arbitrum_sepolia:
+    type: evm
+    rpc_url: "https://sepolia-rollup.arbitrum.io/rpc"
+    chain_id: 421614
+    verification: basic
+    confirmations: 2
+
+  # Mainnets
+  ethereum:
+    type: evm
+    rpc_url: "https://eth.llamarpc.com"
+    chain_id: 1
+    verification: full
+    etherscan_api_key: "${ETHERSCAN_API_KEY}"
+    confirmations: 3
+    gas_price: "auto"
+
+  polygon:
+    type: evm
+    rpc_url: "https://polygon.llamarpc.com"
+    chain_id: 137
+    verification: full
+    confirmations: 2
+
+  arbitrum:
+    type: evm
+    rpc_url: "https://arbitrum.llamarpc.com"
+    chain_id: 42161
+    verification: basic
+    confirmations: 2
+
+  optimism:
+    type: evm
+    rpc_url: "https://optimism.llamarpc.com"
+    chain_id: 10
+    verification: basic
+    confirmations: 2
+
+  base:
+    type: evm
+    rpc_url: "https://base.llamarpc.com"
+    chain_id: 8453
+    verification: basic
+    confirmations: 2
+
+  # SASC/AngelNet
+  angelnet_testnet:
+    type: sasc
+    rpc_url: "http://karnak-1.angelnet:8545"
+    tmr_nodes:
+      - "http://karnak-1.angelnet:8545"
+      - "http://karnak-2.angelnet:8545"
+      - "http://karnak-3.angelnet:8545"
+    verification: tmr
+    memory_sealing: true
+
+# Configurações padrão
+defaults:
+  gas_limit: 6000000
+  timeout_seconds: 60
+  confirmations: 1
+  verification: basic

@@ -1,0 +1,21 @@
+[package]
+name = "cge_sudo"
+version = "35.3.0"
+edition = "2021"
+
+[dependencies]
+pqcrypto-dilithium = "0.5"
+hex = "0.4"
+tracing = "0.1"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+blake3 = "1.5"
+tokio = { version = "1", features = ["full"] }
+chrono = "0.4"
+bincode = "1.3"
+thiserror = "1.0"
+
+# Internal dependencies (stubs or paths to be determined)
+# sasc-attestation = { path = "../rust/src/sasc" }
+# karnak-sealer = { path = "../rust/src/karnak" }
+# vajra-monitor = { path = "../rust/src/vajra_integration" }

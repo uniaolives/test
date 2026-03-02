@@ -1,0 +1,32 @@
+total_frags = 116
+protocol_count = 104
+
+[tmr_config]
+groups = 36
+replicas = 3
+byzantine_tolerance = 12
+
+http_ports = [80, 443, 8080, 8443]
+websocket_ports = [3000, 3001, 3002, 3003]
+quic_ports = [4433, 4443]
+
+supported_domains = [
+    "localhost",
+    "127.0.0.1",
+    "::1"
+]
+
+supported_protocols = [
+    "Http",
+    "Https",
+    "Http2",
+    "Http3",
+    "WebSocket",
+    "WebSocketSecure",
+    "AtProto",
+    "Gemini",
+    "Gopher"
+]
+
+[decentralization_level]
+Full = { federation = true, content_addressing = true, peer_to_peer = true }

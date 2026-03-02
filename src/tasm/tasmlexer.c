@@ -46,9 +46,9 @@ Token pop_token(Lexer *lexer){
 char *token_type_text[TYPE_COUNT + 1] = {
     "nop","push","push_str","mov","ref","deref",
     "alloc", "dealloc", "write", "read", "pop","dup",
-    "indup","swap","inswap","add","sub", "mul","div", "mod","add_f","sub_f","mul_f","div_f",
+    "indup","swap","inswap","add","sub", "mul","div", "mod", "and", "or", "add_f","sub_f","mul_f","div_f",
     "mod_f","cmpe","cmpne","cmpg","cmpl","cmpge","cmple","itof","ftoi","itoc","toi","tof","toc","tovp","call","ret","jmp","zjmp","nzjmp","print", 
-    "native","entrypoint","ss","halt","int","float","char","string","NULL","register","label_def","label","top","count"
+    "native","entrypoint", "load_lib", "ss","halt","int","float","char","string","NULL","register","label_def","label","get_str","dup_str","strlen","index","top","count"
 };
 
 char *pretty_token(Token token){

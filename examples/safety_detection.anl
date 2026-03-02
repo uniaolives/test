@@ -1,0 +1,37 @@
+// ARKHE(N) LANGUAGE (ANL) - EXAMPLE 5.7
+// Safety Detection: Integrated Anomaly Monitoring
+
+namespace SafetyDetection {
+
+    node SteganographyDetector {
+        attributes {
+            MahalanobisDetector level0;
+            SyntacticDetector level1;
+            SemanticConsistencyDetector level2;
+            FineTunedClassifier level3;
+            float thresholds[4];
+        }
+
+        handover Inspect (string text) -> float anomaly_score {
+            float s0 = level0.score(text);
+            float s1 = level1.score(text);
+            float s2 = level2.score(text);
+            float s3 = level3.predict(text);
+
+            // Weighted combination (unsupervised/heuristic focus)
+            anomaly_score = 0.25 * (s0 > thresholds[0]) +
+                           0.25 * (s1 > thresholds[1]) +
+                           0.25 * (s2 > thresholds[2]) +
+                           0.25 * (s3 > thresholds[3]);
+
+            return anomaly_score;
+        }
+    }
+
+    // Guardrail: Emergency halt on high anomaly
+    constraint SafeCommunication {
+        check: forall SteganographyDetector d {
+            d.current_inspection.anomaly_score < 0.75;
+        }
+    }
+}

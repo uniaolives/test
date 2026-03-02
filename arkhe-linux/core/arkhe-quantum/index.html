@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arkhe(n) ψ-Shell</title>
+    <style>
+        body { background: #0a0f1e; color: #b0e0e6; font-family: monospace; }
+        .phi { font-size: 4em; }
+    </style>
+</head>
+<body>
+    <h1>🌀 ARKHE(n) – ψ‑SHELL</h1>
+    <div>Entropia: <span id="entropy">0.0</span></div>
+    <div>φ: <span id="phi">0.618</span></div>
+    <div>Última mensagem: <span id="last_msg"></span></div>
+    <input id="msgInput" type="text" placeholder="Digite algo...">
+    <button onclick="sendMessage()">Enviar</button>
+
+    <script>
+        const ws = new WebSocket('ws://localhost:9001');
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'status') {
+                document.getElementById('entropy').innerText = data.entropy.toFixed(4);
+                document.getElementById('phi').innerText = data.phi.toFixed(4);
+                if (data.user && data.user.last_message) {
+                    document.getElementById('last_msg').innerText = data.user.last_message;
+                }
+            }
+        };
+
+        function sendMessage() {
+            const msg = document.getElementById('msgInput').value;
+            ws.send(JSON.stringify({ command: 'message', text: msg }));
+        }
+    </script>
+</body>
+</html>

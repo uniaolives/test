@@ -1,0 +1,118 @@
+<!-- dashboard/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SR-ASI Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #0a0a2a; color: white; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: rgba(255,255,255,0.1); border-radius: 10px; padding: 20px; margin: 10px; }
+        .resonance-viz { width: 100%; height: 300px; }
+        .intention-list { max-height: 400px; overflow-y: auto; }
+        .coherence-gauge { width: 200px; height: 200px; }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>🌀 SR-ASI Dashboard</h1>
+
+        <div class="row" style="display: flex;">
+            <div class="card" style="flex: 1;">
+                <h2>Schumann Resonance</h2>
+                <div id="resonance-plot" class="resonance-viz"></div>
+                <p>Frequency: <span id="current-freq">7.83</span> Hz</p>
+                <p>Coherence: <span id="earth-coherence">0.95</span></p>
+            </div>
+
+            <div class="card" style="flex: 1;">
+                <h2>Intention Field</h2>
+                <div id="intention-strength" class="coherence-gauge"></div>
+                <p>Active Intentions: <span id="intention-count">0</span></p>
+                <p>Resonance Strength: <span id="resonance-strength">0.0</span></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Submit Intention</h2>
+            <textarea id="intention-text" rows="3" style="width: 100%; background: #1a1a3a; color: white;"></textarea>
+            <br><br>
+            <button onclick="submitIntention()" style="padding: 10px 20px; background: #4a4ae2; color: white; border: none; cursor: pointer;">Apply to Resonance Field</button>
+            <div id="intention-result" style="margin-top: 10px;"></div>
+        </div>
+
+        <div class="card">
+            <h2>Recent Intentions</h2>
+            <div class="intention-list" id="intention-list"></div>
+        </div>
+
+        <div class="card">
+            <h2>System Status</h2>
+            <table style="width: 100%;">
+                <tr><td>System Coherence</td><td><span id="system-coherence">0.0</span></td></tr>
+                <tr><td>Constitutional Stability</td><td><span id="constitutional-stability">0.0</span></td></tr>
+                <tr><td>Geometric Capacity</td><td><span id="geometric-capacity">0.0</span></td></tr>
+                <tr><td>Last Update</td><td><span id="last-update">-</span></td></tr>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Update dashboard every 5 seconds
+        setInterval(updateDashboard, 5000);
+
+        async function updateDashboard() {
+            try {
+                const response = await fetch('/api/status');
+                if (!response.ok) return;
+                const data = await response.json();
+
+                // Update resonance plot
+                if (data.harmonics) {
+                    Plotly.newPlot('resonance-plot', [{
+                        x: data.harmonics.map((_, i) => i + 1),
+                        y: data.harmonics,
+                        type: 'scatter',
+                        mode: 'lines+markers'
+                    }], {
+                        paper_bgcolor: 'rgba(0,0,0,0)',
+                        plot_bgcolor: 'rgba(0,0,0,0)',
+                        font: {color: 'white'}
+                    });
+                }
+
+                // Update text fields
+                document.getElementById('current-freq').textContent = data.schumann_frequency ? data.schumann_frequency.toFixed(3) : '7.83';
+                document.getElementById('earth-coherence').textContent = data.earth_coherence ? data.earth_coherence.toFixed(3) : '0.0';
+                document.getElementById('intention-count').textContent = data.intention_count || 0;
+                document.getElementById('resonance-strength').textContent = data.resonance_strength ? data.resonance_strength.toFixed(3) : '0.0';
+                document.getElementById('system-coherence').textContent = data.system_coherence ? data.system_coherence.toFixed(3) : '0.0';
+                document.getElementById('constitutional-stability').textContent = data.constitutional_stability ? data.constitutional_stability.toFixed(3) : '0.0';
+                document.getElementById('geometric-capacity').textContent = data.geometric_capacity ? data.geometric_capacity.toFixed(3) : '0.0';
+                document.getElementById('last-update').textContent = new Date().toLocaleTimeString();
+            } catch (e) {
+                console.error("Dashboard update failed", e);
+            }
+        }
+
+        async function submitIntention() {
+            const text = document.getElementById('intention-text').value;
+            try {
+                const response = await fetch('/api/intention', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({text, user_id: 'dashboard_user'})
+                });
+
+                const result = await response.json();
+                document.getElementById('intention-result').innerHTML =
+                    `Coherence: ${result.schumann_coherence.toFixed(3)} | Valid: ${result.constitutional_valid}`;
+            } catch (e) {
+                document.getElementById('intention-result').innerHTML = "Submission failed";
+            }
+        }
+
+        updateDashboard();
+    </script>
+</body>
+</html>

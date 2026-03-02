@@ -1,0 +1,6 @@
+@Arkhe.Gateway_HostAddress = http://localhost:5103
+
+GET {{Arkhe.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

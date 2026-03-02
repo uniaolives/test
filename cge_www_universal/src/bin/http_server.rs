@@ -1,0 +1,6 @@
+use cge_www_universal::WWWUniversalCore;
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    println!("🌐 HTTP Server starting...");
+    Ok(())
+}

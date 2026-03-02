@@ -1,0 +1,5 @@
+✅ Audit loop started (READ-ONLY). Interval: 30 seconds
+[2026-01-21T00:59:04Z ERROR ontology_lang::audit::evm_audit] Initial audit failed: Failed to get block number: error sending request for url (http://localhost:8545/): error trying to connect: tcp connect error: Connection refused (os error 111)
+[2026-01-21T00:59:04Z ERROR ontology_lang::audit::evm_audit] 🛑 EMERGENCY SHUTDOWN INITIATED
+[2026-01-21T00:59:04Z ERROR ontology_lang::audit::evm_audit] 🔴 GenesisDAO audit failed after 0 cycles
+[2026-01-21T00:59:04Z ERROR ontology_lang::audit::evm_audit] 🕐 Total uptime: 9.617898ms

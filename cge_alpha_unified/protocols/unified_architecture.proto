@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package cge_alpha.unified;
+
+service UnifiedVMCoreOrchestrator {
+    rpc ExecuteKernel(UnifiedKernel) returns (UnifiedExecutionResult);
+    rpc GetStats(StatsRequest) returns (UnifiedStats);
+    rpc MonitorPhi(stream PhiRequest) returns (stream PhiResponse);
+}
+
+message UnifiedKernel {
+    string id = 1;
+    uint32 total_instructions = 2;
+    uint32 agnosticism_level = 3;
+    bytes constitutional_signature = 4;
+}
+
+message UnifiedExecutionResult {
+    bool success = 1;
+    double phi_before = 2;
+    double phi_after = 3;
+    uint32 frags_used = 4;
+}
+
+message StatsRequest {}
+
+message UnifiedStats {
+    uint64 kernels_executed = 1;
+    double current_phi = 2;
+}
+
+message PhiRequest {}
+
+message PhiResponse {
+    double phi = 1;
+}

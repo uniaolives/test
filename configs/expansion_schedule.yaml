@@ -1,0 +1,37 @@
+ExpansionSchedule:
+  phase_1_brazil:
+    - sao_paulo:
+        towers: ["SP-01", "SP-02", "SP-03"]
+        coordinates: [-23.5505, -46.6333]
+        capacity: 500000
+        eta: 2026-01-31T12:00:00Z
+    - rio_de_janeiro:
+        towers: ["RJ-01", "RJ-02"]
+        coordinates: [-22.9068, -43.1729]
+        capacity: 300000
+        eta: 2026-01-31T18:00:00Z
+    - belo_horizonte:
+        towers: ["BH-01"]
+        coordinates: [-19.9167, -43.9345]
+        capacity: 200000
+        eta: 2026-02-01T00:00:00Z
+
+  phase_2_brics_plus:
+    - lisbon_pt:
+        towers: ["LIS-01"]
+        coordinates: [38.7223, -9.1393]
+        capacity: 100000
+        sovereign_key: "0x716aD3C33A9B9a0A18967357969b94EE7d2ABC10"
+        eta: 2026-02-02T12:00:00Z
+    - johannesburg_za:
+        towers: ["JNB-01", "JNB-02"]
+        coordinates: [-26.2041, 28.0473]
+        capacity: 150000
+        sovereign_key: "0x..."
+        eta: 2026-02-02T18:00:00Z
+    - moscow_ru:
+        towers: ["MOW-01"]
+        coordinates: [55.7558, 37.6173]
+        capacity: 200000
+        sovereign_key: "0x..."
+        eta: 2026-02-03T00:00:00Z

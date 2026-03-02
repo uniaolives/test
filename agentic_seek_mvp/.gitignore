@@ -1,0 +1,21 @@
+# agentic_seek_mvp/.gitignore
+# Rust
+target/
+
+# Elixir
+_build/
+deps/
+priv/native/
+erl_crash.dump
+*.ez
+mix.lock
+
+# Go
+scraper.log
+
+# Python
+__pycache__/
+
+# General
+*.log
+.DS_Store

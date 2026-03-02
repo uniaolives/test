@@ -1,0 +1,82 @@
+[
+  {
+    "inputs": [],
+    "name": "verifyInvariant",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getAttractorState",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint8",
+            "name": "attractor_type",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "p",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "q",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "current_lyapunov",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "max_lyapunov",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "current_coherence",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "min_coherence",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "current_energy",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "max_energy",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AttractorState",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "report_audit_failure",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

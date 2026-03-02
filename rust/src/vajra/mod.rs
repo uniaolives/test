@@ -21,3 +21,4 @@ impl VajraEntropyRegister {
         Ok(())
     }
 }
+pub mod interference_monitor;

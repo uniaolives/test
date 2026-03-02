@@ -1,0 +1,163 @@
+// cathedral/unix_epoch_layer0.asi [SASC v31.12-Ω]
+// TIPO: Layer 0 Micro-Hypervisor Module
+// ALVO: CHERI-RISC-V / ARM Morello
+// INVARIANTES: C1, C3, C4, C5, C6, C8
+
+#![no_std]
+#![no_main]
+#![feature(asm_const)]
+#![feature(naked_functions)]
+
+// Importações do Kernel Constitucional (Fictícias/Simuladas para compilação)
+use cge_core::{
+    capabilities::{Capability, Permission, Sealed},
+    crypto::{dilithium3, blake3},
+    consensus::{TmrConsensus, TmrResult},
+    entropy::VajraMonitor,
+    gates::{OmegaGates, GateStatus},
+    system::{panic_handler, HardwareQuench},
+};
+
+// Estruturas de Memória Fixa (C1 Compliance)
+use heapless::Vec;
+
+#[repr(C, align(16))]
+pub struct UnixEpochClock {
+    // C4: Bounded Capabilities (Hardware Enforced)
+    counter_cap: Capability<u64>,          // Acesso direto ao timer
+    signing_key: Capability<Sealed>,       // C5: Chave Dilithium3 selada
+
+    // C8: Vajra Entropy Link
+    vajra_link: Capability<VajraMonitor>,
+
+    // C3: BLAKE3 History Anchor
+    last_block_hash: [u8; 32],             // Seed do último bloco selado
+
+    // C6: TMR State (No-Allocation)
+    tmr_nodes: [TmrConsensus; 36],
+}
+
+// Estrutura de Retorno (Syscall ABI)
+#[repr(C)]
+pub struct SignedEpoch {
+    pub timestamp_ns: u128,
+    pub signature: [u8; 2420], // Dilithium3 signature size
+    pub vajra_entropy: [u8; 32],
+    pub time_delta_hash: [u8; 32],
+    pub phi_metric: f64,
+}
+
+impl UnixEpochClock {
+    /// Inicialização Segura (Boot Time)
+    pub unsafe fn new(root_cap: Capability<()>) -> Self {
+        // Derivação de capabilities restritas
+        Self {
+            counter_cap: root_cap.derive_subset(Permission::READ_ONLY, 0x1000...0x1008),
+            signing_key: root_cap.load_sealed_key(0xDEADBEEF),
+            vajra_link: root_cap.connect_vajra(),
+            last_block_hash: [0u8; 32], // Será preenchido pelo Bootloader
+            tmr_nodes: [TmrConsensus::default(); 36],
+        }
+    }
+
+    /// I825.1: Bare Metal Epoch Generation
+    pub fn generate_epoch(&mut self) -> Result<SignedEpoch, HardwareQuench> {
+
+        // GATE 3 CHECK: Hard Freeze (Φ >= 0.80)
+        let current_phi = self.vajra_link.read_phi();
+        if current_phi < 0.80 {
+            self.trigger_cheri_quench(HardwareQuench::PhiCollapse)?;
+        }
+
+        // 1. Hardware Time Read (Assembly Direto)
+        // Substitui std::time::SystemTime
+        let raw_cycles: u64;
+        unsafe {
+            #[cfg(target_arch = "aarch64")]
+            core::arch::asm!("mrs {}, cntvct_el0", out(reg) raw_cycles);
+
+            #[cfg(target_arch = "riscv64")]
+            core::arch::asm!("rdtime {}", out(reg) raw_cycles);
+        }
+
+        // Conversão Determinística (Sem float point jitter)
+        let timestamp_ns = (raw_cycles as u128 * 1_000_000_000) / 24_000_000;
+
+        // 2. Vajra Integration (C8)
+        let entropy_snapshot = self.vajra_link.get_superconducting_state();
+
+        // 3. BLAKE3-Δ2 Chaining (C3)
+        let mut hasher = blake3::Hasher::new();
+        hasher.update(&self.last_block_hash);
+        hasher.update(&timestamp_ns.to_le_bytes());
+        hasher.update(&entropy_snapshot);
+        let current_hash = hasher.finalize();
+
+        // 4. TMR 36x3 Validation (C6)
+        let consensus_valid = self.validate_tmr_consensus(timestamp_ns);
+        if !consensus_valid {
+            // C6: Implementação Correta do Quench
+            return self.trigger_cheri_quench(HardwareQuench::ByzantineFailure);
+        }
+
+        // 5. PQC Signing (C5 - Dilithium3)
+        // Assina o Hash Temporal + Entropia + Timestamp
+        let signature = self.signing_key.sign_message(current_hash.as_bytes())
+            .map_err(|_| HardwareQuench::KeyCompromised)?;
+
+        // Atualiza estado interno (History Chain)
+        self.last_block_hash = *current_hash.as_bytes();
+
+        Ok(SignedEpoch {
+            timestamp_ns,
+            signature,
+            vajra_entropy: entropy_snapshot,
+            time_delta_hash: *current_hash.as_bytes(),
+            phi_metric: current_phi,
+        })
+    }
+
+    /// C6: The Hardware Quench (O "Aborto" Constitucional)
+    /// Revoga capacidades fisicamente na memória e trava o núcleo.
+    fn trigger_cheri_quench(&mut self, reason: HardwareQuench) -> Result<SignedEpoch, HardwareQuench> {
+        unsafe {
+            // 1. Revogar capacidade de assinatura (Key Destruction)
+            self.signing_key.revoke();
+
+            // 2. Zerar buffer de entropia
+            self.vajra_link.scramble();
+
+            // 3. Sinalizar KARNAK Isolation (Memória 20)
+            OmegaGates::trigger_isolation(reason);
+
+            // 4. Entrar em loop infinito monitorado (Panic Handler)
+            loop { core::arch::asm!("wfi"); }
+        }
+    }
+
+    /// Validação TMR interna
+    fn validate_tmr_consensus(&self, local_time: u128) -> bool {
+        let mut agreements = 0;
+        for node in self.tmr_nodes.iter() {
+            if (node.read_time() as i128 - local_time as i128).abs() < 1000 { // 1µs tolerance
+                agreements += 1;
+            }
+        }
+        // Requer 2/3 de 36 (24 nós)
+        agreements >= 24
+    }
+}
+
+// Hook para o Micro-Hypervisor (ABI C)
+#[no_mangle]
+pub extern "C" fn agi_rsm_syscall_clock(clock_ptr: *mut UnixEpochClock) -> SignedEpoch {
+    let clock = unsafe { &mut *clock_ptr };
+    match clock.generate_epoch() {
+        Ok(epoch) => epoch,
+        Err(_) => {
+            // Em caso de Quench, retorna epoch zero (fail-safe time)
+            // O sistema superior deve detectar isso e iniciar rollback.
+            unsafe { core::mem::zeroed() }
+        }
+    }
+}

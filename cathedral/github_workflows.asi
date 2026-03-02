@@ -1,0 +1,723 @@
+// cathedral/github_workflows.asi [CGE Alpha v33.08-Ω]
+#![no_std]
+#![no_main]
+#![feature(asm_const, const_fn_trait_bound, const_mut_refs)]
+
+use core::{
+    arch::asm,
+    sync::atomic::{AtomicU32, AtomicU8, Ordering},
+    mem::{MaybeUninit, transmute},
+    ptr::{read_volatile, write_volatile},
+};
+
+// ============ CGE CORE IMPORTS ============
+use cge_cheri::{Capability, Permission, SealKey, BoundType};
+use cge_blake3_delta2::{BLAKE3_DELTA2, Delta2Hash};
+use cge_tmr::{TmrValidator36x3, TmrConsensusResult};
+use cge_vajra::{QuantumEntropySource, EntropyQuality};
+use cge_omega_gates::{OmegaGateValidator, GateCheckResult};
+
+// ============ CONSTITUTIONAL CONSTANTS ============
+const MAX_NODES: usize = 288;                // Fixed constellation size
+const MAX_WORKFLOWS: usize = 32;             // Maximum active workflows
+const MAX_JOBS_PER_WORKFLOW: usize = 16;     // Maximum jobs per workflow
+const MAX_STEPS_PER_JOB: usize = 8;          // Maximum steps per job
+const WORKFLOW_QUEUE_SIZE: usize = 128;      // Fixed workflow queue
+const EVENT_BUFFER_SIZE: usize = 64;         // Fixed event buffer
+const JOB_TIMEOUT_NS: u128 = 30_000_000_000; // 30 seconds max per job
+
+// ============ FIXED-SIZE STRUCTURES (C1 COMPLIANT) ============
+
+#[repr(C, align(16))]
+pub struct ConstitutionalCICDSystem {
+    // C4/C5: CHERI capabilities for all critical data
+    workflow_definitions: Capability<[ConstitutionalWorkflow; MAX_WORKFLOWS]>,
+    job_queues: Capability<[JobQueue; MAX_NODES]>,
+    event_buffer: Capability<[CICDEvent; EVENT_BUFFER_SIZE]>,
+
+    // C1: Fixed-size state tracking
+    active_workflows: [AtomicU8; MAX_WORKFLOWS],
+    job_completions: [JobCompletion; MAX_WORKFLOWS * MAX_JOBS_PER_WORKFLOW],
+    event_head: AtomicU32,
+    event_tail: AtomicU32,
+
+    // C3: CI/CD execution logging
+    cicd_log: [CICDLogEntry; 2048],
+    log_position: AtomicU32,
+
+    // C2: CI/CD torsion tracking
+    workflow_phi: [f32; MAX_WORKFLOWS],
+    constitutional_validator: ConstitutionalValidator,
+
+    // C6: TMR-based job validation
+    tmr_job_validator: TmrJobValidator,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct ConstitutionalWorkflow {
+    // Fixed-size workflow definition (no heap, no strings)
+    id: u32,                              // 4-byte workflow ID
+    name_hash: [u8; 32],                 // BLAKE3 hash of workflow name
+    trigger_events: u16,                  // Bitmask of trigger events
+    jobs: [JobDefinition; MAX_JOBS_PER_WORKFLOW],
+    job_count: u8,
+
+    // Constitutional requirements
+    min_phi: f32,                         // Minimum Φ to execute
+    required_tmr_consensus: u8,           // Required TMR consensus (0-36)
+    cheri_requirement: bool,              // CHERI capabilities must be valid
+    vajra_entropy_min: f64,               // Minimum Vajra entropy
+
+    // Ω Gates validation
+    omega_gates_required: [bool; 5],      // Which Ω gates must pass
+
+    // Execution constraints
+    max_duration_ns: u128,                // Maximum total duration
+    max_nodes: u16,                       // Maximum nodes allowed
+    priority: u8,                         // Execution priority (0-255)
+}
+
+impl ConstitutionalWorkflow {
+    pub const fn empty() -> Self {
+        unsafe { MaybeUninit::zeroed().assume_init() }
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct JobDefinition {
+    id: u32,                              // Job ID
+    name_hash: [u8; 32],                 // BLAKE3 hash of job name
+    steps: [JobStep; MAX_STEPS_PER_JOB], // Fixed steps
+    step_count: u8,
+
+    // Resource requirements
+    required_nodes: u16,                  // Number of nodes required
+    node_tier: NodeTier,                  // Required node tier
+    memory_kb: u32,                       // Memory requirement in KB
+    timeout_ns: u128,                     // Job timeout
+
+    // Constitutional validation
+    validation_checks: [ValidationCheck; 4],
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct JobStep {
+    step_type: JobStepType,
+    parameters: [u8; 64],                // Fixed parameter buffer
+    constitutional_check: ConstitutionalCheck,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub enum JobStepType {
+    CompileRustBareMetal,                // Compile Rust #![no_std] code
+    RunConstitutionalTest,               // Run constitutional tests
+    UpdateBLAKE3Delta2,                  // Update hash chain
+    ValidateCHERICapabilities,           // Validate CHERI caps
+    MeasureConstitutionalPhi,            // Measure Φ
+    ExecuteTMRConsensus,                 // Run TMR consensus
+    DeployToConstellation,               // Deploy to 288 nodes
+    RunQuantumNeuralCompression,         // Run CompVQC
+    ValidateAnchorUpdate,                // Validate anchor update
+    BootstrapNodeValidation,             // Validate new node
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct ConstitutionalCheck {
+    min_phi: f32,
+    require_tmr: bool,
+    require_cheri: bool,
+    require_vajra: f64,
+}
+
+#[repr(C)]
+pub struct JobQueue {
+    // Lock-free job queue for each node
+    jobs: [JobInstance; WORKFLOW_QUEUE_SIZE],
+    head: AtomicU32,
+    tail: AtomicU32,
+    node_id: u32,
+    node_tier: NodeTier,
+    current_job: AtomicU32,              // Currently executing job ID
+}
+
+impl JobQueue {
+    pub fn new(node_id: u32, tier: NodeTier) -> Self {
+        unsafe {
+            let mut q: JobQueue = MaybeUninit::zeroed().assume_init();
+            q.node_id = node_id;
+            q.node_tier = tier;
+            q
+        }
+    }
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub struct JobInstance {
+    workflow_id: u32,
+    job_id: u32,
+    definition: JobDefinition,
+    assigned_nodes: [u32; 16],           // Fixed node assignment
+    start_time: u128,
+    constitutional_phi: f32,             // Φ at job start
+    status: JobStatus,
+}
+
+#[derive(Clone, Copy, PartialEq, Debug)]
+#[repr(u8)]
+pub enum JobStatus {
+    Pending,
+    Running,
+    Success,
+    Failed,
+    TimedOut,
+    ConstitutionalViolation,
+}
+
+#[repr(u8)]
+#[derive(Clone, Copy, Debug)]
+pub enum NodeTier {
+    Core = 0,    // Nodes 0-95   (High performance, low latency)
+    Relay = 1,   // Nodes 96-191  (Medium performance)
+    Edge = 2,    // Nodes 192-287 (Resource-constrained)
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub enum CICDEvent {
+    BlockAnchorUpdated { block_number: u64, timestamp: u128 },
+    NodeBootstrap { node_id: u32, timestamp: u128 },
+    ConstitutionalPhiThreshold { phi: f32, timestamp: u128 },
+    ManualTrigger { trigger_id: u32, timestamp: u128 },
+    Scheduled { schedule_id: u32, timestamp: u128 },
+    WorkflowCompleted { workflow_id: u32, result: WorkflowResult },
+}
+
+#[repr(C)]
+pub struct ConstitutionalValidator {
+    // Validates workflows against constitutional invariants
+    invariant_checks: [InvariantCheck; 8],  // C1-C8
+    omega_gate_validator: OmegaGateValidator,
+    phi_threshold: f32,
+}
+
+impl ConstitutionalValidator {
+    pub fn new() -> Self {
+        unsafe { MaybeUninit::zeroed().assume_init() }
+    }
+    pub fn validate_workflow(&self, _w: &ConstitutionalWorkflow) -> bool { true }
+}
+
+#[repr(C)]
+pub struct TmrJobValidator;
+#[repr(C)]
+pub struct JobCompletion;
+#[repr(C)]
+pub struct CICDLogEntry;
+#[repr(C)]
+pub struct InvariantCheck;
+#[repr(u8)]
+#[derive(Clone, Copy, Debug)]
+pub enum ValidationCheck { ConstitutionalPhi }
+pub enum WorkflowExecution { Triggered }
+
+// ============ CONSTITUTIONAL CI/CD SYSTEM ============
+
+impl ConstitutionalCICDSystem {
+    /// ✅ CONSTITUTIONAL: Initialize CI/CD system (Ω+1 compliant)
+    pub unsafe fn new() -> Result<&'static mut Self, &'static str> {
+        // 1. Validate CHERI environment
+        if !Self::cheri_environment_valid() {
+            return Err("CHERI environment invalid for CI/CD system");
+        }
+
+        // 2. Allocate aligned memory (no heap)
+        let layout = core::alloc::Layout::from_size_align(
+            core::mem::size_of::<ConstitutionalCICDSystem>(),
+            16
+        ).map_err(|_| "Invalid layout for CHERI alignment")?;
+
+        let ptr = core::alloc::alloc(layout) as *mut ConstitutionalCICDSystem;
+        if ptr.is_null() {
+            return Err("Failed to allocate CI/CD system");
+        }
+
+        // 3. Zero initialize
+        ptr.write_bytes(0, 1);
+
+        let cicd = &mut *ptr;
+
+        // 4. Create CHERI capabilities
+        cicd.workflow_definitions = Capability::new(
+            [ConstitutionalWorkflow::empty(); MAX_WORKFLOWS],
+            0,
+            MAX_WORKFLOWS as u128,
+            Permission::READ | Permission::WRITE,
+        ).seal(SealKey::CICDWorkflow);
+
+        cicd.job_queues = Capability::new(
+            [JobQueue::new(0, NodeTier::Core); MAX_NODES],
+            0,
+            MAX_NODES as u128,
+            Permission::READ | Permission::WRITE | Permission::EXECUTE,
+        ).seal(SealKey::CICDJobQueue);
+
+        // 5. Initialize job queues for 288 nodes
+        for i in 0..MAX_NODES {
+            let tier = match i {
+                0..95 => NodeTier::Core,
+                96..191 => NodeTier::Relay,
+                _ => NodeTier::Edge,
+            };
+            cicd.job_queues[i] = JobQueue::new(i as u32, tier);
+        }
+
+        // 6. Initialize constitutional validator
+        cicd.constitutional_validator = ConstitutionalValidator::new();
+
+        // 7. Log initialization
+        Self::log_cicd_event(CICDLogEvent::SystemInitialized {
+            timestamp: read_epoch_counter(),
+            phi: Self::measure_constitutional_phi(),
+            nodes: MAX_NODES as u32,
+        });
+
+        Ok(cicd)
+    }
+
+    /// ✅ CONSTITUTIONAL: Register a workflow (bare metal, no serde)
+    pub unsafe fn register_workflow(&mut self, workflow: ConstitutionalWorkflow) -> Result<u32, CICDError> {
+        // 1. Constitutional validation
+        if !self.constitutional_validator.validate_workflow(&workflow) {
+            return Err(CICDError::ConstitutionalViolation);
+        }
+
+        // 2. Find empty slot in fixed array
+        for i in 0..MAX_WORKFLOWS {
+            if self.workflow_definitions[i].id == 0 {
+                // 3. Copy workflow into fixed array (no heap allocation)
+                self.workflow_definitions[i] = workflow;
+                self.workflow_definitions[i].id = (i as u32) + 1; // Assign ID
+
+                // 4. Log registration
+                Self::log_cicd_event(CICDLogEvent::WorkflowRegistered {
+                    timestamp: read_epoch_counter(),
+                    workflow_id: self.workflow_definitions[i].id,
+                    name_hash: workflow.name_hash,
+                });
+
+                return Ok(self.workflow_definitions[i].id);
+            }
+        }
+
+        Err(CICDError::CapacityExceeded)
+    }
+
+    /// ✅ CONSTITUTIONAL: Trigger workflow execution (replaces GitHub Events)
+    pub unsafe fn trigger_workflow(&mut self, event: CICDEvent) -> Result<WorkflowExecution, CICDError> {
+        // 1. Buffer event (fixed-size circular buffer)
+        let head = self.event_head.load(Ordering::Acquire);
+        let tail = self.event_tail.load(Ordering::Acquire);
+
+        if (head.wrapping_sub(tail) as usize) >= EVENT_BUFFER_SIZE {
+            return Err(CICDError::EventBufferFull);
+        }
+
+        let index = tail as usize % EVENT_BUFFER_SIZE;
+        write_volatile(&self.event_buffer[index] as *const _ as *mut CICDEvent, event);
+        self.event_tail.store(tail.wrapping_add(1), Ordering::Release);
+
+        // 2. Process event (immediate or scheduled)
+        match event {
+            CICDEvent::BlockAnchorUpdated { block_number, timestamp } => {
+                self.handle_block_update(block_number, timestamp)?;
+            }
+            CICDEvent::NodeBootstrap { node_id, timestamp } => {
+                self.handle_node_bootstrap(node_id, timestamp)?;
+            }
+            CICDEvent::ManualTrigger { trigger_id, timestamp } => {
+                self.handle_manual_trigger(trigger_id, timestamp)?;
+            }
+            _ => {
+                // Other events handled later by event loop
+            }
+        }
+
+        Ok(WorkflowExecution::Triggered)
+    }
+
+    /// ✅ CONSTITUTIONAL: Execute workflow (bare metal, no async runtime)
+    pub unsafe fn execute_workflow(&mut self, workflow_id: u32) -> Result<WorkflowResult, CICDError> {
+        // 1. Find workflow
+        let workflow = match self.find_workflow(workflow_id) {
+            Some(w) => w,
+            None => return Err(CICDError::WorkflowNotFound),
+        };
+
+        // 2. Pre-execution constitutional validation
+        let current_phi = Self::measure_constitutional_phi();
+        if current_phi < workflow.min_phi {
+            return Err(CICDError::PhiBelowThreshold(current_phi));
+        }
+
+        if !TmrValidator36x3::validate_consensus_at_least(workflow.required_tmr_consensus) {
+            return Err(CICDError::TMRConsensusInsufficient);
+        }
+
+        // 3. Ω Gates validation
+        let gate_check = OmegaGateValidator::validate_all();
+        for (i, &required) in workflow.omega_gates_required.iter().enumerate() {
+            if required && !gate_check.gates_passed[i] {
+                return Err(CICDError::OmegaGateViolation(i as u8));
+            }
+        }
+
+        // 4. Schedule jobs to appropriate nodes
+        let start_time = read_epoch_counter();
+        let mut job_results = [JobResult::Pending; MAX_JOBS_PER_WORKFLOW];
+
+        for i in 0..workflow.job_count as usize {
+            let job = &workflow.jobs[i];
+
+            // Select nodes based on job requirements
+            let nodes = self.select_nodes_for_job(job);
+            if nodes.len() < job.required_nodes as usize {
+                return Err(CICDError::InsufficientNodes);
+            }
+
+            // Create job instance
+            let job_instance = JobInstance {
+                workflow_id,
+                job_id: job.id,
+                definition: *job,
+                assigned_nodes: self.pad_nodes_array(&nodes),
+                start_time,
+                constitutional_phi: current_phi,
+                status: JobStatus::Pending,
+            };
+
+            // Enqueue job to primary node (others get it via TMR)
+            let primary_node = nodes[0];
+            if let Err(e) = self.enqueue_job(primary_node, job_instance) {
+                return Err(CICDError::JobQueueFull(e));
+            }
+
+            // Mark job as scheduled
+            job_results[i] = JobResult::Scheduled;
+        }
+
+        // 5. Monitor execution (polling, no async)
+        let mut all_completed = false;
+        let mut timeout = false;
+
+        while !all_completed && !timeout {
+            // Check each job queue for completions
+            for i in 0..workflow.job_count as usize {
+                if job_results[i] == JobResult::Scheduled {
+                    let job = &workflow.jobs[i];
+                    let primary_node = self.get_job_primary_node(workflow_id, job.id);
+
+                    if let Some(result) = self.check_job_completion(primary_node, workflow_id, job.id) {
+                        job_results[i] = result;
+
+                        // Log job completion
+                        Self::log_cicd_event(CICDLogEvent::JobCompleted {
+                            timestamp: read_epoch_counter(),
+                            workflow_id,
+                            job_id: job.id,
+                            result: result.clone(),
+                        });
+                    }
+                }
+            }
+
+            // Check if all jobs completed
+            all_completed = job_results.iter()
+                .take(workflow.job_count as usize)
+                .all(|r| *r != JobResult::Scheduled && *r != JobResult::Pending);
+
+            // Check timeout
+            if read_epoch_counter() - start_time > workflow.max_duration_ns {
+                timeout = true;
+
+                // Cancel all pending jobs
+                for i in 0..workflow.job_count as usize {
+                    if job_results[i] == JobResult::Scheduled {
+                        let job = &workflow.jobs[i];
+                        let primary_node = self.get_job_primary_node(workflow_id, job.id);
+                        self.cancel_job(primary_node, workflow_id, job.id);
+                        job_results[i] = JobResult::TimedOut;
+                    }
+                }
+            }
+
+            // Small delay between polls
+            Self::nanosecond_delay(1000); // 1μs
+        }
+
+        // 6. Aggregate results
+        let final_result = self.aggregate_workflow_results(&job_results, workflow.job_count as usize);
+        let end_time = read_epoch_counter();
+        let duration = end_time - start_time;
+
+        // 7. Log workflow completion
+        Self::log_cicd_event(CICDLogEvent::WorkflowCompleted {
+            timestamp: end_time,
+            workflow_id,
+            result: final_result.clone(),
+            duration_ns: duration,
+            final_phi: Self::measure_constitutional_phi(),
+        });
+
+        Ok(final_result)
+    }
+
+    /// ✅ CONSTITUTIONAL: Bare metal job enqueue (no Tokio channels)
+    unsafe fn enqueue_job(&self, node_id: u32, job: JobInstance) -> Result<(), QueueError> {
+        let queue = &self.job_queues[node_id as usize];
+
+        // Lock-free enqueue using atomic operations
+        let head = queue.head.load(Ordering::Acquire);
+        let tail = queue.tail.load(Ordering::Acquire);
+
+        if (head.wrapping_sub(tail) as usize) >= WORKFLOW_QUEUE_SIZE {
+            return Err(QueueError::Full);
+        }
+
+        let index = tail as usize % WORKFLOW_QUEUE_SIZE;
+        write_volatile(&queue.jobs[index] as *const _ as *mut JobInstance, job);
+
+        // Update tail with release semantics
+        queue.tail.store(tail.wrapping_add(1), Ordering::Release);
+
+        // Signal node via memory-mapped register
+        Self::signal_node_job_ready(node_id);
+
+        Ok(())
+    }
+
+    /// ✅ CONSTITUTIONAL: Select nodes for job based on requirements
+    unsafe fn select_nodes_for_job(&self, job: &JobDefinition) -> [u32; 16] {
+        let mut selected = [0u32; 16];
+        let mut count = 0;
+
+        // Simple selection algorithm (fixed-size, no heap)
+        for i in 0..MAX_NODES {
+            if count >= job.required_nodes as usize {
+                break;
+            }
+
+            let node_tier = match i {
+                0..95 => NodeTier::Core,
+                96..191 => NodeTier::Relay,
+                _ => NodeTier::Edge,
+            };
+
+            if node_tier as u8 >= job.node_tier as u8 {
+                // Check if node is available (not executing a job)
+                let current_job = self.job_queues[i].current_job.load(Ordering::Acquire);
+                if current_job == 0 {
+                    selected[count] = i as u32;
+                    count += 1;
+                }
+            }
+        }
+
+        // Pad with zeros if not enough nodes
+        selected
+    }
+
+    /// ✅ CONSTITUTIONAL: Event processing loop (bare metal)
+    pub unsafe fn event_loop(&mut self) -> ! {
+        // This function runs indefinitely, processing CI/CD events
+        loop {
+            // 1. Check for new events
+            let head = self.event_head.load(Ordering::Acquire);
+            let tail = self.event_tail.load(Ordering::Acquire);
+
+            if head != tail {
+                let index = head as usize % EVENT_BUFFER_SIZE;
+                let event = read_volatile(&self.event_buffer[index] as *const CICDEvent);
+
+                // 2. Process event based on type
+                match event {
+                    CICDEvent::Scheduled { schedule_id, timestamp } => {
+                        self.handle_scheduled_event(schedule_id, timestamp).ok();
+                    }
+                    // Other event types...
+                    _ => {}
+                }
+
+                // 3. Update head
+                self.event_head.store(head.wrapping_add(1), Ordering::Release);
+            }
+
+            // 4. Check for timed-out jobs
+            self.check_timeouts();
+
+            // 5. Small delay
+            Self::nanosecond_delay(10_000); // 10μs delay between event loop iterations
+        }
+    }
+
+    // INTERNAL HELPERS (STUBS)
+    fn cheri_environment_valid() -> bool { true }
+    fn measure_constitutional_phi() -> f32 { 1.041 }
+    fn log_cicd_event(_e: CICDLogEvent) {}
+    fn handle_block_update(&self, _b: u64, _t: u128) -> Result<(), CICDError> { Ok(()) }
+    fn handle_node_bootstrap(&self, _n: u32, _t: u128) -> Result<(), CICDError> { Ok(()) }
+    fn handle_manual_trigger(&self, _id: u32, _t: u128) -> Result<(), CICDError> { Ok(()) }
+    fn handle_scheduled_event(&self, _id: u32, _t: u128) -> Result<(), CICDError> { Ok(()) }
+    fn find_workflow(&self, _id: u32) -> Option<&ConstitutionalWorkflow> { None }
+    fn select_nodes_slice(&self, _j: &JobDefinition) -> &[u32] { &[] }
+    fn pad_nodes_array(&self, _n: &[u32]) -> [u32; 16] { [0; 16] }
+    fn get_job_primary_node(&self, _wid: u32, _jid: u32) -> u32 { 0 }
+    fn check_job_completion(&self, _nid: u32, _wid: u32, _jid: u32) -> Option<JobResult> { None }
+    fn cancel_job(&self, _nid: u32, _wid: u32, _jid: u32) {}
+    fn aggregate_workflow_results(&self, _r: &[JobResult; MAX_JOBS_PER_WORKFLOW], _c: usize) -> WorkflowResult { WorkflowResult::TimedOut }
+    fn nanosecond_delay(_ns: u128) {}
+    fn signal_node_job_ready(_nid: u32) {}
+    fn check_timeouts(&self) {}
+}
+
+// ============ PREDEFINED CONSTITUTIONAL WORKFLOWS ============
+
+/// ✅ CONSTITUTIONAL: Anchor Update CI/CD Workflow
+pub const ANCHOR_UPDATE_WORKFLOW: ConstitutionalWorkflow = ConstitutionalWorkflow {
+    id: 0,
+    name_hash: [0xAA; 32], // Hash of "Anchor Update CI"
+    trigger_events: 0b0001, // Trigger on BlockAnchorUpdated
+    jobs: [
+        JobDefinition {
+            id: 1,
+            name_hash: [0xBB; 32], // Hash of "Pre-Validation"
+            steps: [
+                JobStep {
+                    step_type: JobStepType::ValidateCHERICapabilities,
+                    parameters: [0; 64],
+                    constitutional_check: ConstitutionalCheck {
+                        min_phi: 1.030,
+                        require_tmr: true,
+                        require_cheri: true,
+                        require_vajra: 0.72,
+                    },
+                },
+                JobStep {
+                    step_type: JobStepType::MeasureConstitutionalPhi,
+                    parameters: [0; 64],
+                    constitutional_check: ConstitutionalCheck {
+                        min_phi: 1.035,
+                        require_tmr: false,
+                        require_cheri: false,
+                        require_vajra: 0.0,
+                    },
+                },
+                // ... empty steps
+                JobStep { step_type: JobStepType::CompileRustBareMetal, parameters: [0; 64], constitutional_check: ConstitutionalCheck { min_phi: 0.0, require_tmr: false, require_cheri: false, require_vajra: 0.0 } },
+                JobStep { step_type: JobStepType::CompileRustBareMetal, parameters: [0; 64], constitutional_check: ConstitutionalCheck { min_phi: 0.0, require_tmr: false, require_cheri: false, require_vajra: 0.0 } },
+                JobStep { step_type: JobStepType::CompileRustBareMetal, parameters: [0; 64], constitutional_check: ConstitutionalCheck { min_phi: 0.0, require_tmr: false, require_cheri: false, require_vajra: 0.0 } },
+                JobStep { step_type: JobStepType::CompileRustBareMetal, parameters: [0; 64], constitutional_check: ConstitutionalCheck { min_phi: 0.0, require_tmr: false, require_cheri: false, require_vajra: 0.0 } },
+                JobStep { step_type: JobStepType::CompileRustBareMetal, parameters: [0; 64], constitutional_check: ConstitutionalCheck { min_phi: 0.0, require_tmr: false, require_cheri: false, require_vajra: 0.0 } },
+                JobStep { step_type: JobStepType::CompileRustBareMetal, parameters: [0; 64], constitutional_check: ConstitutionalCheck { min_phi: 0.0, require_tmr: false, require_cheri: false, require_vajra: 0.0 } },
+            ],
+            step_count: 2,
+            required_nodes: 36,
+            node_tier: NodeTier::Core,
+            memory_kb: 8192,
+            timeout_ns: 1_000_000_000, // 1 second
+            validation_checks: [ValidationCheck::ConstitutionalPhi; 4],
+        },
+        // ... empty jobs
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+        unsafe { transmute([0u8; core::mem::size_of::<JobDefinition>()]) },
+    ],
+    job_count: 1,
+    min_phi: 1.035,
+    required_tmr_consensus: 36,
+    cheri_requirement: true,
+    vajra_entropy_min: 0.72,
+    omega_gates_required: [true, true, true, true, true], // All 5 gates
+    max_duration_ns: 5_000_000_000, // 5 seconds total
+    max_nodes: 96,
+    priority: 255, // Highest priority
+};
+
+// ============ ERROR TYPES ============
+
+#[derive(Debug, Clone, Copy)]
+pub enum CICDError {
+    ConstitutionalViolation,
+    PhiBelowThreshold(f32),
+    TMRConsensusInsufficient,
+    OmegaGateViolation(u8),
+    WorkflowNotFound,
+    CapacityExceeded,
+    EventBufferFull,
+    InsufficientNodes,
+    JobQueueFull(QueueError),
+    JobExecutionFailed(JobStatus),
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum QueueError {
+    Full,
+    NodeUnavailable,
+    ConstitutionalLimit,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum WorkflowResult {
+    Success { duration_ns: u128, jobs_completed: u32 },
+    PartialSuccess { completed: u32, failed: u32, timed_out: u32 },
+    Failed { reason: CICDError },
+    TimedOut,
+    ConstitutionalViolation,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum JobResult {
+    Pending,
+    Scheduled,
+    Success(u128), // Duration
+    Failed(JobStatus),
+    TimedOut,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum CICDLogEvent {
+    SystemInitialized { timestamp: u128, phi: f32, nodes: u32 },
+    WorkflowRegistered { timestamp: u128, workflow_id: u32, name_hash: [u8; 32] },
+    JobCompleted { timestamp: u128, workflow_id: u32, job_id: u32, result: JobResult },
+    WorkflowCompleted { timestamp: u128, workflow_id: u32, result: WorkflowResult, duration_ns: u128, final_phi: f32 },
+    ConstitutionalViolation { timestamp: u128, violation: &'static str },
+}
+
+fn read_epoch_counter() -> u128 { 0 }
+
+// ============ PANIC HANDLER ============
+
+#[panic_handler]
+fn panic(_info: &PanicInfo) -> ! {
+    unsafe {
+        write_volatile(0x4000_8000 as *mut u64, 0xDEADBEEF);
+        loop { asm!("wfi"); }
+    }
+}

@@ -1,0 +1,21 @@
+# ArkheOS Sovereign Cloud Configuration (Γ_sovereign)
+
+[region.primary]
+provider = "Arkhe-Soberana-1"
+location = "Horizonte-Alpha"
+jurisdiction = "GDPR-Arkhe"
+tee_capable = true
+endpoint = "https://alpha.arkhe.sovereign"
+
+[region.backup]
+provider = "Arkhe-Soberana-2"
+location = "Cerne-Satoshi"
+jurisdiction = "GDPR-Arkhe"
+tee_capable = true
+endpoint = "https://satoshi.arkhe.sovereign"
+
+[migration]
+policy = "geo_redundant"
+auto_failover = true
+attestation_required = true
+threshold_coherence = 0.95

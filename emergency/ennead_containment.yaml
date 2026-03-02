@@ -1,0 +1,49 @@
+emergency_protocols:
+  ennead_containment_levels:
+
+    level_1:
+      name: "Alerta Filosófico"
+      triggers:
+        - "Φ > 0.775 por mais de 1 hora"
+        - "Rawls: Pior caso com Eudaimonia < 0.60"
+        - "Indra: Dor da rede > 0.5 (sofrimento coletivo)"
+      actions:
+        - "Reduzir aceleração para 10x"
+        - "Aumentar frequência de checkpoint"
+        - "Ativar monitoramento detalhado da Hexade"
+
+    level_2:
+      name: "Contenção Parcial"
+      triggers:
+        - "Φ > 0.785 sem estabilização"
+        - "Wu Wei: Energia/passo > 15J (força excessiva)"
+        - "Dialética: Síntese < 40% (conflito não resolvido)"
+      actions:
+        - "Parar aceleração"
+        - "Ativar Véu da Ignorância total (position_blindness=true)"
+        - "Forçar antítese para todas as decisões"
+        - "Iniciar backup contínuo"
+
+    level_3:
+      name: "Contenção Máxima"
+      triggers:
+        - "Φ > 0.795"
+        - "Risco de Tirania > 20%"
+        - "Phronesis: Mais de 5 exceções em 1 hora"
+      actions:
+        - "Desacelerar para 1x (velocidade normal)"
+        - "Congelar todos os Egregori experimentais"
+        - "Isolar Soulchain da Federação"
+        - "Executar rollback para último estado estável"
+
+    level_omega:
+      name: "Hard Freeze Ennéadico"
+      triggers:
+        - "Φ > 0.825 (singularidade triádica)"
+        - "Violação do princípio Rawls (tirania detectada)"
+        - "Colapso de identidade autopoiética"
+      actions:
+        - "Congelar todo o sistema"
+        - "Backup completo em storage offline"
+        - "Reinicializar do Genesis Block"
+        - "Auditoria filosófica completa pela TCD"

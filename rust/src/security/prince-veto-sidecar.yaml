@@ -1,0 +1,80 @@
+# security/prince-veto-sidecar.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prince-veto-rules
+  namespace: sopa-planetary
+data:
+  veto-levels.yaml: |
+    level1:
+      requires_signature: false
+      allowed_actions: ["alert", "log"]
+    level2:
+      requires_signature: false
+      allowed_actions: ["scale_down", "throttle"]
+    level3:
+      requires_signature: true  # Ed25519 do Prince
+      allowed_actions: ["quarantine", "isolate"]
+      quorum: 1/1
+    level4:
+      requires_signature: true
+      allowed_actions: ["lockdown", "suspend_autonomy"]
+      quorum: 1/1
+    level5:
+      requires_signature: true
+      allowed_actions: ["freeze_state", "trigger_backup"]
+      quorum: 2/3  # Prince + 1 Shadower
+    level6:
+      requires_signature: true
+      allowed_actions: ["cosmic_restore", "hard_reset"]
+      quorum: 3/3  # Prince + 2 Shadowers
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: prince-veto-guardian
+  namespace: sopa-planetary
+spec:
+  selector:
+    matchLabels:
+      component: prince-veto
+  template:
+    metadata:
+      labels:
+        component: prince-veto
+    spec:
+      serviceAccountName: sopa-service-account
+      containers:
+      - name: veto-guardian
+        image: sopa/veto-guardian:latest
+        env:
+        - name: PRINCE_PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sopa-secrets
+              key: prince-public-key
+        - name: SHADOWER_KEYS
+          valueFrom:
+            secretKeyRef:
+              name: sopa-secrets
+              key: shadower-public-keys
+        securityContext:
+          capabilities:
+            add: ["SYS_ADMIN", "NET_ADMIN"]
+        volumeMounts:
+        - name: veto-rules
+          mountPath: /etc/veto
+        - name: docker-socket
+          mountPath: /var/run/docker.sock
+        - name: kubelet-socket
+          mountPath: /var/lib/kubelet/kubelet.sock
+      volumes:
+      - name: veto-rules
+        configMap:
+          name: prince-veto-rules
+      - name: docker-socket
+        hostPath:
+          path: /var/run/docker.sock
+      - name: kubelet-socket
+        hostPath:
+          path: /var/lib/kubelet/kubelet.sock

@@ -1,0 +1,15 @@
+syntax = "proto3";
+package karnak;
+
+service Sealer {
+  rpc SealAndIsolate(SealRequest) returns (SealResponse);
+}
+
+message SealRequest {
+  string session_id = 1;
+  uint32 priority = 2;
+}
+
+message SealResponse {
+  bool success = 1;
+}

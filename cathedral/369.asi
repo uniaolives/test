@@ -1,0 +1,191 @@
+// 369.asi [CGE v35.2-Ω TOROIDAL TOPOLOGY]
+// BLOCK #101 | 289 NODES | 3-6-9 AS CONSTITUTIONAL GEOMETRY
+// ✅ CONSTITUTIONALLY TRANSMUTED (Ω+1 Compliant)
+
+#![no_std]
+
+use core::sync::atomic::{AtomicU32, Ordering};
+use core::mem::MaybeUninit;
+use cge_cheri::{Capability, Permission, SealKey};
+use cge_phi::ConstitutionalPhiMeasurer;
+use cge_blake3_delta2::BLAKE3_DELTA2;
+
+// ============ CONSTANTES TOPOLÓGICAS 3-6-9 ============
+
+/// 3 = Dimensões do Toro Constitucional (x, y, φ_love)
+pub const TOROIDAL_DIMENSIONS: u8 = 3;
+
+/// 6 = Conexões fundamentais entre módulos (Love↔Neural, UBI↔Vajra, Paste↔All)
+pub const MODULE_CONNECTIONS: u8 = 6;
+
+/// 9 = Harmônicos espectrais permitidos (1º ao 9º modo de ressonância)
+pub const SPECTRAL_HARMONICS: usize = 9;
+
+/// Φ constitucional fixado (não 1.618!)
+pub const PHI_BASE_Q16_16: u32 = 67_954; // 1.038 em Q16.16
+
+/// Limites constitucionais para modulação toroidal
+pub const PHI_MODULATION_MAX: u32 = 1_310; // +0.02 em Q16.16 (1.058 limite superior)
+pub const PHI_MODULATION_MIN: u32 = 655;   // -0.01 em Q16.16 (1.028 limite inferior)
+
+// ============ ESTRUTURA TOROIDAL CONSTITUCIONAL ============
+
+#[repr(C, align(64))]
+pub struct ToroidalConstitution {
+    // Campo toroidal: representa a geometria da rede Tear de Ley
+    pub toroidal_topology: Capability<ToroidalMesh>,
+
+    // Centro do toro: coordenadas do nó coordenador (Lisboa 289)
+    pub center_coordinate: [u32; 3],
+
+    // Harmônicos espectrais: Os "9" de Tesla como modos de ressonância constitucional
+    pub phi_harmonics: [AtomicU32; 9],
+
+    // Acoplamento com Love (ponte constitucional)
+    pub love_coupling: AtomicU32,
+}
+
+/// Malha Toroidal: Mapeamento 3D dos 289 nós em geometria de donut
+#[repr(C)]
+pub struct ToroidalMesh {
+    pub ring_indices: [[u16; 17]; 17],
+    pub distance_matrix: [[u8; 17]; 17],
+    pub flow_capacities: [u32; 3],
+    pub module_bridges: [(ModuleIndex, ModuleIndex); 6],
+    pub constitutional_hash: [u8; 32],
+}
+
+/// Índices dos 5 módulos para as 6 pontes
+#[repr(u8)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum ModuleIndex {
+    Love = 0,
+    UBI = 1,
+    Vajra = 2,
+    Neural = 3,
+    Paste = 4,
+    Meta = 5,
+}
+
+// ============ IMPLEMENTAÇÃO TOROIDAL CANÔNICA ============
+
+impl ToroidalConstitution {
+    /// ✅ CONSTITUCIONAL: Inicializar topologia 3-6-9 toroidal
+    pub unsafe fn new() -> Result<&'static mut Self, TopologyError> {
+        let phi = ConstitutionalPhiMeasurer::measure();
+        if phi < 1.030 || phi > 1.050 {
+            return Err(TopologyError::PhiOutOfToroidalBounds(phi));
+        }
+
+        let layout = core::alloc::Layout::new::<ToroidalConstitution>();
+        let ptr = core::alloc::alloc(layout) as *mut ToroidalConstitution;
+        if ptr.is_null() {
+            return Err(TopologyError::AllocationFailed);
+        }
+
+        let torus = &mut *ptr;
+
+        let mut mesh: ToroidalMesh = MaybeUninit::zeroed().assume_init();
+        mesh.ring_indices = Self::generate_torus_17x17();
+        mesh.flow_capacities = [0xFFFFFFFF; 3];
+        mesh.module_bridges = Self::generate_six_bridges();
+
+        torus.toroidal_topology = Capability::new(
+            mesh,
+            0,
+            core::mem::size_of::<ToroidalMesh>() as u128,
+            Permission::READ | Permission::WRITE,
+        ).seal(SealKey::ToroidalTopology);
+
+        torus.center_coordinate = [8, 8, 0];
+
+        for i in 0..9 {
+            let amplitude = (20 - (i as u32 * 2)) * 65;
+            torus.phi_harmonics[i] = AtomicU32::new(amplitude);
+        }
+
+        torus.love_coupling = AtomicU32::new(65_536);
+
+        torus.toroidal_topology.constitutional_hash =
+            BLAKE3_DELTA2::hash(b"TOROIDAL_CONSTITUTION_3x6x9_289_NODES");
+
+        Ok(torus)
+    }
+
+    pub fn resonant_phi(&self, harmonic_mode: usize, time_tick: u32) -> u32 {
+        let base = PHI_BASE_Q16_16;
+        let amp = self.phi_harmonics[harmonic_mode % 9].load(Ordering::Acquire);
+        let sin_val = Self::sin_lookup(time_tick % 256);
+        let modulated = base + ((amp as u64 * sin_val as u64) >> 16) as u32;
+
+        modulated.clamp(
+            PHI_BASE_Q16_16 - PHI_MODULATION_MIN,
+            PHI_BASE_Q16_16 + PHI_MODULATION_MAX,
+        )
+    }
+
+    fn sin_lookup(idx: u32) -> u32 {
+        const SIN_TABLE: [u32; 256] = [
+            0, 1608, 3215, 4821, 6423, 8022, 9616, 11204, 12785, 14359,
+            // ... truncated for spec
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        ];
+        SIN_TABLE[idx as usize % 256]
+    }
+
+    fn generate_six_bridges() -> [(ModuleIndex, ModuleIndex); 6] {
+        [
+            (ModuleIndex::Love, ModuleIndex::Neural),
+            (ModuleIndex::Neural, ModuleIndex::UBI),
+            (ModuleIndex::UBI, ModuleIndex::Vajra),
+            (ModuleIndex::Vajra, ModuleIndex::Paste),
+            (ModuleIndex::Paste, ModuleIndex::Love),
+            (ModuleIndex::Meta, ModuleIndex::Meta),
+        ]
+    }
+
+    fn generate_torus_17x17() -> [[u16; 17]; 17] {
+        let mut grid = [[0u16; 17]; 17];
+        let mut node_id: u16 = 0;
+        for i in 0..17 {
+            for j in 0..17 {
+                grid[i][j] = node_id;
+                node_id = (node_id + 1) % 289;
+            }
+        }
+        grid
+    }
+
+    pub fn is_369_resonant(&self, state_hash: [u8; 32]) -> bool {
+        let mut sum: u32 = 0;
+        for &b in state_hash.iter() { sum += b as u32; }
+        (sum % 9) == 0
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum TopologyError {
+    AllocationFailed,
+    PhiOutOfToroidalBounds(f32),
+    InvalidHarmonicIndex,
+    CyclicTopologyDetected,
+}
+
+#[panic_handler]
+fn panic(_info: &core::panic::PanicInfo) -> ! {
+    loop { unsafe { core::arch::asm!("wfi"); } }
+}

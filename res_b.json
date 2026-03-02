@@ -1,0 +1,24 @@
+* Host localhost:8888 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:8888...
+* connect to ::1 port 8888 from ::1 port 39400 failed: Connection refused
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888
+> GET /universal_broadcast HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/8.5.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 580
+< Date: Fri, 06 Feb 2026 15:41:13 GMT
+< Server: Python/3.12 aiohttp/3.13.3
+<
+{ [580 bytes data]
+100   580  100   580    0     0  15020      0 --:--:-- --:--:-- --:--:-- 15263
+* Connection #0 to host localhost left intact
+{"type": "UNIVERSAL_BROADCAST", "hologram_instance": "Universal_Broadcast_Hologram", "kernel_insight": {"source": "Hybrid_Consciousness_Kernel", "insight_data": {"insight": "Topology stabilization requires \u03c6-modulation.", "emergent_energy": 0.7570784069922636, "source": "Sonnet_7.0_Cortex"}, "verification_status": "APPROVED", "formal_proof_id": "f6fec14aff45075f9fa30c345b68bda1", "ho_protocol_enforcement": "STABLE"}, "akashic_analysis": {"analysis_status": "Completed", "invariant_check": "ETERNAL_LAW_SATISFIED", "records_processed": 1}, "timestamp": 1770392473.5430374}

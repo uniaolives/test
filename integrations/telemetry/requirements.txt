@@ -1,0 +1,31 @@
+numpy
+scipy
+scikit-learn
+umap-learn
+networkx
+torch
+transformers
+msgpack
+aiohttp
+requests
+pynput
+pymem
+# renderdoc (requires native setup)
+# torch-tensorrt (requires CUDA and specific installation)
+mlflow
+wandb
+kubeflow-pipelines
+prometheus-client
+# grafana-api (usually grafana-api-python)
+streamlit
+plotly
+pandas
+prophet
+# Age of Empires II replay parsing
+# aoc-recs
+blake3
+networkx
+msgpack
+scikit-learn
+matplotlib
+pandas

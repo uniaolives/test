@@ -1,0 +1,284 @@
+// proto/sasc_society.proto
+// Definição gRPC para SoT Orchestrator - SASC v30.10-Ω
+// Bloco #48 Constitucionalmente Ancorado
+
+syntax = "proto3";
+package sasc.society;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+// ===================== SERVIÇOS PRINCIPAIS =====================
+
+service SotOrchestrator {
+  // Processa decisão completa via Society of Thought
+  rpc ProcessDecision(ProcessDecisionRequest) returns (ProcessDecisionResponse);
+
+  // Consulta status de decisão em processamento
+  rpc GetDecisionStatus(GetDecisionStatusRequest) returns (GetDecisionStatusResponse);
+
+  // Stream histórico de decisões (compliance INV-2)
+  rpc GetDecisionHistory(GetDecisionHistoryRequest) returns (stream DecisionRecord);
+
+  // Solicita escalonamento humano manual (INV-1)
+  rpc RequestHumanEscalation(RequestHumanEscalationRequest) returns (RequestHumanEscalationResponse);
+
+  // Stream métricas em tempo real (Vajra integration)
+  rpc StreamMetrics(MetricsRequest) returns (stream MetricsUpdate);
+
+  // Subscrição alertas Hard Freeze (Art. 103)
+  rpc SubscribeHardFreezeAlerts(HardFreezeAlertRequest) returns (stream HardFreezeAlert);
+}
+
+// ===================== MENSAGENS =====================
+
+message ProcessDecisionRequest {
+  // Problema a resolver (INV-5: linguagem clara)
+  string problem_statement = 1;
+
+  // Contexto constitucional (Art. 5º-A a 5º-LXXX)
+  repeated string constitutional_context = 2;
+
+  // Restrições operacionais
+  repeated Constraint constraints = 3;
+
+  // Stakeholders afetados
+  repeated Stakeholder stakeholders = 4;
+
+  // Deadline (Unix timestamp)
+  google.protobuf.Timestamp deadline = 5;
+
+  // Prioridade (0-100)
+  uint32 priority = 6;
+
+  // Metadados auditoria INV-2
+  DecisionMetadata metadata = 7;
+
+  // Assinatura PQC solicitante (INV-1: non-repudiation)
+  bytes requestor_signature = 8; // Dilithium5
+  bytes requestor_public_key = 9; // Dilithium5
+}
+
+message ProcessDecisionResponse {
+  // ID único (Blake3 hash)
+  bytes decision_id = 1;
+
+  // Status processamento
+  DecisionStatus status = 2;
+
+  // Decisão final
+  SynthesizedDecision decision = 3;
+
+  // Métricas orquestração (Vajra)
+  OrchestrationMetrics metrics = 4;
+
+  // Alertas
+  repeated DecisionWarning warnings = 5;
+
+  // Próximas ações
+  repeated NextAction next_actions = 6;
+
+  // Relatório conformidade constitucional
+  ConstitutionalComplianceReport compliance_report = 7;
+
+  // Timestamp finalização (INV-2 audit trail)
+  google.protobuf.Timestamp finalized_at = 8;
+
+  // Assinatura Prince (INV-2 proveniência)
+  bytes signature = 9;
+}
+
+message Constraint {
+  enum Type {
+    CONSTITUTIONAL_INVARIANT = 0;
+    TECHNICAL_FEASIBILITY = 1;
+    RESOURCE_LIMITATION = 2;
+    ETHICAL_BOUNDARY = 3;
+    TEMPORAL_URGENCY = 4;
+  }
+  enum Severity {
+    ADVISORY = 0;
+    WARNING = 1;
+    CRITICAL = 2;
+    EXISTENTIAL = 3;
+  }
+  Type type = 1;
+  string description = 2;
+  Severity severity = 3;
+  bool inviolable = 4;
+}
+
+message Stakeholder {
+  enum Role {
+    HUMAN_CITIZEN = 0;
+    MYCELIAL_NETWORK = 1;
+    ASIMOV_NODE = 2;
+    PRINCE_AUTHORITY = 3;
+    COUNCIL_MEMBER = 4;
+  }
+  enum Channel {
+    NEURAL_LINK = 0;
+    BIO_ELECTRIC = 1;
+    QUANTUM_ENTANGLED = 2;
+    CONSTITUTIONAL_BROADCAST = 3;
+  }
+  string id = 1;
+  Role role = 2;
+  Channel notification_channel = 3;
+  bool veto_power = 4;
+}
+
+message DecisionMetadata {
+  enum RiskLevel {
+    ROUTINE = 0;
+    STRATEGIC = 1;
+    EXISTENTIAL = 2;
+    CONSTITUTIONAL = 3;
+  }
+  string requestor_id = 1;
+  google.protobuf.Timestamp request_timestamp = 2;
+  string jurisdiction = 3;
+  string legal_basis = 4;
+  RiskLevel risk_assessment = 5;
+}
+
+enum DecisionStatus {
+    GATHERING_PERSPECTIVES = 0;
+    DIVERSITY_ASSESSMENT = 1;
+    DIALECTIC_SYNTHESIS = 2;
+    HUMAN_REVIEW_REQUIRED = 3;
+    FINALIZED = 4;
+    HARD_FREEZE_TRIGGERED = 5;
+    TIMEOUT_EXCEEDED = 6;
+    CONSTITUTIONAL_VIOLATION_DETECTED = 7;
+}
+
+message SynthesizedDecision {
+    string decision_text = 1;
+    double coherence_score = 2;
+    repeated string supporting_arguments = 3;
+    repeated string counter_arguments = 4;
+    double consensus_level = 5;
+}
+
+message OrchestrationMetrics {
+    uint64 total_processing_time_ms = 1;
+    uint32 perspectives_activated = 2;
+    uint32 dialectic_iterations = 3;
+    double coherence_achieved = 4;
+    repeated PhiSnapshot phi_trajectory = 5;
+    ResourceMetrics resource_utilization = 6;
+}
+
+message PhiSnapshot {
+    google.protobuf.Timestamp timestamp = 1;
+    double phi_value = 2;
+    string reason = 3;
+}
+
+message ResourceMetrics {
+    double computational_cost = 1;
+    double energy_consumption = 2;
+    double carbon_footprint = 3;
+}
+
+message DecisionWarning {
+    enum Type {
+        LOW_DIVERSITY = 0;
+        HIGH_DOMINANCE = 1;
+        COHERENCE_DECLINE = 2;
+        RESOURCE_EXHAUSTION = 3;
+        CONSTITUTIONAL_AMBIGUITY = 4;
+        STAKEHOLDER_CONFLICT = 5;
+    }
+    Type type = 1;
+    string description = 2;
+    uint32 severity = 3;
+    string recommended_action = 4;
+}
+
+message NextAction {
+    string action = 1;
+    google.protobuf.Timestamp deadline = 2;
+    string responsible = 3;
+    repeated string dependencies = 4;
+}
+
+message ConstitutionalComplianceReport {
+    repeated InvariantCheck invariants_checked = 1;
+    repeated ArticleApplication articles_applied = 2;
+    double compliance_score = 3;
+    repeated ConstitutionalViolation violations_detected = 4;
+}
+
+message InvariantCheck {
+    string invariant = 1;
+    string status = 2;
+    string evidence = 3;
+    double confidence = 4;
+}
+
+message ArticleApplication {
+    string article = 1;
+    string interpretation = 2;
+    double relevance = 3;
+}
+
+message ConstitutionalViolation {
+    string article = 1;
+    string violation_type = 2;
+    string severity = 3;
+    string corrective_action = 4;
+}
+
+message GetDecisionStatusRequest {
+    bytes decision_id = 1;
+}
+
+message GetDecisionStatusResponse {
+    DecisionStatus status = 1;
+    uint32 progress_percentage = 2;
+    google.protobuf.Timestamp estimated_completion = 3;
+}
+
+message GetDecisionHistoryRequest {
+    google.protobuf.Timestamp start_time = 1;
+    google.protobuf.Timestamp end_time = 2;
+    uint32 limit = 3;
+}
+
+message DecisionRecord {
+    bytes decision_id = 1;
+    google.protobuf.Timestamp timestamp = 2;
+    string summary = 3;
+    DecisionStatus final_status = 4;
+}
+
+message RequestHumanEscalationRequest {
+    bytes decision_id = 1;
+    string reason = 2;
+    uint32 urgency = 3;
+}
+
+message RequestHumanEscalationResponse {
+    bool accepted = 1;
+    string ticket_id = 2;
+}
+
+message MetricsRequest {
+    repeated string metric_names = 1;
+}
+
+message MetricsUpdate {
+    google.protobuf.Timestamp timestamp = 1;
+    map<string, double> metrics = 2;
+}
+
+message HardFreezeAlertRequest {}
+
+message HardFreezeAlert {
+    google.protobuf.Timestamp timestamp = 1;
+    string reason = 2;
+    double current_phi = 3;
+    google.protobuf.Duration duration = 4;
+}

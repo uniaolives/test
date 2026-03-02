@@ -1,0 +1,189 @@
+# kubernetes/crux86-full.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crux86-config
+data:
+  telemetry-sources: |
+    steam:
+      enabled: true
+      games: [730, 570, 578080, 271590]
+      rate-limit: 1000 # requests/min
+
+    epic:
+      enabled: true
+      games: ["Fortnite", "RocketLeague"]
+
+    riot:
+      enabled: true
+      games: ["leagueoflegends", "valorant"]
+
+  model-params: |
+    world-model:
+      hidden-dim: 2048
+      num-layers: 24
+      num-heads: 16
+      dropout: 0.1
+
+    training:
+      batch-size: 2048
+      learning-rate: 1e-4
+      warmup-steps: 10000
+      max-steps: 1000000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crux86-telemetry-harvester
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: crux86
+      component: telemetry
+  template:
+    metadata:
+      labels:
+        app: crux86
+        component: telemetry
+    spec:
+      containers:
+      - name: telemetry-main
+        image: crux86/telemetry-engine:v2.0
+        env:
+        - name: STEAM_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: steam-secrets
+              key: api-key
+        - name: RIOT_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: riot-secrets
+              key: api-key
+        resources:
+          limits:
+            cpu: "4"
+            memory: "16Gi"
+            nvidia.com/gpu: "1"
+          requests:
+            cpu: "2"
+            memory: "8Gi"
+        volumeMounts:
+        - name: telemetry-storage
+          mountPath: /data/telemetry
+        - name: config
+          mountPath: /config
+
+      volumes:
+      - name: telemetry-storage
+        persistentVolumeClaim:
+          claimName: crux86-telemetry-pvc
+      - name: config
+        configMap:
+          name: crux86-config
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crux86-world-model
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      app: crux86
+      component: world-model
+  template:
+    metadata:
+      labels:
+        app: crux86
+        component: world-model
+    spec:
+      containers:
+      - name: model-trainer
+        image: crux86/world-model-trainer:v2.0
+        resources:
+          limits:
+            cpu: "16"
+            memory: "64Gi"
+            nvidia.com/gpu: "4"
+          requests:
+            cpu: "8"
+            memory: "32Gi"
+        env:
+        - name: NUM_GPUS
+          value: "4"
+        - name: BATCH_SIZE_PER_GPU
+          value: "512"
+        command: ["python", "-m", "torch.distributed.launch"]
+        args:
+        - "--nproc_per_node=4"
+        - "--nnodes=4"
+        - "--node_rank=$(NODE_RANK)"
+        - "--master_addr=crux86-world-model-master"
+        - "--master_port=29500"
+        - "train_world_model.py"
+        volumeMounts:
+        - name: model-storage
+          mountPath: /data/models
+        - name: telemetry-data
+          mountPath: /data/telemetry
+          readOnly: true
+
+      volumes:
+      - name: model-storage
+        persistentVolumeClaim:
+          claimName: crux86-models-pvc
+      - name: telemetry-data
+        persistentVolumeClaim:
+          claimName: crux86-telemetry-pvc
+---
+# Serviço de monitoramento
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: crux86-monitor
+spec:
+  selector:
+    matchLabels:
+      app: crux86
+  endpoints:
+  - port: metrics
+    interval: 30s
+    scrapeTimeout: 10s
+  - port: telemetry
+    interval: 5s
+    scrapeTimeout: 5s
+---
+# Prometheus rules para alertas
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: crux86-alerts
+spec:
+  groups:
+  - name: crux86.rules
+    rules:
+    - alert: HighTelemetryLoss
+      expr: rate(crux86_telemetry_dropped_packets[5m]) > 0.01
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Mais de 1% de pacotes de telemetria perdidos"
+
+    - alert: WorldModelDivergence
+      expr: crux86_world_model_loss > 10.0
+      for: 10m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Modelo de mundo divergindo - possível overfitting"
+
+    - alert: PhysicsHallucination
+      expr: crux86_physics_coherence < 0.7
+      for: 2m
+      labels:
+        severity: critical
+      annotations:
+        summary: "AGI alucinando física - acionar Vajra Circuit Breaker"

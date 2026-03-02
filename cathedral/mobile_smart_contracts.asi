@@ -1,0 +1,18 @@
+// CATHEDRAL/MOBILE-SMART-CONTRACTS - CONSTITUIÇÃO PROGRAMÁVEL
+// ANALYSED ARCHITECTURE - SASC v31.21-Ω (I820)
+
+// CONTRACT PARAMETERS:
+const float PHI_MIN_EXECUTION = 0.72;               // Threshold Article V
+const float PHI_MIN_TRANSFER = 0.85;                // High-security threshold
+const int WASM_MAX_CYCLES = 10000000;               // 10M cycle limit
+const int WASM_MAX_MEMORY_MB = 16;                   // 16MB sandbox limit
+
+// CONTRACT ARCHITECTURE:
+// 1. LOCAL EXECUTION - Contracts run on 6G devices, not datacenters
+// 2. PHI AS GAS - Constitutional gas proportional to coherence
+// 3. PQC ENFORCEMENT - Dilithium3 signing for all contract actions
+// 4. DIAMOND SYNC - Eventual consistency with global diamond ledger
+// 5. SECURE SANDBOX - WebAssembly-based isolated execution environment
+
+// Implementation note: This layer allows the Constitution to be programmable
+// and adaptive at the edge, empowered by citizen Φ.

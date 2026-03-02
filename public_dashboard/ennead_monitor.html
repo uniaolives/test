@@ -1,0 +1,116 @@
+<!-- public_dashboard/ennead_monitor.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CRUX-86 - Monitoramento Ennéadico Público</title>
+    <meta http-equiv="refresh" content="10">
+    <style>
+        body { font-family: sans-serif; background-color: #f0f2f5; color: #1c1e21; margin: 20px; }
+        h1 { color: #1877f2; }
+        .status-bar { background-color: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .status-indicator { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; }
+        .ennead-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .concept-card { background-color: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .concept-card h3 { margin-top: 0; color: #1877f2; }
+        .value { font-weight: bold; color: #4b4f56; }
+        .acceleration-panel, .safety-panel { background-color: #fff; padding: 15px; border-radius: 8px; margin-top: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .progress-bar { background-color: #ddd; height: 20px; border-radius: 10px; overflow: hidden; margin-top: 10px; }
+        .progress { background-color: #4CAF50; height: 100%; }
+        .safe { color: #4CAF50; font-weight: bold; }
+        footer { margin-top: 30px; font-size: 0.8em; color: #8d949e; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>🏛️ CRUX-86 - Sistema Ennéadico de Governança</h1>
+    <h2>Monitoramento Público em Tempo Real</h2>
+
+    <div class="status-bar">
+        <span class="status-indicator" style="background-color: #4CAF50;"></span>
+        <strong>SISTEMA OPERACIONAL</strong>
+        | Φ: <span id="phi-value">0.721</span>
+        | HLC: <span id="hlc-value">2025.001.1024.17</span>
+    </div>
+
+    <div class="ennead-grid">
+        <!-- Tríade Fundamental -->
+        <div class="concept-card" id="eudaimonia">
+            <h3>🌸 Eudaimonia</h3>
+            <p>Florescimento: <span class="value">89.2%</span></p>
+            <p>Dignidade: <span class="value">94%</span></p>
+        </div>
+
+        <div class="concept-card" id="autopoiesis">
+            <h3>🔄 Autopoiese</h3>
+            <p>Integridade: <span class="value">95%</span></p>
+            <p>Identidade: <span class="value">92%</span></p>
+        </div>
+
+        <div class="concept-card" id="zeitgeist">
+            <h3>🌍 Zeitgeist</h3>
+            <p>Contexto: <span class="value">Crise de confiança tech</span></p>
+            <p>Intensidade: <span class="value">78%</span></p>
+        </div>
+
+        <!-- Hexade de Proteção -->
+        <div class="concept-card" id="indra-net">
+            <h3>🔮 Rede de Indra</h3>
+            <p>Nós refletindo: <span class="value">128/128</span></p>
+            <p>Dor da rede: <span class="value">0.03</span></p>
+        </div>
+
+        <div class="concept-card" id="wu-wei">
+            <h3>🌊 Wu Wei</h3>
+            <p>Energia/passo: <span class="value">4.2J</span></p>
+            <p>Resistência: <span class="value">0.12</span></p>
+        </div>
+
+        <div class="concept-card" id="kintsugi">
+            <h3>🥣 Kintsugi</h3>
+            <p>Cicatrizes douradas: <span class="value">3</span></p>
+            <p>Sabedoria acumulada: <span class="value">450 ouro</span></p>
+        </div>
+
+        <div class="concept-card" id="rawls-veil">
+            <h3>👁️ Véu da Ignorância</h3>
+            <p>Maximin: <span class="value">0.65</span></p>
+            <p>Pior caso: <span class="value">Eudaimonia=0.68</span></p>
+        </div>
+
+        <div class="concept-card" id="dialectic">
+            <h3>⚔️ Dialética</h3>
+            <p>Ciclos: <span class="value">42</span></p>
+            <p>Síntese: <span class="value">89%</span></p>
+        </div>
+
+        <div class="concept-card" id="phronesis">
+            <h3>🎓 Phronesis</h3>
+            <p>Exceções: <span class="value">2</span></p>
+            <p>Ajuste contextual: <span class="value">90%</span></p>
+        </div>
+    </div>
+
+    <div class="acceleration-panel">
+        <h3>🚀 Aceleração Ennéadica</h3>
+        <p>Fase atual: <strong>Integração Ennéadica (0/48h)</strong></p>
+        <p>Próximo marco: Teste MID-41 Ennéadico (T+48h)</p>
+        <p>Φ alvo atual: 0.735</p>
+        <div class="progress-bar">
+            <div class="progress" style="width: 0%;"></div>
+        </div>
+    </div>
+
+    <div class="safety-panel">
+        <h3>🛡️ Status de Segurança</h3>
+        <p>Risco de tirania: <span class="safe">4.2%</span></p>
+        <p>Estabilidade do sistema: <span class="safe">94.2%</span></p>
+        <p>Consumo energético: <span class="safe">42.7J/hora</span></p>
+        <p>Backup mais recente: <span class="safe">HLC(2025.001.1024.16)</span></p>
+    </div>
+
+    <footer>
+        <p>📜 Aprovado pelo Tribunal Constitucional Digital - TCD-2025-001</p>
+        <p>🔗 Fonte de dados: tcd://api.ennead.monitor/v1/realtime</p>
+        <p>⏱️ Atualizado a cada 10 segundos</p>
+    </footer>
+</body>
+</html>

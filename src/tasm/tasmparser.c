@@ -70,17 +70,14 @@ void generate_list(ParseList *root, Lexer *lexer, struct hashmap_s *hashmap){
         assert(lexer->token_stack[index].type != TYPE_NONE && "Should not be none\n");
         Token current_token = lexer->token_stack[index];
 
-        if(expect_token(lexer, index, 6, TYPE_INT, TYPE_FLOAT, TYPE_CHAR, TYPE_LABEL, TYPE_STRING, TYPE_NULL)){
-            print_syntax_error(&current_token, "unexpected token", "non-type");
-        }
-        if(lexer->token_stack[index].type == TYPE_INT && lexer->token_stack[index].type == TYPE_FLOAT && 
-           lexer->token_stack[index].type == TYPE_CHAR && lexer->token_stack[index].type == TYPE_LABEL){
-            index -= 2;
+        if(expect_token(lexer, index, 1, TYPE_LABEL_DEF)){
+            handle_token_def(lexer, current_token, index, line_num, hashmap);
+            append(root, lexer->token_stack[index]);
             continue;
         }
 
-        if(expect_token(lexer, index, 1, TYPE_LABEL_DEF)){
-            handle_token_def(lexer, current_token, index, line_num, hashmap);
+        if(expect_token(lexer, index, 6, TYPE_INT, TYPE_FLOAT, TYPE_CHAR, TYPE_LABEL, TYPE_STRING, TYPE_NULL)){
+            print_syntax_error(&current_token, "unexpected token", "instruction or label definition");
         }
 
         append(root, lexer->token_stack[index]);
@@ -92,39 +89,32 @@ void generate_list(ParseList *root, Lexer *lexer, struct hashmap_s *hashmap){
                 print_syntax_error(&current_token, "syntax", "type of int or type of label");
             }
             append(root, lexer->token_stack[index]);
-        }
-
-        if(expect_token(lexer, index, 1, TYPE_PUSH)){
+        } else if(expect_token(lexer, index, 4, TYPE_PUSH, TYPE_INSWAP, TYPE_INDUP, TYPE_GET_STR)){
             index++;
             current_token = lexer->token_stack[index];
             if(lexer->token_stack[index].type != TYPE_INT && lexer->token_stack[index].type != TYPE_NULL &&
                lexer->token_stack[index].type != TYPE_CHAR && lexer->token_stack[index].type != TYPE_FLOAT && 
-               !check_if_register(lexer->token_stack[index].type)
+               !check_if_register(lexer->token_stack[index].type) &&
+               lexer->token_stack[index].type != TYPE_LABEL
               ){
-                print_syntax_error(&current_token, "syntax", "type of int or type of float or type of char");
+                print_syntax_error(&current_token, "syntax", "type of int or type of float or type of char or label");
             }
             append(root, lexer->token_stack[index]);
-        }
-
-        if(expect_token(lexer, index, 1, TYPE_PUSH_STR)){
+        } else if(expect_token(lexer, index, 1, TYPE_PUSH_STR)){
             index++;
             current_token = lexer->token_stack[index];
             if(lexer->token_stack[index].type != TYPE_STRING){
-                print_syntax_error(&current_token, "syntax", "type of int or type of float or type of char or type of string");
+                print_syntax_error(&current_token, "syntax", "type of string");
             }
             append(root, lexer->token_stack[index]);
-        }
-
-        if(expect_token(lexer, index, 1, TYPE_NATIVE)){
+        } else if(expect_token(lexer, index, 1, TYPE_NATIVE)){
             index++;
             current_token = lexer->token_stack[index];
             if(!expect_token(lexer, index, 1, TYPE_INT)){
                 print_syntax_error(&current_token, "syntax", "type of int");
             }
             append(root, lexer->token_stack[index]);
-        }
-
-        if(expect_token(lexer, index, 1, TYPE_MOV)){
+        } else if(expect_token(lexer, index, 1, TYPE_MOV)){
             index++;
             current_token = lexer->token_stack[index];
             if(!check_if_register(current_token.type)){

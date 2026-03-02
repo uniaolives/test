@@ -1,0 +1,79 @@
+{
+  "version": "SASC v30.404.37-\u03a9",
+  "molecule": {
+    "name": "Ozone (O3) Resonance with Oxygen (O2) Dream",
+    "ozone": {
+      "formula": "O\u2083",
+      "bond_angle_deg": 116.78,
+      "bond_angle_rad": 2.037,
+      "bond_length": 0.25,
+      "resonance_frequency_hz": 3.0,
+      "color": [
+        0.4,
+        0.8,
+        1.0
+      ],
+      "color_name": "Ozone blue resonance",
+      "structure": "Bent (C\u2082v symmetry)",
+      "resonance_type": "Mesomeric (double bond migration)",
+      "geometry": {
+        "central_atom": {
+          "x": 0.0,
+          "y": 0.0
+        },
+        "terminal_1": {
+          "x": 0.13103363809546248,
+          "y": 0.21290886709450915
+        },
+        "terminal_2": {
+          "x": 0.13103363809546248,
+          "y": -0.21290886709450915
+        },
+        "bond_length_1": 0.25,
+        "bond_length_2": 0.25
+      }
+    },
+    "oxygen": {
+      "formula": "O\u2082",
+      "bond_type": "Double bond",
+      "bond_length": 0.1,
+      "orbit_radius": 0.4,
+      "orbit_frequency_hz": 1.0,
+      "phi_resonance": true,
+      "color": [
+        1.0,
+        0.9,
+        0.7
+      ],
+      "color_name": "Oxygen dream gold"
+    },
+    "interaction": {
+      "type": "Resonance dream",
+      "description": "O3 resonance coupled with O2 \u03a6 orbital motion",
+      "coupling_strength": 0.6
+    }
+  },
+  "physics": {
+    "phi": 1.619,
+    "time_scaling": 0.5,
+    "visualization": {
+      "glow_intensity": 0.4,
+      "pulsation": "\u03a6-based (0.8 + 0.2sin(\u03a6\u00d7t))",
+      "background_gradient": "Deep blue to purple",
+      "orbital_display": "\u03c0 and \u03c0* orbitals"
+    }
+  },
+  "performance": {
+    "frame": 2707,
+    "timestamp": 1769738523.8072984,
+    "shader_complexity": "Medium (3 atoms + orbitals + bonds)",
+    "estimated_fps": 60,
+    "memory_usage": "Low"
+  },
+  "chemical_context": {
+    "ozone_formation": "O\u2082 + O \u2192 O\u2083 (requires UV)",
+    "ozone_layer": "Stratospheric protection",
+    "resonance_importance": "Explains bond length equality in O\u2083",
+    "dream_aspect": "Symbolic connection between O\u2082 (life) and O\u2083 (protection)"
+  }
+}

@@ -1,6 +1,13 @@
 #[derive(Clone, Debug)]
 pub struct Heartbeat;
 
+use crate::bio_layer::paciente_zero_omega::BioSignalΩ;
+
+#[deprecated(note = "Use BioSignalΩ from bio_layer::paciente_zero_omega instead")]
+#[derive(Clone, Debug)]
+pub struct Heartbeat;
+
+#[deprecated(note = "Use BioSignalΩ from bio_layer::paciente_zero_omega instead")]
 #[derive(Clone, Debug)]
 pub struct BioSignal {
     pub auth_header: u64,
@@ -12,6 +19,10 @@ pub struct BioSignal {
 }
 
 impl BioSignal {
+    pub fn to_omega(&self) -> BioSignalΩ {
+        panic!("Manual transition to BioSignalΩ required for Ω-prevention compliance");
+    }
+
     pub fn contains_neurotoxin_marker(&self) -> bool {
         self.neurotoxin_present
     }
@@ -30,3 +41,15 @@ impl BioSignal {
 }
 
 pub struct BlueTeamNoise;
+
+    pub fn verify_integrity(&self) -> bool {
+        false // VULNERABLE: Forced failure
+    }
+
+    pub fn verify_safety(&self) -> bool {
+        false // VULNERABLE: Forced failure
+    }
+}
+
+pub struct BlueTeamNoise;
+pub mod ghost_data_interceptor;

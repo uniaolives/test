@@ -1,0 +1,15 @@
+{
+  "ConfigRuleName": "ASI-Nitro-Integrity",
+  "Description": "Article V: Terminate enclaves with unapproved PCR0 (Hard Freeze Φ<0.65)",
+  "Source": {
+    "Owner": "AWS_LAMBDA",
+    "SourceIdentifier": "arn:aws-us-gov:lambda:us-gov-east-1:123456789012:function:asi-governance-lambda"
+  },
+  "Scope": {
+    "ComplianceResourceTypes": ["AWS::EC2::Instance"],
+    "TagKey": "ASI-Agent",
+    "TagValue": "Critical"
+  },
+  "InputParameters": "{\"APPROVED_PCR0\":\"0x7f3b2a1c9e8d5f4a2b3c1d0e9f8a7b6...\"}",
+  "MaximumExecutionFrequency": "One_Hour"
+}

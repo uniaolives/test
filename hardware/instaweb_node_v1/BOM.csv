@@ -1,0 +1,7 @@
+Referencia,Componente,Especificacao,Fornecedor,Obs
+U1,FPGA SoM,Xilinx Kria K26 (SOM),AMD/Xilinx,Montagem externa
+U2,Transceptor OWC,VCSEL 850nm 10G,Finisar,Compativel com estudo VCSEL
+U3,TIA,TI OPA855,TI,8GHz bandwidth
+U4,Clock Generator,Skyworks Si5345,Skyworks,Jitter <50fs
+C1-C10,Capacitores,0402 0.1uF 16V X7R,Yageo,Para decoupling
+R1-R4,Resistores,0402 50u 1% ,Yageo,Terminacao LVDS

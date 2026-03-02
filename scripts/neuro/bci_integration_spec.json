@@ -1,0 +1,48 @@
+{
+  "protocol_version": "1.0.0-beta",
+  "status": "NOT_IMPLEMENTED",
+  "hardware_requirements": {
+    "bc_device": {
+      "min_channels": 64,
+      "sampling_rate": "1000Hz",
+      "resolution": "24-bit",
+      "noise_floor": "<1μV",
+      "certified_models": ["OpenBCI Cyton", "NeuroPype", "BCI2000"]
+    },
+    "enclave": {
+      "type": "AWS Nitro",
+      "instance": "c6i.metal",
+      "mem_isolation": "true",
+      "attestation_required": "true"
+    },
+    "network": {
+      "latency": "<5ms",
+      "protocol": "WebSocket over TLS 1.3",
+      "authentication": "mTLS + Ed25519"
+    }
+  },
+  "data_formats": {
+    "raw_eeg": {
+      "channels": 64,
+      "sampling_rate": 1000,
+      "dtype": "float32",
+      "endianness": "little",
+      "frame_size": "256 bytes"
+    },
+    "phi_calculation": {
+      "window_seconds": 10,
+      "overlap": 50,
+      "algorithm": "Phase Locking Value (PLV)",
+      "hilbert_transform": "required"
+    }
+  },
+  "safety_thresholds": {
+    "critical_phi": 0.001,
+    "low_phi": 0.65,
+    "hard_freeze_phi": 0.80,
+    "pre_ictal_detection": "immediate",
+    "neural_kill_switch_latency": "<15ms"
+  },
+  "memory_references": ["3", "11", "12", "13", "18", "19", "20"],
+  "compliance": ["ISO 14155", "FDA 21 CFR Part 11", "GDPR Article 9"]
+}

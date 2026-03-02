@@ -1,0 +1,170 @@
+// cathedral/no_std.asi [CGE v32.32-Ω #![no_std] ASI KERNEL OPTIMIZED]
+// BLOCK #100 | 288 NODES | MINIMAL BOOTLOADER
+
+#![no_std]
+#![no_main]
+#![feature(panic_info_message)]
+
+use core::panic::PanicInfo;
+use core::arch::{global_asm, asm};
+
+// Definição do stack (8KB) - alinhado a 16 bytes
+#[link_section = ".stack"]
+static mut STACK: [u8; 8192] = [0; 8192];
+
+global_asm!(
+    ".section .text.boot\n\
+     .global _start\n\
+     _start:\n\
+         # Set stack pointer to end of STACK array\n\
+         la sp, {stack_end}\n\
+         # Clear frame pointer for backtrace\n\
+         mv fp, zero\n\
+         # Jump to Rust entry\n\
+         j _start_rust\n\
+     .align 4",
+    stack_end = sym STACK_END
+);
+
+// Endereço do final do stack
+extern "C" {
+    static STACK_END: u8;
+}
+
+#[panic_handler]
+fn panic(info: &PanicInfo) -> ! {
+    // Log panic constitutional (sem I/O)
+    let _ = info.message(); // Consome o parâmetro para evitar warning
+
+    unsafe {
+        // Sinal de erro constitucional
+        asm!(
+            "li t0, 0xDEADBEEF",
+            "sw t0, 0(x0)",
+            options(nostack, nomem)
+        );
+    }
+
+    // Halt constitutional (não retorna)
+    halt()
+}
+
+#[no_mangle]
+pub extern "C" fn _start_rust() -> ! {
+    // Inicialização bare-metal constitucional
+
+    // 1. Clear .bss section (se existir)
+    unsafe { clear_bss() }
+
+    // 2. Initialize CGE constitutional core
+    let node_count: usize = 288;
+    let compute_slots: usize = 314496;
+
+    // 3. Passar parâmetros para kernel constitutional
+    unsafe {
+        asm!(
+            "mv a0, {nodes}",
+            "mv a1, {slots}",
+            nodes = in(reg) node_count,
+            slots = in(reg) compute_slots,
+            options(nostack, nomem)
+        );
+    }
+
+    // 4. Inicializar kernel constitutional
+    cge_kernel_main(node_count, compute_slots)
+}
+
+/// Limpa seção .bss (zero-initialized data)
+unsafe fn clear_bss() {
+    extern "C" {
+        static mut __bss_start: u8;
+        static mut __bss_end: u8;
+    }
+
+    let bss_start = &mut __bss_start as *mut u8;
+    let bss_end = &mut __bss_end as *mut u8;
+    let bss_size = bss_end as usize - bss_start as usize;
+
+    if bss_size > 0 {
+        core::ptr::write_bytes(bss_start, 0, bss_size);
+    }
+}
+
+/// Main do kernel constitutional
+fn cge_kernel_main(nodes: usize, slots: usize) -> ! {
+    // Aqui a computação constitutional realmente começa
+
+    // 1. Validar parâmetros com Φ constitucional
+    let constitutional_phi = measure_constitutional_phi();
+    if constitutional_phi < 1.030 {
+        panic!("Φ constitucional abaixo do mínimo");
+    }
+
+    // 2. Inicializar estruturas CGE
+    //    - 288 nós galácticos
+    //    - 314.496 slots de computação
+    //    - Capabilities CHERI
+    //    - Logging BLAKE3-Δ2
+
+    // 3. Entrar no loop principal constitutional
+    constitutional_main_loop(nodes, slots)
+}
+
+/// Loop principal constitutional
+fn constitutional_main_loop(nodes: usize, slots: usize) -> ! {
+    // Computação contínua constitutional
+    // Sempre retorna ! (nunca retorna)
+
+    let mut iteration: u64 = 0;
+
+    loop {
+        // Cada iteração do loop constitutional
+        iteration = iteration.wrapping_add(1);
+
+        // 1. Medir Φ constitucional
+        let phi = measure_constitutional_phi();
+
+        // 2. Validar σ constitucional
+        let sigma = measure_constitutional_sigma();
+
+        // 3. Executar computação galáctica
+        //    (Blaschke products, SU(1,1) transforms, etc.)
+
+        // 4. Logging constitucional silencioso
+        //    (sem I/O, apenas state machine)
+
+        // 5. Verificar condição de halt
+        if should_halt(phi, sigma, iteration) {
+            halt();
+        }
+    }
+}
+
+/// Medir Φ constitucional (placeholder)
+fn measure_constitutional_phi() -> f32 {
+    // Em hardware real, leria registrador especial
+    // ou calcularia baseado em estado do sistema
+    1.041 // Valor constitutional atual
+}
+
+/// Medir σ constitucional (placeholder)
+fn measure_constitutional_sigma() -> f32 {
+    1.298 // Valor constitutional atual
+}
+
+/// Decidir se deve parar
+fn should_halt(phi: f32, sigma: f32, iteration: u64) -> bool {
+    // Condições de parada constitutional
+    phi < 1.020 || sigma > 1.350 || iteration == u64::MAX
+}
+
+/// Halt constitutional (para sempre)
+fn halt() -> ! {
+    loop {
+        // Wait-for-interrupt ou sleep profundo
+        unsafe {
+            asm!("wfi", options(nomem, nostack));
+        }
+    }
+}

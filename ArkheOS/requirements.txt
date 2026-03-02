@@ -1,0 +1,20 @@
+# Dependências principais
+numpy==1.24.3
+pyglet==2.0.10
+
+# MCP (Model Context Protocol)
+fastmcp==0.3.3
+uvicorn[standard]==0.24.1
+fastapi==0.104.1
+sse-starlette==1.6.5
+websockets==12.0
+mcp==1.23.4
+
+# Utilitários
+psutil==5.9.6
+python-dotenv==1.0.0
+colorlog==6.7.0
+
+# Otimizações
+numba==0.58.1  # JIT para numpy
+py-cpuinfo==9.0.0
