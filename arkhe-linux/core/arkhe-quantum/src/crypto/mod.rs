@@ -2,6 +2,7 @@ use pqcrypto_kyber::kyber1024::{
     self,
     PublicKey as KyberPublicKey,
     SecretKey as KyberSecretKey,
+    Ciphertext as KyberCiphertext
     Ciphertext as KyberCiphertext,
     SharedSecret as KyberSharedSecret
 };
@@ -12,6 +13,7 @@ use pqcrypto_dilithium::dilithium5::{
     DetachedSignature as DilithiumSignature
 };
 use pqcrypto_traits::kem::{Ciphertext, SharedSecret};
+use pqcrypto_traits::sign::DetachedSignature;
 use pqcrypto_traits::sign::{PublicKey, SecretKey, DetachedSignature};
 
 use aes_gcm::{

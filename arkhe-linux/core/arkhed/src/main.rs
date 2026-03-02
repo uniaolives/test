@@ -134,6 +134,9 @@ impl ArkheSystem {
         loop {
             interval.tick().await;
 
+            // 0. Inject user perturbation
+            let _ = self.psi_shell.inject_user_perturbation(&mut arkhe_quantum::manifold::GlobalManifold::new()).await;
+
             // 1. Coletar entropia recente
             let entropy_stats = self.entropy.collect().await;
 
@@ -412,6 +415,8 @@ async fn main() -> anyhow::Result<()> {
             }
         }
     });
+
+    let _ = psi_handle;
 
     // Spawn IPC server
     let ipc_handle = tokio::spawn({
