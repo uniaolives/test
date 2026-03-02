@@ -15,6 +15,10 @@ class VisualQuantificationEngine:
     Conecta o Framework Arkhe à visualização 3D e à bio-gênese.
     """
 
+    ARKHE_MODE_MAP = {
+        "MANDALA": {"C": 0.6, "I": 0.2, "E": 0.1, "F": 0.1},
+        "DNA": {"C": 0.2, "I": 0.5, "E": 0.2, "F": 0.1},
+        "HYPERCORE": {"C": 0.1, "I": 0.3, "E": 0.3, "F": 0.3},
     # Mapeamento sugerido entre modos visuais e estados Arkhe
     ARKHE_MODE_MAP = {
         "MANDALA": {"C": 0.6, "I": 0.2, "E": 0.1, "F": 0.1},  # Dominância Química (Proteção)
@@ -66,6 +70,7 @@ class VisualQuantificationEngine:
         # Atualiza o genoma de todos os agentes para refletir o estado global
         for i, agent in self.particle_system.agents.items():
             agent.genome = params["genome"]
+            self.particle_system.particles[i]['size'] = params["particle_size"]
 
         # Aplica a cada partícula
         for p in self.particle_system.particles:

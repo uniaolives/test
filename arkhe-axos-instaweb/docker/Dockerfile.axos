@@ -1,0 +1,23 @@
+# arkhe-axos-instaweb/docker/Dockerfile.axos
+FROM rust:1.75-bookworm as builder
+WORKDIR /build
+COPY . .
+RUN cargo build --release --bin axos-daemon
+
+FROM debian:bookworm-slim as runtime
+RUN apt-get update && apt-get install -y \
+    libssl3 \
+    libpq5 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /build/target/release/axos-daemon /usr/local/bin/
+# COPY --from=builder /build/fpga/bitstream/*.bit /opt/arkhe/fpga/
+
+ENV ARKHE_CONFIG=/etc/arkhe/axos.toml
+ENV RUST_LOG=info
+
+EXPOSE 7777/tcp 7777/udp
+EXPOSE 8443/tcp
+EXPOSE 50051/tcp
+
+ENTRYPOINT ["axos-daemon"]
