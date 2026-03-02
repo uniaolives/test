@@ -2,6 +2,7 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use serde::{Serialize, Deserialize};
 use crate::error::ResilientResult;
 use super::composer::ComposedResult;
+use super::constitution::ASIResult;
 
 /// Engine de reflexão estrutural (NÃO é "consciência")
 /// É análise matemática da própria estrutura do sistema
@@ -49,8 +50,6 @@ pub struct ReflectedResult {
     pub reflection_analyses: Vec<StructuralAnalysis>,
     pub structural_confidence: f64,
 }
-
-use super::constitution::ASIResult;
 
 impl ASIResult for ReflectedResult {
     fn as_text(&self) -> String {

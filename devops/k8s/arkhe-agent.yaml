@@ -1,0 +1,40 @@
+# devops/k8s/arkhe-agent.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arkhe-agent
+  labels:
+    arkhe-agent: "true"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: arkhe-agent
+  template:
+    metadata:
+      labels:
+        app: arkhe-agent
+        arkhe-agent: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    spec:
+      containers:
+      - name: agent
+        image: arkhe/agent:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ARKHE_NODE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: ARKHE_PHI_TARGET
+          value: "0.618"
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "100m"
+            memory: "256Mi"

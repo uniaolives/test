@@ -1,8 +1,8 @@
 use crate::error::{ResilientResult, ResilientError};
 use crate::extensions::agi_geometric::constitution::AGIGeometricConstitution;
-use crate::extensions::asi_structured::evolution::GeometricGenome;
+use crate::extensions::asi_structured::evolution::{GeometricGenome, Connection};
 use std::time::Duration;
-use futures::Future;
+use std::future::Future;
 use serde::{Serialize, Deserialize};
 use super::composer::ComposedResult;
 
@@ -36,7 +36,7 @@ pub enum ScalabilityInvariant {
     /// S7: Auditabilidade (todas as decisões são registradas)
     Auditability { log_granularity: String },
 
-    /// S8: Recuperabilidade (pode recuperar de qualquer estado válido)
+    /// S8: Recursos e Invariantes
     Recoverability { checkpoint_frequency: u32 },
 
     /// S9: Estabilidade sob Alta Volatilidade da Fonte
@@ -105,13 +105,51 @@ impl ASIConstitution {
             return Err(ResilientError::InvariantViolation {
                 invariant: "S1: CompositionLimit".to_string(),
                 reason: format!("Too many connections: {} > 16", genome.connections.len()),
+    }
+
+    pub fn validate_genome(&self, genome: &GeometricGenome) -> ResilientResult<()> {
+        // S1: Limite de estruturas
+        if genome.connections.len() > self.max_structures() {
+            return Err(ResilientError::InvariantViolation {
+                invariant: "S1: CompositionLimit".to_string(),
+                reason: format!("Too many connections: {} > {}",
+                    genome.connections.len(), self.max_structures()),
             });
         }
 
-        // Validar contra CGE geométrico também
-        self.geometric_invariants.validate_structure_type(&genome.structure_type)?;
+        // S6: Recursos
+        let estimated_memory = self.estimate_memory(genome);
+        if estimated_memory > self.max_memory_mb() * 1024 * 1024 {
+            return Err(ResilientError::InvariantViolation {
+                invariant: "S6: ResourceBounds".to_string(),
+                reason: format!("Estimated memory {} MB exceeds limit",
+                    estimated_memory / (1024 * 1024)),
+            });
+        }
 
         Ok(())
+    }
+
+    fn max_structures(&self) -> usize {
+        for inv in &self.scalability_invariants {
+            if let ScalabilityInvariant::CompositionLimit { max_structures } = inv {
+                return *max_structures;
+            }
+        }
+        16
+    }
+
+    fn max_memory_mb(&self) -> usize {
+        for inv in &self.scalability_invariants {
+            if let ScalabilityInvariant::ResourceBounds { max_memory_mb, .. } = inv {
+                return *max_memory_mb;
+            }
+        }
+        512
+    }
+
+    fn estimate_memory(&self, _genome: &GeometricGenome) -> usize {
+        1024 * 1024
     }
 
     pub async fn enforce_halting<T, F>(&self, operation: F, timeout: Duration) -> ResilientResult<T>

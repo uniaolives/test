@@ -172,11 +172,7 @@ impl ASIStructuredExtension {
     }
 
     fn decompose_input(&self, input: &str) -> Vec<Subproblem> {
-        if input.contains("AR4366") {
-            vec![Subproblem { input: input.to_string() }]
-        } else {
-            vec![Subproblem { input: input.to_string() }]
-        }
+        vec![Subproblem { input: input.to_string() }]
     }
 
     pub fn add_structure(&mut self, structure: Box<dyn crate::interfaces::extension::GeometricStructure>, structure_type: StructureType) {
@@ -218,6 +214,16 @@ impl Extension for ASIStructuredExtension {
                 self.evolution_engine = Some(EvolutionEngine::new(self.config.evolution_population_size));
                 self.metastructure_engine = Some(MetastructureEngine::new());
             }
+        if self.config.phase as u8 >= ASIPhase::Reflective as u8 {
+            self.reflection_engine = Some(ReflectionEngine::new(self.config.max_reflection_depth));
+        }
+
+        if self.config.phase as u8 >= ASIPhase::Evolutionary as u8 {
+            self.evolution_engine = Some(EvolutionEngine::new(self.config.evolution_population_size));
+        }
+
+        if self.config.phase as u8 >= ASIPhase::Metastructural as u8 {
+            self.metastructure_engine = Some(MetastructureEngine::new());
         }
 
         Ok(())
@@ -247,13 +253,13 @@ impl Extension for ASIStructuredExtension {
                 // 3. Evolutionary Phase
                 if self.config.phase >= ASIPhase::Evolutionary {
                     if let Some(evo_engine) = &mut self.evolution_engine {
-                        let evolved = evo_engine.optimize_structure(reflected, &self.constitution).await?;
+                        let evolved = evo_engine.optimize_structure(reflected, &self.constitution).await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                         current_result = Box::new(evolved.clone());
 
                         // 4. Metastructural Phase
                         if self.config.phase >= ASIPhase::Metastructural {
                             if let Some(meta_engine) = &mut self.metastructure_engine {
-                                let metastructured = meta_engine.lift_to_metastructure(evolved).await?;
+                                let metastructured = meta_engine.lift_to_metastructure(evolved).await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                                 current_result = Box::new(metastructured);
                             }
                         }
@@ -262,10 +268,10 @@ impl Extension for ASIStructuredExtension {
             }
         }
 
-        // 4. Quantum-Bio Phase
+        // 4. Quantum-Bio Phase (numbered as 4 in original broken code too)
         if self.config.phase >= ASIPhase::QuantumBio {
             if let Some(qb) = &mut self.qb_system {
-                let qb_exp = qb.cycle().await?;
+                let qb_exp = qb.cycle().await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                 current_result = Box::new(qb_exp);
             }
         }
@@ -273,7 +279,7 @@ impl Extension for ASIStructuredExtension {
         // 5. Sovereign Phase
         if self.config.phase >= ASIPhase::Sovereign {
             if let Some(sovereign) = &mut self.sovereign_agi {
-                let sov_output = sovereign.live().await?;
+                let sov_output = sovereign.live().await.map_err(|e| ResilientError::Unknown(e.to_string()))?;
                 current_result = Box::new(sov_output);
             }
         }

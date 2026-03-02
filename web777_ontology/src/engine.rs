@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::syntax_mapping::{SyntaxMapper, SyntaxFormat};
 use crate::geometric_constraints::{GeomStore, Geometry, ConstraintId};
-use crate::semantic_query::{Query, QueryResult, QueryError};
+use crate::semantic_query::QueryResult;
 
 /// The central object that owns the ontology graph, a geometry store,
 /// and a syntax mapper.

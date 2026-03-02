@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package qhttp;
+
+service QHTTP {
+  rpc GetState(Empty) returns (QuantumState);
+  rpc Evolve(EvolveRequest) returns (EvolveResponse);
+  rpc Entangle(EntangleRequest) returns (EntangleResponse);
+}
+
+message Empty {}
+
+message QuantumState {
+  repeated double real = 1;      // parte real das amplitudes
+  repeated double imag = 2;      // parte imaginária
+  int32 n_qubits = 3;            // número de qubits
+  string basis = 4;              // ex: "computational", "bell"
+}
+
+message EvolveRequest {
+  QuantumState state = 1;
+  string hamiltonian = 2;        // representação do Hamiltoniano (ex: JSON)
+  double time = 3;                // tempo de evolução
+}
+
+message EvolveResponse {
+  QuantumState final_state = 1;
+  double fidelity = 2;            // fidelidade em relação ao alvo (opcional)
+}
+
+message EntangleRequest {
+  string target_module = 1;       // ID do módulo alvo
+  string basis = 2;               // "bell" por padrão
+}
+
+message EntangleResponse {
+  string entanglement_id = 1;
+  QuantumState bell_state = 2;    // estado do par EPR (opcional)
+}
