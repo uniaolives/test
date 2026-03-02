@@ -106,7 +106,7 @@ impl DDoSResilienceTest {
     pub fn initialize(swarm_size: usize) -> Self {
         let mut neurons = Vec::with_capacity(swarm_size);
         for i in 0..swarm_size {
-            neurons.push(MeshNeuron { id: NodeId(i as f64, 0.0) });
+            neurons.push(MeshNeuron { id: NodeId(i as f64, 0.0), phi: 0.76 });
         }
 
         Self {

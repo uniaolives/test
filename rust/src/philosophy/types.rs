@@ -4,6 +4,7 @@ pub use crate::triad::cosmic_recursion::HLC;
 pub use crate::kernel::eudaimonia_operator::EudaimoniaOperator;
 pub use crate::autopoiesis::organizational_closure::AutopoieticCore;
 pub use crate::zeitgeist::historical_sensor::ZeitgeistSensor;
+pub use crate::triad::types::ConstitutionalState;
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct NodeId(pub String);
@@ -36,6 +37,9 @@ pub struct NetworkSufferingIndex {
 
 pub struct NetworkPain(pub f64);
 
+#[derive(Clone, Debug)]
+pub struct Action {
+    pub id: String,
 pub struct Action {
     pub dignity_impact: f64,
     pub eudaimonia_impact: f64,
@@ -83,6 +87,7 @@ pub struct Curvature(pub f64);
 #[derive(Clone, Debug)]
 pub struct Proposal {
     pub id: String,
+    pub description: String,
 }
 
 impl Proposal {
@@ -286,6 +291,8 @@ pub struct EntropySensor;
 
 pub struct GoldenScarLogging;
 impl GoldenScarLogging {
+    pub fn weight_by_golden_scars(&self, actions: Vec<Action>) -> Vec<Action> {
+        actions
     pub fn weight_by_golden_scars(&self, contextually_weighted: Vec<ContextualDecision>) -> Vec<ContextualDecision> {
         contextually_weighted
     }

@@ -1,0 +1,14 @@
+syntax = "proto3";
+package arkhen;
+
+service ArkhenService {
+    rpc StreamHandover(Handover) returns (HandoverStatus);
+}
+
+message Handover {
+    uint64 id = 1;
+}
+
+message HandoverStatus {
+    bool success = 1;
+}

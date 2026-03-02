@@ -37,6 +37,16 @@ class QuantumHypergraph:
     def add_multi_qubit_gate(self, target_nodes: List[int], operator: qt.Qobj, weight: float = 1.0):
         self.add_hyperedge(tuple(target_nodes), operator, weight, {'type': 'multi-qubit-gate'})
 
+    def add_handover(self, source_idx: int, target_idx: int, operator: qt.Qobj,
+                     handover_id: Optional[str] = None, metadata: Optional[Dict[str, Any]] = None):
+        """Adds a handover (directed edge) between two nodes."""
+        meta = metadata or {}
+        if handover_id:
+            meta['handover_id'] = handover_id
+        meta['type'] = 'handover'
+        self.add_two_qubit_gate(source_idx, target_idx, operator, 1.0)
+        self.hyperedges[-1].metadata.update(meta)
+
     def update_nodes(self, nodes: List[ArkheQobj]):
         self.nodes = nodes
 
