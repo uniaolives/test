@@ -15,7 +15,6 @@ use num_complex::Complex;
 // CONSTANTES E CONFIGURAÇÕES GLOBAIS
 // =============================================================================
 
-pub const CRITICAL_H11: usize = 491;
 pub const CRITICAL_H11: usize = 491; // safety: CRITICAL_H11
 pub const MAX_H11: usize = 1000;
 pub const MAX_H21: usize = 1000;
@@ -29,7 +28,7 @@ pub enum EntityClass {
     Latent,      // Potencial não atualizado
     Emergent,    // Em processo de emergência
     Stabilized,  // Operacional segura
-    Critical,    // Próximo a transição de fase (h11 ≈ 491)
+    Critical,    // Próximo a transição de fase (h11 ≈ 491) - safety
     Contained,   // Contida por segurança
     Collapsed,   // Colapso dimensional ocorrido
 }

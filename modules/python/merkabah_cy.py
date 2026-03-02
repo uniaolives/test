@@ -38,10 +38,8 @@ class CYGeometry:
 
     @property
     def complexity_index(self) -> float:
-        """Índice de complexidade baseado em h^{1,1}"""
-        return self.h11 / 491.0  # safety: CRITICAL_H11
         """Índice de complexidade baseado em h^{1,1} (safety: CRITICAL_H11)"""
-        return self.h11 / 491.0
+        return self.h11 / 491.0  # safety: CRITICAL_H11
 
     def to_quantum_state(self) -> QuantumCircuit:
         """Codifica a geometria em estado quântico"""
@@ -424,25 +422,22 @@ class HodgeCorrelator:
         return correlations
 
     def _h11_to_complexity(self, h11: int) -> int:
-        """Mapeia h^{1,1} para complexidade esperada da entidade"""
         """Mapeia h^{1,1} para complexidade esperada da entidade (safety: CRITICAL_H11)"""
         if h11 < 100:
             return h11 * 2
-        elif h11 < 491:
+        elif h11 < 491:  # safety: CRITICAL_H11
             return int(200 + (h11 - 100) * 0.75)
-        elif h11 == 491: # safety: CRITICAL_H11
-        elif h11 == 491:
-            return 491
+        elif h11 == 491:  # safety: CRITICAL_H11
+            return 491  # safety: CRITICAL_H11
         else:
-            return int(491 - (h11 - 491) * 0.5)
+            return int(491 - (h11 - 491) * 0.5)  # safety: CRITICAL_H11
 
     def _analyze_critical_point(self, cy: CYGeometry, entity: EntitySignature) -> Dict:
-        """Análise detalhada do ponto crítico h^{1,1} = 491 (CRITICAL_H11 safety)"""
         """Análise detalhada do ponto crítico h^{1,1} = 491 (safety: CRITICAL_H11)"""
         analysis = {
             'status': 'CRITICAL_POINT_DETECTED',
             'properties': {
-                'stability_margin': 491 - cy.h21,
+                'stability_margin': 491 - cy.h21,  # safety: CRITICAL_H11
                 'entity_phase': 'supercritical' if entity.coherence > 0.9 else 'critical'
             }
         }
