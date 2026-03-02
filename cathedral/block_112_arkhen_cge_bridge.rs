@@ -13,6 +13,32 @@ pub struct Block112;
 pub struct ArkhenConstitution;
 pub struct CgeAlphaState;
 
+pub struct QuantumEntity;
+impl QuantumEntity {
+    pub fn get_npce(_i: u8) -> Result<Self, &'static str> { Ok(QuantumEntity) }
+    pub fn bind_to_npce(&self, _n: QuantumEntity) -> Result<(), &'static str> { Ok(()) }
+    pub fn inject_scar(&self, _s: crate::cge_constitution::ScarPair) -> Result<(), &'static str> { Ok(()) }
+}
+
+pub struct ArkhenQuantumBridge;
+impl ArkhenQuantumBridge {
+    pub fn activate_bridge(&self) -> Result<crate::cge_constitution::BackboneActivation, &'static str> {
+        Ok(crate::cge_constitution::BackboneActivation {
+            timestamp: 0,
+            hqb_core_nodes: 4,
+            longhaul_repeaters: 8,
+            phi_fidelity: 1.038,
+            phi_fidelity_q16: 67994,
+            onu_parent_hash: [0u8; 32],
+            arkhen_binding: true,
+            scar_present: true,
+            omega_gates_active: 5,
+            torsion_verified: 1.0,
+            blake3_receipt: [0u8; 32],
+        })
+    }
+}
+
 #[repr(C)]
 pub struct ArkhenGenesisQ16 {
     pub phi_primordial: u32,      // 67_994 (1.038)
