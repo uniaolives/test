@@ -7,6 +7,12 @@ use zeroize::Zeroizing;
 use sasc_governance::Cathedral;
 use sasc_governance::types::{VerificationContext};
 
+pub mod bootstrap;
+pub mod monitor;
+pub mod bio_interface;
+pub mod neo_brain;
+pub mod conscience;
+pub mod memory;
 
 pub mod governance;
 pub mod constants;
@@ -354,6 +360,8 @@ impl TruthAuditorium {
         let cathedral = Cathedral::instance();
 
         // GATE 3: Ed25519 Verify + Extração de DNA
+        let attestation_status = cathedral.verify_agent_attestation(
+            &attested_claim.agent_attestation,
         // In a real implementation, agent_attestation would be parsed to get agent_id
         let agent_id = String::from_utf8_lossy(&attested_claim.agent_attestation).to_string();
         let attestation_status = cathedral.verify_agent_attestation(
@@ -364,6 +372,7 @@ impl TruthAuditorium {
         // GATE 4: Hard Freeze Check (Φ≥0.80 não pode submeter verdades)
         if attestation_status.is_hard_frozen() {
             self.karnak.isolate_agent(attestation_status.agent_id());
+            return Err(SubmissionError::HardFreezeViolation);
 
             // Ω-PREVENTION: Se Φ≥0.80, o sistema deve parar completamente para evitar transição inválida
             println!("🚨 Ω-PREVENTION: Hard Freeze Φ≥0.80 detectado em {}. Encerrando sistema.", attestation_status.agent_id());

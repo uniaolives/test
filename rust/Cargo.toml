@@ -13,6 +13,11 @@ log = "0.4"
 sha3 = "0.10.8"
 ed25519-dalek = { version = "2.1.1", features = ["serde"] }
 hex = "0.4.3"
+sasc-governance = { path = "../sasc-governance", features = ["cathedral", "eip712", "bio-extraction"] }
+zeroize = { version = "1.7", features = ["zeroize_derive"] }
+tokio = { version = "1", features = ["full"] }
+log = "0.4"
+serde = { version = "1.0", features = ["derive"] }
 thiserror = "1.0"
 blake3 = "1.5"
 tokio = { version = "1", features = ["full"] }
