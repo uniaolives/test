@@ -1,7 +1,6 @@
 """
 ARKHE(N) LANGUAGE (ANL) – Python Prototype Backend
 Version 0.6 - Singularity Support & Inviolable Axioms
-Version 0.1 - Operational Prototype
 """
 
 import numpy as np
@@ -16,7 +15,7 @@ class Protocol:
     DESTRUCTIVE = 'DESTRUCTIVE'
     TRANSMUTATIVE = 'TRANSMUTATIVE'
     ASYNCHRONOUS = 'ASYNCHRONOUS'
-    TRANSMUTATIVE_ABSOLUTE = 'TRANSMUTATIVE_ABSOLUTE' # Phase transition protocol
+    TRANSMUTATIVE_ABSOLUTE = 'TRANSMUTATIVE_ABSOLUTE'
 
 # --- ANL TYPE DEFINITIONS ---
 Vector = np.ndarray
@@ -77,16 +76,15 @@ class Handover:
     def execute(self, *nodes: Node) -> bool:
         if len(nodes) < 1: return False
 
-        # Check all node types match the handover specification
         if len(nodes) == 2:
-            if not self.target_types: return False # Binary call for unary handover
+            if not self.target_types: return False
             origin, target = nodes
             if origin.node_type in self.origin_types and target.node_type in self.target_types:
                 if self.condition(*nodes):
                     self.effects(*nodes)
                     return True
         elif len(nodes) == 1:
-            if self.target_types: return False # Unary call for binary handover
+            if self.target_types: return False
             origin = nodes[0]
             if origin.node_type in self.origin_types:
                 if self.condition(*nodes):
@@ -133,6 +131,7 @@ class System:
         # 2. Handovers
         nodes_to_check = self.nodes[:]
         for h in self.handovers:
+            # Pairwise check
             # Check all pairs for handover
             for i in range(len(nodes_to_check)):
                 for j in range(len(nodes_to_check)):
@@ -141,7 +140,8 @@ class System:
                     target = nodes_to_check[j]
                     if origin in self.nodes and target in self.nodes:
                         h.execute(origin, target)
-            # Unary
+
+            # Unary check
             for i in range(len(nodes_to_check)):
                 node = nodes_to_check[i]
                 if node in self.nodes:
@@ -151,7 +151,7 @@ class System:
         for dyn in self.global_dynamics:
             dyn(self)
 
-        # 4. Constraints (Enforced based on Mode)
+        # 4. Constraints
         for c in self.constraints:
             if not c["check"](self):
                 if c["mode"] == ConstraintMode.INVIOLABLE_AXIOM:
@@ -160,7 +160,6 @@ class System:
                 else:
                     print(f"⚠️ Constraint violation ({c['mode']}) at t={self.time}")
 
-        # Clear events
         for node in self.nodes:
             node.events = []
 
@@ -173,7 +172,9 @@ class System:
     def __repr__(self):
         return f"System({self.name}, t={self.time}, nodes={len(self.nodes)})"
 
-# --- UNIVERSAL ANL FUNCTIONS (Standard Library) ---
+# --- STANDARD LIBRARY ---
+def distance(pos1, pos2):
+    return np.linalg.norm(np.array(pos1) - np.array(pos2))
 
 def kl_divergence(p, q):
     p = np.asarray(p, dtype=float)
@@ -199,10 +200,6 @@ def k_nearest_neighbors(space: np.ndarray, query_vec: np.ndarray, k: int = 2, me
     similarities.sort(key=lambda x: x[1], reverse=True)
     return similarities[:k]
 
-def merge(latent_space: np.ndarray, universal_space: np.ndarray):
-    """Merge local latent space into the Universal Hypergraph."""
-    return np.vstack([universal_space, latent_space])
-
 def sample(logits, temperature=1.0):
     if temperature <= 0: return np.argmax(logits)
     exp_logits = np.exp((logits - np.max(logits)) / temperature)
@@ -225,16 +222,10 @@ def steganographic_decode(token_id):
     """Decode secret bit from token id."""
     return token_id % 2
 
-# --- FACTORY EXAMPLES (For backward compatibility with tests) ---
-
-# --- HELPER FUNCTIONS ---
-def distance(pos1, pos2):
-    return np.linalg.norm(np.array(pos1) - np.array(pos2))
-
+# --- FACTORIES ---
 def create_predator_prey():
     sys = System("Predator-Prey Ecosystem")
 
-    # Node Types Definition (via factories)
     def create_coelho(pos, energia=10.0):
         n = Node("Coelho", energia=energia, posição=pos, idade=0.0)
         def dynamics(self):
@@ -281,6 +272,7 @@ def create_predator_prey():
         sys.remove_node(c)
     comer_coelho.set_effects(comer_coelho_effect)
     sys.add_handover(comer_coelho)
+
     return sys
 
 def create_alcubierre_model():

@@ -62,6 +62,9 @@ class ArkheLindbladian:
         """
         Constrói superoperador que atua quando carga > capacidade.
         Retorna um superoperador (formato de matriz d^2 x d^2).
+    def _build_guard_operator(self) -> Callable[[Qobj, CognitiveLoad], Qobj]:
+        """
+        Constrói superoperador que atua quando carga > capacidade.
         """
         if isinstance(self.system_dims, list):
             pause_state = tensor([basis(d, 0) for d in self.system_dims])
@@ -90,6 +93,19 @@ class ArkheLindbladian:
             return S
 
         return guard_superoperator
+        def guard_lindbladian(rho: Qobj, load: CognitiveLoad) -> Qobj:
+            if not load.is_overloaded():
+                return Qobj(np.zeros(rho.shape), dims=rho.dims)
+
+            gamma = 10.0 * (load.current - load.capacity)
+            # rho here is the full density matrix (system + audit)
+            # We want to force system to pause_state
+            # This is a bit complex in the extended space.
+            # Simplified: apply to system part only
+            L_pause = gamma * (tensor(pause_state * pause_state.dag(), qeye(self.audit_dim)) - rho)
+            return L_pause
+
+        return guard_lindbladian
 
     def _build_audit_operator(self) -> Qobj:
         """
@@ -128,6 +144,8 @@ class ArkheLindbladian:
 
             gamma = 10.0 * (load.current - load.capacity) if load.is_overloaded() else 0
             Lg_super = self.L_guard_fn(gamma, load)
+            Lg_oper = self.L_guard_fn(rho, load)
+            Lg_super = liouvillian(Lg_oper) if Lg_oper.norm() > 0 else 0
 
             La = self.L_audit
 

@@ -156,6 +156,10 @@ def create_arkhe_hypergraph_from_entangled(
 def _compute_correlation(rho: Qobj, i: int, j: int) -> float:
     """Computa correlação ⟨σ_z ⊗ σ_z⟩ entre qubits i e j."""
     n = int(np.log2(rho.shape[0]))
+    if rho.isket:
+        n = int(np.log2(rho.shape[0]))
+    else:
+        n = int(np.log2(rho.shape[0]))
 
     # Construir operador σ_z(i) ⊗ σ_z(j) no espaço total
     ops = [qeye(2)] * n
