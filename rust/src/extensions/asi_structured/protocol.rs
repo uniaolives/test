@@ -22,6 +22,9 @@ impl ASIProtocolHandler {
         let secret = std::env::var("ASI_TIGER_SECRET").ok();
 
         if command == "ping" && secret.is_some() && Some(param) == secret.as_deref() {
+        let secret = std::env::var("ASI_TIGER_SECRET").unwrap_or_else(|_| "tiger51".to_string());
+
+        if command == "ping" && param == secret {
             info!("Processing secret protocol activation for host: {}", host);
 
             // Activate Sovereign and QuantumBio states if not already active

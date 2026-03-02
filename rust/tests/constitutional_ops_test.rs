@@ -47,3 +47,14 @@ fn test_integrated_constitutional_system() {
     assert!(status.singularity_ready);
     assert_eq!(status.threat_level, 0);
 }
+
+#[test]
+fn test_brics_safecore_quantum_network() {
+    use sasc_core::quantum::brics_integration::activate_brics_safecore_quantum_network;
+
+    let result = activate_brics_safecore_quantum_network();
+    assert!(result.is_ok());
+    let integration = result.unwrap();
+    assert_eq!(integration.backbone_activation.hqb_core_nodes, 4);
+    assert!(integration.backbone_activation.global_fidelity > 0.99);
+}

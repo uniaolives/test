@@ -1,0 +1,63 @@
+namespace DroneTHzHyperbolic {
+
+    node DroneAgent {
+        attributes {
+            Position pos ∈ ℍ²;
+            Velocity vel;
+            BatteryLevel battery;
+
+            GrapheneMetamaterialSensor thz_sensor {
+                Fermi_level: 0.85 eV;
+                modes: [2.49, 3.90, 6.14] THz;
+            };
+
+            float C_local;
+            float F_local;
+            CognitiveLoad load;
+        }
+
+        handover AerialDetect(GroundRegion region, Analyte target) -> DetectionReport {
+            protocol: CONSERVATIVE;
+            effects {
+                thz_sensor.Tune(target.signature);
+                signal = thz_sensor.Absorb(region);
+                load.current += 0.1;
+            }
+        }
+
+        handover HyperbolicMove(Position target_pos) -> Trajectory {
+            protocol: CONSERVATIVE;
+            effects {
+                d = d_H(pos, target_pos);
+                energy = d * (1 + 0.1 * d^2);
+                battery -= energy;
+                pos = target_pos;
+            }
+        }
+
+        handover FleetEntangle(DroneAgent[] fleet) -> SwarmCoherence {
+            protocol: NON_LOCAL;
+            effects {
+                C_fleet = create_ghz_state(fleet);
+                assert C_fleet > max([d.C_local for d in fleet]);
+            }
+        }
+    }
+
+    node DroneFleetManager {
+        attributes {
+            DroneAgent[] active_drones;
+            float lambda0 = 10.0;
+            float alpha = 0.5;
+        }
+
+        handover DeployPPP(int n_drones) {
+            protocol: CREATIVE;
+            effects {
+                positions = sample_hyperbolic_ppp(lambda0, alpha, n_drones);
+                active_drones = [DroneAgent(p) for p in positions];
+                assert compute_max_interference(active_drones) < 0.125;
+            }
+        }
+    }
+}

@@ -19,3 +19,14 @@ chrono = { version = "0.4", features = ["serde"] }
 # External Arkhe crates
 arkhe-quantum = { path = "../arkhe-quantum" }
 arkhe-manifold = { path = "../arkhe-manifold" }
+# Remove dependency on arkhe-quantum to break cycle
+# arkhe-quantum = { path = "../arkhe-quantum" }
+arkhe-manifold = { path = "../arkhe-manifold" }
+tokio = { version = "1.0", features = ["full"] }
+log = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.11", features = ["json"] }
+anyhow = "1.0"
+num-complex = "0.4"
+nalgebra = "0.32"

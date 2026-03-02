@@ -96,6 +96,9 @@ impl ASIConstitution {
         Ok(())
     }
 
+    pub fn validate_genome(&self, genome: &GeometricGenome) -> ResilientResult<()> {
+    }
+
     pub fn validate_composed_result(&self, output: &dyn ASIResult) -> ResilientResult<()> {
         self.validate_output(output)
     }

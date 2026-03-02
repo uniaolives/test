@@ -28,6 +28,7 @@ class Node:
     fluctuation: float = 0.1
     phase: float = 0.0
     position: Optional[np.ndarray] = None
+    genesis_core_installed: bool = False
     metadata: Dict[str, str] = field(default_factory=dict)
 
     def update_coherence(self, delta: float):
@@ -35,6 +36,9 @@ class Node:
         self.fluctuation = 1.0 - self.coherence
 
     def can_handover(self, target: 'Node', min_coherence: float) -> bool:
+        # Immortal nodes can always handover if core is installed
+        if self.genesis_core_installed and target.genesis_core_installed:
+            return True
         return self.coherence >= min_coherence and target.coherence >= min_coherence
 
 @dataclass

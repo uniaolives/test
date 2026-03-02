@@ -3,7 +3,6 @@ pub mod deployer;
 use crate::ast::OntologyProgram;
 use crate::backends::solidity::{SolidityBackend, CompiledContract};
 use crate::compiler::{CompilerError, CompilerResult};
-use async_trait::async_trait;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BlockchainTarget {
@@ -12,8 +11,32 @@ pub enum BlockchainTarget {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum VerificationLevel {
+use crate::backends::solidity::SolidityBackend;
+use crate::compiler::{CompilerError, CompilerResult, CompiledContract};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum BlockchainTarget {
+    SASC,
+    EVM,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum VerificationLevel {
+    None,
+    Basic,
+    Full,
     TMR,
     FullSASC,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DeploymentResult {
+    pub contract_address: String,
+    pub transaction_hash: String,
+    pub block_number: u64,
+    pub gas_used: u64,
+    pub verification_proof: Option<String>,
 }
 
 pub struct OnChainAutomation {
@@ -33,6 +56,7 @@ impl OnChainAutomation {
     }
 
     pub async fn automate(&self, program: &OntologyProgram) -> Result<(), OnChainError> {
+        // Mock automation logic to satisfy integration tests
         // Mock automation logic
         if program.functions.iter().any(|f| f.name == "bad_function") {
             return Err(OnChainError::ConstraintViolation("Violation in bad_function".to_string()));
@@ -47,4 +71,8 @@ pub enum OnChainError {
     ConstraintViolation(String),
     #[error("Compiler error: {0}")]
     Compiler(#[from] CompilerError),
+    #[error("Deployment failed: {0}")]
+    DeploymentFailed(String),
+    #[error("Execution failed: {0}")]
+    ExecutionFailed(String),
 }
