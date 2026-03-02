@@ -5,6 +5,13 @@ from arkhe.extraction import GeminiExtractor, Provenance, Currency
 from arkhe.registry import GlobalEntityRegistry, EntityCandidate, EntityType
 from arkhe.consensus import GeodesicConsensus, ValidatedFact, ConsensusStatus
 
+import pytest
+from arkhe.kernel import DocumentIngestor, AnchorResolver
+from arkhe.extraction import GeminiExtractor, Provenance, Currency, ExtractionReport
+from arkhe.registry import GlobalEntityRegistry, EntityCandidate, EntityType
+from arkhe.consensus import GeodesicConsensus, ValidatedFact, ConsensusStatus
+
+@pytest.mark.asyncio
 async def test_arkhen_convergence():
     print("🚀 Starting ArkheOS Integrated Convergence Test...")
 
@@ -17,6 +24,7 @@ async def test_arkhen_convergence():
     # Model A
     ext_a = GeminiExtractor(api_key="sk-alpha")
     report_a = ext_a.extract("...net profit of $1.2M...", "hash-123", 1, "annual_report_2025.pdf")
+    report_a = await ext_a.extract("...net profit of $1.2M...", ExtractionReport)
 
     # Model B (Simulated Divergence)
     fact_b = report_a.facts[0].model_copy()

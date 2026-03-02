@@ -3,12 +3,12 @@ numpy==1.24.3
 pyglet==2.0.10
 
 # MCP (Model Context Protocol)
-fastmcp==0.3.2
-uvicorn[standard]==0.24.0
+fastmcp==0.3.3
+uvicorn[standard]==0.24.1
 fastapi==0.104.1
 sse-starlette==1.6.5
 websockets==12.0
-mcp==0.1.0
+mcp==1.23.4
 
 # Utilitários
 psutil==5.9.6

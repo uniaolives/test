@@ -1,0 +1,41 @@
+// ARKHE(N) LANGUAGE (ANL) - EXAMPLE 5.2
+// Bolha de Alcubierre (Warp Drive)
+
+namespace Alcubierre {
+    node RegiãoEspaçoTempo {
+        attributes {
+            tensor g[4,4];      // métrica
+            vector x[4];         // coordenadas
+            tensor T[4,4];       // tensor energia‑momento
+        }
+        dynamics {
+            // equações de Einstein (forma ADM) seriam aqui
+        }
+    }
+
+    node BolhaWarp {
+        attributes {
+            vector posição[4];
+            float velocidade;
+            function forma(float r) -> float;  // f(r)
+        }
+    }
+
+    handover ConexãoMétrica (RegiãoEspaçoTempo a, RegiãoEspaçoTempo b) {
+        condition: contiguous(a, b);
+        equation: a.g_boundary = b.g_boundary;
+    }
+
+    handover BolhaParaRegião (BolhaWarp b, RegiãoEspaçoTempo r) {
+        condition: distance(b.posição, r.x) <= R_bolha;
+        effects {
+            r.g = modificar_métrica(b, r);
+        }
+    }
+
+    dynamic MovimentoBolha {
+        for each BolhaWarp b {
+            b.posição = integrar(b.velocidade, tempo);
+        }
+    }
+}

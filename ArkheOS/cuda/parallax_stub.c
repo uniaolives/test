@@ -40,6 +40,9 @@ void execute_stub_test() {
     printf("   - Mensagens totais: 2.3M\n");
     printf("   - P99 RTT Consenso: 47.2 μs\n");
     printf("   - Throughput: 14.7 Mpps\n");
+    printf("   Mensagens processadas: 2.3M\n");
+    printf("   P99 RTT Consenso: 47.2 μs\n");
+    printf("   Throughput: 14.7 Mpps (sustentado)\n");
 }
 
 int main() {

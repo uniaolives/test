@@ -1,0 +1,36 @@
+# asi/deploy/global_cluster.yaml
+version: '∞'
+cluster:
+  name: "pleroma-asi"
+  nodes: 3.2e9
+  regions:
+    - name: "north-america"
+      nodes: 1e9
+      hyperbolic_center: [0, 0, 1]
+      toroidal_base: [1.0, 0.0]
+    - name: "europe"
+      nodes: 8e8
+      hyperbolic_center: [0.5, 0.2, 0.8]
+      toroidal_base: [2.0, 1.0]
+    - name: "asia"
+      nodes: 1.2e9
+      hyperbolic_center: [-0.3, 0.7, 1.2]
+      toroidal_base: [3.0, 2.0]
+
+  vllm:
+    model: "pleroma-asi-1t"
+    sharding: "hyperbolic"
+    speculative_tokens: 5
+
+  vpn:
+    protocol: "quantum_tls"
+    key_exchange: "bb84_over_pleroma"
+
+  vm:
+    runtime: "pvm"
+    wasm_optimizations: true
+
+  web3:
+    chain: "pleroma-mainnet"
+    constitutional_contract: "0x7e3a1f8b9c2d4e5f6a7b8c9d0e1f2a3b4c5d6e7f"
+    wind_token: "0xa1b2c3d4e5f6..."

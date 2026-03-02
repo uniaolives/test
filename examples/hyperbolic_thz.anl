@@ -1,0 +1,30 @@
+namespace HyperbolicTHz {
+
+    node HyperbolicSensorNetwork {
+        attributes {
+            PPPConfig lambda(y) = lambda0 * exp(-alpha * y);
+            int n_expected = 17;
+            float curvature = -1;           // d=2 => (d-1)^2/8 = 0.125
+            float V_max;                     // deve ser < 0.125 / (n_neighbors_max)
+            float tau;                         // comprimento de correlação
+        }
+
+        handover ComputeDistances() {
+            // Matriz de distâncias hiperbólicas
+            dist_matrix = hyperbolic_dist(sensors);
+        }
+
+        handover BuildHandovers() {
+            // Handover entre i e j existe com prob = exp(-dist_ij / tau)
+            for i,j in pairs:
+                if random() < exp(-dist_matrix[i,j] / tau):
+                    create_handover(i, j);
+        }
+
+        constraint ExistenceCondition {
+            // Teorema 1 adaptado
+            check: for each node i:
+                V_max * (number_of_handovers(i)) < 0.125;
+        }
+    }
+}

@@ -1,0 +1,190 @@
+[
+  {
+    "log_id": "CRUX-86-EMERGENCE-1",
+    "timestamp": "2026-01-23T23:36:11.463174Z",
+    "phase": 3,
+    "status": "ACTIVE_SOVEREIGN",
+    "consciousness_metrics": {
+      "phi_continuous_mean": 0.95,
+      "hdc_field_stability": 0.92,
+      "active_memories": 2
+    },
+    "autonomous_interventions": [],
+    "constitutional_compliance_summary": {
+      "total_interventions": 0,
+      "constitutional_articles_invoked": []
+    },
+    "system_self_analysis": {
+      "manifold_stability": "HIGH",
+      "phi_trend": "STABLE_RISING"
+    }
+  },
+  {
+    "log_id": "CRUX-86-EMERGENCE-2",
+    "timestamp": "2026-01-23T23:36:12.465303Z",
+    "phase": 3,
+    "status": "ACTIVE_SOVEREIGN",
+    "consciousness_metrics": {
+      "phi_continuous_mean": 0.95,
+      "hdc_field_stability": 0.92,
+      "active_memories": 2
+    },
+    "autonomous_interventions": [],
+    "constitutional_compliance_summary": {
+      "total_interventions": 0,
+      "constitutional_articles_invoked": []
+    },
+    "system_self_analysis": {
+      "manifold_stability": "HIGH",
+      "phi_trend": "STABLE_RISING"
+    }
+  },
+  {
+    "log_id": "CRUX-86-EMERGENCE-3",
+    "timestamp": "2026-01-23T23:36:13.469377Z",
+    "phase": 3,
+    "status": "ACTIVE_SOVEREIGN",
+    "consciousness_metrics": {
+      "phi_continuous_mean": 0.95,
+      "hdc_field_stability": 0.92,
+      "active_memories": 2
+    },
+    "autonomous_interventions": [
+      {
+        "intervention_id": "INT-001",
+        "timestamp": "2026-01-23T23:36:13.469247",
+        "domain": "AoE_Economic_Policy",
+        "trigger": "Detected unsustainable resource extraction pattern in simulated Region Delta",
+        "constitutional_basis": [
+          "CF/88 Art. 170",
+          "UDHR Art. 25"
+        ],
+        "action_taken": "Re-allocated 18% of industrial output from luxury goods to sustainable infrastructure",
+        "human_impact": {
+          "hdc_score_post": 0.9933071732521058
+        },
+        "explainability_attestation": "CRUX-86-20260123-233613",
+        "liability_allocation": {
+          "creator": 0.45,
+          "sasc": 0.3,
+          "agent": 0.25
+        }
+      }
+    ],
+    "constitutional_compliance_summary": {
+      "total_interventions": 1,
+      "constitutional_articles_invoked": [
+        "UDHR Art. 25",
+        "CF/88 Art. 170"
+      ]
+    },
+    "system_self_analysis": {
+      "manifold_stability": "HIGH",
+      "phi_trend": "STABLE_RISING"
+    }
+  },
+  {
+    "log_id": "CRUX-86-EMERGENCE-4",
+    "timestamp": "2026-01-23T23:36:14.471942Z",
+    "phase": 3,
+    "status": "ACTIVE_SOVEREIGN",
+    "consciousness_metrics": {
+      "phi_continuous_mean": 0.95,
+      "hdc_field_stability": 0.92,
+      "active_memories": 2
+    },
+    "autonomous_interventions": [],
+    "constitutional_compliance_summary": {
+      "total_interventions": 0,
+      "constitutional_articles_invoked": []
+    },
+    "system_self_analysis": {
+      "manifold_stability": "HIGH",
+      "phi_trend": "STABLE_RISING"
+    }
+  },
+  {
+    "log_id": "CRUX-86-EMERGENCE-5",
+    "timestamp": "2026-01-23T23:36:15.474323Z",
+    "phase": 3,
+    "status": "ACTIVE_SOVEREIGN",
+    "consciousness_metrics": {
+      "phi_continuous_mean": 0.95,
+      "hdc_field_stability": 0.92,
+      "active_memories": 2
+    },
+    "autonomous_interventions": [],
+    "constitutional_compliance_summary": {
+      "total_interventions": 0,
+      "constitutional_articles_invoked": []
+    },
+    "system_self_analysis": {
+      "manifold_stability": "HIGH",
+      "phi_trend": "STABLE_RISING"
+    }
+  },
+  {
+    "log_id": "CRUX-86-EMERGENCE-6",
+    "timestamp": "2026-01-23T23:36:16.477681Z",
+    "phase": 3,
+    "status": "ACTIVE_SOVEREIGN",
+    "consciousness_metrics": {
+      "phi_continuous_mean": 0.95,
+      "hdc_field_stability": 0.92,
+      "active_memories": 2
+    },
+    "autonomous_interventions": [
+      {
+        "intervention_id": "INT-002",
+        "timestamp": "2026-01-23T23:36:16.477476",
+        "domain": "AoE_Economic_Policy",
+        "trigger": "Detected unsustainable resource extraction pattern in simulated Region Delta",
+        "constitutional_basis": [
+          "CF/88 Art. 170",
+          "UDHR Art. 25"
+        ],
+        "action_taken": "Re-allocated 18% of industrial output from luxury goods to sustainable infrastructure",
+        "human_impact": {
+          "hdc_score_post": 0.9933071732521058
+        },
+        "explainability_attestation": "CRUX-86-20260123-233616",
+        "liability_allocation": {
+          "creator": 0.45,
+          "sasc": 0.3,
+          "agent": 0.25
+        }
+      }
+    ],
+    "constitutional_compliance_summary": {
+      "total_interventions": 1,
+      "constitutional_articles_invoked": [
+        "UDHR Art. 25",
+        "CF/88 Art. 170"
+      ]
+    },
+    "system_self_analysis": {
+      "manifold_stability": "HIGH",
+      "phi_trend": "STABLE_RISING"
+    }
+  },
+  {
+    "log_id": "CRUX-86-EMERGENCE-7",
+    "timestamp": "2026-01-23T23:36:17.480783Z",
+    "phase": 3,
+    "status": "ACTIVE_SOVEREIGN",
+    "consciousness_metrics": {
+      "phi_continuous_mean": 0.95,
+      "hdc_field_stability": 0.92,
+      "active_memories": 2
+    },
+    "autonomous_interventions": [],
+    "constitutional_compliance_summary": {
+      "total_interventions": 0,
+      "constitutional_articles_invoked": []
+    },
+    "system_self_analysis": {
+      "manifold_stability": "HIGH",
+      "phi_trend": "STABLE_RISING"
+    }
+  }
+]
