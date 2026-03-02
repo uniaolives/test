@@ -49,6 +49,7 @@ atomic_float = "0.1"
 parking_lot = "0.12"
 futures = "0.3"
 sha2 = "0.10.9"
+rustfft = "6.2"
 ic-cdk = "0.12"
 ic-cdk-macros = "0.8"
 uuid = { version = "1.19.0", features = ["v4"] }
@@ -95,6 +96,12 @@ name = "maat_crystallizer"
 path = "src/bin/maat_crystallizer.rs"
 
 [[bin]]
+name = "aletheia_scanner"
+path = "src/bin/aletheia_scanner.rs"
+
+[[bin]]
+name = "boundary_mapper"
+path = "src/bin/boundary_mapper.rs"
 name = "sasc-sign"
 path = "src/bin/sasc_sign.rs"
 

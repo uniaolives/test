@@ -1,8 +1,22 @@
+pub use crate::maat::flagellar_dynamics::NodeId;
+use crate::maat::flagellar_dynamics::{PropulsionMode};
 use crate::maat::flagellar_dynamics::{PropulsionMode, NodeId};
 use crate::maat::scenarios::network_congestion::{AttackVector, RoutingMode};
 
 pub struct MeshNeuron {
     pub id: NodeId,
+}
+
+impl MeshNeuron {
+    pub fn report_geometric_anomaly(
+        &self,
+        metadata: &crate::security::aletheia_metadata::MorphologicalTopologicalMetadata,
+        _content_hash: &[u8; 32]
+    ) {
+        if metadata.ethical_state == "DRUJ" {
+            log::warn!("DRUJ DETECTED: Reporting geometric anomaly.");
+            // Propagação Ubuntu mockada
+        }
     pub phi: f64,
 }
 
