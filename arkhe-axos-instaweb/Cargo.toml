@@ -1,6 +1,5 @@
 [package]
 name = "arkhe-axos-instaweb"
-version = "1.0.0"
 version = "1.2.1"
 edition = "2021"
 authors = ["Arquiteto <root@arkhe.systems>"]
@@ -63,9 +62,6 @@ sha2 = "0.10"
 criterion = { version = "0.5", features = ["html_reports"] }
 proptest = "1.4"
 tokio-test = "0.4"
-
-[lib]
-path = "src/lib.rs"
 
 [profile.release]
 lto = "fat"
