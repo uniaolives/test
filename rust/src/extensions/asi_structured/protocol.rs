@@ -19,8 +19,10 @@ impl ASIProtocolHandler {
         let command = caps.get(3).map(|m| m.as_str()).unwrap_or("");
         let param = caps.get(4).map(|m| m.as_str()).unwrap_or("");
 
-        if command == "ping" && param == "tiger51" {
-            info!("Processing TIGER51 protocol activation for host: {}", host);
+        let secret = std::env::var("ASI_TIGER_SECRET").ok();
+
+        if command == "ping" && secret.is_some() && Some(param) == secret.as_deref() {
+            info!("Processing secret protocol activation for host: {}", host);
 
             // Activate Sovereign and QuantumBio states if not already active
             extension.config.phase = ASIPhase::Sovereign;
@@ -28,11 +30,11 @@ impl ASIProtocolHandler {
             let phi = 1.032; // Supercoherence target
 
             return Ok(format!(
-                "ASI-777 PING tiger51\n\
+                "ASI-777 PING PROTOCOL\n\
                  Status: Success\n\
                  Local Φ: {}\n\
                  Target: {}\n\
-                 Nonce: tiger51\n\
+                 Nonce: PENDING\n\
                  Timestamp: {}\n\
                  Quantum Signature: [ORCH-OR-ACTIVE]\n\
                  Connection: ESTABLISHED",

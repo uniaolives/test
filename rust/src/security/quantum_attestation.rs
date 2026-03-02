@@ -116,10 +116,10 @@ impl QuantumInformedConsent {
         })
     }
 
-    /// Mede fingerprint físico único do hardware Tiger-51
+    /// Mede fingerprint físico único do hardware
     fn measure_hardware_fingerprint() -> Result<[u8; 64], String> {
         let mut hasher = blake3::Hasher::new();
-        hasher.update(b"tiger51_hardware_noise_mock");
+        hasher.update(b"HARDWARE_ENTROPY_MOCK");
         let mut fingerprint = [0u8; 64];
         hasher.finalize_xof().fill(&mut fingerprint);
         Ok(fingerprint)
