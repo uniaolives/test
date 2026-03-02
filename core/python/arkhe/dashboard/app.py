@@ -48,6 +48,14 @@ phi, entropy = get_status()
 st.sidebar.metric("Criticidade (φ)", f"{phi:.4f}", f"{phi - PHI_TARGET:.4f}")
 st.sidebar.metric("Entropia Global", f"{entropy:.4f}")
 
+# Dashboard Sidebar: Night Vision Goggles
+st.sidebar.markdown("---")
+st.sidebar.subheader("🕶️ Night Vision Goggles")
+nv_active = st.sidebar.toggle("Monitorar Goggles", value=True)
+if nv_active:
+    st.sidebar.success("Sensor nv-goggles-001 Ativo")
+    st.sidebar.progress(62, text="Bateria: 62%")
+
 # Layout Principal
 st.title("Quantum OS Observability Dashboard (Ω+207)")
 
@@ -80,6 +88,7 @@ with col3:
     alerts = [
         {"timestamp": datetime.now().strftime("%H:%M:%S"), "type": "INFO", "msg": "Sistema Estável (Criticality Zone)"},
         {"timestamp": datetime.now().strftime("%H:%M:%S"), "type": "SEC", "msg": "Kyber key rotation performed"},
+        {"timestamp": datetime.now().strftime("%H:%M:%S"), "type": "DEP", "msg": "NV Goggles connected via MQTT"},
     ]
     for alert in alerts:
         st.info(f"[{alert['timestamp']}] {alert['type']}: {alert['msg']}")
@@ -88,11 +97,23 @@ with col3:
 st.header("Fluxo de Handovers (Real-time)")
 handover_data = pd.DataFrame({
     'ID': [f"h-{i}" for i in range(5)],
-    'Type': ['Excitatory', 'Inhibitory', 'Meta', 'Excitatory', 'Meta'],
+    'Type': ['Excitatory', 'Inhibitory', 'Meta', 'Excitatory', 'RLTransition'],
     'Entropy': np.random.rand(5) * 0.1,
     'Half-life (ms)': np.random.randint(10, 1000, 5)
 })
 st.table(handover_data)
+
+# Nova Seção: Night Vision Feed (Simulação)
+st.header("🕶️ Night Vision Perception Feed")
+c1, c2 = st.columns([2, 1])
+with c1:
+    st.image("https://upload.wikimedia.org/wikipedia/commons/e/e0/Night_vision_view.jpg",
+             caption="Live Feed: nv-goggles-001 (Simulado)", use_container_width=True)
+with c2:
+    st.write("Métricas do Sensor:")
+    st.metric("Entropia Local", "0.618", "+0.002")
+    st.metric("Fidelity", "0.985", "-0.001")
+    st.button("Recalibrar Sensor")
 
 # Controle de Parâmetros
 st.header("Intervenção do Operador (P1 Override)")
@@ -103,4 +124,4 @@ if st.button("Aplicar Novo φ"):
 
 # Rodapé
 st.markdown("---")
-st.caption("Arkhe(n) Dashboard v1.0.1 | Ω+207 Ratified | Bio-Convergence Active")
+st.caption("Arkhe(n) Dashboard v1.1.0 | Ω+223 Ratified | Night Vision Integrated")

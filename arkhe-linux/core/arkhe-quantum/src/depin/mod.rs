@@ -3,6 +3,8 @@ use serde_json::Value;
 use tokio::sync::mpsc;
 use std::collections::HashMap;
 
+pub mod goggles;
+
 #[derive(Debug, Clone)]
 pub struct SensorEvent {
     pub sensor_id: String,

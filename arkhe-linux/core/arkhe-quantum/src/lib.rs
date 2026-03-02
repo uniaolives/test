@@ -189,9 +189,21 @@ impl QuantumState {
     }
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct KrausOperator {
     pub operators: Vec<Array2<Complex64>>,
+}
+
+impl Default for KrausOperator {
+    fn default() -> Self {
+        // O padrão deve ser a Identidade (No-Op), não o operador nulo
+        let dim = 2; // Dimensão padrão
+        let mut op = Array2::from_elem((dim, dim), Complex64::new(0.0, 0.0));
+        for i in 0..dim {
+            op[[i, i]] = Complex64::new(1.0, 0.0);
+        }
+        Self { operators: vec![op] }
+    }
 }
 
 impl KrausOperator {
