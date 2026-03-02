@@ -4,6 +4,9 @@ This directory contains the core implementation and cross-language mappings for 
 
 ## Components
 
+- `anl.py`: Unified core Python module for ANL. Implements Nodes, Handovers, Hypergraph, and specialized extensions for AI and Web2/Web3.
+- `proto_agi_daemon.py`: A background process (daemon) that maintains a live Proto-AGI hypergraph, exposed via a FastAPI REST interface.
+- `anl_compiler.py`: Backward-compatible operational prototype (v0.6) for system simulation.
 - `anl_compiler.py`: The operational Python prototype (v0.6) for system simulation. Supports Nodes, Handovers, Protocols, and Axioms.
 - `heptapod_interpreter.py`: Computational cosmology model and Heptapod B bytecode interpreter.
 - `chronoglyph_runtime.py`: Quantum-symbolic collapse engine for non-linear execution.

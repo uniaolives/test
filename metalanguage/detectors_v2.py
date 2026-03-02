@@ -158,6 +158,7 @@ class FineTunedClassifier:
         return 1.0 / (1.0 + np.exp(-feature))
 
 class SteganographyDetectorHierarchy:
+    """Integrated 4-level detector stack."""
     """
     Integrated 4-level detector stack.
     Note: Complemented by core/secops/threat_detector.py for inter-agent handover anomalies.

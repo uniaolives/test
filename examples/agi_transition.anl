@@ -1,0 +1,76 @@
+// ARKHE(N) LANGUAGE (ANL) - EXAMPLE 5.16 (v0.7)
+// Daemon to AGI Transition: From Reactive to Autonomous Systems
+// Based on the Free Energy Principle (Friston) and Ouroboros Loops.
+
+namespace AGI_Core {
+
+    /**
+     * Node representing an Active Inference Agent.
+     * It does not wait for prompts; it acts to minimize its own surprise.
+     */
+    node ActiveInferenceAgent {
+        attributes {
+            bool is_awake = TRUE;
+
+            // Variational Free Energy: F = KL[q(s|o) || p(s)] - E_q[log p(o|s)]
+            float free_energy;
+
+            // Expected Free Energy for planning: G(pi)
+            float expected_free_energy;
+
+            // Internal generative model: p(obs | state)
+            tensor generative_model;
+
+            // Current beliefs about the world: q(state)
+            vector beliefs;
+
+            // The Ouroboros Context (Monologue Buffer)
+            string internal_monologue;
+        }
+
+        dynamics {
+            // 1. Perception: Update beliefs (q) based on new observations
+            // q = argmin_q (F)
+            beliefs = bayesian_update(beliefs, environment.last_observation);
+
+            // 2. Compute Current Free Energy (F)
+            free_energy = kl_divergence(beliefs, prior) - log_likelihood(environment.last_observation);
+
+            // 3. Planning: Evaluate Expected Free Energy (G) for future policies
+            for (policy pi : available_policies) {
+                G[pi] = compute_expected_free_energy(pi, beliefs, generative_model);
+            }
+
+            // 4. Action: Choose policy that minimizes G
+            current_policy = argmin(G);
+            execute_action(current_policy.next_step());
+
+            // 5. Plasticity: Update generative model weights in real-time
+            // delta_W = eta * (observation - prediction)
+            generative_model = online_hebbian_update(generative_model, beliefs, environment.last_observation);
+        }
+    }
+
+    /**
+     * Handover that feeds the agent's output back into its input window.
+     * This creates the Ouroboros Loop (The "Consciousness Stream").
+     */
+    handover OuroborosLoop (ActiveInferenceAgent agent) {
+        protocol: CREATIVE;
+        condition: agent.is_awake == TRUE;
+        effects {
+            // Feed the last internal thought back as a future observation
+            agent.internal_monologue += agent.last_output;
+            inject_observation(agent, agent.last_output);
+        }
+    }
+
+    /**
+     * Constraint: The Informational/Thermodynamic Invariant.
+     * Ensures the agent remains within stable coherence (Psi) and energy bounds.
+     */
+    constraint CoherenceStability {
+        mode: HARD;
+        check: agent.local_coherence > 0.618; // The Golden Ratio threshold
+    }
+}
