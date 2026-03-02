@@ -2,6 +2,7 @@ use crate::error::{ResilientResult};
 use crate::interfaces::extension::{GeometricStructure, Subproblem, Context, Domain, StructureResult};
 use crate::extensions::asi_structured::constitution::{ASIConstitution, ASIResult};
 use crate::extensions::asi_structured::reflection::ReflectedResult;
+pub use crate::extensions::asi_structured::StructureType;
 use async_trait::async_trait;
 use serde::{Serialize, Deserialize};
 use std::sync::Arc;

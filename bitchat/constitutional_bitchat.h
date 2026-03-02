@@ -35,4 +35,6 @@ void constitutional_collect_app_error_logs_for_bitchat(ConstitutionalAgnosticDev
 void constitutional_process_collective_intelligence_for_web3(void);
 void constitutional_execute_web3_feedback_loop(ConstitutionalWeb3FeedbackLoop* loop);
 
+void constitutional_bitchat_set_quarantine(ConstitutionalBitchatNode* node, uint8_t active);
+
 #endif

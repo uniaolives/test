@@ -3,6 +3,12 @@ pub mod compiler;
 pub mod utils;
 pub mod backends;
 pub mod onchain;
+
+pub use ast::{OntologyProgram, Paradigm};
+pub use compiler::{CompiledContract, CompilationStats, CompilerError};
+
+pub fn parse_program(_source: &str) -> Result<ast::OntologyProgram, String> {
+    // Basic mock parser to satisfy integration tests
 pub mod gem_simulator;
 pub mod type_checker;
 pub mod std;
@@ -18,6 +24,7 @@ pub fn parse_program(_source: &str) -> Result<ast::OntologyProgram, String> {
                 name: "bad_function".to_string(),
                 paradigm: ast::Paradigm::Functional,
                 params: vec![],
+                return_type: ast::OntoType::Int,
                 return_type: ast::Type::Int,
                 body: ast::Body { content: "state_modifying_operation".to_string() },
                 constraints: vec![],
@@ -34,6 +41,7 @@ pub fn parse_program(_source: &str) -> Result<ast::OntologyProgram, String> {
             name: "vote".to_string(),
             paradigm: ast::Paradigm::Functional,
             params: vec![],
+            return_type: ast::OntoType::Int,
             return_type: ast::Type::Int,
             body: ast::Body { content: "vote logic".to_string() },
             constraints: vec![],

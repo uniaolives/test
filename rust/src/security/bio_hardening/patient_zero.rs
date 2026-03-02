@@ -1,5 +1,8 @@
 use crate::sensors::{Heartbeat, BioSignal};
 use crate::governance::DefenseMode;
+
+pub struct PatientZeroProtocol {
+    pub defense_mode: DefenseMode,
 use crate::bio_layer::paciente_zero_omega::{BioInterfaceΩ, BioSignalΩ};
 
 pub struct PatientZeroProtocol {

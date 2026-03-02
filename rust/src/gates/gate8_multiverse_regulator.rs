@@ -1,6 +1,7 @@
 use std::sync::atomic::{AtomicU64, Ordering};
 use crate::security::invariant_engine::GateError;
 
+#[derive(Debug, Clone)]
 pub enum ComplexityClass {
     Low,
     Medium,
