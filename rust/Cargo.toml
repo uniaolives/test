@@ -16,19 +16,25 @@ hex = "0.4.3"
 thiserror = "1.0"
 blake3 = "1.5"
 tokio = { version = "1", features = ["full"] }
+nalgebra = "0.32"
 nalgebra = { version = "0.32", features = ["serde-serialize"] }
 ndarray = "0.15"
 num-complex = "0.4"
 aws-nitro-enclaves-cose = "0.5.2"
-x509-parser = "0.15"
 ring = "0.17"
 serde = { version = "1.0", features = ["derive"] }
 ciborium = "0.2"
 sasc-governance = { path = "../sasc-governance", features = ["cathedral", "eip712", "bio-extraction"] }
-zeroize = { version = "1.7", features = ["zeroize_derive"] }
 lazy_static = "1.4"
 serde_json = "1.0"
 once_cell = "1.18"
+zeroize = { version = "1.8", features = ["derive", "zeroize_derive"] }
+rsa = "0.9"
+sha2 = "0.10"
+pkcs1 = "0.7"
+x509-parser = "0.16"
+zip = "0.6"
+base64 = "0.21"
 pqcrypto-traits = "0.3.5"
 pqcrypto-dilithium = "0.5.0"
 rand = { version = "0.8", features = ["getrandom"] }
@@ -47,9 +53,9 @@ atomic = "0.6"
 crossbeam-channel = "0.5"
 atomic_float = "0.1"
 parking_lot = "0.12"
-heapless = "0.8"
 futures = "0.3"
 sha2 = "0.10.9"
+rustfft = "6.2"
 ic-cdk = "0.12"
 ic-cdk-macros = "0.8"
 uuid = { version = "1.19.0", features = ["v4"] }
@@ -60,6 +66,7 @@ bs58 = "0.5.1"
 regex = "1.12.3"
 base64 = "0.22.1"
 web777_ontology = { path = "../web777_ontology" }
+arkhe-quantum = { path = "../arkhe-linux/core/arkhe-quantum" }
 reqwest = { version = "0.11", features = ["blocking", "json"] }
 
 [target.'cfg(target_os = "windows")'.dependencies]
@@ -95,6 +102,12 @@ name = "maat_crystallizer"
 path = "src/bin/maat_crystallizer.rs"
 
 [[bin]]
+name = "aletheia_scanner"
+path = "src/bin/aletheia_scanner.rs"
+
+[[bin]]
+name = "boundary_mapper"
+path = "src/bin/boundary_mapper.rs"
 name = "sasc-sign"
 path = "src/bin/sasc_sign.rs"
 
@@ -142,6 +155,26 @@ path = "src/bin/sasc_contracts.rs"
 name = "materio_ii"
 path = "src/bin/materio_ii.rs"
 required-features = ["materio_ii"]
+
+[[bin]]
+name = "trajectory_generator"
+path = "src/bin/trajectory_generator.rs"
+
+[[bin]]
+name = "tiger_init_hardened"
+path = "src/bin/tiger_init_hardened.rs"
+
+[profile.release]
+panic = "abort"
+lto = "fat"
+codegen-units = 1
+strip = true
+opt-level = "z"
+overflow-checks = true
+
+[profile.release.package."*"]
+opt-level = 3
+overflow-checks = true
 
 [features]
 sat = []

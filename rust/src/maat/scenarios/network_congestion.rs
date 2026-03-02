@@ -107,6 +107,7 @@ impl DDoSResilienceTest {
         let mut neurons = Vec::with_capacity(swarm_size);
         for i in 0..swarm_size {
             neurons.push(MeshNeuron { id: NodeId(i as f64, 0.0) });
+            neurons.push(MeshNeuron { id: NodeId(i as f64, 0.0), phi: 0.76 });
         }
 
         Self {
@@ -181,6 +182,10 @@ impl DDoSResilienceTest {
         let mut packets_delivered = 0u64;
         let mut latency_accumulator = 0.0;
 
+        let mut steps = 0;
+        let max_steps = 1000; // Limit iterations to avoid hanging
+        while start.elapsed() < duration && steps < max_steps {
+            steps += 1;
         while start.elapsed() < duration {
             // Gera pacotes éticos (Asha) e maliciosos (Druj)
             let packets = self.attack_generator.generate_mixed_traffic();

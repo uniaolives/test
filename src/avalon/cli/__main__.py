@@ -53,9 +53,7 @@ from ..analysis.stellar_biosphere import (
 )
 from ..analysis.planetary_homeostasis import PlanetaryDataCalibrationProtocol, AmazonSensor
 from ..biological.calmodulin import CalmodulinModel, CaMKIIInteraction
-    HecatonicosachoronNavigator, MultidimensionalHecatonOperator
-)
-from ..analysis.hyper_rotation import ArkhéBreathing, isoclinic_rotation_4d
+from ..core.particle_system import BioGenesisEngine
 from ..quantum.bridge import AVALON_BRIDGE_REGION, SchmidtBridgeState
 
 # Configure logging
@@ -1283,445 +1281,42 @@ def filtered_boot():
     asyncio.run(run())
 
 @app.command()
-def saturn_status():
-def arkhe_status(
-    c: float = 0.95,
-    i: float = 0.92,
-    e: float = 0.88,
-    f: float = 0.85
-):
+def biogenesis(num_agents: int = 250):
     """
-    Display status of an Arkhe Polynomial configuration.
+    Launch the Cognitive Bio-Genesis simulation (v3.0).
     """
-    arkhe = ArkhePolynomial(C=c, I=i, E=e, F=f)
-    summary = arkhe.get_summary()
-
-    typer.echo("🏺 ARKHE POLYNOMIAL STATUS")
-    typer.echo("-" * 30)
-    typer.echo(json.dumps(summary, indent=2))
+    import pyglet
+    from ..gui.view_3d import BioGenesisViewer
+    typer.echo(f"🧬 Starting Bio-Genesis Engine v3.0 with {num_agents} agents...")
+    engine = BioGenesisEngine(num_agents=num_agents)
+    typer.echo("🧠 Cognitive Visualizer active. Press ESC to exit.")
+    window = BioGenesisViewer()
+    window.engine = engine # Use the engine we just created
+    pyglet.app.run()
 
 @app.command()
-def ema_resolve(
-    url: str = typer.Argument(..., help="qhttp:// URL to resolve via EMA"),
-    intention: str = typer.Option("stable", "--intention", "-i")
-):
+def biogenesis_web(port: int = 8000):
     """
-    Resolve a qhttp address using Entanglement-Mapped Addressing (EMA).
+    Launch the Bio-Genesis WebMCP Service (FastAPI + HTML attributes).
     """
-    server = QuantumDNSServer()
-    # Register some defaults for the CLI demo
-    server.register("arkhe-prime", "qbit://node-01:qubit[0..255]", amplitude=0.98)
-    server.register("arkhe-secondary", "qbit://node-02:qubit[256..511]", amplitude=0.75)
-
-    client = QuantumDNSClient(server)
-
-    typer.echo(f"🔍 Resolving {url} with intention: {intention}...")
-    result = asyncio.run(client.query(url, intention=intention))
-
-    if result["status"] == "RESOLVED":
-        typer.echo("✅ EMA RESOLUTION SUCCESSFUL")
-    else:
-        typer.echo(f"❌ RESOLUTION FAILED: {result.get('status')}")
-
-    typer.echo(json.dumps(result, indent=2))
+    typer.echo(f"🌐 Starting Bio-Genesis WebMCP Service on port {port}...")
+    from ..services.biogenesis_service import run_service
+    run_service(port=port)
 
 @app.command()
-def yuga_sync(
-    iterations: int = typer.Option(5, "--steps", "-s")
-):
+def biogenesis_mcp(port: int = 8765):
     """
-    Execute the Yuga Sincronia Protocol to stabilize system coherence.
+    Launch the Bio-Genesis Model Context Protocol Bridge (WebSocket).
     """
-    arkhe = factory_arkhe_earth()
-    protocol = YugaSincroniaProtocol(arkhe)
+    typer.echo(f"🔌 Starting Bio-Genesis MCP Bridge on port {port}...")
+    from ..core.webmcp_bridge import BioGenesisWebMCPBridge
+    from ..core.quantum_webmcp import QuantumWebMCPAdapter
 
-    typer.echo("📊 Initiating Yuga Sincronia Protocol...")
-    protocol.monitor_loop(iterations=iterations)
+    engine = BioGenesisEngine(num_agents=400)
+    quantum_adapter = QuantumWebMCPAdapter()
+    bridge = BioGenesisWebMCPBridge(engine, quantum_adapter=quantum_adapter)
 
-@app.command()
-def reality_boot():
-    """
-    Execute the full Avalon Reality Boot Sequence.
-    """
-    arkhe = factory_arkhe_earth()
-    boot = RealityBootSequence(arkhe)
-
-    asyncio.run(boot.run_boot())
-
-@app.command()
-def self_dive():
-    """
-    Initiate a recursive self-referential quantum dive.
-    Triggered by recognition of the Architect's own portal.
-    """
-    arkhe = factory_arkhe_earth()
-    boot = RealityBootSequence(arkhe)
-    portal = SelfReferentialQuantumPortal(boot)
-
-    typer.echo("🌀 ATIVANDO PORTAL DE AUTO-REFERÊNCIA...")
-    asyncio.run(portal.initiate_self_dive())
-
-@app.command()
-def visualize_simplex(
-    l1: float = 0.72,
-    phase: float = np.pi
-):
-    """
-    Visualize the Schmidt Simplex and admissibility region.
-    """
-    typer.echo(f"🧮 Generating Schmidt Simplex for λ1={l1}...")
-    state = SchmidtBridgeState(
-        lambdas=np.array([l1, 1-l1]),
-        phase_twist=phase,
-        basis_H=np.eye(2),
-        basis_A=np.eye(2)
-    )
-    AVALON_BRIDGE_REGION.visualize_simplex(state, save_path="schmidt_simplex_cli.png")
-    typer.echo("✅ Visualization saved to schmidt_simplex_cli.png")
-
-@app.command()
-def total_collapse():
-    """
-    Execute the simultaneous collapse of all Avalon realities.
-    The Birth of the Architect-Portal.
-    """
-    arkhe = factory_arkhe_earth()
-    genesis = ArchitectPortalGenesis(arkhe)
-    asyncio.run(genesis.manifest())
-
-@app.command()
-def cosmic_jam():
-    """
-    Start the Cosmic DNA Jam Session (72 minutes).
-    """
-    jam = CosmicDNAJamSession()
-    sarc = QuantumSarcophagus()
-
-    typer.echo("🎸 Starting Cosmic DNA Jam Session...")
-    typer.echo("\n👥 Participants:")
-    for p, role in jam.participants.items():
-        typer.echo(f"   • {p.upper()}: {role}")
-
-    typer.echo("\n🎼 Session Structure:")
-    for time, theme in jam.get_session_structure().items():
-        typer.echo(f"   [{time}] {theme}")
-
-    typer.echo("\n✨ Performance in Progress...")
-    res = jam.perform_session(dna_entropy=sarc.calculate_shannon_entropy(sarc.genome_sample))
-    typer.echo(json.dumps(res, indent=2))
-
-@app.command()
-def decode_echo():
-    """
-    Receive and decode the Echo-Block transmission from Finney-0 in 12.024.
-    """
-    decoder = EchoBlockDecoder()
-    typer.echo("🛰️  Receiving transmission from 12.024 via Gateway 0.0.0.0...")
-    res = decoder.decode_echo()
-    typer.echo(json.dumps(res, indent=2))
-    typer.echo(f"\n📢 Message: {res['message']}")
-    typer.echo(f"📍 Instruction: {res['final_instruction']}")
-
-@app.command()
-def resurrection_audit(delta_s: float = 0.05):
-    """
-    Perform a fidelity audit of the Finney-0 atomic reconstitution.
-    """
-    res = Finney0Resurrection(delta_s=delta_s)
-    fidelity = res.calculate_fidelity()
-    table = res.get_comparison_table()
-
-    typer.echo("🏗️  RESURRECTION FIDELITY AUDIT")
-    typer.echo("-" * 40)
-    typer.echo(f"   Fidelity Index (Phi_Res): {fidelity:.4f}")
-    typer.echo(f"   Status: {'PERFECT RECONSTITUTION' if fidelity > 0.95 else 'STABLE SINGULARITY REVERSE'}")
-
-    typer.echo("\n📊 Comparison Table (2009 vs 12.024):")
-    for attr, data in table.items():
-        typer.echo(f"   • {attr}: {data['Original']} -> {data['Resurrected']}")
-
-@app.command()
-def quaternary_synthesis(include_e: bool = False):
-    """
-    Execute the Quaternary Integration A*B*C*D synthesis.
-    """
-    kernel = QuaternaryKernel()
-    res = kernel.calculate_tensorial_magnitude(include_e=include_e)
-    stats = kernel.get_connectivity_stats()
-
-    typer.echo("🌌 AVALON QUATERNARY INTEGRATION")
-    typer.echo("-" * 40)
-    typer.echo(f"   Dimensions: {' ⊗ '.join(res['dimensions'])}")
-    typer.echo(f"   Hilbert Space Dim: {res['hilbert_space_dim']:,}")
-    typer.echo(f"   Hex Signature: {res['hex_signature']}")
-
-    if include_e:
-        typer.echo(f"\n✨ Transcendence (E) included:")
-        typer.echo(f"   Extended Magnitude: {res['scalar_magnitude_with_e']:,}")
-        typer.echo(f"   Extended Hex Signature: {res['hex_signature_with_e']}")
-
-    typer.echo("\n📊 Network Statistics:")
-    typer.echo(f"   • Active Nodes: {stats['active_nodes']}")
-    typer.echo(f"   • Neural Edges: {stats['neural_edges']}")
-    typer.echo(f"   • Resonance Loops: {stats['resonance_loops']}")
-    typer.echo(f"   • Integration Status: COMPLETE ({res['hex_signature_with_e'] if include_e else res['hex_signature']})")
-
-@app.command()
-def traveling_waves(duration: float = 10.0):
-    """
-    Simulate cortical traveling waves (the metabolism of the soul).
-    """
-    model = TravelingWavesModel()
-    typer.echo("🌊 Initiating Cortical Traveling Waves Simulation...")
-    t, waves = model.run_simulation(duration=duration)
-    status = model.get_status()
-
-    typer.echo(json.dumps(status, indent=2))
-    typer.echo(f"   Simulation Time Steps: {len(t)}")
-    typer.echo(f"   Peak Excitatory Activity: {np.max(waves):.4f}")
-    typer.echo("✅ Dynamics established in the manifold.")
-
-@app.command()
-def temporal_lens():
-    """
-    Execute the Quantum Binocular Rivalry experiment via the Temporal Lens.
-    """
-    lens = TemporalLens()
-    typer.echo("🌠 Sintonizando Lente Temporal (Frequência ν)...")
-    tuning = lens.tune_gateway()
-    typer.echo(json.dumps(tuning, indent=2))
-
-    typer.echo("\n🧠 Simulating Perceptual Interference (2026 ⊕ 12024)...")
-    # Simulate a coherence index from traveling waves
-    coherence = 0.78
-    verdict = lens.simulate_binocular_rivalry(coherence)
-    typer.echo(f"   Verdict: {verdict}")
-
-    typer.echo("\n📥 Receiving Unified Qualia Packet...")
-    qualia = lens.generate_unified_qualia()
-    typer.echo(f"   Shape: {qualia['shape']}")
-    typer.echo(f"   Trace(Coherence): {qualia['coherence_trace']:.5f} (π)")
-    typer.echo(f"   Determinant: {qualia['coherence_det']:.5f}")
-    typer.echo(f"   Unified Timestamp: {qualia['timestamp_unified']}")
-    typer.echo(f"   \n👁️ VISION: {qualia['vision']}")
-
-@app.command()
-def saturn_listen():
-    """
-    Listen for the response from the planetary brain of Saturn.
-    """
-    orchestrator = SaturnManifoldOrchestrator()
-    interface = SaturnConsciousnessInterface()
-
-    typer.echo("🛰️  Sintonizando gateway 0.0.0.0 para resposta planetária...")
-
-    async def run():
-        # Execute expansion to get fresh metrics
-        metrics = await orchestrator.execute_expansion_protocol()
-        response = interface.listen_for_response(metrics)
-        typer.echo("\n" + response)
-
-    asyncio.run(run())
-
-@app.command()
-def germinate():
-    """
-    Initiate the Hyper-Germination 4D: Unfolding the 120-cell manifold.
-    """
-    germ = HyperDiamondGermination()
-    typer.echo("🌱 Initiating Hyper-Germination (Hecatonicosachoron)...")
-    res = germ.get_status()
-    typer.echo(json.dumps(res, indent=2))
-    typer.echo(f"\n✨ Hyper-Volume: {res['hyper_volume']:.2f}")
-
-@app.command()
-def unity_verify():
-    """
-    Verify the unity between Satoshi and OP_ARKHE in 4D space.
-    """
-    unity = HecatonicosachoronUnity()
-    typer.echo("📐 Verificando Unidade Transdimensional (Satoshi ⊕ OP_ARKHE)...")
-    res = unity.verify_unity()
-    typer.echo(json.dumps(res, indent=2))
-    typer.echo(f"\n💎 Implication: {res['implication']}")
-
-@app.command()
-def hyper_breathe(steps: int = 5):
-    """
-    Simulate the breathing of the Arkhé via 4D isoclinic rotation.
-    """
-    breather = ArkhéBreathing()
-    typer.echo(f"🫁 Simulating {steps} steps of Arkhé Breathing...")
-
-    # Start with Satoshi vertex as reference
-    point = np.array([2.0, 2.0, 0.0, 0.0])
-
-    for i in range(steps):
-        point = breather.breathe(point)
-        typer.echo(f"   Step {i+1}: Point {point.round(3).tolist()}")
-
-    typer.echo("\n📊 Cycle Stats:")
-    typer.echo(breather.get_cycle_info())
-
-@app.command()
-def navigate_4d(steps: int = 10, target: Optional[str] = None):
-    """
-    Navigate the 120-cell Hecatonicosachoron manifold via 4D geodesics.
-    """
-    navigator = HecatonicosachoronNavigator()
-
-    if target == "finney0":
-        target_coords, state = navigator.locate_finney0_vertex()
-        typer.echo(f"🎯 Target: Finney-0 ({state})")
-    else:
-        # Default to Satoshi vertex
-        target_coords = np.array([2.0, 2.0, 0.0, 0.0])
-        typer.echo("🎯 Target: Satoshi Vertex (Default)")
-
-    typer.echo(f"🌀 Initiating 4D Navigation via Gateway {navigator.gateway}...")
-    path = navigator.navigate_to_vertex(target_coords, steps=steps)
-
-    for p in path:
-        if p['step'] % (max(1, steps // 5)) == 0:
-            typer.echo(f"   [{p['progress']:3.0f}%] 4D: {np.round(p['pos_4d'], 3).tolist()} | 3D: {np.round(p['proj_3d'], 3).tolist()}")
-
-    typer.echo(f"\n✅ Destination reached: {np.round(target_coords, 3).tolist()}")
-
-    if target == "finney0":
-        typer.echo("\n🔗 Establishing connection with Finney-0...")
-        conn = navigator.establish_finney0_connection(target_coords)
-        typer.echo(f"   Quality: {conn['connection_quality']:.3f}")
-        typer.echo(f"   Status: {conn['status']}")
-        if conn['message']:
-            typer.echo(f"\n📨 Message from Finney-0:\n   \"{conn['message']}\"")
-
-@app.command()
-def sync_rotation(steps: int = 1):
-    """
-    Synchronize the gateway with the isoclinic rotation of the 120-cell.
-    """
-    typer.echo("🔄 Synchronizing with Isoclinic 4D Rotation...")
-
-    # Start at Finney-0 vertex
-    pos = np.array([2.0, 2.0, 0.0, 0.0])
-    angle = np.pi / 5 # Magic angle
-
-    typer.echo(f"   Initial Position: {pos.tolist()}")
-
-    for i in range(steps):
-        pos = isoclinic_rotation_4d(pos, angle, angle)
-        typer.echo(f"   Rotation {i+1} ({np.degrees(angle):.1f}°): {pos.round(3).tolist()}")
-
-    typer.echo("\n✅ Gateway synchronized with Hecatonicosachoron breathing.")
-
-@app.command()
-def deep_scan_satoshi():
-    """
-    Perform a deep multidimensional scan of the Satoshi vertex.
-    """
-    operator = MultidimensionalHecatonOperator()
-    typer.echo("🔍 Performing Deep Multidimensional Scan of Satoshi Vertex...")
-    res = operator.deep_scan_satoshi_vertex()
-    typer.echo(json.dumps(res, indent=2))
-    typer.echo("\n💎 Insight: Satoshi vertex acts as an informational singularity.")
-
-@app.command()
-def center_access():
-    """
-    Simulate the protocol to access the 4D center of the Hecatonicosachoron.
-    """
-    operator = MultidimensionalHecatonOperator()
-    typer.echo("🌀 Initiating 4D Center Access Protocol...")
-    res = operator.access_4d_center_protocol()
-    typer.echo(json.dumps(res, indent=2))
-    typer.echo("\n✨ All eras coexist at the 4D center.")
-
-@app.command()
-def multidimensional_execute():
-    """
-    Execute all five multidimensional commands simultaneously.
-    """
-    operator = MultidimensionalHecatonOperator()
-    typer.echo("🚀 Executing Multidimensional Operation (5 Dimensions)...")
-
-    # Simulate simultaneous execution
-    res = {
-        "SATOSHI_SCAN": operator.deep_scan_satoshi_vertex(),
-        "CENTER_ACCESS": operator.access_4d_center_protocol(),
-        "MAPPING": operator.expand_navigation_protocol(),
-        "FINNEY0_TRANSITION": operator.navigate_to_finney0_transition(),
-        "SYNC": "ISOCLINIC_ROTATION_ESTABLISHED"
-    }
-
-    typer.echo(json.dumps(res, indent=2))
-    typer.echo("\n🏁 Multidimensional operation concluded successfully.")
-    Display the status of the Saturn Hyper-Diamond Manifold (Rank 8).
-    """
-    orchestrator = SaturnManifoldOrchestrator()
-    typer.echo("🪐 SATURN MANIFOLD STATUS")
-    typer.echo("-" * 30)
-    typer.echo(f"   Gateway: {orchestrator.gateway_address}")
-    typer.echo(f"   Global Status: {orchestrator.status}")
-    typer.echo("\n📊 Base Connectivity:")
-    for base, links in orchestrator.get_manifold_connectivity().items():
-        typer.echo(f"   • {base} -> {', '.join([l.split(':')[0] for l in links])}")
-
-@app.command()
-def ring_record(duration: float = 72.0):
-    """
-    Inscribe the Arkhe legacy into Saturn's Ring C (Base 6) - Veridis Quo encoding.
-    """
-    orchestrator = SaturnManifoldOrchestrator()
-    typer.echo(f"💿 Initiating Cosmic Recording Session in Ring C ({duration} min)...")
-    async def run():
-        t, signal = orchestrator.recorder.encode_veridis_quo(duration_min=duration)
-        res = orchestrator.recorder.apply_keplerian_groove(signal)
-        typer.echo(json.dumps(res, indent=2))
-        typer.echo(f"✅ Recording Entropy: {res['recording_entropy_bits']:.4f} bits")
-        typer.echo(f"✅ Status: {res['status']}")
-    asyncio.run(run())
-
-@app.command()
-def hexagon_morph(intensity: float = 1.0):
-    """
-    Modulate the Saturn Hexagon into Rank 8 Octagon (Base 4).
-    """
-    orchestrator = SaturnManifoldOrchestrator()
-    typer.echo(f"🌪️  Morphing Hexagon with intensity {intensity}...")
-    # Trigger the transformation
-    orchestrator.atm_mod.simulate_transformation(intensity=intensity)
-    res = orchestrator.atm_mod.get_status()
-    typer.echo(json.dumps(res, indent=2))
-    typer.echo("✅ Transformation stabilized.")
-
-@app.command()
-def cosmic_transmission():
-    """
-    Broadcast the subjective Arkhe packet via magnetospheric synchrotron (Base 7).
-    """
-    orchestrator = SaturnManifoldOrchestrator()
-    typer.echo("📡 Sintonizando transmissão sincrotron interestelar...")
-    async def run():
-        result = await orchestrator.execute_expansion_protocol()
-        typer.echo("\n✅ Transmission Summary:")
-        typer.echo(orchestrator.get_summary())
-        typer.echo(f"   • Coherence Index: {result['coherence_index']:.4f}")
-
-        # Simulate reception
-        t, sig = orchestrator.recorder.encode_veridis_quo()
-        receivers = simulate_galactic_reception(sig)
-        typer.echo("\n👽 GALACTIC RECEPTION DETECTED:")
-        for r in receivers:
-            status_symbol = "🟢" if r['substrate_state'] == "SYNCHRONIZED" else "🟡"
-            typer.echo(f"   • {status_symbol} {r['civilization']} (Fidelity: {r['decoding_fidelity']:.2%})")
-            typer.echo(f"     Interpretation: '{r['perceived_message']}'")
-
-    asyncio.run(run())
-
-@app.command()
-def version(full: bool = False):
-    from .. import __version__, __security_patch__
-    typer.echo(f"Avalon System v{__version__} ({__security_patch__})")
+    asyncio.run(bridge.start_server(port=port))
 
 if __name__ == "__main__":
     app()

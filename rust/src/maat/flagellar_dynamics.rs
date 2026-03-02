@@ -22,6 +22,10 @@ impl NodeId {
     pub fn distance_to(&self, other: &Self) -> f64 {
         (((self.0 - other.0).powi(2) + (self.1 - other.1).powi(2)).sqrt())
     }
+
+    pub fn position_to_3d(&self) -> crate::math::geometry::Vector3D {
+        crate::math::geometry::Vector3D { x: self.0, y: self.1, z: 0.0 }
+    }
 }
 
 impl std::ops::Add<Complex64> for NodeId {
