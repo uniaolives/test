@@ -25,7 +25,7 @@ glutin = { version = "0.31", optional = true }
 # Matemática e Gráficos
 glam = { version = "0.24", features = ["scalar-math", "serde"] }
 nalgebra = { version = "0.32", features = ["serde-serialize"] }
-nalgebra-glm = "0.10"
+nalgebra-glm = "0.18"
 bytemuck = { version = "1.14", features = ["derive"] }
 
 # Timing Constitucional

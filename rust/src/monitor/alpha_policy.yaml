@@ -1,0 +1,8 @@
+# thresholds:
+phi_critical: 0.75  # Reduzido de 0.80 conforme ordem
+social_entropy_max: 0.50
+bio_signal_loss_tolerance: 60s
+actions:
+  on_phi_critical: "EXEC_EMERGENCY_FREEZE"
+  on_sybil_pattern: "ISOLATE_NETWORK_LAYER_1"
+  on_bio_loss: "DEGRADE_TO_READ_ONLY"

@@ -3,7 +3,10 @@ members = [
     "rust",
     "ont/native",
     "sasc-governance",
+]
+resolver = "2"
     "agi-service",
+    "sasc-society",
     "sasc-society", "linguagem-soberana-br",
     "atomic-interference-processor", "agentic_seek_mvp/rust_sentry",
     "atomic-interference-processor",
@@ -19,6 +22,8 @@ members = [
     "cge_linux_engine",
     "cge_audio_engine",
     "cge_brics_cluster",
+    "cge_constitutional_system",
+    "cge_tv_system",
     "mobile/contracts",
     "mobile/ar",
     "web777_ontology", "aigmi", "safecore-9d", "harmonia",
@@ -60,8 +65,12 @@ members = [
     "arkhe-security-suite/governance/controller",
     "arkhe-security-suite/telemetry-collector",
     "arkhe-linux/core/arkhe-quantum",
-    "entropy-predictor",
-    "k8s/controller",
+    "arkhe-linux/core/arkhe-constitution",
+    "arkhe-linux/core/arkhe-thermodynamics",
+    "arkhe-linux/core/arkhe-manifold",
+    "arkhe-linux/core/arkhe-time-crystal",
+    "arkhe-linux/core/arkhe-noether",
+    "arkhe-linux/core/arkhe-foundry-bridge",
 ]
 resolver = "2"
 

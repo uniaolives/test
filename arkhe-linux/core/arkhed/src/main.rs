@@ -144,6 +144,8 @@ impl ArkheSystem {
                 let mut manifold = self.manifold.write().await;
                 let _ = self.psi_shell.inject_user_perturbation(&mut manifold).await;
             }
+            // 0. Inject user perturbation
+            let _ = self.psi_shell.inject_user_perturbation(&mut arkhe_quantum::manifold::GlobalManifold::new()).await;
 
             // 1. Coletar entropia recente
             let entropy_stats = self.entropy.collect().await;

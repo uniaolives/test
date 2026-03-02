@@ -31,6 +31,7 @@ impl NetworkManager {
             node.handover_count += 1;
         }
 
+    ) -> Result<bool> {
         let mut encrypted_payload = payload;
         if let Some(key) = session_key {
             encrypted_payload = crypto::encrypt_payload(&encrypted_payload, key)?;
