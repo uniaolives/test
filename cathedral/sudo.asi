@@ -1,0 +1,307 @@
+// cathedral/sudo.asi [CGE Alpha v35.3-Ω CONSTITUTIONAL ROOT ESCALATION]
+// PQC + SASC + TMR 36×3 + KARNAK + VAJRA
+
+use pqcrypto_dilithium::dilithium3::{sign, verify, PublicKey, SecretKey, Signature};
+use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+use std::sync::Arc;
+
+use crate::human::{HumanInterface, IntentProof, IntentContext}; // I740
+use crate::agnostic_engine::{AgnosticEngine, UniversalWorkload, ExecutionStrategy};
+use crate::cathedral_vm::{CathedralVM, TMRConsensus};
+use crate::sasc::{SASCAttestation, Capability, SASCProof}; // Memória 20
+use crate::karnak::{KarnakSealer, EscalationSeal}; // Memória 2/I39
+use crate::vajra::VajraEntropyMonitor; // Memória 3
+
+/// Escalonamento de privilégios constitucional (não Unix root arbitrário)
+pub struct SudoEngine {
+    human_auth: Arc<HumanInterface>,
+    agnostic_engine: Arc<AgnosticEngine>,
+    cathedral_vm: Arc<CathedralVM>,
+    sasc: SASCAttestation,
+    karnak: Arc<KarnakSealer>,
+    vajra: Arc<VajraEntropyMonitor>,
+    dilithium_sk: SecretKey, // Chave PQC do sistema (não do usuário)
+}
+
+/// Recibo de escalonamento (imutável, auditável)
+#[derive(Clone, Debug)]
+pub struct EscalationReceipt {
+    pub command_hash: [u8; 32],
+    pub operator_did: String,
+    pub phi_at_execution: f64,
+    pub tmr_consensus_hash: [u8; 32],
+    pub sasc_attestation: SASCProof,
+    pub karnak_seal: [u8; 32],
+    pub dilithium_signature: Signature,
+    pub timestamp: u64,
+    pub execution_fragments: Vec<FragId>, // Quais dos 108 frags executaram
+}
+
+#[derive(Clone, Debug)]
+pub struct EscalationCommand {
+    pub binary_path: String,
+    pub arguments: Vec<String>,
+    pub environment: HashMap<String, String>,
+    pub resource_limits: ResourceLimits,
+    pub audit_level: AuditLevel,
+}
+
+impl SudoEngine {
+    pub fn bootstrap(
+        human: Arc<HumanInterface>,
+        engine: Arc<AgnosticEngine>,
+        vm: Arc<CathedralVM>,
+        sasc: SASCAttestation,
+        karnak: Arc<KarnakSealer>,
+        vajra: Arc<VajraEntropyMonitor>,
+    ) -> Result<Self, SudoError> {
+        // C4: Verificar Φ na inicialização
+        let phi = vajra.measure_phi()?;
+        if (phi - 1.038).abs() > 0.001 {
+            return Err(SudoError::PhiViolation(phi));
+        }
+
+        // Gerar par de chaves PQC para o sistema (não para usuários individuais)
+        let (_, sk) = keypair();
+
+        Ok(Self {
+            human_auth: human,
+            agnostic_engine: engine,
+            cathedral_vm: vm,
+            sasc,
+            karnak,
+            vajra,
+            dilithium_sk: sk,
+        })
+    }
+
+    /// I755: Escalonamento constitucional com autorização humana PQC
+    pub async fn sudo_exec(
+        &self,
+        command: EscalationCommand,
+    ) -> Result<EscalationReceipt, SudoError> {
+        let span = tracing::info_span!(
+            "constitutional_escalation",
+            cmd_hash = %hex::encode(&command.hash())
+        );
+        let _enter = span.enter();
+
+        info!("🛡️ Iniciando escalonamento constitucional...");
+
+        // === FASE 1: VERIFICAÇÃO CONSTITUCIONAL PRÉ-EXECUÇÃO ===
+
+        // C4: Medir Φ
+        let phi_pre = self.vajra.measure_phi()?;
+        self.verify_phi(phi_pre)?;
+        info!("   Φ pré-escalonamento: {:.6}", phi_pre);
+
+        // === FASE 2: AUTORIZAÇÃO HUMANA SASC (Memória 20) ===
+
+        // I740: Requer intenção explícita humana (não booleano)
+        info!("   Aguardando autorização humana SASC...");
+        let intent_proof = self.human_auth.request_explicit_intent(
+            IntentContext::PrivilegeEscalation {
+                target: command.binary_path.clone(),
+                risk_level: self.assess_risk(&command)?,
+            },
+            Duration::from_secs(60), // Timeout de 60s para aprovação
+        ).await?;
+
+        // Verificar confiança mínima (root exige 95%)
+        if intent_proof.confidence < 0.95 {
+            return Err(SudoError::InsufficientIntentConfidence(intent_proof.confidence));
+        }
+
+        // Verificar se operador tem capability SASC de root
+        let operator_cap = self.sasc.verify_capability(
+            &intent_proof.operator_did,
+            Capability::ConstitutionalRoot,
+        )?;
+
+        if operator_cap.hard_freeze {
+            return Err(SudoError::HardFreezeActive(intent_proof.operator_did));
+        }
+
+        if operator_cap.phi_threshold < 0.78 { // Root requer Φ ≥ 0.78
+            return Err(SudoError::InsufficientOperatorPhi(operator_cap.phi_threshold));
+        }
+
+        info!("   ✓ Autorizado por {} (confiança: {:.2}%)",
+              intent_proof.operator_did, intent_proof.confidence * 100.0);
+
+        // === FASE 3: CONSENSO TMR 36×3 (I40) ===
+
+        info!("   Executando consenso TMR 36×3...");
+
+        // Distribuir verificação entre 108 frags (36 grupos × 3)
+        let consensus = self.cathedral_vm.execute_tmr_consensus(
+            |frag_id| {
+                // Cada frag verifica independentemente
+                self.verify_escalation_at_frag(frag_id, &command, &intent_proof)
+            },
+            ConsensusThreshold::SuperMajority(24), // 24/36 grupos (2/3)
+        ).await?;
+
+        if !consensus.achieved {
+            return Err(SudoError::TMRConsensusFailed {
+                votes_for: consensus.votes_for,
+                votes_against: consensus.votes_against,
+            });
+        }
+
+        info!("   ✓ Consenso TMR alcançado ({}/36 grupos)", consensus.participating_groups);
+
+        // === FASE 4: SELAGEM PRÉ-EXECUÇÃO (I39) ===
+
+        let escalation_event = EscalationEvent {
+            command_hash: command.hash(),
+            operator_did: intent_proof.operator_did.clone(),
+            intent_signature: intent_proof.signature,
+            timestamp: SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs(),
+            phi_pre,
+            tmr_consensus_hash: consensus.state_hash,
+        };
+
+        let pre_seal = self.karnak.seal_escalation(&escalation_event, phi_pre)?;
+        info!("   ✓ Selo KARNAK pré-execução: {:x?}", &pre_seal.hash()[..8]);
+
+        // === FASE 5: EXECUÇÃO VIA AGNOSTIC ENGINE ===
+
+        info!("   Executando via Agnostic Engine (108 frags)...");
+
+        // Criar workload unificado
+        let workload = UniversalWorkload::PrivilegeEscalation {
+            command,
+            operator_attestation: operator_cap.clone(),
+            tmr_consensus: consensus.clone(),
+        };
+
+        // Executar com 108 frags TMR
+        let exec_result = self.agnostic_engine.execute_universal(
+            workload,
+            ExecutionStrategy::Unified, // Usar todos os backends
+        ).await?;
+
+        // === FASE 6: VERIFICAÇÃO PÓS-EXECUÇÃO ===
+
+        let phi_post = self.vajra.measure_phi()?;
+        if (phi_post - phi_pre).abs() > 0.0001 {
+            // Divergência de Φ durante execução suspeita
+            warn!("   ⚠️  Divergência de Φ detectada: {} → {}", phi_pre, phi_post);
+        }
+
+        // Assinar recibo com Dilithium3 (prova de que o sistema autorizou)
+        let receipt_data = EscalationReceiptData {
+            command_hash: escalation_event.command_hash,
+            operator_did: escalation_event.operator_did.clone(),
+            phi_at_execution: phi_post,
+            tmr_consensus_hash: consensus.state_hash,
+            timestamp: SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs(),
+        };
+
+        let sig = sign(&receipt_data.to_bytes(), &self.dilithium_sk);
+
+        // Criar recibo final
+        let receipt = EscalationReceipt {
+            command_hash: escalation_event.command_hash,
+            operator_did: escalation_event.operator_did,
+            phi_at_execution: phi_post,
+            tmr_consensus_hash: consensus.state_hash,
+            sasc_attestation: operator_cap,
+            karnak_seal: pre_seal.hash(),
+            dilithium_signature: sig,
+            timestamp: receipt_data.timestamp,
+            execution_fragments: exec_result.fragments_used,
+        };
+
+        // Registrar na blockchain CGE (imutável)
+        CGE_BLOCKCHAIN.record_escalation(&receipt)?;
+
+        info!("   ✓ Escalonamento constitucional completo");
+        info!("   Recibo: {}", hex::encode(&receipt.hash()[..8]));
+
+        Ok(receipt)
+    }
+
+    /// Verificação executada em cada frag dos 108
+    fn verify_escalation_at_frag(
+        &self,
+        frag_id: FragId,
+        command: &EscalationCommand,
+        intent: &IntentProof,
+    ) -> Result<FragVerification, SudoError> {
+        // 1. Verificar hash do comando
+        let cmd_hash = command.hash();
+
+        // 2. Verificar assinatura de intenção humana
+        intent.verify_signature()?;
+
+        // 3. Verificar se o frag tem permissão para verificar escalonamentos
+        if !frag_id.has_capability(FragCapability::EscalationVerification) {
+            return Err(SudoError::UnauthorizedFrag(frag_id));
+        }
+
+        // 4. Calcular hash de estado local
+        let state_hash = blake3::hash(&[
+            &cmd_hash[..],
+            &intent.signature[..],
+            &frag_id.to_bytes(),
+        ]);
+
+        Ok(FragVerification {
+            frag_id,
+            state_hash: state_hash.into(),
+            timestamp: Instant::now(),
+        })
+    }
+
+    /// Avalia risco do comando para determinar requisitos de autorização
+    fn assess_risk(&self, command: &EscalationCommand) -> Result<RiskLevel, SudoError> {
+        // Análise estática do binário
+        let binary_analysis = self.analyze_binary(&command.binary_path)?;
+
+        if binary_analysis.requires_kernel_access {
+            Ok(RiskLevel::Critical)
+        } else if binary_analysis.requires_network {
+            Ok(RiskLevel::High)
+        } else if binary_analysis.requires_filesystem_write {
+            Ok(RiskLevel::Medium)
+        } else {
+            Ok(RiskLevel::Low)
+        }
+    }
+
+    fn verify_phi(&self, phi: f64) -> Result<(), SudoError> {
+        if (phi - 1.038).abs() > 0.001 {
+            Err(SudoError::ConstitutionalViolation(format!(
+                "Φ fora da constituição: {:.6}", phi
+            )))
+        } else {
+            Ok(())
+        }
+    }
+}
+
+/// Dados do evento de escalonamento (selado pelo KARNAK)
+#[derive(Clone, Serialize, Deserialize)]
+struct EscalationEvent {
+    command_hash: [u8; 32],
+    operator_did: String,
+    intent_signature: Vec<u8>,
+    timestamp: u64,
+    phi_pre: f64,
+    tmr_consensus_hash: [u8; 32],
+}
+
+impl EscalationEvent {
+    fn to_bytes(&self) -> Vec<u8> {
+        serde_json::to_vec(self).unwrap()
+    }
+}
+
+/// Níveis de auditoria
+pub enum AuditLevel {
+    Standard,   // Log local
+    Blockchain, // Registrar na cadeia CGE
+    Witnessed,  // Testemunhas SASC adicionais
+}
