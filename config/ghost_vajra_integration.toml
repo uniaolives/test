@@ -1,0 +1,25 @@
+# config/ghost_vajra_integration.toml
+
+[integration]
+enabled = true
+mode = "adaptive_immune"
+
+[penalty_settings]
+base_penalty = 0.01
+max_penalty_per_cycle = 0.15
+decay_rate = 0.001  # Recuperação de Φ por ciclo
+
+[immune_system]
+memory_size = 1000  # Padrões de ataque memorizados
+adaptive_learning_rate = 0.1
+min_phi_for_learning = 0.75
+
+[contingency]
+seal_threshold = 0.68
+warning_threshold = 0.75
+notification_interval = 60  # segundos
+
+[monitoring]
+dashboard_refresh_rate = 1000  # ms
+log_level = "info"
+alert_channels = ["websocket", "email", "sasc_governance"]

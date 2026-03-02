@@ -1,0 +1,24 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.2, pluggy-1.6.0
+rootdir: /app
+collected 1 item / 1 error
+
+______________________ ERROR collecting tests/test_cds.py ______________________
+ImportError while importing test module '/app/tests/test_cds.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_cds.py:3: in <module>
+    import numpy as np
+E   ModuleNotFoundError: No module named 'numpy'
+ERROR tests/test_cds.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+platform linux -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0
+rootdir: /app
+collected 3 items
+
+tests/test_cds.py ..                                                     [ 66%]
+tests/test_universal_one.py .                                            [100%]
+

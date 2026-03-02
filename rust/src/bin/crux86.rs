@@ -107,6 +107,8 @@ async fn main() {
 
     if let Some(mode) = &cli.mode {
         if mode == "constitutional-consultation" || mode == "federated-constitutional" {
+    if let Some(mode) = &cli.mode {
+        if mode == "constitutional-consultation" {
             handle_consultation(&cli).await;
             return;
         }
@@ -119,6 +121,7 @@ async fn main() {
             }
             Commands::MintGenesisBlock { name } => {
                 handle_mint_genesis_block(name).await;
+                handle_phase1_expansion(*nodes, federation).await;
             }
         }
     } else {
@@ -187,6 +190,10 @@ async fn handle_phase1_expansion(nodes: u32, federation: &str, phi_min: f64) {
     println!("Federação: {}", federation);
     println!("Nós alvo: {}", nodes);
     println!("Φ Mínimo: {}", phi_min);
+async fn handle_phase1_expansion(nodes: u32, federation: &str) {
+    println!("🚀 INICIANDO FASE 1.0: EXPANSÃO PARA REDE DISTRIBUÍDA");
+    println!("Federação: {}", federation);
+    println!("Nós alvo: {}", nodes);
     println!("");
 
     println!("1. Clonando estado neural validado...");
