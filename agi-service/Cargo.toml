@@ -1,0 +1,45 @@
+[package]
+name = "agi-service"
+version = "0.7.0"
+edition = "2021"
+
+[dependencies]
+windows = { version = "0.56", features = [
+    "Win32_System_Services",
+    "Win32_Security",
+    "Win32_Storage_FileSystem",
+    "Win32_System_Threading",
+    "Win32_System_Memory",
+    "Win32_System_Com",
+    "Win32_System_Console",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_Graphics_Direct3D12",
+    "Win32_AI_MachineLearning",
+    "Win32_AI_MachineLearning_WinML",
+    "Win32_System_JobObjects",
+    "Win32_System_Hypervisor",
+    "Win32_Security_Cryptography",
+    "Win32_System_WinRT",
+] }
+tokio = { version = "1.36", features = ["full"] }
+zerocopy = "0.7"
+zeroize = { version = "1.7", features = ["zeroize_derive"] }
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+blake3 = "1.5"
+hex = "0.4"
+once_cell = "1.19"
+parking_lot = "0.12"
+anyhow = "1.0"
+lazy_static = "1.4"
+log = "0.4"
+
+[profile.release]
+panic = "abort"           # Sem stack trace em falhas críticas
+lto = "fat"               # Otimização máxima
+codegen-units = 1         # Build sequencial para melhor otimização
+opt-level = 3             # Máxima performance
+strip = true              # Remover símbolos (anti-reversing)
+overflow-checks = true    # Verificações de overflow para segurança

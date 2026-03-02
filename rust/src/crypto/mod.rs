@@ -1,3 +1,6 @@
+pub mod pqc;
+pub mod simhash;
+
 use std::fmt;
 
 #[allow(non_camel_case_types)]

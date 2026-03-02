@@ -1,0 +1,17 @@
+{
+  "version": "5040.0.1",
+  "build_timestamp": "2026-02-08T14:58:04.535751Z",
+  "security_patches": [
+    "F18"
+  ],
+  "artifacts": {
+    "avalon-0.1.dev1+gd3f396350.d20260208-py3-none-any.whl": {
+      "sha256": "0759937127f5731201b0d7df3386a240251ca4759c46205db807b82f1b9b4e48",
+      "size_bytes": 19119
+    },
+    "avalon": {
+      "sha256": "4b6ee3d7911f9113ba3b96c732792677775229a6cfa2a7cd1d7d2c61af783b65",
+      "size_bytes": 26885568
+    }
+  }
+}

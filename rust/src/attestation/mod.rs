@@ -1,3 +1,6 @@
+pub mod nitro;
+pub mod gates;
+
 #[derive(Debug, Clone)]
 pub struct SASCAttestation {
     pub signature: String,

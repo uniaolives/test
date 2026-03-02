@@ -287,25 +287,30 @@ modifier agentGuard(address caller) {
     }
 
     // --- Helpers ---
-    fn type_to_solidity(&self, typ: &OntoType) -> Result<String, CompilerError> {
+    fn type_to_solidity(&self, typ: &Type) -> Result<String, CompilerError> {
         match typ {
-            OntoType::Pure(inner) => self.type_to_solidity(inner),
-            OntoType::Mutable(inner) => self.type_to_solidity(inner),
-            OntoType::Agent(inner) => {
+            Type::Pure(inner) => self.type_to_solidity(inner),
+            Type::Mutable(inner) => self.type_to_solidity(inner),
+            Type::Agent(inner) => {
                 // Agents compilam para address + interface
                 let inner_type = self.type_to_solidity(inner)?;
                 Ok(format!("address /* Agent<{}> */", inner_type))
             }
-            OntoType::Substrate(inner) => {
+            Type::Substrate(inner) => {
                 // Substrate types têm representação especial
                 Ok(format!("bytes32 /* Substrate<{}> */", self.type_to_solidity(inner)?))
             }
-            OntoType::Object(_) => Ok("address".to_string()), // Objects são endereços de contrato
-            OntoType::Int => Ok("int256".to_string()),
-            OntoType::Float => Ok("int256".to_string()), // Simulação para prototipagem
-            OntoType::Bool => Ok("bool".to_string()),
-            OntoType::String => Ok("string".to_string()),
-            OntoType::Named(name, _) => Ok(name.clone()), // Tipos personalizados do usuário
+            Type::Object(_) => Ok("address".to_string()), // Objects são endereços de contrato
+            Type::Int => Ok("int256".to_string()),
+            Type::Float => Ok("int256".to_string()), // Simulação para prototipagem
+            Type::Bool => Ok("bool".to_string()),
+            Type::String => Ok("string".to_string()),
+            Type::Named(name, _) => Ok(name.clone()), // Tipos personalizados do usuário
+            Type::Unit => Ok("void".to_string()), // Should not happen in returns directly as Solidity uses empty
+            Type::Bytes => Ok("bytes".to_string()),
+            Type::Address => Ok("address".to_string()),
+            Type::TypeVar(t) => Ok(format!("bytes32 /* {} */", t)), // Generic placeholder
+            Type::Function(_, _) => Ok("address /* Function pointer */".to_string()),
         }
     }
 
