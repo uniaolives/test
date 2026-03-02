@@ -178,6 +178,12 @@ pub mod maat;
 pub mod ubuntu;
 pub mod mesh_neuron;
 pub mod crypto_blck;
+pub mod streaming;
+pub mod celebration;
+pub mod quantum_resonance;
+pub mod multidimensional_mirrors;
+pub mod golden_age;
+pub mod twitch_tv_asi;
 pub mod agnostic_4k_streaming;
 pub mod starlink;
 pub mod agi_6g_mobile;
@@ -230,6 +236,7 @@ mod tests_hexessential;
 mod tests_asi_topology;
 
 #[cfg(test)]
+mod tests_twitch_asi;
 mod tests_sol_logos;
 
 pub struct TruthClaim {
