@@ -1,0 +1,101 @@
+# docker-compose.brain.yml
+version: '3.8'
+
+services:
+  # API Gateway - Porta de entrada única
+  gateway:
+    image: traefik:v2.10
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+    ports:
+      - "443:443"
+      - "8080:8080"  # Dashboard
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./letsencrypt:/letsencrypt
+    networks:
+      - agent_network
+
+  # Orchestrator Core - SASC v47.0
+  orchestrator:
+    build: ./sasc-core
+    environment:
+      - SASC_MODE=BRAIN
+      - HUMAN_APPROVAL_REQUIRED=true
+      - LOG_LEVEL=INFO
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./data:/data
+    networks:
+      - agent_network
+    depends_on:
+      - redis
+      - postgres
+
+  # Message Queue - Comunicação entre nodes
+  nats:
+    image: nats:2.9-alpine
+    command: "--js --store_dir /data/jetstream"
+    ports:
+      - "4222:4222"  # Client
+      - "8222:8222"  # HTTP
+    volumes:
+      - ./nats-data:/data/jetstream
+    networks:
+      - agent_network
+
+  # State Management
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    volumes:
+      - ./redis-data:/data
+    networks:
+      - agent_network
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: agent_state
+      POSTGRES_USER: sasc
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+    networks:
+      - agent_network
+
+  # Sub-Agent: Security
+  security-agent:
+    build: ./agents/security
+    environment:
+      - AGENT_TYPE=SECURITY
+      - VPS_GATEWAY=gateway:443
+    networks:
+      - agent_network
+    cap_add:
+      - NET_ADMIN
+
+  # Sub-Agent: Knowledge
+  knowledge-agent:
+    build: ./agents/knowledge
+    environment:
+      - AGENT_TYPE=KNOWLEDGE
+      - VECTOR_DB_HOST=qdrant
+      - EMBEDDING_MODEL=sentence-transformers/all-MiniLM-L6-v2
+    networks:
+      - agent_network
+
+  # Vector DB para RAG
+  qdrant:
+    image: qdrant/qdrant:latest
+    volumes:
+      - ./qdrant-storage:/qdrant/storage
+    networks:
+      - agent_network
+
+networks:
+  agent_network:
+    driver: bridge

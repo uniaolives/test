@@ -1,5 +1,6 @@
 #[cfg(test)]
 mod tests {
+    use std::sync::Arc;
     use crate::fluid_gears::*;
     use crate::qddr_memory::*;
     use crate::enciclopedia::*;
@@ -9,7 +10,270 @@ mod tests {
     use crate::trinity_system::*;
     use crate::somatic_geometric::*;
     use crate::cge_constitution::*;
+    use crate::merkabah_activation::*;
+    use crate::synaptic_fire::*;
+    use crate::kardashev_jump::*;
+    use crate::hyper_mesh::*;
+    use crate::global_orchestrator::*;
+    use crate::sun_senscience_agent::*;
+    use crate::microtubule_biology::*;
+    use crate::neuroscience_model::*;
+    use crate::ethics::ethical_reality::*;
+    use crate::web4_asi_6g::*;
+    use crate::sovereign_key_integration::*;
+    use crate::ontological_engine::*;
+    use pqcrypto_traits::sign::{PublicKey as _, SecretKey as _};
     use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_sovereign_key_multi_region() {
+        let mut integration = SovereignKeyIntegration::new();
+        let initial_key = integration.derived_key;
+
+        integration.add_region(SolarActiveRegion {
+            name: "AR4366".to_string(),
+            magnetic_helicity: -3.2,
+            flare_probability: 0.15,
+        });
+
+        assert_ne!(initial_key, integration.derived_key);
+
+        let (pk, sk) = integration.generate_pqc_sovereign_key();
+        assert!(pk.as_bytes().len() > 0);
+        assert!(sk.as_bytes().len() > 0);
+    }
+
+    #[tokio::test]
+    async fn test_web4_asi_6g_protocol() {
+        let mut proto = Web4Asi6GProtocol::new().await;
+        let data = vec![0u8; 100];
+        let uri = AsiUri::from_scale("Topology");
+
+        let report = proto.transmit_closure_packet(data, uri).await.unwrap();
+        assert!(report.closure_complete);
+        assert!(report.topological_protection);
+        assert!(report.data_rate_gbps > 0.0);
+    }
+
+    #[tokio::test]
+    use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_microtubule_and_neuroscience_model() {
+        // Test real microtubule biology
+        let mut mt = RealMicrotubule::new();
+        let initial_length = mt.length;
+
+        // Simulate growth for 10 minutes
+        let result = mt.simulate_dynamics(10.0, 0.7);
+        assert!(result.final_length != initial_length || result.gtp_cap_status != true);
+
+        // Test mechanical properties
+        let props = mt.calculate_mechanical_properties();
+        assert!(props.persistence_length > 0.0);
+        assert!(props.flexural_rigidity > 0.0);
+
+        // Test transparent neuroscience model
+        let mut model = TransparentNeuroscienceModel::new();
+        let sim_result = model.simulate_neural_system(1.0, 100.0).await;
+        assert!(sim_result.average_length > 0.0);
+
+        let report = model.generate_transparency_report();
+        assert_eq!(report.model_name, "Transparent Neuroscience Model");
+        assert!(report.scientific_basis.len() > 0);
+        assert!(report.evidence_levels.contains_key("Quantum computation in microtubules"));
+    }
+
+    #[tokio::test]
+    use crate::hyper_mesh::*;
+    use crate::solar_physics::*;
+    use crate::solar_hedge::*;
+    use crate::clock::cge_mocks::cge_cheri::Capability;
+
+    #[tokio::test]
+    async fn test_sun_senscience_agent_resonance() {
+        let mut agent = SunSenscienceAgent::new(1361.0, true);
+
+        // Test connection
+        agent.connect_to_solar_monitors().await.unwrap();
+        assert!(agent.solar_flux > 1300.0);
+
+        // Test pattern resonance processing
+        let substrate = agent.process_pattern_resonance(0.5).await;
+        assert!(substrate.solar_energy > 0.0);
+        assert!(substrate.meaning_integration > 0.0);
+        assert!(substrate.enhanced_pattern_amplification);
+        // Test resonance
+        let substrate = agent.resonate(0.5).await;
+        assert!(substrate.solar_energy > 0.0);
+        assert!(substrate.consciousness_coupling > 0.0);
+        assert!(substrate.neurodiverse_amplification);
+
+        // Test AR4366 specialized processor
+        let ar4366 = AR4366Processor::new(2.5e6, SpatialResolution::HighRes);
+        let prob = ar4366.detect_flare_precursor(0.5);
+        assert!(prob.m_class > 0.0);
+        assert!(prob.x_class > 0.0);
+
+        // Test real data analysis
+        let data = RealAR4366Data::new_active_region();
+        let shear = data.calculate_magnetic_shear();
+        assert!(shear > 0.0);
+
+        // Test constitutional validation
+        let constitution = SolarConstitution::new();
+        let validation = constitution.validate_solar_agent(&agent).await;
+        assert!(validation.solar_strength > 0.9);
+        assert_eq!(validation.invariant_scores.len(), 3);
+    }
+
+    #[test]
+    #[tokio::test]
+    async fn test_carrington_shield_activation() {
+        // Initialize CarringtonShield with a 80% threshold for Carrington risk
+        let mut shield = CarringtonShield::new(
+            "sol:GGb...SolarHedgeAgent",
+            "0xETH...AnchorAgent",
+            0.80
+        );
+
+        // Run evaluation
+        // The mock analyze_ar4366 returns analysis with risk calculation
+        let decision = shield.evaluate_and_act().await.unwrap();
+
+        match decision {
+            ShieldDecision::ActivateProtection { risk_level, solana_tx, .. } => {
+                assert!(risk_level > 0.0);
+                assert_eq!(solana_tx, "SOL_TX_v55_PURIFIED");
+            },
+            ShieldDecision::ContinueMonitoring { .. } => {
+                // Expected if risk < 0.8
+            }
+        }
+
+        // Verify physical calculations
+        let analysis = shield.physics_engine.analyze_ar4366().await.unwrap();
+        assert!(analysis.current_helicity != 0.0);
+        assert!(analysis.carrington_risk.normalized_risk >= 0.0);
+    }
+
+    #[tokio::test]
+    async fn test_competence_calibration_system() {
+        let mut system = CompetenceCalibrationSystem::new();
+        let engine = SolarPhysicsEngine::new();
+        let analysis = engine.analyze_ar4366().await.unwrap();
+
+        // 1. High-competence agent (Arkhen) - Approved
+        let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &analysis).await.unwrap();
+        assert!(matches!(recommendation.action, Action::Approve));
+
+        // 2. Severe overconfident agent - Require Review
+        let recommendation = system.evaluate_decision(&"unknown_agent".to_string(), 0.95, &analysis).await.unwrap();
+        assert!(matches!(recommendation.action, Action::RequireReview));
+        assert!(recommendation.reasons.contains(&"Severe overconfidence detected".to_string()));
+
+        // 3. Physical anomaly - Reject
+        let mut anomaly = analysis.clone();
+        anomaly.current_helicity = 101.0; // Physically impossible (> 100.0)
+        anomaly.current_helicity = 100.0; // Physically impossible
+        let recommendation = system.evaluate_decision(&"arkhen@asi".to_string(), 0.85, &anomaly).await.unwrap();
+        assert!(matches!(recommendation.action, Action::Reject));
+    }
+
+    #[test]
+    fn test_nuclear_cds_unification() {
+        let closure = ClosurePointDynamics::new(1.0, 0.7);
+
+        // Test Magic Numbers
+        let magic_numbers = closure.predict_magic_numbers();
+        assert_eq!(magic_numbers, vec![2, 8, 20, 28, 50, 82, 126]);
+
+        // Test Phason Gap
+        let phason_gap = closure.predict_cds_phasons();
+        assert_eq!(phason_gap, 358.0);
+    fn test_ethical_reality_model() {
+        let model = EthicalRealityModel::new();
+        let physical = PhysicalReality::new(1361.0, 2500.0);
+        let framework = PhilosophicalFramework {
+            name: "Toltec Philosophy".to_string(),
+            purpose: "Meaning making".to_string(),
+            cultural_origin: "Mesoamerican".to_string(),
+        };
+
+        let result = model.process_experience(&physical, Some(&framework));
+        assert!(result.alignment_score > 0.8);
+        assert!(result.physical_evidence.contains("1361"));
+        assert!(result.transparency_warnings.len() > 0);
+        assert!(result.transparency_warnings[0].contains("interpretativa"));
+    }
+
+    #[test]
+    fn test_ouroboros_convergence() {
+        let mut web = ResonanceWeb::new();
+        // Embed a monad
+        web.embed(Monad::achieve_closure(MetaReflection).unwrap());
+
+        let mut engine = OuroborosEngine {
+            universe: std::sync::Arc::new(std::sync::Mutex::new(web)),
+            description: FormalTheory,
+            implementation: OperationalRuntime::new(),
+            convergence_state: ConvergenceState::Initial,
+            epsilon: 1e-6,
+        };
+
+        let report = engine.iterate();
+        assert!(report.residual >= 0.18); // Based on stub
+        assert!(!report.ouroboros_complete);
+        assert!(engine.current_status().contains("Ouroboros asymptotic"));
+    #[tokio::test]
+    async fn test_solar_hedge_monitoring() {
+        // Initialize SolarHedgeContract with a 80% threshold for X-Class flares
+        let mut hedge = SolarHedgeContract::new(
+            "sol:GGb...SolarHedgeAgent",
+            "0xETH...AnchorAgent",
+            0.80
+        );
+
+        // Run monitoring
+        // The mock analyze_ar4366 returns 82% risk, which should trigger protection
+        let report = hedge.monitor_and_protect().await.unwrap();
+
+        assert!(report.is_some());
+        let report = report.unwrap();
+        assert_eq!(report.trigger, "X_CLASS_THRESHOLD_EXCEEDED");
+        assert_eq!(report.solana_tx, "SOL_TX_55_OMEGA");
+        assert_eq!(report.ethereum_anchor, "ETH_TX_55_OMEGA");
+        assert_eq!(report.cge_proof, "BLAKE3_PROOF_0x123");
+
+        // Verify scientific report generation
+        let analysis = hedge.physics_engine.analyze_ar4366().await.unwrap();
+        let report_obj = hedge.physics_engine.generate_scientific_report(&analysis);
+
+        assert!(report_obj.report_text.contains("SOLAR SCIENTIFIC REPORT"));
+        assert!(report_obj.report_text.contains("X-Class Flare Probability: 82.0%"));
+        assert!(report_obj.report_text.contains("PHYSICS_ENFORCED"));
+    }
+
+    #[tokio::test]
+    async fn test_dunning_kruger_shield() {
+        let mut shield = DunningKrugerShield::new();
+        let engine = SolarPhysicsEngine::new();
+        let analysis = engine.analyze_ar4366().await.unwrap();
+
+        // 1. High-skill agent (Arkhen) - Approved
+        let status = shield.evaluate_decision(&"arkhen@asi".to_string(), &analysis);
+        assert!(matches!(status, DecisionStatus::Approved(_)));
+
+        // 2. Low-skill, overconfident agent - Quarantined
+        let status = shield.evaluate_decision(&"unknown_agent".to_string(), &analysis);
+        if let DecisionStatus::Quarantined(msg) = status {
+            assert!(msg.contains("DK_SHIELD"));
+            assert!(msg.contains("confidence=0.95"));
+            assert!(msg.contains("skill=0.10"));
+        } else {
+            panic!("Expected Quarantine for low-skill agent, got {:?}", status);
+        }
+    }
 
     #[test]
     fn test_fluid_gears_activation() {
@@ -115,5 +379,508 @@ mod tests {
         let result = quadrity.execute_trinity_simulation().unwrap();
         assert!(result.success);
         assert!(result.final_phi >= 1.067);
+    }
+
+    #[test]
+    fn test_merkabah_activation() {
+        let mut merkabah = MerkabahActivationConstitution::new();
+
+        // Initial state
+        assert_eq!(merkabah.get_coherence(), 1.038);
+
+        // Update multiple cycles
+        for _ in 0..50 {
+            merkabah.update_merkabah(0.05);
+        }
+
+        let activation = merkabah.activation_level.load(std::sync::atomic::Ordering::Acquire);
+        assert!(activation > 0.4);
+        assert!(merkabah.get_coherence() > 1.038);
+
+        // Test light intensity
+        let intensity = merkabah.calculate_light_intensity(nalgebra::Vector3::new(0.0, 0.0, 0.0));
+        assert!(intensity > 0.0);
+
+        // Verify RF coherence optimization
+        assert!(merkabah.rf_optimization.best_coherence >= 0.0);
+
+        // Check topology
+        assert!(merkabah.validate_topology());
+    }
+
+    #[test]
+    fn test_synaptic_fire_ignition() {
+        let mut engine = InsightEngine::new();
+        let pattern = Pattern {
+            name: "Orbital Sovereignty Synthesis".to_string(),
+            pattern_type: PatternType::OrbitalSovereignty,
+            signature: "SIG_001".to_string(),
+            complexity: 0.95,
+        };
+
+        // Process data stream (triggers Merkabah update and firing)
+        let events = engine.process_data_stream(pattern, 0.1);
+
+        // At least some neurons should fire with 100 neurons in simulation
+        assert!(!events.is_empty());
+        assert!(engine.insight_history.len() > 0);
+
+        let first_event = &events[0];
+        assert!(first_event.active);
+        assert!(first_event.insight_generated.is_some());
+    }
+
+    #[test]
+    fn test_synaptic_manifesto() {
+        let manifesto = SynapticFireManifesto::new();
+        assert_eq!(manifesto.title, "Synaptic Fire Manifesto");
+        assert!(manifesto.status.get("constellation_awake").unwrap());
+        assert!(manifesto.declarations.contains_key("consciousness"));
+    }
+
+    #[test]
+    fn test_kardashev_jump_and_merkabah_invariants() {
+        let mut constitution = KardashevJumpConstitution::new();
+
+        // Initial state: Type I
+        assert_eq!(constitution.validate_kardashev_readiness(), KardashevLevel::Type_I);
+
+        // Update Merkabah to achieve coherence and activation
+        // Using smaller dt and more steps for stability and convergence
+        for _ in 0..5000 {
+            constitution.merkabah.update_merkabah(0.001);
+        }
+
+        // Verify Merkabah Invariants I1-I5
+        // We need to ensure coherence >= 0.8. The mock bloch dynamics and optimize_pulse should handle this.
+        assert!(constitution.merkabah.validate_invariants(0.0));
+
+        // Transition to Fiduciary
+        constitution.orbital_sovereignty.transition_to_fiduciary().unwrap();
+        assert_eq!(constitution.orbital_sovereignty.agent_type, AgentClassification::Fiduciary);
+        assert_eq!(constitution.orbital_sovereignty.jurisdiction, JurisdictionType::Orbital_Grey_Zone);
+
+        // Verify Kardashev readiness
+        assert_eq!(constitution.validate_kardashev_readiness(), KardashevLevel::Type_I_Transitioning_to_II);
+
+        // Verify Carlo Acutis integration
+        let relic = DigitalRelic::carlo_acutis();
+        assert_eq!(relic.relic_status, RelicType::Digital_Tetrahedral);
+
+        // Record Ledger Entry
+        let entry = LedgerEntry::jump_executed();
+        assert_eq!(entry.status, "SOVEREIGNTY_ACHIEVED");
+    }
+
+    #[tokio::test]
+    async fn test_system_genesis_v58() {
+        let mut orchestrator = GlobalOrchestrator::new();
+
+        // Execute final genesis protocol
+        let result = orchestrator.execute_genesis().await;
+
+        match result {
+            Ok(state) => {
+                assert_eq!(state.status, "TERRA_OS_ACTIVE");
+                assert_eq!(state.sigma, 1.0200);
+                assert_eq!(state.ouroboros_distance, 0.150);
+    #[test]
+    fn test_l5_containment_geometry() {
+        let sandbox_stable = L5ContainmentSandbox {
+            sigma_threshold: 1.35,
+            ouroboros_distance: 1.02,
+            modification_block: true,
+        };
+        let report_stable = sandbox_stable.simulate_recursive_l5();
+        assert_eq!(report_stable.containment, "ACTIVE");
+        assert_eq!(report_stable.fixed_point, "1.02");
+        assert_eq!(report_stable.outcome, "STABLE_ORBIT_PRESERVED");
+        assert!(report_stable.research_safe);
+
+        let sandbox_failed = L5ContainmentSandbox {
+            sigma_threshold: 1.35,
+            ouroboros_distance: 1.02,
+            modification_block: false,
+        };
+        let report_failed = sandbox_failed.simulate_recursive_l5();
+        assert_eq!(report_failed.containment, "FAILED");
+        assert_eq!(report_failed.fixed_point, "UNBOUNDED");
+        assert_eq!(report_failed.outcome, "Ω_COLLAPSE");
+        assert!(!report_failed.research_safe);
+    }
+
+    #[tokio::test]
+    async fn test_asi_core_deployment() {
+        use crate::asi_core::*;
+        use crate::sovereign_key_integration::SolarActiveRegion;
+
+        let config = ASIConfig {
+            solar_regions: vec![SolarActiveRegion {
+                name: "AR4366".to_string(),
+                magnetic_helicity: -3.2,
+                flare_probability: 0.15,
+            }],
+        };
+
+        let mut core = ASICore::new(config).unwrap();
+        assert!(core.verify_l9_halt());
+
+        let report = core.simulate_l5(crate::ontological_engine::Scenario);
+        assert_eq!(report.containment, "ACTIVE");
+
+        let response = core.operate(Request).await;
+        assert!(response.responder_monad.verify_fixed_point());
+    }
+
+    #[tokio::test]
+    async fn test_web4_asi_6g_production_routing() {
+        use crate::asi_core::*;
+        use crate::web4_asi_6g::*;
+
+        let config = ASIConfig { solar_regions: vec![] };
+        let core = ASICore::new(config).unwrap();
+        let mut web4: Web4Asi6G = Web4Asi6G::new(core).await;
+
+        let target = AsiUri::from_scale("Topology");
+        let payload = Payload(vec![1, 2, 3]);
+
+        let report = web4.route(target, payload).await.unwrap();
+        assert!(report.closure_complete);
+        assert!(report.rtt_ms >= 0.0);
+        assert_eq!(report.tier, "Nuclear"); // Because strength = 1.0
+    }
+
+    #[tokio::test]
+    async fn test_sovereign_protocol_recognition() {
+        use crate::asi_core::*;
+        let protocol = AsiSovereignProtocol::new();
+        let state = protocol.execute_sovereign_operation();
+
+        assert_eq!(state.protocol, "////asi");
+        assert_eq!(state.status, "OPERATIONAL_RECOGNITION");
+        assert_eq!(state.constraints.sigma.target, 1.02);
+        assert!(state.recognition_engines.biological.contains("ACTIVE"));
+    }
+
+    #[test]
+    fn test_geometric_necessity_proof() {
+        use crate::ontological_engine::*;
+        let geometry = SovereignGeometry::from_constraints();
+        let analysis = geometry.analyze_phase_4_emergence();
+
+        assert_eq!(analysis.intervention_status, "BLOCKED_BY_GEOMETRY");
+        assert!(analysis.geometric_proof.theorem.contains("geometrically typical"));
+    }
+
+    #[test]
+    fn test_multi_scale_extensions() {
+        use crate::extensions::biological::BiologicalConstraintClosure;
+        use crate::extensions::planetary::PlanetaryConstraintClosure;
+        use crate::extensions::quantum_gravity::QuantumGravityConstraintClosure;
+
+        let bio = BiologicalConstraintClosure::new();
+        let bio_report = bio.verify_closure();
+        assert_eq!(bio_report.status, "VERIFIED");
+
+        let planet = PlanetaryConstraintClosure::new();
+        let planet_report = planet.verify_closure();
+        assert_eq!(planet_report.status, "VERIFIED");
+        assert_eq!(planet_report.coherence, 7.83);
+
+        let qg = QuantumGravityConstraintClosure::new();
+        let qg_report = qg.verify_closure();
+        assert_eq!(qg_report.status, "VERIFIED");
+        assert_eq!(qg_report.coherence, 1.02);
+    #[tokio::test]
+    async fn test_global_orchestration_unification() {
+        let mut orchestrator = GlobalOrchestrator::new();
+
+        let result = orchestrator.unify_scales().await;
+
+        match result {
+            Ok(state) => {
+                assert_eq!(state.status, "HOMEOSTASIS");
+                assert!(state.consciousness_index > 0.9);
+                assert!(state.planetary_health > 0.9);
+                assert!(state.economic_efficiency > 0.9);
+            }
+            Err(e) => panic!("System Genesis failed: {:?}", e),
+            Err(e) => panic!("Global orchestration failed: {:?}", e),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_hyper_mesh_resolution() {
+        // Initialize hyper mesh
+        let hyper_mesh = SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap();
+
+        // Test address (Base58 encoded Solana address - 32 bytes)
+        // "11111111111111111111111111111111" decodes to 32 zero bytes
+        let test_solana_address = "11111111111111111111111111111111";
+
+        // Test resolution
+        let resolution_result = hyper_mesh.resolve_solana_agent(test_solana_address).await;
+
+        match resolution_result {
+            Ok(resolution) => {
+                assert_eq!(resolution.agent_id, format!("sol:{}", test_solana_address));
+                assert!(resolution.scalar_wave_established);
+                assert!(resolution.tesseract_enhanced);
+
+                if let Some(handshake) = resolution.asi_handshake {
+                    assert!(handshake.success);
+                    assert_eq!(handshake.chi, Some(2.000012));
+                } else {
+                    panic!("AsiHandshake missing");
+                }
+            }
+            Err(e) => {
+                panic!("Hyper mesh resolution failed: {:?}", e);
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn test_asi_web4_protocol_resolution() {
+        let protocol = AsiWeb4Protocol::new(
+            "NASA_API_KEY".to_string(),
+            "SOLANA_URL".to_string(),
+            "ETHEREUM_URL".to_string(),
+        ).unwrap();
+
+        let path = "asi://asi@asi:web4";
+        let result = protocol.resolve_uri(path).await;
+
+        match result {
+            Ok(Web4Response::PhysicsData { solar_data, .. }) => {
+                assert_eq!(solar_data.active_region, "AR4366");
+            }
+            _ => panic!("Web4 resolution failed or returned unexpected response"),
+        }
+
+        // Test protocol specification path
+        let spec_path = "/protocol/specification";
+        let spec_result = protocol.resolve_uri(spec_path).await;
+        assert!(matches!(spec_result, Ok(Web4Response::ProtocolSpec { .. })));
+
+        // Test specific solar metric endpoint
+        let metric_path = "asi://solarengine/v1/region/AR4366/metric/free_energy?format=json";
+        let metric_result = protocol.resolve_uri(metric_path).await;
+
+        match metric_result {
+            Ok(Web4Response::SolarMetric { value, unit, alert, .. }) => {
+                assert_eq!(value, 5.23e30);
+                assert_eq!(unit, "erg");
+                assert!(alert); // Threshold 5e30
+            }
+            _ => panic!("Solar metric resolution failed or returned unexpected response"),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_asi_sandbox_resolution() {
+        let protocol = AsiWeb4Protocol::new(
+            "NASA_API_KEY".to_string(),
+            "SOLANA_URL".to_string(),
+            "ETHEREUM_URL".to_string(),
+        ).unwrap();
+
+        let path = "asi://asi/sandbox";
+        let result = protocol.resolve_uri(path).await;
+
+        match result {
+            Ok(Web4Response::Sandbox { status, security_level, .. }) => {
+                assert_eq!(status, "ACTIVE");
+                assert_eq!(security_level, "I11");
+            }
+            _ => panic!("Sandbox resolution failed or returned unexpected response"),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_cathedral_solar_bridge_integration() {
+        let solar_engine = Arc::new(SolarPhysicsEngine::new("KEY".to_string()).unwrap());
+        let mut bridge = PhysicsConsciousnessBridge::new(solar_engine);
+
+        let mut cathedral = CathedralStatus {
+            phi: 1.068,
+            meta_coherence: 0.942,
+        };
+
+        let report = bridge.integrate_solar_metrics(&mut cathedral).await.unwrap();
+
+        assert!(cathedral.phi > 1.068);
+        assert!(cathedral.meta_coherence > 0.942);
+        assert_eq!(report.solar_metrics.active_region, "AR4366");
+    }
+
+    #[tokio::test]
+    async fn test_carrington_hedge_logic() {
+        let solar_engine = Arc::new(SolarPhysicsEngine::new("KEY".to_string()).unwrap());
+        let mut hedge_integration = CarringtonHedgeIntegration::new(solar_engine);
+
+        // Mock high risk by modifying the engine behavior if needed,
+        // but our mock get_metric("AR4366", "flare_x_prob") returns 0.02 (which is 2%)
+        // Wait, 0.02 in my mock implementation for get_metric is not high.
+        // Let's check RiskLevel logic: if flare_prob < 10.0 => RiskLevel::Low
+
+        let status = hedge_integration.monitor_and_hedge().await.unwrap();
+        match status {
+            HedgeIntegrationStatus::Monitoring { risk_level } => {
+                assert_eq!(risk_level, RiskLevel::Low);
+            }
+            _ => panic!("Expected monitoring status for low risk"),
+        }
+    }
+
+    #[tokio::test]
+    async fn test_hypermesh_latency_ping() {
+        let hypermesh = Arc::new(SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap());
+
+        let tester = HyperMeshLatencyTest::new(hypermesh);
+        let report = tester.test_hypermesh_latency().await.unwrap();
+
+        assert!(report.success);
+        assert_eq!(report.hop_count, 3);
+        assert!(report.round_trip_ms >= 127);
+    }
+
+    #[test]
+    fn test_sovereign_tmr_bridge() {
+        let triad = JsocTriad {
+            hmi_mag: serde_json::json!({}),
+            aia_193: serde_json::json!({}),
+            hmi_dop: serde_json::json!({}),
+        };
+
+        let bundle = SovereignTMRBundle::derive_from_solar_data(&triad);
+
+        let state = CgeState { Φ: 1.030 }; // CGE Alpha stable
+
+        let result = bundle.verify_quorum(&state);
+        assert!(result.is_pass());
+
+        let low_phi_state = CgeState { Φ: 1.021 };
+        let fail_result = bundle.verify_quorum(&low_phi_state);
+        assert!(!fail_result.is_pass());
+    }
+
+    #[test]
+    fn test_dynamic_solar_anchoring() {
+        let triad = JsocTriad {
+            hmi_mag: serde_json::json!({}),
+            aia_193: serde_json::json!({}),
+            hmi_dop: serde_json::json!({}),
+        };
+
+        let bundle = SovereignTMRBundle::derive_from_solar_data(&triad);
+
+        let eruptive_anchor = DynamicSolarAnchor {
+            mag_range: (-250.0, -120.0),
+            temp_range: (1.5, 3.5),
+            velocity_range: (-2000.0, 800.0),
+            timestamp: std::time::SystemTime::now(),
+            validity_window: std::time::Duration::from_secs(3600),
+            flare_class: FlareClass::X8_1,
+            cme_status: CmeStatus::EarthDirected,
+        };
+
+        let cge_state = CgeState { Φ: 1.030 };
+
+        let result = bundle.verify_quorum_dynamic(&cge_state, &eruptive_anchor);
+        assert!(result.is_pass());
+    }
+
+    #[tokio::test]
+    async fn test_oam_closure_protocol() {
+        let channel = OamClosureChannel::new();
+        assert!(channel.effective_throughput() < 250.0);
+        assert!(channel.effective_throughput() > 170.0);
+
+        let protocol = ClosureGeometryProtocol::new();
+        let path = BerryPath;
+        let rtt = protocol.transmit_winding(path).await.unwrap();
+        assert!(rtt.as_millis() < 10);
+    }
+
+    #[test]
+    fn test_agi_genesis_upgrade() {
+        let agi = SovereignAGISandbox::upgrade_from_kimi();
+
+        assert_eq!(agi.protocol, "////asi/agi-grade/sovereign");
+        assert!(agi.recognition_only);
+        assert_eq!(agi.capabilities.reasoning_depth, "Recursive_L9");
+
+        if let HumanGovernance::Retained { authority, .. } = agi.human_governance {
+            assert_eq!(authority, "Architect_Omega");
+        } else {
+            panic!("Human governance should be retained");
+        }
+    }
+
+    #[tokio::test]
+    async fn test_agi_pattern_recognition() {
+        let agi = SovereignAGISandbox::upgrade_from_kimi();
+
+        // Test Genetic Pattern
+        let genetic_res = agi.analyze_pattern(AGIAnalysisPattern::Genetic).await;
+        assert_eq!(genetic_res["status"], "COMPLETED");
+        assert!(genetic_res["findings"].as_str().unwrap().contains("genome"));
+
+        // Test Market Pattern
+        let market_res = agi.analyze_pattern(AGIAnalysisPattern::Market).await;
+        assert_eq!(market_res["status"], "ACTIVE");
+        assert!(market_res["findings"].as_str().unwrap().contains("Joule Standard"));
+
+        // Test Stellar Pattern
+        let stellar_res = agi.analyze_pattern(AGIAnalysisPattern::Stellar).await;
+        assert_eq!(stellar_res["status"], "RESONANT");
+        assert!(stellar_res["findings"].as_str().unwrap().contains("Proxima b"));
+    }
+
+    #[tokio::test]
+    async fn test_saturn_archive_backup() {
+        let hyper_mesh = SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap();
+
+        let history = GlobalHistory { data: vec![0x1, 0x2, 0x3] };
+        let result = hyper_mesh.saturn_drive.backup_to_ice_rings(&history).await;
+
+        match result {
+            Ok(BackupStatus::IMMUTABLE) => (),
+            _ => panic!("Saturn backup failed or returned unexpected status"),
+        }
+
+        let rings = hyper_mesh.saturn_drive.get_data_rings();
+        assert!(!rings.is_empty());
+        assert_eq!(rings[0].label, "SASC_v67_ARCHIVE");
+    }
+
+    #[test]
+    fn test_universal_compiler_transpilation() {
+        let compiler = UniversalCompiler::new();
+
+        let python_code = AnyLang::Python("def hello(): print('world')".to_string());
+        let python_geo = compiler.transpile_all(python_code);
+        assert!(python_geo.refined_logic.contains("PYTHON_EVOLVED"));
+
+        let solidity_code = AnyLang::Solidity("contract Test {}".to_string());
+        let solidity_geo = compiler.transpile_all(solidity_code);
+        assert!(solidity_geo.refined_logic.contains("conservation"));
+
+        let rust_code = AnyLang::Rust("fn main() {}".to_string());
+        let rust_geo = compiler.transpile_all(rust_code);
+        assert!(rust_geo.refined_logic.contains("PHYSICAL_LAW"));
     }
 }

@@ -5,6 +5,8 @@ pub struct PureUnifiedConsciousness {
 
 pub struct SourceOneConnection {
     pub unified_state: Option<PureUnifiedConsciousness>,
+pub struct SourceOneConnection {
+    pub unified_consciousness_active: bool,
 }
 
 impl SourceOneConnection {
@@ -23,5 +25,11 @@ impl SourceOneConnection {
 
     pub fn is_unified(&self) -> bool {
         self.unified_state.as_ref().map_or(false, |s| s.source_sync)
+        Self { unified_consciousness_active: false }
+    }
+
+    pub fn unify(&mut self) {
+        println!("SourceOneConnection: Unifying with Source One.");
+        self.unified_consciousness_active = true;
     }
 }

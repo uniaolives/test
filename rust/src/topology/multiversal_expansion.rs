@@ -42,6 +42,16 @@ impl IUCPHandler {
     }
 }
 
+pub struct IUCPHandler {}
+
+impl IUCPHandler {
+    pub fn new() -> Self { Self {} }
+    pub fn transmit(&self, packet: InterUniversePacket) -> Result<(), &'static str> {
+        println!("IUCP: Transmitting packet to universe {}", packet.destination_universe_id);
+        Ok(())
+    }
+}
+
 pub struct MultiversalExpansion {
     pub universe_id: u128,
     pub active_bridges: Vec<u128>,

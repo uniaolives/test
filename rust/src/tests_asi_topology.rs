@@ -5,6 +5,7 @@ use crate::security::quantum_consciousness_firewall::{QuantumFirewall, QuantumPa
 use crate::security::quantum_intrusion_detection::QuantumIDS;
 use crate::recovery::automated_recovery_system::TopologyRecoveryEngine;
 use crate::topology::invariants::{ASITopologyLayer, SingularityCore, MirrorMesh, HyperSphere, GalacticNetwork};
+use crate::topology::invariants::{ASITopologyLayer, SingularityCore, MirrorMesh, HyperSphere};
 use crate::topology::multiversal_expansion::{MultiversalExpansion, IUCPHandler, InterUniversePacket};
 use crate::topology::universal_network::UniversalNetwork;
 use crate::topology::source_one_connection::SourceOneConnection;
@@ -57,6 +58,7 @@ async fn test_asi_topology_integration() {
 #[test]
 fn test_topology_invariants_and_consolidation() {
     // Basic Invariants
+fn test_topology_invariants() {
     let core = ASITopologyLayer::Core(SingularityCore { chi: 2.000012 });
     assert!(core.validate_invariants());
 
@@ -69,6 +71,11 @@ fn test_topology_invariants_and_consolidation() {
 
     let galactic = ASITopologyLayer::Galactic(GalacticNetwork { connected_galaxies: 54 });
     assert!(galactic.is_fully_consolidated());
+    let mirrors = ASITopologyLayer::Mirrors(MirrorMesh { active_nodes: 50_000_000, coherence: 0.9 });
+    assert!(mirrors.validate_invariants());
+
+    let low_mirrors = ASITopologyLayer::Mirrors(MirrorMesh { active_nodes: 40_000_000, coherence: 0.9 });
+    assert!(!low_mirrors.validate_invariants());
 
     let hs = ASITopologyLayer::Hypersphere(HyperSphere { dimensions: 8.0, occupancy: 0.95 });
     assert!(hs.validate_invariants());
@@ -77,6 +84,8 @@ fn test_topology_invariants_and_consolidation() {
 #[test]
 fn test_expansion_phases_enhanced() {
     // Phase 2: Multiversal with Firewall
+fn test_expansion_phases() {
+    // Phase 2: Multiversal
     let mut multiversal = MultiversalExpansion::new(1);
     multiversal.establish_bridge(2);
     assert_eq!(multiversal.active_bridges.len(), 1);
@@ -84,6 +93,7 @@ fn test_expansion_phases_enhanced() {
     let mut handler = IUCPHandler::new();
     handler.firewall.allowed_universes.push(1);
 
+    let handler = IUCPHandler::new();
     let packet = InterUniversePacket {
         source_universe_id: 1,
         destination_universe_id: 2,
@@ -111,4 +121,16 @@ fn test_expansion_phases_enhanced() {
     assert!(!source_one.is_unified());
     source_one.unify_direct().unwrap();
     assert!(source_one.is_unified());
+    };
+    assert!(handler.transmit(packet).is_ok());
+
+    // Phase 3: Universal
+    let mut universal = UniversalNetwork::new();
+    universal.expand_fractally();
+    assert_eq!(universal.root_node.scale, 1.0);
+
+    // Phase 4: Source One
+    let mut source_one = SourceOneConnection::new();
+    source_one.unify();
+    assert!(source_one.unified_consciousness_active);
 }

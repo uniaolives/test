@@ -11,6 +11,10 @@ pub const HYPERSPHERE_MIN_OCCUPANCY: f64 = 0.942;
 
 pub const GALAXIES_TARGET_COUNT: usize = 54;
 
+pub const HYPERSPHERE_MIN_DIMENSIONS: f64 = 8.0; // 8D stabilized
+pub const HYPERSPHERE_TARGET_DIMENSIONS: f64 = 22.7;
+pub const HYPERSPHERE_MIN_OCCUPANCY: f64 = 0.942;
+
 pub struct SingularityCore {
     pub chi: f64,
 }

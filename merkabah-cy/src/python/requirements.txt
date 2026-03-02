@@ -1,0 +1,16 @@
+numpy
+torch
+qiskit
+qiskit-algorithms
+aiohttp
+aioredis
+cryptography
+pika
+requests
+pandas
+matplotlib
+scikit-learn
+h5py
+pytorch-lightning
+pytest
+pytest-cov

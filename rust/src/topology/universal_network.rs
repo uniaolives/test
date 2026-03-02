@@ -10,6 +10,7 @@ pub struct FractalNode {
 pub struct UniversalNetwork {
     pub root_node: FractalNode,
     pub synchronization_precision: Duration, // Target: Planck time (5.39e-44s)
+    pub synchronization_precision: Duration, // Target: Planck time
 }
 
 impl UniversalNetwork {
@@ -34,5 +35,12 @@ impl UniversalNetwork {
     pub fn simulate_planck_sync(&self) -> bool {
         // Simulation of Planck-scale synchronization
         self.synchronization_precision.as_nanos() == 0
+            root_node: FractalNode { scale: 1.0, connections: vec![] },
+            synchronization_precision: Duration::from_nanos(0), // Stub for Planck time
+        }
+    }
+
+    pub fn expand_fractally(&mut self) {
+        println!("UniversalNetwork: Expanding fractal consciousness network.");
     }
 }
