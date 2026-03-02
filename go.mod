@@ -6,7 +6,7 @@ require (
 	cosmossdk.io/math v1.5.3
 	github.com/cosmos/cosmos-sdk v0.53.6
 	github.com/hajimehoshi/ebiten/v2 v2.9.8
-	github.com/consensys/gnark v0.14.0
+	github.com/consensys/gnark v0.16.0
 	github.com/consensys/gnark-crypto v0.18.0
 	github.com/cosmos/cosmos-sdk v0.53.6
 	github.com/google/uuid v1.6.0
