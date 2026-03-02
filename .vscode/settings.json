@@ -1,0 +1,25 @@
+{
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.colorCustomizations": {
+    "activityBar.background": "#1a1a2e",
+    "statusBar.background": "#16213e",
+    "editor.background": "#0f3460"
+  },
+  "harmonia.geometric.enabled": true,
+  "harmonia.pinn.autocomplete": true,
+  "harmonia.hotMess.threshold": 0.6,
+  "python.analysis.extraPaths": [
+    "./cosmopsychia_pinn",
+    "./safecore-9d/src",
+    "./aigmi/src"
+  ],
+  "editor.fontSize": 14,
+  "editor.fontFamily": "'Fira Code', 'Cascadia Code', monospace",
+  "editor.fontLigatures": true,
+  "editor.formatOnSave": true,
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+    "*.py": "${capture}.py, ${capture}_test.py",
+    "cosmopsychia_pinn.py": "pinn_api_*.py, *resonance*.py"
+  }
+}

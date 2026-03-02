@@ -1,0 +1,29 @@
+name: Anisotropic Control Framework CI
+
+on:
+  push:
+    paths:
+      - 'cds-framework/**'
+  pull_request:
+    paths:
+      - 'cds-framework/**'
+
+jobs:
+  test_framework:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          cd cds-framework
+          python -m pip install --upgrade pip
+          pip install .
+          pip install pytest
+      - name: Run tests
+        run: |
+          cd cds-framework
+          python -m pytest tests/

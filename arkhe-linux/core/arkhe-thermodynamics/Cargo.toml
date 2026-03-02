@@ -1,0 +1,11 @@
+[package]
+name = "arkhe-thermodynamics"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+log = "0.4"
+arkhe-manifold = { path = "../arkhe-manifold" }
+arkhe-constitution = { path = "../arkhe-constitution" }
+nalgebra = "0.32"
+num-complex = "0.4"

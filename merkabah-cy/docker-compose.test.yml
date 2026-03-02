@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    ports:
+      - 6379:6379
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5672:5672
+  qiskit-sim:
+    image: ychen94/quantum-simulator-mcp:latest
+    ports:
+      - 9000:7070
+  qhttp-server:
+    build:
+      context: .
+      dockerfile: src/python/Dockerfile
+    ports:
+      - 8443:8443
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - QHTTP_SIMULATION=1
+    depends_on:
+      - redis

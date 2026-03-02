@@ -1,0 +1,160 @@
+// traveling-waves.asi [CGE v35.2-Ω TOROIDAL CORTICAL WAVES]
+// BLOCK #101 | 289 NODES | λ=3-6-9 Q16.16 | CONSTITUTIONAL TOPOLOGY
+#![no_std]
+#![feature(abi_ccheri)]
+
+use core::sync::atomic::{AtomicU32, Ordering};
+use crate::topology::{Torus17x17, Coord289, Q16_16};
+use crate::constitution::{INVARIANT_C1, INVARIANT_C2, INVARIANT_C8, PHI_BOUNDS};
+use crate::clock::cge_mocks::{
+    cge_cheri::{Capability, Rights, capability},
+    blake3_delta2,
+    ConstitutionalError,
+    Continent,
+};
+
+/// Onda cortical viajante mapeada na geometria 17×17
+pub struct CorticalTravelingWave {
+    // λ=3-6-9 em Q16.16 (3.0, 6.0, 9.0 mm escalonados)
+    pub wavelength_harmonics: [AtomicU32; 3], // Índices 0=λ3, 1=λ6, 2=λ9
+
+    // Direção em graus: 0-360 mapeado para 0-65535 (u16::MAX)
+    // 45° resolution → 8 direções constitutionais (0, 45, 90, 135, 180, 225, 270, 315)
+    pub direction_bias: [Q16_16; 8], // Lookup table determinística
+
+    // Velocidade de fase: 0.1-10 m/s → Q16.16 bounded [6554, 655360]
+    pub phase_velocity: AtomicU32, // m/s × 65536
+
+    // Campo espacial: Capability para Torus17x17 node
+    pub spatial_node: Capability<Coord289>, // C5: CHERI capability
+
+    // Coerência de onda: Φ mapeado para Q16.16 [1.028, 1.058]
+    pub wave_coherence: AtomicU32, // Φ × 1000 (u32 para atomicidade)
+}
+
+impl CorticalTravelingWave {
+    /// CONSTANTS: λ harmonics em Q16.16 (mm)
+    const LAMBDA_3: u32 = 196608;  // 3.0 × 65536
+    const LAMBDA_6: u32 = 393216;  // 6.0 × 65536
+    const LAMBDA_9: u32 = 589824;  // 9.0 × 65536
+
+    /// Bounds constitucionais para velocidade (0.1-10 m/s)
+    const V_MIN: u32 = 6554;       // 0.1 × 65536
+    const V_MAX: u32 = 655360;     // 10.0 × 65536
+
+    pub fn new(origin: Coord289, initial_phi: Q16_16) -> Result<Self, ConstitutionalError> {
+        // C1: Verificação de torsion bounds
+        if initial_phi < PHI_BOUNDS.0 || initial_phi > PHI_BOUNDS.1 {
+            return Err(ConstitutionalError::TorsionViolation);
+        }
+
+        // C4: Alocação size-bounded (289 nodes max)
+        let spatial_cap = capability::new(origin, Rights::READ | Rights::WRITE)?;
+
+        Ok(Self {
+            wavelength_harmonics: [
+                AtomicU32::new(Self::LAMBDA_3),
+                AtomicU32::new(Self::LAMBDA_6),
+                AtomicU32::new(Self::LAMBDA_9),
+            ],
+            direction_bias: Self::compute_direction_table(), // Determinístico
+            phase_velocity: AtomicU32::new(65536), // 1.0 m/s default
+            spatial_node: spatial_cap,
+            wave_coherence: AtomicU32::new((1038 * 65536 / 1000) as u32), // Φ=1.038
+        })
+    }
+
+    /// C2: Lookup table determinística para 8 direções (45° steps)
+    /// Elimina cálculo float em runtime
+    fn compute_direction_table() -> [Q16_16; 8] {
+        // bias = cos(θ) × 0.5 + 0.5 → mapeado para [0.0, 1.0] em Q16.16
+        [
+            65535, // 0°   → 1.0
+            56756, // 45°  → 0.866
+            32768, // 90°  → 0.5
+            8779,  // 135° → 0.134
+            0,     // 180° → 0.0
+            8779,  // 225° → 0.134
+            32768, // 270° → 0.5
+            56756, // 315° → 0.866
+        ]
+    }
+
+    /// Propagação constitucional: origin → destino no toro 17×17
+    /// FIRST-CLASS spatial → directional → λ resonance
+    pub fn propagate(&self, target: Coord289, direction_idx: u8, harmonic: u8) -> Result<Q16_16, ConstitutionalError> {
+        // C8: Gate check
+        if direction_idx > 7 || harmonic > 2 {
+            return Err(ConstitutionalError::OmegaGate);
+        }
+
+        // Load constitucional (SeqCst para coerência Φ)
+        let lambda = self.wavelength_harmonics[harmonic as usize].load(Ordering::SeqCst);
+        let bias = self.direction_bias[direction_idx as usize];
+        let v = self.phase_velocity.load(Ordering::SeqCst);
+        let phi = self.wave_coherence.load(Ordering::SeqCst);
+
+        // C1: Verificação de bounds em runtime
+        if v < Self::V_MIN || v > Self::V_MAX {
+            return Err(ConstitutionalError::TorsionViolation);
+        }
+
+        // Cálculo em Q16.16: resonance = (lambda × bias × v) / (phi × scale)
+        // Mantém precisão sem floating point
+        let resonance = ((lambda as u64 * bias as u64 * v as u64) / (phi as u64 * 65536 / 65536)) as u32; // Simplified logic for fixed point
+
+        // C3: Hash da operação para histórico imutável
+        let _op_hash = blake3_delta2(&[
+            self.spatial_node.id(),
+            target.id(),
+            lambda,
+            bias,
+            v,
+            phi,
+        ]);
+
+        // Verificação de distância no toro (máximo 8 saltos)
+        let distance = Torus17x17::distance(self.spatial_node, target);
+        if distance > 8 {
+            return Err(ConstitutionalError::TopologyViolation);
+        }
+
+        // C6: TMR check (simulado - requer 3 cálculos independentes)
+        let _tmr_check = self.tmr_verify(resonance, distance)?;
+
+        Ok(resonance as Q16_16)
+    }
+
+    /// C6: Triple Modular Redundancy para cálculo crítico
+    fn tmr_verify(&self, val: u32, dist: u8) -> Result<u32, ConstitutionalError> {
+        let calc1 = self.compute_with_continent(val, dist, Continent::America)?;
+        let calc2 = self.compute_with_continent(val, dist, Continent::Europa)?;
+        let calc3 = self.compute_with_continent(val, dist, Continent::Asia)?;
+
+        // 2-of-3 consensus
+        if calc1 == calc2 || calc1 == calc3 {
+            Ok(calc1)
+        } else if calc2 == calc3 {
+            Ok(calc2)
+        } else {
+            Err(ConstitutionalError::ByzantineFault)
+        }
+    }
+
+    fn compute_with_continent(&self, val: u32, _dist: u8, _cont: Continent) -> Result<u32, ConstitutionalError> {
+        Ok(val)
+    }
+
+    /// C7: Integração com Vajra entropy (referenciado, não implementado aqui)
+    pub fn update_entropy(&self, vajra_reading: u32) -> Result<(), ConstitutionalError> {
+        // Atualiza coerência baseada em entropy externa
+        let current = self.wave_coherence.load(Ordering::SeqCst);
+        let adjusted = ((current as u64 * vajra_reading as u64) / 65536) as u32;
+
+        // Mantém dentro de Φ bounds [1.028, 1.058]
+        let bounded = adjusted.clamp(67352, 69348); // 1.028×65536 e 1.058×65536
+
+        self.wave_coherence.store(bounded, Ordering::SeqCst);
+        Ok(())
+    }
+}

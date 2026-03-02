@@ -1,4 +1,5 @@
 pub mod pqc;
+pub mod simhash;
 
 use std::fmt;
 

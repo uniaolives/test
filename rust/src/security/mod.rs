@@ -11,3 +11,5 @@ pub mod physics_hypervisor;
 pub mod view_uniqueness;
 pub mod neural_firewall;
 pub mod hardware_immutability;
+pub mod quantum_consciousness_firewall;
+pub mod quantum_intrusion_detection;
