@@ -28,6 +28,12 @@ impl SubstrateGeometry {
 
     pub fn volume(&self) -> f64 {
         self.dimensions.0 * self.dimensions.1 * self.dimensions.2
+#[derive(Debug, Clone)]
+pub struct SubstrateGeometry;
+
+impl SubstrateGeometry {
+    pub fn windows_enclave() -> Self {
+        SubstrateGeometry
     }
 }
 

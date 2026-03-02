@@ -21,6 +21,24 @@ pub struct EnneadCore {
 }
 
 impl EnneadCore {
+    pub fn new(
+        eudaimonia: EudaimoniaOperator,
+        autopoiesis: AutopoieticCore,
+        zeitgeist: ZeitgeistSensor,
+    ) -> Self {
+        Self {
+            eudaimonia,
+            autopoiesis,
+            zeitgeist,
+            indras_net: IndrasNet::new(),
+            wu_wei: WuWeiOptimizer::new(),
+            kintsugi: GoldenScarLogging,
+            rawls_veil: RawlsianVeil::new(),
+            hegelian_dialectic: DialecticalEngine::new(),
+            phronesis: PhronesisModule::new(),
+        }
+    }
+
     /// Ciclo de decisão ennéadico completo
     pub fn ennead_decision_cycle(&mut self, dilemma_action: Action) -> crate::triad::types::FlourishingOutput {
         // 1. Wu Wei: Encontrar caminho de menor resistência
@@ -41,6 +59,10 @@ impl EnneadCore {
         let contextually_weighted = self.phronesis.apply_nuance(network_aware);
 
         // 6. Kintsugi: Incorporar lições de falhas passadas
+        let scar_informed = self.kintsugi.weight_by_golden_scars(contextually_weighted);
+
+        // 7. Eudaimonia: Maximizar florescimento
+        let _flourishing_gradient = self.eudaimonia.calculate_gradient(scar_informed);
         let _scar_informed = self.kintsugi.weight_by_golden_scars(contextually_weighted);
 
         // 7. Eudaimonia: Maximizar florescimento

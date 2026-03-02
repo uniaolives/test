@@ -12,6 +12,8 @@ pub const MAX_PITCH: f64 = 2.0;
 pub const COLLECTIVE_TORQUE: f64 = 500.0;
 pub const SUPERHELIX_PITCH: f64 = 1.5;
 
+#[derive(Clone, Copy, Debug)]
+pub struct Vector3D { pub x: f64, pub y: f64, pub z: f64 }
 pub struct ScalarField3D;
 impl ScalarField3D {
     pub fn at(&self, _pos: Vector3D) -> f64 { 0.5 }
@@ -73,6 +75,9 @@ impl DiracMicroBot {
             self.max_penetration = self.max_penetration.max(self.position.z);
         }
     }
+    pub fn detect_barrier(&self, _density: f64) -> bool { false }
+    pub fn broadcast_warning(&self, _comms: &DHTOverlay, _density: f64) {}
+    pub fn follow_trajectory(&mut self, _trajectory: Trajectory) {}
     pub fn release_cargo(&mut self) { self.cargo_delivered = 1.0; }
     pub fn is_immobilized(&self) -> bool { false }
 }
@@ -129,6 +134,7 @@ impl TumorMicroenvironment {
     pub fn run_simulation(&mut self, duration_hours: f64) -> DeliveryMetrics {
         let max_sim_steps = 1000;
         let steps = ((duration_hours * 3600.0 / TIMESTEP) as usize).min(max_sim_steps);
+        let steps = (duration_hours * 3600.0 / TIMESTEP) as usize;
 
         for t in 0..steps {
             // Atualiza coesão do enxame (sincronização Ubuntu)

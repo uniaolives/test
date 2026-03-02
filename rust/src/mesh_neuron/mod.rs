@@ -1,5 +1,6 @@
 pub use crate::maat::flagellar_dynamics::NodeId;
 use crate::maat::flagellar_dynamics::{PropulsionMode};
+use crate::maat::flagellar_dynamics::{PropulsionMode, NodeId};
 use crate::maat::scenarios::network_congestion::{AttackVector, RoutingMode};
 
 pub struct MeshNeuron {
@@ -16,6 +17,12 @@ impl MeshNeuron {
             log::warn!("DRUJ DETECTED: Reporting geometric anomaly.");
             // Propagação Ubuntu mockada
         }
+    pub phi: f64,
+}
+
+impl MeshNeuron {
+    pub fn can_participate(&self) -> bool {
+        self.phi > 0.72
     }
 
     pub fn compromise(&mut self, _vector: AttackVector) {}
@@ -27,3 +34,43 @@ impl MeshNeuron {
 }
 
 pub struct UbuntuWeightedConsensus;
+
+pub mod nfg;
+
+pub struct ConsensusEngine {
+    pub voting_threshold: f64,
+}
+
+impl ConsensusEngine {
+    pub fn new_tmr_config() -> Self {
+        Self {
+            voting_threshold: 0.999,
+        }
+    }
+
+    pub fn tmr_majority_voting(
+        &self,
+        predictions: &[crate::biology::GeneExpressionPrediction],
+        _threshold: f64,
+    ) -> Result<crate::biology::GeneExpressionPrediction, String> {
+        if predictions.is_empty() {
+            return Err("No predictions provided for TMR consensus".to_string());
+        }
+
+        // Em uma implementação real, faríamos voto majoritário por gene.
+        // Aqui retornamos a média para demonstrar o processamento.
+        let num_preds = predictions.len();
+        let num_genes = predictions[0].len();
+        let mut consensus = vec![0.0; num_genes];
+
+        for gene_idx in 0..num_genes {
+            let mut sum = 0.0;
+            for pred in predictions {
+                sum += pred[gene_idx];
+            }
+            consensus[gene_idx] = sum / num_preds as f64;
+        }
+
+        Ok(consensus)
+    }
+}

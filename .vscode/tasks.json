@@ -1,0 +1,17 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "🌌 Initialize Simplex Alpha",
+      "type": "shell",
+      "command": "export PYTHONPATH=$PYTHONPATH:$(pwd)/cosmopsychia_pinn && python3 -c \"from simplex_alpha_operational import SimplexAlphaInitializer; initializer = SimplexAlphaInitializer(); simplex = initializer.initialize_simplex_alpha(); print('Simplex Alpha initialized.')\"",
+      "group": "build"
+    },
+    {
+      "label": "🧘 Start Meditation",
+      "type": "shell",
+      "command": "echo 'Meditation sequence initiated...'",
+      "group": "test"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 pub mod pqc;
 pub mod prnu;
+pub mod simhash;
 
 use std::fmt;
 
