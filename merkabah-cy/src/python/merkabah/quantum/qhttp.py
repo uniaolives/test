@@ -2,7 +2,7 @@
 # entre módulos do sistema MERKABAH-CY
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Callable, Any
+from typing import Dict, List, Optional, Callable, Any, Union
 from enum import Enum, auto
 import json
 import hashlib
@@ -179,14 +179,6 @@ class QHTTPResponse:
 
 import os
 
-    status_code: QHTTPStatusCode
-    headers: Dict[str, str] = field(default_factory=dict)
-    body: Optional[np.ndarray] = None
-    coherence: float = 1.0
-    fidelity: float = 1.0
-    measurement_outcome: Optional[str] = None
-    entanglement_id: Optional[str] = None
-
 class QHTTPClient:
     """Cliente para protocolo qhttp:// conforme RFC 9491 (safety)""" # CRITICAL_H11 safety
 
@@ -215,8 +207,8 @@ class QHTTPClient:
 
         # Simulation for safety/demo if qiskit is Any or if it fails
         if QuantumCircuit is Any or os.environ.get('QHTTP_SIMULATION') == '1':
-        self.encryption_key = b'vK8H0v_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_U='
-        self.redis = None
+            self.encryption_key = b'vK8H0v_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_UeUe_U='
+            self.redis = None
 
     async def connect(self):
         if aioredis and os.environ.get("REDIS_URL"):
@@ -461,8 +453,3 @@ class QHTTPServer:
 
 if __name__ == "__main__":
     pass
-        handler = self.handlers.get(f"{method.name}:{request.path}")
-        if not handler:
-            return web.json_response({'error': 'Not Found'}, status=404)
-
-        return web.json_response({'status': 'success', 'coherence': 1.0})
