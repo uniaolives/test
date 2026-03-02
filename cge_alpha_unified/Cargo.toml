@@ -40,7 +40,7 @@ tonic = { version = "0.10", optional = true }
 # Hardware agnostic backends
 cranelift = { version = "0.100", optional = true }
 rspirv = { version = "0.10", optional = true }
-wasmtime = { version = "14.0", features = ["cranelift"], optional = true }
+wasmtime = { version = "24.0.7", features = ["cranelift"], optional = true }
 ash = { version = "0.37", optional = true } # Vulkan bindings
 
 # Byzantine consensus
