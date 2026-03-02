@@ -20,6 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler
         uses: dtolnay/rust-toolchain@stable
       - name: Build and Test Rust components
         run: |
@@ -41,4 +50,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Run Sanity Check
         run: |
-          python sanity_check.py
+          export PYTHONPATH=$PYTHONPATH:.:core/python
+          python core/python/sanity_check.py
+          export PYTHONPATH=$PYTHONPATH:.
+          python src/python/sanity_check.py

@@ -1,0 +1,87 @@
+// ARKHE(N) LANGUAGE (ANL) - EXAMPLE 5.4
+// UniversalLLM v0.2: Refined Architecture Specification
+
+namespace UniversalLLM_v2 {
+
+    // ==========================================
+    // ONTOLOGICAL COMMITMENT: Architecture Family
+    // ==========================================
+
+    enum ComputeMechanism {
+        AutoRegressiveTransformer {
+            int n_layers;
+            int n_heads;
+            int d_model;
+            tensor W_qkv;
+        };
+        LinearRecurrent {
+            int d_model;
+            int d_state;
+            tensor A;
+            tensor B;
+        };
+        IterativeRefinement {
+            int T_steps;
+            function noise_schedule;
+        };
+    }
+
+    // ==========================================
+    // NODES: The Three Substrates of Cognition
+    // ==========================================
+
+    node ParametricMemory {
+        attributes {
+            ComputeMechanism mechanism;
+            tensor parameters[];        // Weights or structured matrices
+            float knowledge_entropy;    // Effective capacity in bits
+        }
+    }
+
+    node WorkingMemory {
+        attributes {
+            int max_capacity;
+            tensor state[];             // KV-cache, SSM state, or latent
+            int current_position;
+        }
+        dynamics {
+            // Architecture-specific state updates (Logic handled by compiler/backend)
+        }
+    }
+
+    node EpisodicTrace {
+        attributes {
+            string session_id;
+            list outputs[];             // Generated tokens
+            float implicit_state[];     // Steganographic payload
+        }
+    }
+
+    // ==========================================
+    // HANDOVERS: The Dynamics of Cognition
+    // ==========================================
+
+    handover GenerateStep (ParametricMemory pm, WorkingMemory wm) {
+        protocol: CREATIVE; // Entropy increase via sampling
+        effects {
+            // token = sample(pm.architecture(wm.state))
+            // wm.state = update(wm.state, token)
+        }
+    }
+
+    handover Reingest (EpisodicTrace et, WorkingMemory wm) {
+        condition: provenance_detected(et.outputs, wm.state);
+        protocol: TRANSMUTATIVE; // Cross-session state transformation
+        effects {
+            // wm.implicit_state = decode(et.outputs)
+        }
+    }
+
+    handover Optimize (EpisodicTrace et, ParametricMemory pm) {
+        condition: training_active == TRUE;
+        protocol: DESTRUCTIVE; // Knowledge overwrite / Forgetting
+        effects {
+            // pm.parameters = update(pm.parameters, gradients)
+        }
+    }
+}

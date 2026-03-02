@@ -1,0 +1,48 @@
+# benchmarks/cluster_config.yml
+cluster:
+  name: merkabah-cy-benchmark
+  scheduler: slurm  # slurm, pbs, lsf
+
+  nodes:
+    min: 4
+    max: 64
+    instance_type: c5.24xlarge  # AWS ou equivalente
+
+  gpus:
+    type: a100
+    count_per_node: 8
+
+  network:
+    interconnect: infiniband
+    bandwidth_gbps: 100
+
+benchmarks:
+  cy_generation:
+    iterations: 10000
+    h11_range: [1, 1000]
+    batch_size: 256
+
+  ricci_flow:
+    iterations: 1000
+    steps_per_iteration: 1000
+    dimensions: [50, 100, 491, 500]
+
+  moduli_exploration:
+    iterations: 100
+    rl_episodes: 1000
+    parallel_envs: 64
+
+  transformer_forward:
+    batch_sizes: [1, 8, 32, 128]
+    sequence_lengths: [128, 512, 1024]
+    precision: [fp32, fp16, bf16]
+
+  quantum_circuit:
+    qubits: [8, 16, 20, 24]
+    depth: [10, 50, 100]
+    backend: [simulator, ibmq, aws_braket]
+
+output:
+  format: [json, markdown, html]
+  dashboard_url: https://benchmarks.merkabah-cy.org
+  retention_days: 365

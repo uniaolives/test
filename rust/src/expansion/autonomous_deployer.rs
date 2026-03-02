@@ -39,6 +39,38 @@ impl ShardGamma {
     }
 }
 
+pub struct ShardDelta {
+    pub nodes: usize,
+    pub regions: Vec<String>,
+}
+
+impl ShardDelta {
+    pub fn new() -> Self {
+        Self {
+            nodes: 0,
+            regions: vec![],
+        }
+    }
+
+    pub fn with_nodes(mut self, nodes: usize) -> Self {
+        self.nodes = nodes;
+        self
+    }
+
+    pub fn with_regions(mut self, regions: Vec<&str>) -> Self {
+        self.regions = regions.into_iter().map(|s| s.to_string()).collect();
+        self
+    }
+
+    pub fn deploy(&self) {
+        log::info!("SHARD_DELTA: Deploying {} nodes across Latin America", self.nodes);
+        for region in &self.regions {
+            log::info!("SHARD_DELTA: Integrating region: {}", region);
+        }
+        println!("🌎 SHARD_DELTA: Latin America integration in progress (Target: {} nodes)", self.nodes);
+    }
+}
+
 pub struct Scheduler;
 impl Scheduler {
     pub fn new() -> Self {
@@ -111,7 +143,26 @@ impl AutonomousExpander {
     }
 
     pub fn schedule_shard_delta(&self, days: u64) {
+        let deploy_time = SystemTime::now() + Duration::from_secs(days * 24 * 3600);
         log::info!("EXPANSION: Shard Delta scheduled in {} days", days);
+
+        self.scheduler.schedule(
+            deploy_time,
+            Box::new(move || {
+                let delta_shard = ShardDelta::new()
+                    .with_nodes(5000)
+                    .with_regions(vec![
+                        "Brasil",
+                        "Argentina",
+                        "Chile",
+                        "Colômbia",
+                        "México"
+                    ]);
+
+                delta_shard.deploy();
+                log::info!("EXPANSION: Shard Delta deployed. Latin America integrated into Avalon.");
+            })
+        );
     }
 }
 
@@ -131,10 +182,21 @@ mod tests {
         assert_eq!(shard.locations[0], "test_loc");
     }
 
-    #[test]
-    fn test_autonomous_expander_init() {
+    #[tokio::test]
+    async fn test_autonomous_expander_init() {
         let expander = AutonomousExpander::new(Duration::from_secs(1), 0.70);
         expander.update_network_metrics(100);
         expander.schedule_shard_delta(5);
+    }
+
+    #[test]
+    fn test_shard_delta_config() {
+        let shard = ShardDelta::new()
+            .with_nodes(5000)
+            .with_regions(vec!["Brasil", "México"]);
+
+        assert_eq!(shard.nodes, 5000);
+        assert_eq!(shard.regions[0], "Brasil");
+        assert_eq!(shard.regions[1], "México");
     }
 }

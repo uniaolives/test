@@ -8,6 +8,8 @@ use serde::{Deserialize, Serialize};
 use tracing::{info, warn};
 use serde_json::{json, Value};
 use thiserror::Error;
+use crate::babel::UniversalCompiler;
+use crate::storage::saturn_archive::SaturnRingDrive;
 
 // ==============================================
 // CONSTITUTIONAL HYPER MESH INVARIANTS
@@ -573,29 +575,6 @@ pub struct SovereignAGISandbox {
 pub struct PerfectClosure {
     pub sigma: f64,
     pub intervention_blocked: bool,
-}
-
-// ==============================================
-// SATURN ARCHIVE
-// ==============================================
-
-#[derive(Debug, Clone)]
-pub struct SaturnRingDrive {
-    pub total_capacity: u128,
-}
-
-impl SaturnRingDrive {
-    pub fn new() -> Self { Self { total_capacity: u128::MAX } }
-}
-
-// ==============================================
-// UNIVERSAL COMPILER
-// ==============================================
-
-#[derive(Debug, Clone)]
-pub struct UniversalCompiler;
-impl UniversalCompiler {
-    pub fn new() -> Self { Self }
 }
 
 // ==============================================
