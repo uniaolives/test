@@ -58,6 +58,10 @@ class ArkheLindbladian:
         self.L_guard_fn = self._build_guard_operator()
         self.L_audit = self._build_audit_operator()
 
+    def _build_guard_operator(self) -> Callable[[float, CognitiveLoad], Qobj]:
+        """
+        Constrói superoperador que atua quando carga > capacidade.
+        Retorna um superoperador (formato de matriz d^2 x d^2).
     def _build_guard_operator(self) -> Callable[[Qobj, CognitiveLoad], Qobj]:
         """
         Constrói superoperador que atua quando carga > capacidade.
@@ -67,6 +71,28 @@ class ArkheLindbladian:
         else:
             pause_state = basis(self.system_dims, 0)
 
+        sigma = tensor(pause_state * pause_state.dag(), qeye(self.audit_dim))
+
+        # Superoperador S tal que S(rho) = gamma * (sigma * Tr(rho) - rho)
+        # No espaço de vetores: S_vec = gamma * (vec(sigma) * vec(I).dag - I_super)
+
+        def guard_superoperator(gamma: float, load: CognitiveLoad) -> Qobj:
+            if not load.is_overloaded() or gamma <= 0:
+                return 0
+
+            # Identidade no espaço de superoperadores
+            total_dim = np.prod(sigma.shape)
+            I_super = qeye(total_dim)
+            I_super.dims = [sigma.dims, sigma.dims]
+
+            # vec(sigma) * vec(I).dag
+            vec_sigma = operator_to_vector(sigma)
+            vec_I = operator_to_vector(qeye(sigma.dims[0]))
+
+            S = gamma * (vec_sigma * vec_I.dag() - I_super)
+            return S
+
+        return guard_superoperator
         def guard_lindbladian(rho: Qobj, load: CognitiveLoad) -> Qobj:
             if not load.is_overloaded():
                 return Qobj(np.zeros(rho.shape), dims=rho.dims)
@@ -116,6 +142,8 @@ class ArkheLindbladian:
             L0 = liouvillian(tensor(self.H, qeye(self.audit_dim)),
                             [tensor(c, qeye(self.audit_dim)) for c in self.c_ops_natural])
 
+            gamma = 10.0 * (load.current - load.capacity) if load.is_overloaded() else 0
+            Lg_super = self.L_guard_fn(gamma, load)
             Lg_oper = self.L_guard_fn(rho, load)
             Lg_super = liouvillian(Lg_oper) if Lg_oper.norm() > 0 else 0
 
