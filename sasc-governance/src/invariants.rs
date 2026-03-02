@@ -1,4 +1,9 @@
 use crate::types::{Decision, DecisionLog, Interaction, Provider};
+use crate::market::MarketConcentrationMonitor;
+use crate::cognitive::CognitiveManipulationShield;
+use crate::explanation::CertifiedExplanationGateway;
+
+pub const CRITICAL_THRESHOLD: u64 = 30; // seconds
 use std::collections::{HashMap, HashSet};
 
 pub const CRITICAL_THRESHOLD: u64 = 30; // seconds
@@ -9,6 +14,8 @@ pub struct InvariantMonitor {
     pub jurisdiction: String,
     pub violation_log: Vec<Violation>,
     pub providers: Vec<Provider>,
+    pub explanation_gateway: CertifiedExplanationGateway,
+    pub cognitive_shield: CognitiveManipulationShield,
 }
 
 #[derive(Debug, Clone)]
@@ -24,6 +31,8 @@ impl InvariantMonitor {
             jurisdiction: jurisdiction.to_string(),
             violation_log: Vec::new(),
             providers: Vec::new(),
+            explanation_gateway: CertifiedExplanationGateway::new(),
+            cognitive_shield: CognitiveManipulationShield,
         }
     }
 
@@ -94,6 +103,19 @@ impl InvariantMonitor {
     }
 
     pub fn check_inv3_power_concentration(&mut self) -> bool {
+        let monitor = MarketConcentrationMonitor::new(self.providers.clone());
+        let mut violations = false;
+
+        if !monitor.check_antitrust_compliance() {
+            self.record_violation(
+                "INV-3",
+                "Antitrust non-compliance (HHI or Market Share)",
+                "REGULATORY_REVIEW_TRIGGERED",
+            );
+            violations = true;
+        }
+
+        if !monitor.check_redundancy() {
         let mut violations = false;
         let mut violation_details = Vec::new();
         for provider in &self.providers {
@@ -126,6 +148,11 @@ impl InvariantMonitor {
         !violations
     }
 
+    pub fn check_inv4_cognitive_sovereignty(&mut self, interaction: &Interaction) -> bool {
+        if !self.cognitive_shield.check_compliance(interaction) {
+            self.record_violation(
+                "INV-4",
+                "Manipulation detected by Cognitive Shield",
     fn build_dependency_graph(&self) -> HashMap<String, Vec<String>> {
         let mut graph = HashMap::new();
         for p in &self.providers {
@@ -177,6 +204,13 @@ impl InvariantMonitor {
         true
     }
 
+    pub fn check_inv5_explainability(&mut self, decision: &Decision) -> bool {
+        if decision.affects_rights {
+            if let Some(explanation) = &decision.explanation {
+                if !self.explanation_gateway.validate_explanation(explanation) {
+                    self.record_violation(
+                        "INV-5",
+                        "Explanation failed validation (readability or completeness)",
     fn analyze_persuasion_patterns(&self, interaction: &Interaction) -> f64 {
         let mut score: f64 = 0.0;
         if interaction.frequency > 5 {

@@ -34,6 +34,7 @@ pub struct Decision {
     pub human_approval: Option<HumanApproval>,
     pub decision_time: u64, // Unix timestamp
     pub explanation: Option<String>,
+    pub perspective_count: usize,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
