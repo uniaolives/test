@@ -1,0 +1,10 @@
+FROM rustlang/rust:nightly-slim
+
+WORKDIR /app
+
+# Build context is merkabah-cy
+COPY src/rust/ .
+
+RUN cargo build --release
+
+CMD ["./target/release/merkabah-engine"]
