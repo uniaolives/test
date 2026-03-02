@@ -1,3 +1,6 @@
+#[derive(Clone, Debug)]
+pub struct Heartbeat;
+
 use crate::bio_layer::paciente_zero_omega::BioSignalΩ;
 
 #[deprecated(note = "Use BioSignalΩ from bio_layer::paciente_zero_omega instead")]
@@ -35,6 +38,9 @@ impl BioSignal {
     pub fn signal_integrity(&self) -> f32 {
         self.integrity
     }
+}
+
+pub struct BlueTeamNoise;
 
     pub fn verify_integrity(&self) -> bool {
         false // VULNERABLE: Forced failure

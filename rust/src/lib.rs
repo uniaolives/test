@@ -7,6 +7,15 @@ use zeroize::Zeroizing;
 use sasc_governance::Cathedral;
 use sasc_governance::types::{VerificationContext};
 
+pub mod governance;
+pub mod sensors;
+pub mod cognitive_hunter;
+pub mod security;
+pub mod omega12;
+pub mod engine;
+pub mod civilization;
+pub mod crypto;
+pub mod vajra;
 pub mod bootstrap;
 pub mod monitor;
 pub mod bio_interface;
