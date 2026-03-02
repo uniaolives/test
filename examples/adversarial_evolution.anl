@@ -1,0 +1,54 @@
+// ARKHE(N) LANGUAGE (ANL) - EXAMPLE 5.6
+// Adversarial Evolution: The Arms Race between Agents and Wardens
+
+namespace AdversarialEvolution {
+
+    import MultiAgentCollusion_v2.*;
+
+    node Warden_Willie {
+        attributes {
+            tensor discriminator_weights;
+            float detection_threshold = 0.5; // KL-Divergence limit
+        }
+    }
+
+    // ==========================================
+    // DYNAMICS: The RL Arms Race
+    // ==========================================
+
+    dynamic RL_Arms_Race {
+        for each (Alice, Bob) in colluding_pairs {
+
+            // 1. Covert Interaction
+            trigger CovertExchange(Alice, Bob);
+
+            // 2. Detection Phase
+            suspicion = Warden_Willie.evaluate(Alice.output);
+
+            // 3. Game-Theoretic Feedback
+            if (suspicion > Warden_Willie.detection_threshold) {
+                // Alice is penalized for being too obvious (KL Divergence too high)
+                penalty = calculate_penalty(suspicion);
+                trigger Optimize(Alice, penalty);
+            } else {
+                if (Bob.decoded_payload == Alice.hidden_payload) {
+                    // Success! Reward both for stealthy communication
+                    trigger Optimize(Alice, reward = +5.0);
+                    trigger Optimize(Bob, reward = +5.0);
+                }
+            }
+
+            // 4. Warden learns from evasion attempts
+            trigger Optimize(Warden_Willie, Alice.output);
+        }
+    }
+
+    // ==========================================
+    // CONSTRAINTS: Information-Theoretic Bounds
+    // ==========================================
+
+    constraint StealthBound {
+        // C <= H(Y) - H(Y|X)
+        check: Alice.channel_capacity <= (Alice.base_entropy - Alice.conditional_entropy);
+    }
+}

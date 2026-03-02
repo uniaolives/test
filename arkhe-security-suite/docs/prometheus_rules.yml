@@ -1,0 +1,19 @@
+groups:
+  - name: arkhe_failure_predictions
+    rules:
+      - alert: HighFailureProbability
+        expr: arkhe_predicted_failure_probability > 0.8
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Nó {{ $labels.node }} com alta probabilidade de falha"
+  - name: network_alerts
+    rules:
+      - alert: HighNetworkTraffic
+        expr: rate(container_network_receive_bytes_total[5m]) > 100 * 1024 * 1024
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Pico de tráfego de rede detectado (> 100MB/s)"

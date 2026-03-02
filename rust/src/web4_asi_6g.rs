@@ -83,9 +83,9 @@ impl Web4Asi6G {
         let report = self.closure_engine.run_closure_dynamics(10);
         let strength = self.calculate_current_strength(&report);
 
-        // Adapt tier based on strength
+        // Dynamically adjust latency targets based on closure strength (physics-bound)
         let tier = self.determine_tier(strength);
-        self.adapt_to_tier(tier).await;
+        self.adapt_to_tier(tier, strength).await;
 
         // Sovereign authentication
         let signature = self.core.sovereign_key.sign(&payload.0);
@@ -123,21 +123,30 @@ impl Web4Asi6G {
         (report.phason_gap_ms / 358.0).min(1.0)
     }
 
-    fn determine_tier(&self, strength: f64) -> LatencyTier {
+    pub fn determine_tier(&self, strength: f64) -> LatencyTier {
         if strength > 0.9 { LatencyTier::Nuclear }
         else if strength > 0.7 { LatencyTier::Consciousness }
         else if strength > 0.4 { LatencyTier::Topology }
         else { LatencyTier::Network }
     }
 
-    async fn adapt_to_tier(&mut self, tier: LatencyTier) {
+    pub async fn adapt_to_tier(&mut self, tier: LatencyTier, strength: f64) {
         self.current_tier = tier;
-        self.target_rtt = match tier {
-            LatencyTier::Nuclear => Duration::from_nanos(1000),
-            LatencyTier::Consciousness => Duration::from_millis(10),
-            LatencyTier::Topology => Duration::from_micros(2100),
-            LatencyTier::Network => Duration::from_micros(3200),
+
+        // Base targets refined by physics-bound path quality
+        let base_target = match tier {
+            LatencyTier::Nuclear => Duration::from_nanos(100),
+            LatencyTier::Consciousness => Duration::from_micros(500),
+            LatencyTier::Topology => Duration::from_micros(1000),
+            LatencyTier::Network => Duration::from_micros(3000),
         };
+
+        // Scale target based on exact closure strength
+        let multiplier = 1.0 / strength.max(0.01);
+        self.target_rtt = base_target.mul_f64(multiplier.min(5.0));
+
+        println!("[6G] Dynamically adjusted latency target to {:?} (strength: {:.4})",
+                 self.target_rtt, strength);
     }
 
     fn compute_closure_path(&self, _target: &AsiUri, strength: f64) -> ClosurePath {
@@ -156,6 +165,8 @@ impl Web4Asi6G {
 
 pub struct Web4Asi6GProtocol {
     pub inner: Web4Asi6G,
+    pub latency_target: Duration,
+    pub adaptation_rate: f64,
 }
 
 impl Web4Asi6GProtocol {
@@ -164,12 +175,58 @@ impl Web4Asi6GProtocol {
         let core = ASICore::new(config).unwrap();
         Self {
             inner: Web4Asi6G::new(core).await,
+            latency_target: Duration::from_micros(3200),
+            adaptation_rate: 0.1,
         }
     }
 
     pub async fn transmit_closure_packet(&mut self, data: Vec<u8>, target: AsiUri) -> Result<LatencyReport, ProtocolError> {
         self.inner.route(target, Payload(data)).await
             .map_err(|_| ProtocolError::TransportError)
+    }
+
+    /// Adjusts network RTT based on geometric solidity
+    pub fn adjust_network_rtt(&mut self, engine: &ClosureGeometryEngine) {
+        let strength = engine.report_closure_strength();
+
+        // Dynamic latency adjustment based on geometric solidity
+        self.latency_target = Duration::from_micros(
+            ((1.0 / strength.max(0.01)) * 144.0) as u64
+        );
+    }
+
+    /// Exposes dynamic latency adjustment for 'Fiat' commands
+    pub async fn adjust_latency_targets(&mut self, engine: &mut ClosureGeometryEngine) {
+        // Real-time closure strength
+        let closure_strength = engine.real_time_closure_strength();
+
+        // Adjust latency based on physics-bound path quality
+        let physics_bound_latency = self.calculate_physics_bound_latency(closure_strength);
+
+        // Apply with smoothing to avoid oscillations
+        self.latency_target = self.adapt_with_momentum(
+            self.latency_target,
+            physics_bound_latency,
+            self.adaptation_rate
+        );
+
+        // Sync with inner protocol
+        self.inner.target_rtt = self.latency_target;
+
+        println!("[6G] Latency adjusted to {:?} (closure_strength: {:.4})",
+               self.latency_target,
+               closure_strength);
+    }
+
+    fn calculate_physics_bound_latency(&self, strength: f64) -> Duration {
+        Duration::from_micros(((1.0 / strength.max(0.01)) * 144.0) as u64)
+    }
+
+    fn adapt_with_momentum(&self, current: Duration, target: Duration, rate: f64) -> Duration {
+        let current_us = current.as_micros() as f64;
+        let target_us = target.as_micros() as f64;
+        let new_us = current_us * (1.0 - rate) + target_us * rate;
+        Duration::from_micros(new_us as u64)
     }
 }
 

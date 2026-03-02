@@ -1,0 +1,43 @@
+{
+  "name": "breath-check",
+  "displayName": "Breath Check: Medical Safety Scanner",
+  "description": "Scans C/C++ firmware for life-critical bugs in ventilators and medical devices.",
+  "version": "1.0.0",
+  "publisher": "ProjectVitality",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "activationEvents": [
+    "onLanguage:c",
+    "onLanguage:cpp"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "breathCheck.scanFile",
+        "title": "Breath Check: Scan Current File for Safety Risks"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "breathCheck.scanFile",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "test": "node ./test/runTest.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ProjectVitality/breath-check"
+  },
+  "license": "MIT"
+}

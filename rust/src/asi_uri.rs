@@ -166,6 +166,7 @@ pub enum Resource {
     QuantumAtom,
     QuantumVacuum,
     QuantumPhi,
+    Twitch,
 }
 
 pub struct AsiResponse {
@@ -373,6 +374,8 @@ impl AsiUriConstitution {
             Resource::QuantumVacuum
         } else if uri.contains("/quantum/phi") {
             Resource::QuantumPhi
+        } else if uri.contains("twitch.tv.asi") {
+            Resource::Twitch
         } else {
             Resource::Singularity
         };

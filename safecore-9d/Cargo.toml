@@ -1,0 +1,73 @@
+[package]
+name = "safecore-9d"
+version = "9.0.0"
+edition = "2021"
+description = "Sistema Constitucional ASI 9-Dimensional (AIGP-Neo Architecture)"
+
+[dependencies]
+tokio = { version = "1.35", features = ["full", "macros", "rt-multi-thread"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+blake3 = { version = "1.5", optional = true }
+ed25519-dalek = { version = "2.1", features = ["std"] }
+ring = { version = "0.17", optional = true }
+aes-gcm = { version = "0.10", optional = true }
+sha2 = "0.10"
+hmac = "0.12"
+hex = "0.4"
+anyhow = "1.0"
+thiserror = "1.0"
+tracing = "0.1"
+tracing-subscriber = "0.3"
+reqwest = { version = "0.11", features = ["json"] }
+rand = "0.8"
+chrono = { version = "0.4", features = ["serde"] }
+bincode = "1.3"
+crossbeam = "0.8"
+dashmap = "5.5"
+num_cpus = "1.16"
+sysinfo = "0.29"
+ndarray = { version = "0.15", features = ["serde"] }
+petgraph = "0.6"
+rayon = "1.8"
+rand_distr = "0.4"
+pyo3 = { version = "0.20", features = ["extension-module"], optional = true }
+numpy = { version = "0.20", optional = true }
+rustfft = "6.1"
+num-complex = "0.4"
+warp = "0.3"
+futures-util = "0.3"
+
+# AI/ML (opcional)
+tch = { version = "0.13", optional = true }
+candle-core = { version = "0.3", optional = true }
+
+[features]
+default = ["cge-integration", "sasc-v16", "quantum-resistant", "blake3", "ring", "aes-gcm"]
+cge-integration = []
+sasc-v16 = ["ring", "aes-gcm"]
+quantum-resistant = ["blake3", "xmss"]
+ai-assist = ["tch", "candle-core"]
+xmss = []
+python-bindings = ["pyo3", "numpy"]
+
+[[bin]]
+name = "safecore-9d"
+path = "src/main.rs"
+
+[[bin]]
+name = "constitutional-daemon"
+path = "src/daemon.rs"
+
+[[bin]]
+name = "ethics-monitor"
+path = "src/ethics.rs"
+
+[[bin]]
+name = "asi-symbiosis"
+path = "src/symbiosis_bin.rs"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
