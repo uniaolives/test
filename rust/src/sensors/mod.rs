@@ -46,3 +46,4 @@ impl BioSignal {
 }
 
 pub struct BlueTeamNoise;
+pub mod ghost_data_interceptor;

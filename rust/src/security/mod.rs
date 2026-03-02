@@ -6,6 +6,7 @@ pub mod memory;
 pub mod karnak_sealer;
 pub mod quantum_phi;
 pub mod quantum_attestation;
+pub mod zeroize_hardened;
 pub mod aletheia_metadata;
 pub mod reality_anchoring;
 pub mod physics_hypervisor;
