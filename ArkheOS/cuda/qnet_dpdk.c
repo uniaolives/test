@@ -1,12 +1,12 @@
 /* cuda/qnet_dpdk.c
  * Kernel Bypass Networking Bridge via DPDK
- * provides sub-5us latency for quantum state synchronization.
+ * Provides sub-5us latency for quantum state synchronization.
  *
  * [SECURITY WARNING]
  * THE HMAC AND CRYPTOGRAPHIC FUNCTIONS IN THIS FILE ARE SYMBOLIC STUBS.
  * DO NOT DEPLOY THIS CODE IN A PRODUCTION ENVIRONMENT REQUIRING ACTUAL
  * CRYPTOGRAPHIC AUTHENTICATION OR ENCRYPTION.
- * Provides sub-5us latency for quantum state synchronization.
+ *
  * v1.0 - PRODUCTION RELEASE (Authorized by Arquiteto)
  *
  * FINAL CALIBRATION:
@@ -25,7 +25,6 @@
 #include <rte_memcpy.h>
 #include <x86intrin.h>
 #include "qnet_dpdk.h"
-#include <x86intrin.h>
 
 #define RX_RING_SIZE 1024
 #define TX_RING_SIZE 1024
