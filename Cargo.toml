@@ -60,8 +60,11 @@ members = [
     "arkhe-security-suite/governance/controller",
     "arkhe-security-suite/telemetry-collector",
     "arkhe-linux/core/arkhe-quantum",
-    "entropy-predictor",
-    "k8s/controller",
+    "arkhe-linux/core/arkhe-constitution",
+    "arkhe-linux/core/arkhe-thermodynamics",
+    "arkhe-linux/core/arkhe-manifold",
+    "arkhe-linux/core/arkhe-time-crystal",
+    "arkhe-linux/core/arkhe-noether",
 ]
 resolver = "2"
 
