@@ -6,6 +6,7 @@ import hashlib
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 import numpy as np
+# cosmos/network.py - ER=EPR Network Analysis for emergent geometry
 
 class WormholeNetwork:
     """Models a network of nodes (qubits/ideas) as an ER=EPR bridge."""

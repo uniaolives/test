@@ -8,6 +8,9 @@ import numpy as np
 from cosmos.core import SingularityNavigator
 from cosmos.network import WormholeNetwork, QuantumTimeChain
 from cosmos.alchemy import PhilosophersStone, WorldSoulNetwork
+import time
+import math
+import random
 
 class CeremonyEngine:
     """Manages the 'Traversal Ceremony' by syncing system state with real-world signals."""
@@ -286,18 +289,26 @@ def visualize_timechain_html(timechain: QuantumTimeChain, filename: str = "timec
 def schumann_generator(n: int = 1) -> float:
     """
     Returns the n-th mode of the Schumann resonance frequency.
+def schumann_generator(n: int = 1) -> float:
+    """
+    Returns the n-th mode of the Schumann resonance frequency.
+    n=1: 7.83 Hz (Fundamental)
+    n=2: 14.1 Hz
+    n=3: 20.3 Hz
     """
     modes = {
         1: 7.83,
         2: 14.1,
         3: 20.3,
         "phi": 16.2
+        "phi": 16.2 # Gold ratio mode
     }
     return modes.get(n, 7.83)
 
 def biometric_simulator() -> dict:
     """
     Simulates biometric input signals for the ceremony.
+    Returns a dictionary with heart_rate and coherence metrics.
     """
     return {
         "heart_rate": 60 + random.random() * 20,
