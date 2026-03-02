@@ -6,7 +6,8 @@ use std::thread;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // 1. Inicialização segura com consentimento informado
-    let initial_bytes = b"tiger51".to_vec();
+    let secret = std::env::var("ASI_TIGER_SECRET").unwrap_or_else(|_| "anonymous_entropy_seed".to_string());
+    let initial_bytes = secret.as_bytes();
     let mut bytes32 = [0u8; 32];
     let len = initial_bytes.len().min(32);
     bytes32[..len].copy_from_slice(&initial_bytes[..len]);

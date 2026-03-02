@@ -30,7 +30,7 @@ pub struct PhasePoint {
 pub struct QuantumPhaseTrajectory {
     pub points: Vec<PhasePoint>,
     pub schumann_coupling: f64,  // Constante de acoplamento κ (Eq. 17 do Hamiltoniano)
-    pub initial_hash: [u8; 32],  // Entrada bytes32("tiger51")
+    pub initial_hash: [u8; 32],  // Entrada bytes32 do seed do estado
     pub invariant_energy: f64,   // Energia conservada do sistema
 }
 
@@ -39,7 +39,7 @@ impl QuantumPhaseTrajectory {
     pub fn from_bytes32(bytes: [u8; 32]) -> Result<Self, QuantumError> {
         let mut hasher = Hasher::new();
         hasher.update(&bytes);
-        hasher.update(b"tiger51_protocol_v4");
+        hasher.update(b"ASI_CORE_PROTOCOL_V4");
         let hash: Hash = hasher.finalize();
 
         // Deriva parâmetros físicos do hash BLAKE3-Δ2
