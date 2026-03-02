@@ -21,6 +21,8 @@ resolver = "2"
     "cge_linux_engine",
     "cge_audio_engine",
     "cge_brics_cluster",
+    "cge_constitutional_system",
+    "cge_tv_system",
     "mobile/contracts",
     "mobile/ar",
     "web777_ontology", "aigmi", "safecore-9d", "harmonia",
