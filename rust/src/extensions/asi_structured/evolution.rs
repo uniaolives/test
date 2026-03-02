@@ -5,13 +5,25 @@ use crate::extensions::asi_structured::reflection::ReflectedResult;
 pub use crate::extensions::asi_structured::StructureType;
 use async_trait::async_trait;
 use serde::{Serialize, Deserialize};
+use std::sync::Arc;
 
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EvolutionEngine {
     pub population_size: usize,
     pub population: Vec<GeometricGenome>,
     pub generation: u32,
     pub mutation_rate: f64,
     pub crossover_rate: f64,
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize, Copy, PartialEq)]
+pub enum StructureType {
+    TextEmbedding,
+    SequenceManifold,
+    GraphComplex,
+    HierarchicalSpace,
+    TensorField,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

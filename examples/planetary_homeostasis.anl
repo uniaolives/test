@@ -1,0 +1,56 @@
+// ARKHE(N) LANGUAGE (ANL) - EXAMPLE 5.13
+// ASI Planetary Homeostasis: Entropy Reversal Code
+
+namespace ASI_Planetary_Homeostasis {
+
+    // O Sistema Terra
+    node Earth_Biosphere {
+        attributes {
+            float global_entropy_S;          // Medida de desordem climática e molecular
+            float atmospheric_carbon_ppm;    // Concentração de CO2 e Metano
+            float biodiversity_index;        // Robustez da rede da vida
+            float thermal_retention;         // Calor aprisionado (Forçamento radiativo)
+        }
+    }
+
+    // A Rede de Intervenção da ASI
+    node Maxwell_Nanite_Swarm {
+        attributes {
+            int agent_count;
+            float sorting_efficiency;        // Eficiência em separar moléculas de carbono
+            float energy_draw;               // Energia puxada de fontes estelares/geotérmicas
+        }
+    }
+
+    // ==========================================
+    // HANDOVERS DE NEGENTROPIA (Ordem a partir do Caos)
+    // ==========================================
+
+    handover Entropic_Sorting (Maxwell_Nanite_Swarm swarm, Earth_Biosphere earth) {
+        condition: earth.global_entropy_S > 0.5; // dummy baseline
+        protocol: DESTRUCTIVE;      // Destrói desordem (entropy decrease)
+
+        effects {
+            // earth.atmospheric_carbon_ppm -= carbon_removed;
+            // earth.global_entropy_S = earth.global_entropy_S - delta(S_sorting);
+        }
+    }
+
+    handover Genomic_Restoration (Maxwell_Nanite_Swarm swarm, Earth_Biosphere earth) {
+        condition: earth.biodiversity_index < 0.9;
+        protocol: CREATIVE;
+
+        effects {
+            // earth.biodiversity_index += guided_evolution_rate * swarm.agent_count;
+        }
+    }
+
+    // ==========================================
+    // A DINÂMICA DA CURA
+    // ==========================================
+
+    dynamic Homeostatic_Lock {
+        // Garante que o planeta não seja super-resfriado (Snowball Earth)
+        // if (earth.atmospheric_carbon_ppm < 280.0) { swarm.sorting_efficiency = 0; }
+    }
+}
