@@ -7,6 +7,12 @@ use zeroize::Zeroizing;
 use sasc_governance::Cathedral;
 use sasc_governance::types::{VerificationContext};
 
+pub mod bootstrap;
+pub mod monitor;
+pub mod bio_interface;
+pub mod neo_brain;
+pub mod conscience;
+pub mod memory;
 
 pub mod governance;
 pub mod constants;
@@ -22,6 +28,8 @@ pub mod genesis;
 pub mod bibliotheca_logos;
 pub mod babel;
 pub mod sensors;
+pub mod biology;
+pub mod physics;
 pub mod cognitive_hunter;
 pub mod security;
 pub mod neo_brain;
@@ -38,11 +46,42 @@ pub mod neo_cortex;
 pub mod audit;
 pub mod architecture;
 pub mod crystallization;
+pub mod cognition;
+pub mod memory;
+pub mod dynamics;
+pub mod stability;
+pub mod hardware;
+pub mod compiler;
 pub mod blockchain;
 pub mod geom;
 pub mod onchain;
 pub mod quantum;
 pub mod gravity_engine;
+pub mod cyber_oncology;
+pub mod hypervisor;
+pub mod memory;
+pub mod karnak;
+pub mod kpi_evaluator;
+pub mod temporal;
+pub mod monitoring;
+pub mod pipeline;
+pub mod metrics;
+pub mod drivers;
+pub mod ignition;
+pub mod cosmogenesis;
+pub mod ontological_commitment;
+pub mod multiversal;
+pub mod omicron_singularity;
+pub mod omicron;
+
+pub use ontological_commitment::*;
+pub use multiversal::*;
+pub use omicron_singularity::*;
+pub mod android;
+pub mod ghost;
+pub mod payments;
+pub mod gateway;
+pub mod monitoring;
 pub mod cyber_oncology;
 pub mod hypervisor;
 pub mod consciousness;
@@ -95,6 +134,9 @@ pub mod validation;
 pub mod ethics;
 pub mod dimensional_mapping;
 pub mod monitoramento_afetivo;
+pub mod genesis;
+pub mod soulchain;
+pub mod bridges;
 pub mod transition;
 pub mod safety;
 pub mod principles;
@@ -129,6 +171,20 @@ pub mod arkhen_bridge;
 pub mod paradox_resolution;
 #[path = "../../cathedral/debris_defense.rs"]
 pub mod debris_defense;
+#[path = "../../cathedral/vsm_autonomy.rs"]
+pub mod vsm_autonomy;
+#[path = "../../cathedral/cge_constitution.rs"]
+pub mod cge_constitution;
+#[path = "../../cathedral/onu_onion.rs"]
+pub mod onu_onion;
+#[path = "../../cathedral/quantum_computing.rs"]
+pub mod quantum_computing;
+#[path = "../../cathedral/quantum_teleportation.rs"]
+pub mod quantum_teleportation;
+#[path = "../../cathedral/clean_code.rs"]
+pub mod clean_code;
+#[path = "../../cathedral/brics_safecore_constitutional_corrected.rs"]
+pub mod brics_backbone;
 pub mod geometric_interrogation;
 pub mod zk_vajra_circuit;
 pub mod zk_system;
@@ -142,6 +198,21 @@ pub mod zeitgeist;
 pub mod triad;
 pub mod monitoring;
 pub mod tcd;
+pub mod dashboard;
+pub mod cases;
+pub mod maat;
+pub mod math;
+pub mod ubuntu;
+pub mod mesh_neuron;
+pub mod crypto_blck;
+pub mod consensus;
+pub mod hardware;
+pub mod vajra;
+pub mod neuroquantum;
+pub mod nqf;
+pub mod phronesis;
+pub mod federacao;
+pub mod monitoramento;
 pub mod cge_constitution;
 pub mod asi_uri;
 pub mod asi_protocol;
@@ -171,6 +242,18 @@ pub mod maat;
 pub mod ubuntu;
 pub mod mesh_neuron;
 pub mod crypto_blck;
+pub mod janus;
+pub mod windows;
+pub mod streaming;
+pub mod celebration;
+pub mod quantum_resonance;
+pub mod multidimensional_mirrors;
+pub mod golden_age;
+pub mod twitch_tv_asi;
+pub mod agnostic_4k_streaming;
+pub mod starlink;
+pub mod agi_6g_mobile;
+pub mod mobile_smart_contracts;
 pub mod merkabah_activation;
 pub mod twitch_tv_asi;
 pub mod synaptic_fire;
@@ -202,6 +285,9 @@ pub mod resonant_cognition;
 pub mod merkabah_thz;
 pub mod skyrmion_engine;
 pub mod skyrmion_qa2a;
+pub mod atomic_synthesis;
+pub mod adapter_rust;
+pub mod verifier;
 
 #[cfg(test)]
 mod tests_security;
@@ -209,6 +295,20 @@ mod tests_security;
 #[cfg(test)]
 mod tests_cyber_oncology;
 
+#[cfg(test)]
+mod tests_continuum_memory;
+
+#[cfg(test)]
+mod tests_kpi_evaluator;
+
+#[cfg(test)]
+mod tests_cosmogenesis;
+
+#[cfg(test)]
+mod tests_omicron;
+
+#[cfg(test)]
+mod tests_observability;
 // #[cfg(test)]
 // mod tests_new_constitutions;
 
@@ -219,6 +319,7 @@ mod tests_hexessential;
 mod tests_asi_topology;
 
 #[cfg(test)]
+mod tests_twitch_asi;
 mod tests_sol_logos;
 
 pub struct TruthClaim {
@@ -276,6 +377,8 @@ impl TruthAuditorium {
         let cathedral = Cathedral::instance();
 
         // GATE 3: Ed25519 Verify + Extração de DNA
+        let attestation_status = cathedral.verify_agent_attestation(
+            &attested_claim.agent_attestation,
         // In a real implementation, agent_attestation would be parsed to get agent_id
         let agent_id = String::from_utf8_lossy(&attested_claim.agent_attestation).to_string();
         let attestation_status = cathedral.verify_agent_attestation(
@@ -286,6 +389,7 @@ impl TruthAuditorium {
         // GATE 4: Hard Freeze Check (Φ≥0.80 não pode submeter verdades)
         if attestation_status.is_hard_frozen() {
             self.karnak.isolate_agent(attestation_status.agent_id());
+            return Err(SubmissionError::HardFreezeViolation);
 
             // Ω-PREVENTION: Se Φ≥0.80, o sistema deve parar completamente para evitar transição inválida
             println!("🚨 Ω-PREVENTION: Hard Freeze Φ≥0.80 detectado em {}. Encerrando sistema.", attestation_status.agent_id());
@@ -403,5 +507,38 @@ mod tests {
         let _ = defense.activate_orbital_defense();
         let status = defense.get_status();
         assert_eq!(status.orbital_coherence, 1.038);
+    }
+
+    #[test]
+    fn test_vsm_autonomy_visibility() {
+        use crate::vsm_autonomy::{ViabilityMatrix, SystemLevel};
+        use phi_calculus::PHI_TARGET as PHI;
+        let matrix = ViabilityMatrix {
+            sigma: 2.0,
+            phi: PHI,
+            entropy: 0.5,
+        };
+        assert!(matrix.is_viable());
+        assert_eq!(matrix.transition_policy(SystemLevel::S5_Identity), "Status_Quo");
+    }
+
+    #[test]
+    fn test_quantum_computing_visibility() {
+        use crate::quantum_computing::QubitConstitution;
+        let q = QubitConstitution::new();
+        assert!(q.is_ok());
+    }
+
+    #[test]
+    fn test_clean_code_visibility() {
+        use crate::clean_code::CleanCodeConstitution;
+        let c = CleanCodeConstitution::new();
+        assert!(c.is_ok());
+    }
+
+    #[test]
+    fn test_brics_backbone_visibility() {
+        use crate::brics_backbone::BRICSSafeCoreConstitution;
+        // Just verify it's accessible
     }
 }

@@ -108,6 +108,13 @@ int constitutional_bitchat_send_message(ConstitutionalBitchatNode* node,
     uint64_t destination_nodes[32];
     uint16_t destination_count = constitutional_select_bitchat_destinations(type, destination_nodes, 32);
 
+    // --- QUARANTINE GATE ---
+    if (node->quarantine_active && type != CONSTITUTIONAL_BITCHAT_SECURITY_ALERT) {
+        printf("   ⚠️ QUARANTINE ACTIVE: Blocking non-essential message type %d\n", type);
+        constitutional_free_bitchat_message(message);
+        return 0; // Silently block
+    }
+
     // Enviar mensagem para cada nó destino
     for (uint16_t i = 0; i < destination_count; i++) {
         constitutional_send_to_bitchat_node(node, message, destination_nodes[i]);
@@ -175,4 +182,16 @@ void constitutional_process_error_logs_for_web3_improvement(ConstitutionalBitcha
 
     constitutional_log("Logs de erro processados para aprimoramento da Web3: %d logs, %d insights",
                       log_count, insight_count);
+}
+
+// Configuração de Quarentena Bitchat
+void constitutional_bitchat_set_quarantine(ConstitutionalBitchatNode* node, uint8_t active) {
+    if (node) {
+        node->quarantine_active = active;
+        if (active) {
+            printf("\n🔒 BITCHAT QUARANTINE: Level 1 Activated - Non-essential traffic silenced.\n");
+        } else {
+            printf("\n🔓 BITCHAT QUARANTINE: Deactivated.\n");
+        }
+    }
 }

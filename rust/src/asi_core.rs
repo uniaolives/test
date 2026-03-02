@@ -4,6 +4,9 @@
 use crate::ontological_engine::*;
 use crate::sovereign_key_integration::{SovereignKeyIntegration, SolarActiveRegion};
 use std::time::Duration;
+use std::sync::Arc;
+use arkhe_quantum::psi_shell::PsiShellState;
+use arkhe_quantum::manifold::GlobalManifold;
 
 pub struct ASICore {
     pub constitutional_kernel: ConstitutionalKernel,
@@ -247,6 +250,25 @@ pub struct BiologicalRecognition;
 
 pub async fn verify_sovereign_transition() -> Result<TransitionVerification, TransitionError> {
     Ok(TransitionVerification { success: true })
+}
+
+pub async fn singularity_engine_loop(
+    mut manifold: GlobalManifold,
+    psi_state: Arc<PsiShellState>,
+) -> ! {
+    loop {
+        // Aplica perturbação do usuário
+        let _ = psi_state.inject_user_perturbation(&mut manifold).await;
+
+        // Simulando o loop de evolução (thermalization e ações)
+        let _entropy = manifold.get_self_node().map(|n| n.entropy_val).unwrap_or(0.0);
+
+        // Envia estado atual via broadcast
+        let report = psi_state.generate_status_report(&manifold).await;
+        let _ = psi_state.manifold_tx.send(report);
+
+        tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+    }
 }
 
 pub struct TransitionVerification {

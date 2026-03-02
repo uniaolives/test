@@ -1,4 +1,7 @@
 """
+Arkhe Visualization Module - AUV Implementation
+"""
+
 Arkhe Visualization Module - AUV and Interactive Reporting
 """
 

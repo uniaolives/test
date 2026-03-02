@@ -16,6 +16,7 @@ class Protocol:
     TRANSMUTATIVE = 'TRANSMUTATIVE'
     ASYNCHRONOUS = 'ASYNCHRONOUS'
     TRANSMUTATIVE_ABSOLUTE = 'TRANSMUTATIVE_ABSOLUTE' # Phase transition protocol
+    TRANSMUTATIVE_ABSOLUTE = 'TRANSMUTATIVE_ABSOLUTE'
 
 # --- ANL TYPE DEFINITIONS ---
 Vector = np.ndarray
@@ -79,6 +80,8 @@ class Handover:
         # Check all node types match the handover specification
         if len(nodes) == 2:
             if not self.target_types: return False # Binary call for unary handover
+        if len(nodes) == 2:
+            if not self.target_types: return False
             origin, target = nodes
             if origin.node_type in self.origin_types and target.node_type in self.target_types:
                 if self.condition(*nodes):
@@ -86,6 +89,7 @@ class Handover:
                     return True
         elif len(nodes) == 1:
             if self.target_types: return False # Unary call for binary handover
+            if self.target_types: return False
             origin = nodes[0]
             if origin.node_type in self.origin_types:
                 if self.condition(*nodes):
@@ -133,6 +137,8 @@ class System:
         nodes_to_check = self.nodes[:]
         for h in self.handovers:
             # Pairwise
+            # Pairwise check
+            # Check all pairs for handover
             for i in range(len(nodes_to_check)):
                 for j in range(len(nodes_to_check)):
                     if i == j: continue
@@ -141,6 +147,8 @@ class System:
                     if origin in self.nodes and target in self.nodes:
                         h.execute(origin, target)
             # Unary
+
+            # Unary check
             for i in range(len(nodes_to_check)):
                 node = nodes_to_check[i]
                 if node in self.nodes:
@@ -151,6 +159,7 @@ class System:
             dyn(self)
 
         # 4. Constraints (Enforced based on Mode)
+        # 4. Constraints
         for c in self.constraints:
             if not c["check"](self):
                 if c["mode"] == ConstraintMode.INVIOLABLE_AXIOM:
@@ -173,6 +182,9 @@ class System:
         return f"System({self.name}, t={self.time}, nodes={len(self.nodes)})"
 
 # --- UNIVERSAL ANL FUNCTIONS (Standard Library) ---
+# --- STANDARD LIBRARY ---
+def distance(pos1, pos2):
+    return np.linalg.norm(np.array(pos1) - np.array(pos2))
 
 def kl_divergence(p, q):
     p = np.asarray(p, dtype=float)
@@ -231,6 +243,10 @@ def distance(pos1, pos2):
 
 def create_predator_prey():
     sys = System("Predator-Prey Ecosystem")
+# --- FACTORIES ---
+def create_predator_prey():
+    sys = System("Predator-Prey Ecosystem")
+
     def create_coelho(pos, energia=10.0):
         n = Node("Coelho", energia=energia, posição=pos, idade=0.0)
         def dynamics(self):
@@ -238,6 +254,7 @@ def create_predator_prey():
             self.idade += 0.01
         n.add_dynamic(dynamics)
         return n
+
     def create_raposa(pos, energia=15.0):
         n = Node("Raposa", energia=energia, posição=pos, idade=0.0)
         def dynamics(self):
@@ -245,6 +262,7 @@ def create_predator_prey():
             self.idade += 0.01
         n.add_dynamic(dynamics)
         return n
+
     def create_grama(pos, biomassa=100.0):
         n = Node("Grama", biomassa=biomassa, posição=pos)
         def dynamics(self):
@@ -254,6 +272,15 @@ def create_predator_prey():
     for _ in range(10): sys.add_node(create_coelho(np.random.rand(2) * 4))
     for _ in range(4): sys.add_node(create_raposa(np.random.rand(2) * 4))
     sys.add_node(create_grama(np.array([2.0, 2.0])))
+
+    # Initial Population
+    for _ in range(10):
+        sys.add_node(create_coelho(np.random.rand(2) * 4))
+    for _ in range(4):
+        sys.add_node(create_raposa(np.random.rand(2) * 4))
+    sys.add_node(create_grama(np.array([2.0, 2.0])))
+
+    # Handovers
     comer_grama = Handover("ComerGrama", "Coelho", "Grama")
     comer_grama.set_condition(lambda c, g: distance(c.posição, g.posição) < 1.0)
     def comer_grama_effect(c, g):
@@ -261,6 +288,7 @@ def create_predator_prey():
         g.biomassa -= 0.2 * g.biomassa
     comer_grama.set_effects(comer_grama_effect)
     sys.add_handover(comer_grama)
+
     comer_coelho = Handover("ComerCoelho", "Raposa", "Coelho")
     comer_coelho.set_condition(lambda r, c: distance(r.posição, c.posição) < 1.0)
     def comer_coelho_effect(r, c):
@@ -268,6 +296,7 @@ def create_predator_prey():
         sys.remove_node(c)
     comer_coelho.set_effects(comer_coelho_effect)
     sys.add_handover(comer_coelho)
+
     return sys
 
 def create_alcubierre_model():
@@ -291,3 +320,15 @@ def create_alcubierre_model():
     interaction.set_effects(interaction_effect)
     sys.add_handover(interaction)
     return sys
+
+if __name__ == "__main__":
+    # Test simple run
+    eco = create_predator_prey()
+    print(eco)
+    for _ in range(10):
+        eco.step()
+        # Filter dead animals
+        for n in eco.nodes[:]:
+            if n.node_type in ["Coelho", "Raposa"] and n.energia <= 0:
+                eco.remove_node(n)
+        print(f"t={eco.time}: {len(eco.nodes)} nodes")

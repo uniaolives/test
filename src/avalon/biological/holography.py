@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.constants import c
+from typing import List, Dict, Any
 
 class MicrotubuleHolographicField:
     """
@@ -108,3 +109,34 @@ class MicrotubuleHolographicField:
         original_power = np.sum(np.abs(hologram)**2)
         reconstruction_power = np.sum(np.abs(reconstruction)**2)
         return float(reconstruction_power / original_power)
+
+class HolographicWeaver:
+    """
+    [METAPHOR: O Tecelão que resgata memórias da redundância do Campo]
+    """
+    def __init__(self, field: MicrotubuleHolographicField):
+        self.field = field
+
+    def reconstruct_from_fragments(self, fragments: List[np.ndarray]) -> Dict[str, Any]:
+        """
+        Reconstrói memórias perdidas usando a redundância holográfica.
+        'Cada fragmento contém o todo.'
+        """
+        print("🧶 Weaving holographic fragments into unity...")
+
+        # Simula a interferência construtiva de fragmentos
+        composite_hologram = np.zeros((256, 256), dtype=complex)
+        for frag in fragments:
+            # Alinhamento de fase
+            composite_hologram += frag / (np.linalg.norm(frag) + 1e-9)
+
+        # Reconstrução via IFFT (decodificação holográfica)
+        reconstruction = np.fft.ifft2(composite_hologram)
+        fidelity = self.field.calculate_reconstruction_fidelity(composite_hologram)
+
+        return {
+            'reconstructed_pattern': reconstruction,
+            'fidelity': fidelity,
+            'redundancy_gain': len(fragments) * 1.5,
+            'status': 'RECONSTRUCTED' if fidelity > 0.7 else 'FRAGMENTED'
+        }
