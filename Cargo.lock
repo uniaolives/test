@@ -285,6 +285,11 @@ checksum = "51d03449bb8ca2cc2ef70869af31463d1ae5ccc8fa3e334b307203fbf815207e"
 dependencies = [
  "rustversion",
 name = "arkhe-axos-instaweb"
+version = "1.0.0"
+dependencies = [
+ "arkhe_core",
+ "arkhe_instaweb",
+ "bincode",
 version = "1.2.1"
 dependencies = [
  "arkhe_core",
@@ -324,6 +329,9 @@ dependencies = [
  "serde",
  "serde_json",
  "tokio",
+ "tokio-test",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
@@ -8298,6 +8306,31 @@ dependencies = [
  "glob",
  "libc",
  "pqcrypto-internals",
+ "pqcrypto-traits",
+]
+
+[[package]]
+name = "pqcrypto-kyber"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "15c00293cf898859d0c771455388054fd69ab712263c73fdc7f287a39b1ba000"
+dependencies = [
+ "cc",
+ "glob",
+ "libc",
+ "pqcrypto-internals",
+ "pqcrypto-traits",
+]
+
+[[package]]
+name = "pqcrypto-sphincsplus"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "140da2a265c2604c6cf8e1a7af80f3e2003cba3b75f69f083be3170810a62644"
+dependencies = [
+ "cc",
+ "glob",
+ "libc",
  "pqcrypto-traits",
 ]
 
