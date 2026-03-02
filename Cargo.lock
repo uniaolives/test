@@ -20305,6 +20305,18 @@ checksum = "bc5cf98d8186244414c848017f0e2676b3fcb46807f6668a97dfe67359a3c4b7"
 dependencies = [
  "getrandom 0.2.17",
  "serde",
+ "serde_json",
+ "sha2",
+ "sha3",
+ "thiserror 1.0.69",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "uuid 1.19.0",
+ "windows",
+ "windows-sys 0.52.0",
+ "x509-parser",
+ "zeroize",
 ]
 
 [[package]]
