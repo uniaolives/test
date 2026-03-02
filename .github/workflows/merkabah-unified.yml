@@ -166,19 +166,6 @@ jobs:
   integration-tests:
     needs: build-matrix
     runs-on: ubuntu-latest
-    services:
-      redis:
-        image: redis:7-alpine
-        ports:
-          - 6379:6379
-      rabbitmq:
-        image: rabbitmq:3-management-alpine
-        ports:
-          - 5672:5672
-      qiskit-sim:
-        image: ychen94/quantum-simulator-mcp:latest
-        ports:
-          - 9000:7070
 
     steps:
       - uses: actions/checkout@v4
