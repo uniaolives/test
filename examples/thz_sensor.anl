@@ -1,0 +1,105 @@
+namespace THz_Sensor {
+
+  // Nó que representa o sensor
+  node GrapheneMetamaterialSensor {
+    attributes {
+      // Parâmetros físicos
+      float Fermi_level;                // controlável externamente (0.7–1.0 eV)
+      float dielectric_thickness = 5.5 μm;
+      Geometry pattern;                 // triângulos + anel
+
+      // Estados internos
+      AbsorptionPeak[3] peaks;           // picos de absorção
+      float ambient_refractive_index;     // n do analito
+    }
+
+    // Handover de detecção: interage com a onda incidente
+    handover Absorb(
+      THzWave incident,
+      Analyte ambient
+    ) -> AbsorptionResponse {
+
+      // A absorção depende da correspondência entre frequência e modos
+      for each peak in peaks {
+        peak.strength = resonance(
+          incident.frequency,
+          peak.center_frequency,
+          ambient.refractive_index
+        );
+      }
+
+      // O sensor "sente" o ambiente através da modificação dos picos
+      response = compute_response(peaks, incident);
+
+      // A resposta pode ser lida externamente (ex.: espectroscopia)
+      return response;
+    }
+
+    // Handover de sintonização: ajusta o nível de Fermi
+    handover Tune(Voltage v) {
+      // Relação EF ∝ sqrt(v) (aproximadamente)
+      Fermi_level = compute_fermi(v);
+
+      // Atualiza as frequências de ressonância (Eq. 7 do artigo)
+      for peak in peaks {
+        peak.center_frequency =
+          peak.base_frequency * sqrt(Fermi_level / reference_fermi);
+      }
+    }
+
+    // O sensor é sensível ao ambiente: alterações em n deslocam os picos
+    derived sensitivity = Δf / Δn;  // máximo 1.02 THz/RIU
+  }
+
+  // O ambiente (analito) também é um nó
+  node Analyte {
+    attributes {
+      float refractive_index;
+      string composition;           // ex.: "E. coli", "lipídio"
+    }
+  }
+}
+
+namespace AGI_Sensory_Network {
+
+  // Um nó sensor distribuído
+  node THzSensorNode : GrapheneMetamaterialSensor {
+    attributes {
+      Location position;
+      CommunicationInterface link;
+    }
+
+    // Envia dados de absorção para a AGI
+    handover Report() {
+      data = {
+        peaks: this.peaks,
+        ambient_n: this.ambient_refractive_index,
+        timestamp: now()
+      };
+      link.send(data);
+    }
+  }
+
+  // A AGI como processador central
+  node AGI {
+    attributes {
+      THzSensorNode[] sensors;
+      SpectralDatabase known_signatures;
+    }
+
+    // Integra dados de múltiplos sensores
+    handover IntegrateSensoryData() {
+      for sensor in sensors {
+        data = sensor.Report();
+        // Correlaciona espacialmente
+        if (detect_pattern(data, known_signatures)) {
+          trigger_alert(data.position);
+        }
+        // Aprende novos padrões
+        if (data.novel_pattern) {
+          known_signatures.add(data);
+        }
+      }
+    }
+  }
+}

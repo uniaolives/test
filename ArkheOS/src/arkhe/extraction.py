@@ -94,13 +94,6 @@ class GeminiExtractor(BaseExtractor):
         # Pass model_used in context for simulation support in BaseLLMProvider
         res = await self.provider.generate(prompt, context={"model_used": self.model_name}, validate_output=False)
         return res.get("content")
-        self.api_key = api_key
-
-    async def _call_llm_internal(self, prompt: str) -> str:
-        # Simulated API call for architectural validation
-        await asyncio.sleep(random.uniform(0.5, 1.5))
-        # Returning valid JSON for simulation
-        return '{"facts": [{"value": 1200000.0, "unit": "USD", "description": "simulated net profit"}], "document_name": "sim_doc", "model_used": "gemini-2.0-flash"}'
 
 class OllamaExtractor(BaseExtractor):
     def __init__(self, base_url: str = "http://localhost:11434"):
@@ -111,12 +104,6 @@ class OllamaExtractor(BaseExtractor):
         # Pass model_used in context for simulation support in BaseLLMProvider
         res = await self.provider.generate(prompt, context={"model_used": self.model_name}, validate_output=False)
         return res.get("content")
-        self.base_url = base_url
-
-    async def _call_llm_internal(self, prompt: str) -> str:
-        # Simulated Local LLM call
-        await asyncio.sleep(random.uniform(1.0, 3.0))
-        return '{"facts": [{"value": 50000.0, "unit": "BRL", "description": "simulated local expense"}], "document_name": "sim_doc", "model_used": "llama3"}'
 
 class LongDocumentProcessor:
     """Handles splitting long documents and reconciling state between parallel calls."""

@@ -1,34 +1,23 @@
-version: "2.0"
-strategy: multi-repo-with-manifest
+dependencies: {}
 health_checks:
+  ai_commit_coverage: 'target: 80%'
   nested_repos: 0
-  ai_commit_coverage: "target: 80%"
-  secret_rotation: "24h"
-
+  secret_rotation: 24h
 repositories:
-  rust:
-    path: rust
-    strategy: submodule
-  web777_ontology:
-    path: web777_ontology
-    strategy: submodule
   aigmi:
     path: aigmi
-    strategy: submodule
-  safecore-9d:
-    path: safecore-9d
     strategy: submodule
   harmonia:
     path: harmonia
     strategy: submodule
-  sasc-governance:
-    path: sasc-governance
+  rust:
+    path: rust
     strategy: submodule
-  agi-service:
-    path: agi-service
+  safecore-9d:
+    path: safecore-9d
     strategy: submodule
-
-dependencies:
-  shared-utils:
-    path: shared/utils
-    consumed_by: [safecore-9d, harmonia]
+  web777_ontology:
+    path: web777_ontology
+    strategy: submodule
+strategy: multi-repo-with-manifest
+version: '2.0'

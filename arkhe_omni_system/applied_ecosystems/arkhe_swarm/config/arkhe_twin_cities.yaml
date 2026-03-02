@@ -1,0 +1,41 @@
+# arkhe_omni_system/applied_ecosystems/arkhe_swarm/config/arkhe_twin_cities.yaml
+swarm:
+  name: "Twin Cities Arkhe Swarm"
+  n_drones: 17
+  cities:
+    rio:
+      center: [-43.1729, -22.9068]  # approximate coordinates
+      density: 1.0                    # relative density factor
+      drones: [0,1,2,3,4,5,6,7]      # indices 0-7
+    sp:
+      center: [-46.6333, -23.5505]
+      density: 0.8                     # slightly less dense
+      drones: [8,9,10,11,12,13,14,15,16]  # indices 8-16
+
+  geometry: "hyperbolic"
+  curvature: -1.0
+  alpha: 0.5                           # exponential decay rate
+  lambda0: 10.0                        # max density
+
+  # Q-process parameters (Abert et al.) [Ω+∞+266]
+  q_process:
+    max_potential: 0.005                # V_max < 0.125/n
+    spectral_gap: 0.5                    # (d-1)²/8 for d=2
+    condition: "V_max * n_neighbors < spectral_gap"
+
+  # GHZ based Handovers
+  handover:
+    tau: 2.0                            # correlation length
+    prob_func: "exp(-dist / tau)"
+
+  # Arkhe Constitution (Lindbladians) [Ω+∞+268]
+  constitution:
+    cognitive_load:
+      max_load: 0.7                      # Art. 1/5
+      monitoring_rate: 10.0               # Hz
+    ai_discernment:
+      blocked: true                      # Art. 2/6
+    human_authority:
+      critical_actions: ["land", "fire", "change_mission"] # Art. 3/7
+    transparency:
+      ledger_path: "/tmp/arkhe/drone_ledger.json" # Art. 4/9
