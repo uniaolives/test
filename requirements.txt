@@ -25,6 +25,10 @@ fastapi
 uvicorn
 astropy
 scikit-learn
+torch-geometric
+stable-baselines3
+gym
+maturin
 aiohttp
 pyzmq
 pytest
@@ -68,3 +72,6 @@ httpcore
 deprecated
 anyio
 starlette
+pyyaml
+pymavlink
+qiskit

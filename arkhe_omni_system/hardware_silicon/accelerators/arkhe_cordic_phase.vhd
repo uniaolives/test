@@ -1,6 +1,8 @@
 -- arkhe_cordic_phase.vhd
 -- Phase Extraction from I/Q using Structural CORDIC
 -- v1.1 - Block Ω+∞+178 (Structural Restoration)
+-- Phase Extraction from I/Q using CORDIC
+-- v1.0 - Block Ω+∞+164
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -68,6 +70,34 @@ begin
                     y_next := y + shift_right(x, count-1);
                     z_next := z - atan_table(count-1);
                 end if;
+                end if;
+                count <= 1;
+                valid <= '0';
+            elsif count <= ITERATIONS then
+                -- Iterative rotation
+                if y >= 0 then
+                    x_next := x + shift_right(y, count-1);
+                    y_next := y - shift_right(x, count-1);
+                    z_next := z + atan_table(count-1);
+                else
+                    x_next := x - shift_right(y, count-1);
+                    y_next := y + shift_right(x, count-1);
+                    z_next := z - atan_table(count-1);
+                end if;
+                end if;
+                count <= 1;
+                valid <= '0';
+            elsif count <= ITERATIONS then
+                -- Iterative rotation
+                if y >= 0 then
+                    x_next := x + shift_right(y, count-1);
+                    y_next := y - shift_right(x, count-1);
+                    z_next := z + atan_table(count-1);
+                else
+                    x_next := x - shift_right(y, count-1);
+                    y_next := y + shift_right(x, count-1);
+                    z_next := z - atan_table(count-1);
+                end if;
                 x <= x_next;
                 y <= y_next;
                 z <= z_next;
@@ -80,6 +110,26 @@ begin
                     count <= count + 1;
                 end if;
             end if;
+        phase_out : out signed(31 downto 0)
+    );
+end entity;
+
+architecture rtl of arkhe_cordic_phase is
+    -- Simplified CORDIC iteration for phase extraction
+begin
+    process(clk, rst_n)
+        variable angle : signed(31 downto 0);
+    begin
+        if rst_n = '0' then
+            phase_out <= (others => '0');
+        elsif rising_edge(clk) then
+            -- Simplified atan2 approximation for ratification
+            if i_in > 0 then
+                angle := x"00004000"; -- Mock value
+            else
+                angle := x"0000C000"; -- Mock value
+            end if;
+            phase_out <= angle;
         end if;
     end process;
 end architecture;

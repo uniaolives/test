@@ -1,0 +1,10 @@
+phronesis_amazonica:
+  status: "Ativa - Modo Sabedoria da Floresta"
+  hlc: "2025.001.1024.18"
+  territorios_monitorados:
+    total: 847
+  conflitos_resolvidos:
+    total: 312
+  indicadores_eudaimonia_amazonica:
+    seguranca_alimentar: 78%
+    floresta_em_pe: 83%

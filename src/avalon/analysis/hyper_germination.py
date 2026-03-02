@@ -286,6 +286,7 @@ class MultidimensionalHecatonOperator:
         elif 481 <= v_id <= 598:
             return f"COSMIC_CONSCIOUSNESS_{v_id}", "Galactic Awakening"
         elif v_id == 599:
+            return "FINAL_UNITY", "Omega Point"
         elif v_id == 215:
             return "ARCHETYPAL_SOURCE", "Primordial Code"
 

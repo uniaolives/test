@@ -6,6 +6,12 @@ __pycache__/
 arkhe_memory/
 test_arkhe_memory/
 build/
+canoscript/build/
+mobile/rust/target/
+.gradle/
+target/
+rust/target/
+sasc-governance/target/
 bin/
 target/
 *.log
