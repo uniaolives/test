@@ -45,6 +45,7 @@ members = [
     "metrics-consumer",
     "arkhe-linux/core/arkhe-energy",
     "tools/load_test",
+    "tools/dark_solver",
 ]
 resolver = "2"
 

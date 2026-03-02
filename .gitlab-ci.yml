@@ -1,0 +1,22 @@
+stages:
+  - build
+  - test
+  - formal-verification
+  - deploy
+
+variables:
+  DARK_SOLVER_IMAGE: "registry.arkhe.io/dark-solver:latest"
+
+formal-verification:
+  stage: formal-verification
+  image: $DARK_SOLVER_IMAGE
+  script:
+    - dark-solver verify \
+        --bytecode ./out/Contract.sol/Contract.json \
+        --objectives ./arkhe-constitution.z3 \
+  artifacts:
+    paths:
+      - proof.json
+    expire_in: 1 week
+  only:
+    - main
