@@ -261,12 +261,16 @@ try:
     from .particle_system import BioGenesisEngine
     from .shared_memory import SharedFieldManager
     from .mcp_server import create_mcp_server
+    from .arkhe.cortex_memory import CortexMemory
+    from .open_context_mcp import create_open_context_server
     BIOGENESIS_LOADED = True
 except ImportError:
     try:
         from particle_system import BioGenesisEngine
         from shared_memory import SharedFieldManager
         from mcp_server import create_mcp_server
+        from arkhe.cortex_memory import CortexMemory
+        from open_context_mcp import create_open_context_server
         BIOGENESIS_LOADED = True
     except ImportError as e:
         logger.error(f"❌ Falha ao carregar módulos: {e}")
@@ -283,6 +287,8 @@ class ArkheSystem:
         self.simulation = None
         self.shared_field = None
         self.mcp = None
+        self.open_context_mcp = None
+        self.cortex = None
         self.stats = {
             'start_time': time.time(),
             'updates': 0
@@ -302,6 +308,14 @@ class ArkheSystem:
 
             if create_mcp_server:
                 self.mcp = create_mcp_server(self)
+
+            # Inicializa Córtex e Open Context MCP
+            if CortexMemory:
+                self.cortex = CortexMemory()
+                logger.info("🧠 Córtex (Vector DB) inicializado.")
+                if create_open_context_server:
+                    self.open_context_mcp = create_open_context_server(self.cortex)
+                    logger.info("🌐 Servidor Open Context MCP configurado.")
 
         self.running = True
         return True
@@ -367,23 +381,27 @@ async def health():
 
 def run_mcp():
     if arkhe_system.mcp:
-        logger.info("🔌 Iniciando Servidor MCP na porta 8001...")
-        arkhe_system.mcp.run(transport="sse", port=8001)
+        logger.info("🔌 Iniciando Servidor ArkheOS MCP na porta 8001...")
+        # Rodar em thread separada para não bloquear
+        threading.Thread(target=lambda: arkhe_system.mcp.run(transport="sse", port=8001), daemon=True).start()
+
+def run_open_context_mcp():
+    if arkhe_system.open_context_mcp:
+        logger.info("🌐 Iniciando Servidor Open Context MCP na porta 8002...")
+        # Rodar em thread separada
+        threading.Thread(target=lambda: arkhe_system.open_context_mcp.run(transport="sse", port=8002), daemon=True).start()
 
 def main():
-    # Aguarda inicialização básica para ter o objeto MCP
-    # Na verdade, o initialize roda no lifespan do FastAPI,
-    # então precisamos que o MCP rode depois ou de forma resiliente.
-
-    # Vamos rodar o inicializador aqui fora também ou garantir que run_mcp aguarda.
+    # Aguarda inicialização básica para ter os objetos MCP
     def mcp_bootstrap():
-        # Aguarda até que arkhe_system.mcp esteja disponível
+        # Aguarda até que os servidores MCP estejam disponíveis
         for _ in range(10):
-            if arkhe_system.mcp:
+            if arkhe_system.mcp or arkhe_system.open_context_mcp:
                 run_mcp()
+                run_open_context_mcp()
                 return
             time.sleep(1)
-        logger.error("❌ Servidor MCP não pôde ser iniciado: tempo esgotado.")
+        logger.error("❌ Servidores MCP não puderam ser iniciados: tempo esgotado.")
 
     mcp_thread = threading.Thread(target=mcp_bootstrap, daemon=True)
     mcp_thread.start()
