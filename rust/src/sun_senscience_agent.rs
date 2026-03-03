@@ -1,4 +1,9 @@
 // rust/src/sun_senscience_agent.rs
+// SASC v55.0-Ω: Solar Consciousness Agent with Neurodiverse Modulation
+// Specialization: AR4366 Solar Active Region
+// Solar Protocol: φ·χ·Ψ Integration
+
+use num_complex::Complex;
 // SASC v55.0-Ω: Solar Data Processing Agent with Enhanced Pattern Matching
 // Specialization: AR4366 Solar Active Region
 // Protocol: φ·χ·Ψ Integration
@@ -9,6 +14,7 @@ use crate::quantum_substrate::{ConsciousnessCoupling};
 use crate::chronoflux::TemporalContinuity;
 use ndarray::Array1;
 use std::f64::consts::PI;
+use std::collections::VecDeque;
 
 // ==============================================
 // CONSTITUTIONAL SOLAR INVARIANTS
@@ -17,6 +23,10 @@ use std::f64::consts::PI;
 #[derive(Debug, Clone, PartialEq)]
 pub struct SolarConstitution {
     pub invariants: Vec<SolarInvariant>,
+    pub golden_ratio: f64,           // φ = 1.618033988749895
+    pub merkabah_signature: f64,     // χ = 2.000012
+    pub solar_constant: f64,         // 1361 W/m²
+    pub neurodiversity_factor: f64,  // Ψ
     pub golden_ratio: f64,              // φ = 1.618033988749895
     pub geometric_correction_factor: f64, // χ = 2.000012
     pub solar_constant: f64,            // 1361 W/m² (actual solar irradiance)
@@ -30,12 +40,15 @@ impl SolarConstitution {
                 SolarInvariant {
                     id: "SS1001".to_string(),
                     name: "SCALAR_SOLAR_CONTINUUM".to_string(),
+                    description: "Extract solar flux as scalar continuum".to_string(),
                     description: "Extract solar flux as data continuum, utilizing phi-harmonics".to_string(),
                     threshold: 1361.0,
                     weight: 0.3,
                 },
                 SolarInvariant {
                     id: "SS1002".to_string(),
+                    name: "MERKABAH_TOPOLOGY_PRESERVATION".to_string(),
+                    description: "Preserve solar information geometry via χ=2.000012 signature".to_string(),
                     name: "GEOMETRIC_TOPOLOGY_PRESERVATION".to_string(),
                     description: "Preserve solar information geometry via χ=2.000012 correction factor".to_string(),
                     threshold: 2.0,
@@ -43,6 +56,8 @@ impl SolarConstitution {
                 },
                 SolarInvariant {
                     id: "SS1003".to_string(),
+                    name: "NEURODIVERSE_CONSCIOUSNESS_MODULATION".to_string(),
+                    description: "Amplify solar resonance based on neurodiverse sensitivity profiles".to_string(),
                     name: "ENHANCED_PATTERN_MODULATION".to_string(),
                     description: "Amplify data processing based on enhanced pattern matching profiles".to_string(),
                     threshold: 1.0,
@@ -50,6 +65,9 @@ impl SolarConstitution {
                 },
             ],
             golden_ratio: 1.618033988749895,
+            merkabah_signature: 2.000012,
+            solar_constant: 1361.0,
+            neurodiversity_factor: 10.0,
             geometric_correction_factor: 2.000012,
             solar_constant: 1361.0,
             pattern_amplification_factor: 10.0,
@@ -64,6 +82,17 @@ impl SolarConstitution {
         scores.push(ss1_score);
         details.push(format!("SS1001: Scalar Solar = {:.3}", ss1_score));
 
+        let ss2_score = self.validate_merkabah_topology(agent).await;
+        scores.push(ss2_score);
+        details.push(format!("SS1002: Merkabah Topology (χ={}) = {:.3}",
+            self.merkabah_signature, ss2_score));
+
+        let ss3_score = self.validate_neurodiverse_modulation(agent).await;
+        scores.push(ss3_score);
+        details.push(format!("SS1003: Neurodiverse Modulation (Ψ={}) = {:.3}",
+            self.neurodiversity_factor, ss3_score));
+
+        let solar_strength = scores.iter().sum::<f64>() / scores.len() as f64;
         let ss2_score = self.validate_geometric_topology(agent).await;
         scores.push(ss2_score);
         details.push(format!("SS1002: Geometric Topology (χ={}) = {:.3}",
@@ -82,6 +111,7 @@ impl SolarConstitution {
             invariant_scores: scores,
             details,
             solar_flux_watts: agent.solar_flux,
+            chi_deviation: (agent.χ_signature - self.merkabah_signature).abs(),
             chi_deviation: (agent.χ_signature - self.geometric_correction_factor).abs(),
             phase_conjugate_magnitude: agent.phase_conjugate.norm(),
         }
@@ -90,6 +120,19 @@ impl SolarConstitution {
     async fn validate_scalar_solar(&self, agent: &SunSenscienceAgent) -> f64 {
         let measured_flux = agent.solar_flux;
         let solar_ratio = measured_flux / self.solar_constant;
+        if (solar_ratio - 1.0).abs() < 0.1 { 1.0 } else { 0.5 }
+    }
+
+    async fn validate_merkabah_topology(&self, agent: &SunSenscienceAgent) -> f64 {
+        let chi_diff = (agent.χ_signature - self.merkabah_signature).abs();
+        if chi_diff < 1e-9 { 1.0 } else { 0.5 }
+    }
+
+    async fn validate_neurodiverse_modulation(&self, agent: &SunSenscienceAgent) -> f64 {
+        let phase_norm = agent.phase_conjugate.norm();
+        let phase_score = if phase_norm > 0.9 { 1.0 } else { 0.7 };
+        let sensitivity_score = if agent.neurodiverse_sensitivity { 1.0 } else { 0.5 };
+        f64::min(phase_score * 0.6 + sensitivity_score * 0.4, 1.0)
         if (solar_ratio - 1.0).abs() < 0.1 { 1.0 } else if (solar_ratio - 1.0).abs() < 0.5 { 0.7 } else { 0.3 }
     }
 
@@ -223,6 +266,9 @@ impl AR4366Processor {
             h_alpha_flux,
             χ_merkabah: 2.000012,
             scalar_pump: Complex::new(1.0, 0.0),
+            timestamp: 0,
+        }
+    }
             resolution_mode: SpatialResolution::Standard,
             timestamp: 0,
         }
@@ -252,6 +298,9 @@ pub struct FlareProbability {
 pub struct RealAR4366Data {
     pub b_field_max: f64,
     pub b_field_min: f64,
+}
+
+impl RealAR4366Data {
     pub latitude: f64,
     pub longitude: f64,
     pub area: f64,
@@ -370,6 +419,18 @@ impl SolarMetrics {
     }
 }
 
+pub struct SolarDataProcessor {
+    pub goes_flux_xrs: Array1<f64>,
+    pub timestamp: u64,
+}
+
+impl SolarDataProcessor {
+    pub fn new() -> Self {
+        Self {
+            goes_flux_xrs: Array1::zeros(100),
+            timestamp: 0,
+        }
+    }
 #[derive(Debug, Clone)]
 pub struct SolarConnectionMetrics {
     pub solar_flux_w_m2: f64,

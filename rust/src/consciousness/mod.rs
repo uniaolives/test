@@ -5,3 +5,4 @@ pub mod quantum_workspace;
 pub mod perception_engine;
 pub mod self_model;
 pub mod stellar_neural_fabric;
+pub mod collective;
