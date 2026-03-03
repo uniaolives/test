@@ -13,8 +13,6 @@ pub enum NodeState {
     Active,
     Inhibited,
 }
-use crate::crypto::NodeKeys;
-use crate::qkd::QuantumTunnel;
 
 pub struct Node {
     pub id: String,
@@ -35,9 +33,6 @@ impl Node {
         }
     }
 
-}
-
-impl Node {
     pub fn entropy(&self) -> f64 {
         self.entropy_val
     }
@@ -55,7 +50,6 @@ impl GlobalManifold {
         let mut self_node = Node::new("self".to_string());
         self_node.state = NodeState::Active;
         nodes.insert("self".to_string(), self_node);
-        nodes.insert("self".to_string(), Node { id: "self".to_string(), entropy_val: 0.5 });
 
         Self {
             nodes,

@@ -3,48 +3,14 @@ pub mod mapper;
 pub mod sync;
 pub mod types;
 
-use arkhe_manifold::GlobalManifold;
 use std::time::Duration;
-
-pub struct BridgeConfig {
-    pub poll_interval_ms: u64,
-}
-
-impl Default for BridgeConfig {
-    fn default() -> Self {
-        Self { poll_interval_ms: 1000 }
-    }
-}
-
-pub struct FoundryBridge {
-    pub manifold_cache: GlobalManifold,
-    pub config: BridgeConfig,
-    pub last_sync: i64,
-}
-
-impl FoundryBridge {
-    pub async fn new() -> anyhow::Result<Self> {
-        Ok(Self {
-            manifold_cache: GlobalManifold::new(),
-            config: BridgeConfig::default(),
-            last_sync: 0,
-        })
-    }
-
-    pub async fn run(&mut self) -> ! {
-        let mut interval = tokio::time::interval(Duration::from_millis(self.config.poll_interval_ms));
-
-        loop {
-            interval.tick().await;
-            // Simulated Polling iteration
-        }
 use serde::{Deserialize, Serialize};
 use reqwest::Client;
-use arkhe_manifold::{QuantumState, Node};
+use arkhe_manifold::{QuantumState, GlobalManifold};
 use num_complex::Complex64;
 use nalgebra::DMatrix;
-use anyhow::{Result, Error};
-use log::{info, error};
+use anyhow::Result;
+use log::info;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FoundryObject {
@@ -68,12 +34,25 @@ pub struct ObjectTypeCreationResult {
     pub rid: String,
 }
 
+pub struct BridgeConfig {
+    pub poll_interval_ms: u64,
+}
+
+impl Default for BridgeConfig {
+    fn default() -> Self {
+        Self { poll_interval_ms: 1000 }
+    }
+}
+
 /// Bridge entre Arkhe Engine e Foundry Ontology
 pub struct FoundryBridge {
     pub foundry_url: String,
     pub ontology_rid: String,
     pub auth_token: String,
     pub client: Client,
+    pub manifold_cache: GlobalManifold,
+    pub config: BridgeConfig,
+    pub last_sync: i64,
 }
 
 impl FoundryBridge {
@@ -83,6 +62,19 @@ impl FoundryBridge {
             ontology_rid: rid.to_string(),
             auth_token: token.to_string(),
             client: Client::new(),
+            manifold_cache: GlobalManifold::new(),
+            config: BridgeConfig::default(),
+            last_sync: 0,
+        }
+    }
+
+    pub async fn run(&mut self) -> ! {
+        let mut interval = tokio::time::interval(Duration::from_millis(self.config.poll_interval_ms));
+
+        loop {
+            interval.tick().await;
+            // Simulated Polling iteration
+            info!("FoundryBridge sync iteration...");
         }
     }
 
