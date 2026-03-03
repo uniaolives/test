@@ -32,14 +32,12 @@ jobs:
       - uses: julia-actions/setup-julia@v2
         with:
           version: '1.10'
-      - run: |
-          julia --project=modules/julia -e '
-            using Pkg;
-            Pkg.Registry.update();
-            Pkg.add(["DifferentialEquations", "Flux", "Graphs", "GraphNeuralNetworks", "Optim", "Symbolics", "Tullio"]);
-            Pkg.instantiate();
-            Pkg.test();
-          '
+      - uses: julia-actions/julia-buildpkg@v1
+        with:
+          project: modules/julia
+      - uses: julia-actions/julia-runtest@v1
+        with:
+          project: modules/julia
 
   integration:
     runs-on: ubuntu-latest
