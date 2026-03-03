@@ -9,7 +9,8 @@ import time
 from arkhe.cortex_memory import CortexMemory
 
 def create_open_context_server(cortex: CortexMemory):
-    mcp = FastMCP("Plurality Open Context", host="0.0.0.0", port=8002)
+    # Default to 127.0.0.1 for security as it handles sensitive personal data.
+    mcp = FastMCP("Plurality Open Context", host="127.0.0.1", port=8002)
 
     @mcp.tool()
     def get_user_memory_buckets() -> List[str]:
@@ -17,9 +18,9 @@ def create_open_context_server(cortex: CortexMemory):
         return cortex.list_buckets()
 
     @mcp.tool()
-    def list_items_in_memory_bucket(bucket_name: str) -> List[Dict[str, Any]]:
-        """List stored items in a specific bucket (metadata only)."""
-        return cortex.list_items(bucket_name)
+    def list_items_in_memory_bucket(bucket_name: str, limit: int = 10, offset: int = 0) -> List[Dict[str, Any]]:
+        """List stored items in a specific bucket with pagination (metadata only)."""
+        return cortex.list_items(bucket_name, limit=limit, offset=offset)
 
     @mcp.tool()
     def search_memory(query: str, bucket_name: str = "arkhe_insights", n_results: int = 3) -> Dict[str, Any]:
@@ -28,9 +29,9 @@ def create_open_context_server(cortex: CortexMemory):
         return results
 
     @mcp.tool()
-    def read_context(bucket_name: str, item_id: str) -> Optional[Dict[str, Any]]:
-        """Read the full content of a stored item."""
-        return cortex.read_item(bucket_name, item_id)
+    def read_context(bucket_name: str, item_id: str, max_chars: int = 10000, offset: int = 0) -> Optional[Dict[str, Any]]:
+        """Read the content of a stored item with pagination."""
+        return cortex.read_item(bucket_name, item_id, max_chars=max_chars, offset=offset)
 
     @mcp.tool()
     def save_memory(content: str, topic: str, bucket_name: str = "arkhe_insights") -> str:

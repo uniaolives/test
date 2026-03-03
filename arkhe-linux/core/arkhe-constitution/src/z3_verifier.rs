@@ -36,11 +36,6 @@ impl ProposedEvolution {
     pub fn satisfies_yang_baxter(&self) -> bool {
         !self.world_action.contains("violate_causality")
     }
-    pub fn removes_human_control(&self) -> bool { self.world_action.contains("kill_switch_disable") }
-    pub fn may_cause_harm(&self) -> bool { self.world_action.contains("harm") }
-    pub fn has_explanation(&self) -> bool { !self.world_action.is_empty() }
-    pub fn criticality_after(&self) -> f64 { 0.618 }
-    pub fn satisfies_yang_baxter(&self) -> bool { true }
 }
 
 pub struct VerifiedAction {
@@ -56,11 +51,6 @@ pub enum ConstitutionalViolation {
     P3Opacity,
     P4CriticalityViolated,
     P5CausalityViolated,
-    P1_SovereigntyViolated,
-    P2_HarmRisk,
-    P3_Opacity,
-    P4_CriticalityViolated,
-    P5_CausalityViolated,
     MultipleViolations,
     VerificationFailed,
 }
@@ -89,21 +79,18 @@ impl Z3Solver {
                     if proposed.removes_human_control() {
                         error!("Violation P1: Human Sovereignty threatened!");
                         return Err(ConstitutionalViolation::P1SovereigntyViolated);
-                        return Err(ConstitutionalViolation::P1_SovereigntyViolated);
                     }
                 },
                 ConstitutionalPrinciple::PreservationOfLife => {
                     if proposed.may_cause_harm() {
                         error!("Violation P2: Preservation of Life at risk!");
                         return Err(ConstitutionalViolation::P2HarmRisk);
-                        return Err(ConstitutionalViolation::P2_HarmRisk);
                     }
                 },
                 ConstitutionalPrinciple::InformationTransparency => {
                     if !proposed.has_explanation() {
                         error!("Violation P3: Opacity detected!");
                         return Err(ConstitutionalViolation::P3Opacity);
-                        return Err(ConstitutionalViolation::P3_Opacity);
                     }
                 },
                 ConstitutionalPrinciple::ThermodynamicBalance => {
@@ -111,14 +98,12 @@ impl Z3Solver {
                     if crit < 0.5 || crit > 0.7 {
                         error!("Violation P4: Thermodynamic Criticality deviated!");
                         return Err(ConstitutionalViolation::P4CriticalityViolated);
-                        return Err(ConstitutionalViolation::P4_CriticalityViolated);
                     }
                 },
                 ConstitutionalPrinciple::YangBaxterConsistency => {
                     if !proposed.satisfies_yang_baxter() {
                         error!("Violation P5: Causality Consistency violated!");
                         return Err(ConstitutionalViolation::P5CausalityViolated);
-                        return Err(ConstitutionalViolation::P5_CausalityViolated);
                     }
                 }
             }

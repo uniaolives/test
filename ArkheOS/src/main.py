@@ -383,13 +383,14 @@ def run_mcp():
     if arkhe_system.mcp:
         logger.info("🔌 Iniciando Servidor ArkheOS MCP na porta 8001...")
         # Rodar em thread separada para não bloquear
+        # Note: FastMCP.run binds to 0.0.0.0 by default, check if we need 127.0.0.1
         threading.Thread(target=lambda: arkhe_system.mcp.run(transport="sse", port=8001), daemon=True).start()
 
 def run_open_context_mcp():
     if arkhe_system.open_context_mcp:
-        logger.info("🌐 Iniciando Servidor Open Context MCP na porta 8002...")
+        logger.info("🌐 Iniciando Servidor Open Context MCP na porta 8002 (Localhost)...")
         # Rodar em thread separada
-        threading.Thread(target=lambda: arkhe_system.open_context_mcp.run(transport="sse", port=8002), daemon=True).start()
+        threading.Thread(target=lambda: arkhe_system.open_context_mcp.run(transport="sse"), daemon=True).start()
 
 def main():
     # Aguarda inicialização básica para ter os objetos MCP
@@ -406,7 +407,10 @@ def main():
     mcp_thread = threading.Thread(target=mcp_bootstrap, daemon=True)
     mcp_thread.start()
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    try:
+        uvicorn.run(app, host="0.0.0.0", port=8000)
+    except KeyboardInterrupt:
+        logger.info("Shutdown solicitado pelo usuário.")
 
 if __name__ == "__main__":
     main()

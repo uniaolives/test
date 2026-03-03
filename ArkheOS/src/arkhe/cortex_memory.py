@@ -42,10 +42,10 @@ class CortexMemory:
         )
         return f"Bucket '{bucket_name}' criado com sucesso."
 
-    def list_items(self, bucket_name: str) -> List[Dict[str, Any]]:
-        """Lista metadados dos itens em um bucket."""
+    def list_items(self, bucket_name: str, limit: int = 10, offset: int = 0) -> List[Dict[str, Any]]:
+        """Lista metadados dos itens em um bucket com paginação."""
         collection = self.get_or_create_bucket(bucket_name)
-        results = collection.get()
+        results = collection.get(limit=limit, offset=offset)
         items = []
         for i in range(len(results['ids'])):
             items.append({
@@ -86,14 +86,23 @@ class CortexMemory:
         )
         return results
 
-    def read_item(self, bucket_name: str, item_id: str) -> Optional[Dict[str, Any]]:
-        """Lê o conteúdo completo de um item específico."""
+    def read_item(self, bucket_name: str, item_id: str, max_chars: int = 10000, offset: int = 0) -> Optional[Dict[str, Any]]:
+        """
+        Lê o conteúdo de um item específico com suporte a paginação (por caracteres).
+        max_chars: limite de caracteres a retornar.
+        offset: posição inicial do caractere.
+        """
         collection = self.get_or_create_bucket(bucket_name)
         result = collection.get(ids=[item_id])
-        if result['ids']:
+        if result['ids'] and result['documents']:
+            full_content = result['documents'][0]
+            paginated_content = full_content[offset : offset + max_chars]
             return {
                 "id": result['ids'][0],
-                "content": result['documents'][0],
+                "content": paginated_content,
+                "total_length": len(full_content),
+                "offset": offset,
+                "limit": max_chars,
                 "metadata": result['metadatas'][0]
             }
         return None
