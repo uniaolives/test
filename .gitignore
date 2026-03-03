@@ -13,6 +13,8 @@ bin/
 build/
 canoscript/build/
 diagnostic_bio_output.txt
+__pycache__/
+*.pyc
 instaweb-physics/target/
 mobile/rust/target/
 rust/target/
