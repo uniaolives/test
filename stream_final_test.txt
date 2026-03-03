@@ -1,0 +1,425 @@
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.1086833}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.1191168}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.1289408}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.1382713}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.1470516}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.1556344}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.1648335}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.173815}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.1823173}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.1912813}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.2001693}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.2089221}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.2177944}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.2263768}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.235262}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.2441804}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.2528203}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.2615945}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.2706492}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.279816}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.2889724}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.298084}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.3071394}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.3159232}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.3246212}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.333644}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.3422737}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.3519893}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.3607123}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.3691177}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.3777006}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.386413}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.3951948}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.4040885}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.412747}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.4216895}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.430459}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.4395597}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.4484255}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.4572966}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.466284}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.4750378}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.4842045}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.4929814}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5017207}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5110815}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5202582}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5292988}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5382583}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5472543}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5566292}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5659454}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5746834}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5841591}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.5931907}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.6029992}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.6130507}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.622264}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.6318202}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.6412182}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.6505837}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.6598167}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.669454}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.6789796}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.6883445}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.697583}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.7069428}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.7166176}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.7262745}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.736431}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.747088}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.756539}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.766565}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.7762237}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.7859743}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.7949808}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.8048623}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.8148406}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.8252594}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.8350148}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.8447366}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.8540893}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.8631294}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.8721504}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.8817916}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.8914268}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.900843}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.9097557}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.918577}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.927592}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.937312}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.9463508}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.9554105}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.9645321}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.9734426}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.98233}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375289.9919326}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.0009153}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.0098405}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.0186937}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.027818}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.0367346}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.0455115}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.05424}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.0631917}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.0720985}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.081037}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.0899081}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.0988991}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.1078658}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.116745}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.1256526}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.1350856}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.144127}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.1537948}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.1635034}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.173186}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.1833131}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.1924164}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.2014136}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.2103143}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.2193072}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.2282841}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.2371106}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.245867}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.2552488}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.2652154}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.2741728}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.283082}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.2922254}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.301079}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.3112457}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.3202918}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.3296473}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.3385305}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.3475318}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.3571742}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.3676383}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.3772388}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.3872478}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.3970222}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.4069004}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.416822}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.4266684}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.4370399}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.4471772}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.4575307}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.46753}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.4773061}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.4872665}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.497229}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.5072236}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.5170207}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.5269747}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.5367873}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.5465944}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.5563803}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.5661993}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.576475}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.5862825}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.5962903}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.60654}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.616822}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.627306}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.636594}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.6455088}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.654369}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.6634548}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.6725442}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.6824422}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.6923676}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.7023027}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.7118077}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.7215667}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.7304688}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.741449}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.7508686}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.7604582}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.7706306}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.7803872}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.7899191}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.7991977}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.8091953}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.818232}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.8273375}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.836445}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.8452015}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.8540728}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.8629558}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.8720026}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.8807352}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.8895788}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.898741}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.9080331}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.9172442}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.9260283}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.9349356}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.9438121}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.9526012}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.96151}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.9706578}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.9797945}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.9885867}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375290.99756}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375291.0064576}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375291.0163274}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375291.0258281}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375291.0355573}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375291.044675}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375291.0543447}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375291.0641906}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375291.0731761}
+
+data: {"type": "RESONANCE_PULSE", "node_id": "node_1770375289", "global_coherence": 0.0, "peak_energy": 0.0042999496531412875, "active_particles": 0, "sync_cycle": 0, "timestamp": 1770375291.0828788}

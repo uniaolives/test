@@ -1,0 +1,12 @@
+{
+  "prediction_time_utc": "2026-03-03 18:00:00.000",
+  "predicted_vorticity": 0.9999930520315754,
+  "enhancement_factor": -6.9479684245743095e-06,
+  "percent_increase": -0.0006947968424597661,
+  "falsification_threshold": 5.2,
+  "prediction_succeeds_if": "\u03c9 \u2265 5.2",
+  "confidence_interval": [
+    0.9199936078690494,
+    1.0799924961941014
+  ]
+}

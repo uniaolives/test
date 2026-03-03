@@ -1,0 +1,29 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+processors:
+  batch:
+    timeout: 1s
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+  jaeger:
+    endpoint: "jaeger-collector:14250"
+  kafka:
+    brokers: ["kafka:9092"]
+    topic: "arkhe-telemetry"
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus, kafka]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [jaeger, kafka]

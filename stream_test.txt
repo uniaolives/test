@@ -1,0 +1,291 @@
+data: {"global_coherence": 0.5005902268436503, "active_particles": 0, "quantum_flux": 0.2914380867694611, "timestamp": 1770375110.7168941}
+
+data: {"global_coherence": 0.5004322506751178, "active_particles": 0, "quantum_flux": 0.2926638000973465, "timestamp": 1770375110.7330198}
+
+data: {"global_coherence": 0.5005350442041051, "active_particles": 0, "quantum_flux": 0.29375511780165103, "timestamp": 1770375110.7460756}
+
+data: {"global_coherence": 0.5006777718031914, "active_particles": 0, "quantum_flux": 0.2946677907038726, "timestamp": 1770375110.7598145}
+
+data: {"global_coherence": 0.5008070343110643, "active_particles": 0, "quantum_flux": 0.2952172739541553, "timestamp": 1770375110.7743945}
+
+data: {"global_coherence": 0.5007274014295925, "active_particles": 0, "quantum_flux": 0.29590943947921067, "timestamp": 1770375110.7875142}
+
+data: {"global_coherence": 0.5008946330480879, "active_particles": 0, "quantum_flux": 0.29655100986326643, "timestamp": 1770375110.800708}
+
+data: {"global_coherence": 0.5009963856398785, "active_particles": 0, "quantum_flux": 0.2969969561218859, "timestamp": 1770375110.8130672}
+
+data: {"global_coherence": 0.500913383562862, "active_particles": 0, "quantum_flux": 0.2972779003097627, "timestamp": 1770375110.8257256}
+
+data: {"global_coherence": 0.500946357289889, "active_particles": 0, "quantum_flux": 0.2976785292738715, "timestamp": 1770375110.8379009}
+
+data: {"global_coherence": 0.5008720478406072, "active_particles": 0, "quantum_flux": 0.29767602854476055, "timestamp": 1770375110.8515162}
+
+data: {"global_coherence": 0.500721876990583, "active_particles": 0, "quantum_flux": 0.2979863268357752, "timestamp": 1770375110.8643205}
+
+data: {"global_coherence": 0.5005600465139715, "active_particles": 0, "quantum_flux": 0.29817938287501594, "timestamp": 1770375110.8770633}
+
+data: {"global_coherence": 0.5006466138882409, "active_particles": 0, "quantum_flux": 0.2985007879232162, "timestamp": 1770375110.8892825}
+
+data: {"global_coherence": 0.5005613528971848, "active_particles": 0, "quantum_flux": 0.2988336262465786, "timestamp": 1770375110.901483}
+
+data: {"global_coherence": 0.5005194961833621, "active_particles": 0, "quantum_flux": 0.2989215632935625, "timestamp": 1770375110.9138882}
+
+data: {"global_coherence": 0.5006073957336423, "active_particles": 0, "quantum_flux": 0.29891603394956145, "timestamp": 1770375110.9276054}
+
+data: {"global_coherence": 0.500526588797104, "active_particles": 0, "quantum_flux": 0.2993131990872216, "timestamp": 1770375110.940379}
+
+data: {"global_coherence": 0.5002201106404981, "active_particles": 0, "quantum_flux": 0.2996416293164203, "timestamp": 1770375110.9532464}
+
+data: {"global_coherence": 0.5004298337469499, "active_particles": 0, "quantum_flux": 0.2996759858870735, "timestamp": 1770375110.965569}
+
+data: {"global_coherence": 0.5005932276720941, "active_particles": 0, "quantum_flux": 0.29996299594006476, "timestamp": 1770375110.9778655}
+
+data: {"global_coherence": 0.5005602348327729, "active_particles": 0, "quantum_flux": 0.3000574670832495, "timestamp": 1770375110.9901621}
+
+data: {"global_coherence": 0.5003389039765896, "active_particles": 0, "quantum_flux": 0.30011735109100135, "timestamp": 1770375111.0039778}
+
+data: {"global_coherence": 0.5004323960863778, "active_particles": 0, "quantum_flux": 0.30041710603529165, "timestamp": 1770375111.017563}
+
+data: {"global_coherence": 0.500397634427902, "active_particles": 0, "quantum_flux": 0.300583766430168, "timestamp": 1770375111.0310962}
+
+data: {"global_coherence": 0.5003779398528594, "active_particles": 0, "quantum_flux": 0.3009234901664135, "timestamp": 1770375111.0458975}
+
+data: {"global_coherence": 0.5003592123834483, "active_particles": 0, "quantum_flux": 0.30106816815171755, "timestamp": 1770375111.0607722}
+
+data: {"global_coherence": 0.5003554271182644, "active_particles": 0, "quantum_flux": 0.3012753869862968, "timestamp": 1770375111.0734134}
+
+data: {"global_coherence": 0.5003811785253214, "active_particles": 0, "quantum_flux": 0.3014092758870751, "timestamp": 1770375111.0873587}
+
+data: {"global_coherence": 0.5003143068852057, "active_particles": 0, "quantum_flux": 0.30170105854437373, "timestamp": 1770375111.1019342}
+
+data: {"global_coherence": 0.5004383152455223, "active_particles": 0, "quantum_flux": 0.3018700524101126, "timestamp": 1770375111.1183102}
+
+data: {"global_coherence": 0.500201364966848, "active_particles": 0, "quantum_flux": 0.3018677085102945, "timestamp": 1770375111.133885}
+
+data: {"global_coherence": 0.500248960041194, "active_particles": 0, "quantum_flux": 0.30195883708955096, "timestamp": 1770375111.1491902}
+
+data: {"global_coherence": 0.5004056225453571, "active_particles": 0, "quantum_flux": 0.30214058832061963, "timestamp": 1770375111.1637716}
+
+data: {"global_coherence": 0.5002070788288067, "active_particles": 0, "quantum_flux": 0.30226785700979825, "timestamp": 1770375111.1797256}
+
+data: {"global_coherence": 0.5002723938155936, "active_particles": 0, "quantum_flux": 0.30222359943888155, "timestamp": 1770375111.1944323}
+
+data: {"global_coherence": 0.5001564958765243, "active_particles": 0, "quantum_flux": 0.3023239525128271, "timestamp": 1770375111.2087731}
+
+data: {"global_coherence": 0.5002770789098429, "active_particles": 0, "quantum_flux": 0.30251624036850655, "timestamp": 1770375111.2217634}
+
+data: {"global_coherence": 0.5003165220778963, "active_particles": 0, "quantum_flux": 0.30255285581154, "timestamp": 1770375111.2367482}
+
+data: {"global_coherence": 0.5002330487398126, "active_particles": 0, "quantum_flux": 0.3026371844279188, "timestamp": 1770375111.2517896}
+
+data: {"global_coherence": 0.5002399082085319, "active_particles": 0, "quantum_flux": 0.30280486201555296, "timestamp": 1770375111.2688684}
+
+data: {"global_coherence": 0.49995720359056867, "active_particles": 0, "quantum_flux": 0.30282091926277815, "timestamp": 1770375111.2850707}
+
+data: {"global_coherence": 0.49994232603657823, "active_particles": 0, "quantum_flux": 0.30279259982600415, "timestamp": 1770375111.3010988}
+
+data: {"global_coherence": 0.5000894874909975, "active_particles": 0, "quantum_flux": 0.3029406495081509, "timestamp": 1770375111.316124}
+
+data: {"global_coherence": 0.5000463561041615, "active_particles": 0, "quantum_flux": 0.30291083382668027, "timestamp": 1770375111.3313818}
+
+data: {"global_coherence": 0.4999555123300551, "active_particles": 0, "quantum_flux": 0.30290886524941074, "timestamp": 1770375111.3458774}
+
+data: {"global_coherence": 0.4998459400214386, "active_particles": 0, "quantum_flux": 0.3030211396449466, "timestamp": 1770375111.3616686}
+
+data: {"global_coherence": 0.5000809130106082, "active_particles": 0, "quantum_flux": 0.3030870001222555, "timestamp": 1770375111.3759136}
+
+data: {"global_coherence": 0.49991801297265154, "active_particles": 0, "quantum_flux": 0.30304677616051273, "timestamp": 1770375111.391379}
+
+data: {"global_coherence": 0.4999292184052482, "active_particles": 0, "quantum_flux": 0.3031715329258403, "timestamp": 1770375111.4047441}
+
+data: {"global_coherence": 0.49973607562878725, "active_particles": 0, "quantum_flux": 0.3031853249199402, "timestamp": 1770375111.4194164}
+
+data: {"global_coherence": 0.4996791911748956, "active_particles": 0, "quantum_flux": 0.30343312165241204, "timestamp": 1770375111.4329705}
+
+data: {"global_coherence": 0.49977275285268674, "active_particles": 0, "quantum_flux": 0.3035509964829612, "timestamp": 1770375111.4480438}
+
+data: {"global_coherence": 0.49967865937761496, "active_particles": 0, "quantum_flux": 0.30356361073343613, "timestamp": 1770375111.462513}
+
+data: {"global_coherence": 0.4997332783518928, "active_particles": 0, "quantum_flux": 0.3035422673109802, "timestamp": 1770375111.4762883}
+
+data: {"global_coherence": 0.4998315569168455, "active_particles": 0, "quantum_flux": 0.30346748215723046, "timestamp": 1770375111.4894552}
+
+data: {"global_coherence": 0.49995850600339864, "active_particles": 0, "quantum_flux": 0.3035879948874784, "timestamp": 1770375111.5024161}
+
+data: {"global_coherence": 0.5000429521426222, "active_particles": 0, "quantum_flux": 0.3036456757281724, "timestamp": 1770375111.5156834}
+
+data: {"global_coherence": 0.49990689412241845, "active_particles": 0, "quantum_flux": 0.30364128445223076, "timestamp": 1770375111.5301185}
+
+data: {"global_coherence": 0.4999730057297268, "active_particles": 0, "quantum_flux": 0.3035445761429637, "timestamp": 1770375111.543907}
+
+data: {"global_coherence": 0.5000112099369862, "active_particles": 0, "quantum_flux": 0.3034625601872319, "timestamp": 1770375111.5582125}
+
+data: {"global_coherence": 0.5000044335080789, "active_particles": 0, "quantum_flux": 0.30325372031530073, "timestamp": 1770375111.5733685}
+
+data: {"global_coherence": 0.5001675686993166, "active_particles": 0, "quantum_flux": 0.30340345146766295, "timestamp": 1770375111.5883832}
+
+data: {"global_coherence": 0.500207939244515, "active_particles": 0, "quantum_flux": 0.30343366830685403, "timestamp": 1770375111.6037316}
+
+data: {"global_coherence": 0.5002765841162505, "active_particles": 1, "quantum_flux": 0.30354352293405445, "timestamp": 1770375111.6206589}
+
+data: {"global_coherence": 0.5002275730422119, "active_particles": 1, "quantum_flux": 0.3036680669350058, "timestamp": 1770375111.6362734}
+
+data: {"global_coherence": 0.5002895375102081, "active_particles": 0, "quantum_flux": 0.3035764443245622, "timestamp": 1770375111.6497629}
+
+data: {"global_coherence": 0.5004031905901131, "active_particles": 0, "quantum_flux": 0.30353552954325375, "timestamp": 1770375111.6630616}
+
+data: {"global_coherence": 0.5005681940149475, "active_particles": 0, "quantum_flux": 0.3037084308848227, "timestamp": 1770375111.6761503}
+
+data: {"global_coherence": 0.5004428747347924, "active_particles": 0, "quantum_flux": 0.3038449201282323, "timestamp": 1770375111.6893654}
+
+data: {"global_coherence": 0.5006124108362028, "active_particles": 0, "quantum_flux": 0.3040305609448618, "timestamp": 1770375111.7043402}
+
+data: {"global_coherence": 0.500737288070537, "active_particles": 0, "quantum_flux": 0.3042539507171005, "timestamp": 1770375111.717244}
+
+data: {"global_coherence": 0.5006577233455952, "active_particles": 0, "quantum_flux": 0.30422309735410447, "timestamp": 1770375111.7302415}
+
+data: {"global_coherence": 0.5006832788764896, "active_particles": 0, "quantum_flux": 0.3043604505844822, "timestamp": 1770375111.7426164}
+
+data: {"global_coherence": 0.5007842492594171, "active_particles": 0, "quantum_flux": 0.3044162801648111, "timestamp": 1770375111.7548263}
+
+data: {"global_coherence": 0.5008933915187184, "active_particles": 0, "quantum_flux": 0.304515795167454, "timestamp": 1770375111.7671335}
+
+data: {"global_coherence": 0.500888602419075, "active_particles": 0, "quantum_flux": 0.30442848784631926, "timestamp": 1770375111.780684}
+
+data: {"global_coherence": 0.5007628387301482, "active_particles": 0, "quantum_flux": 0.3043146385856736, "timestamp": 1770375111.793682}
+
+data: {"global_coherence": 0.5008230577108554, "active_particles": 0, "quantum_flux": 0.3044711626151925, "timestamp": 1770375111.8066947}
+
+data: {"global_coherence": 0.5009416618435221, "active_particles": 0, "quantum_flux": 0.3044281895856966, "timestamp": 1770375111.8191574}
+
+data: {"global_coherence": 0.5005321741330786, "active_particles": 0, "quantum_flux": 0.3043657797090393, "timestamp": 1770375111.8314216}
+
+data: {"global_coherence": 0.5006728778308053, "active_particles": 0, "quantum_flux": 0.30434765484082194, "timestamp": 1770375111.843713}
+
+data: {"global_coherence": 0.5008334312762823, "active_particles": 0, "quantum_flux": 0.30434054317791925, "timestamp": 1770375111.8573523}
+
+data: {"global_coherence": 0.5007315922968284, "active_particles": 0, "quantum_flux": 0.3044108029262478, "timestamp": 1770375111.8703234}
+
+data: {"global_coherence": 0.5008480028406278, "active_particles": 0, "quantum_flux": 0.3042682901599099, "timestamp": 1770375111.8833063}
+
+data: {"global_coherence": 0.5006270117487364, "active_particles": 0, "quantum_flux": 0.3042537374442631, "timestamp": 1770375111.8955863}
+
+data: {"global_coherence": 0.5007645247860621, "active_particles": 0, "quantum_flux": 0.304127333473704, "timestamp": 1770375111.9079418}
+
+data: {"global_coherence": 0.5008162695549471, "active_particles": 0, "quantum_flux": 0.30423167612618873, "timestamp": 1770375111.9201794}
+
+data: {"global_coherence": 0.5009498672863707, "active_particles": 0, "quantum_flux": 0.30430772840493764, "timestamp": 1770375111.933937}
+
+data: {"global_coherence": 0.5010154991586198, "active_particles": 0, "quantum_flux": 0.3044196550605421, "timestamp": 1770375111.947026}
+
+data: {"global_coherence": 0.5010848876746682, "active_particles": 0, "quantum_flux": 0.3045351314883024, "timestamp": 1770375111.9600034}
+
+data: {"global_coherence": 0.5011205764835301, "active_particles": 0, "quantum_flux": 0.30441498282467816, "timestamp": 1770375111.9722981}
+
+data: {"global_coherence": 0.5009763452691509, "active_particles": 0, "quantum_flux": 0.3047878310997716, "timestamp": 1770375111.9851058}
+
+data: {"global_coherence": 0.5011265037939078, "active_particles": 0, "quantum_flux": 0.30439262982535314, "timestamp": 1770375111.9978852}
+
+data: {"global_coherence": 0.5012896813126817, "active_particles": 0, "quantum_flux": 0.3043184398794733, "timestamp": 1770375112.0124385}
+
+data: {"global_coherence": 0.5010218344166926, "active_particles": 0, "quantum_flux": 0.3042897077220106, "timestamp": 1770375112.025862}
+
+data: {"global_coherence": 0.5010411948887351, "active_particles": 0, "quantum_flux": 0.3043153411631182, "timestamp": 1770375112.0397089}
+
+data: {"global_coherence": 0.5012100392166304, "active_particles": 0, "quantum_flux": 0.3044309886214209, "timestamp": 1770375112.054465}
+
+data: {"global_coherence": 0.5012562742518495, "active_particles": 0, "quantum_flux": 0.30446708404227923, "timestamp": 1770375112.0690987}
+
+data: {"global_coherence": 0.5012905129407098, "active_particles": 0, "quantum_flux": 0.304505731782276, "timestamp": 1770375112.0823493}
+
+data: {"global_coherence": 0.5013670958698848, "active_particles": 0, "quantum_flux": 0.30446837052479975, "timestamp": 1770375112.0973969}
+
+data: {"global_coherence": 0.5012883113783415, "active_particles": 0, "quantum_flux": 0.30464534696036805, "timestamp": 1770375112.1139338}
+
+data: {"global_coherence": 0.5013662407572753, "active_particles": 0, "quantum_flux": 0.3045925409221181, "timestamp": 1770375112.1301727}
+
+data: {"global_coherence": 0.5011872258834754, "active_particles": 0, "quantum_flux": 0.3044688983210456, "timestamp": 1770375112.1458793}
+
+data: {"global_coherence": 0.5011787937744869, "active_particles": 0, "quantum_flux": 0.30445546050058964, "timestamp": 1770375112.1609406}
+
+data: {"global_coherence": 0.5012634091494534, "active_particles": 0, "quantum_flux": 0.30461040847092835, "timestamp": 1770375112.1759114}
+
+data: {"global_coherence": 0.5010758043337029, "active_particles": 0, "quantum_flux": 0.3045410535923204, "timestamp": 1770375112.193195}
+
+data: {"global_coherence": 0.5009537518520978, "active_particles": 0, "quantum_flux": 0.30478389732278505, "timestamp": 1770375112.206857}
+
+data: {"global_coherence": 0.5007579121918596, "active_particles": 0, "quantum_flux": 0.30482751330850716, "timestamp": 1770375112.2200434}
+
+data: {"global_coherence": 0.5008333115589789, "active_particles": 0, "quantum_flux": 0.30479907375961435, "timestamp": 1770375112.2324793}
+
+data: {"global_coherence": 0.5006328921721814, "active_particles": 0, "quantum_flux": 0.30461562547155524, "timestamp": 1770375112.244801}
+
+data: {"global_coherence": 0.5007069314951194, "active_particles": 0, "quantum_flux": 0.3047558550823136, "timestamp": 1770375112.256965}
+
+data: {"global_coherence": 0.5006974212597102, "active_particles": 0, "quantum_flux": 0.3045737743144011, "timestamp": 1770375112.2704902}
+
+data: {"global_coherence": 0.5005284855300682, "active_particles": 0, "quantum_flux": 0.304726032730587, "timestamp": 1770375112.2834702}
+
+data: {"global_coherence": 0.5007070810954711, "active_particles": 0, "quantum_flux": 0.3050514581085473, "timestamp": 1770375112.2963998}
+
+data: {"global_coherence": 0.5008422670069376, "active_particles": 1, "quantum_flux": 0.3049709200702528, "timestamp": 1770375112.3087595}
+
+data: {"global_coherence": 0.5008334150287723, "active_particles": 1, "quantum_flux": 0.30504130467766605, "timestamp": 1770375112.3211417}
+
+data: {"global_coherence": 0.500638113140677, "active_particles": 2, "quantum_flux": 0.3050411847341462, "timestamp": 1770375112.3336866}
+
+data: {"global_coherence": 0.5009388019961534, "active_particles": 2, "quantum_flux": 0.3050202385158634, "timestamp": 1770375112.3475342}
+
+data: {"global_coherence": 0.5006035219353556, "active_particles": 2, "quantum_flux": 0.3050156988813679, "timestamp": 1770375112.360439}
+
+data: {"global_coherence": 0.5007790228820288, "active_particles": 2, "quantum_flux": 0.305017680871366, "timestamp": 1770375112.3733964}
+
+data: {"global_coherence": 0.5008660003334129, "active_particles": 2, "quantum_flux": 0.3049484169610087, "timestamp": 1770375112.3859446}
+
+data: {"global_coherence": 0.5009569492442824, "active_particles": 2, "quantum_flux": 0.3048211449384065, "timestamp": 1770375112.398195}
+
+data: {"global_coherence": 0.5010082483336661, "active_particles": 2, "quantum_flux": 0.30487489671227613, "timestamp": 1770375112.4103255}
+
+data: {"global_coherence": 0.5009443167969857, "active_particles": 2, "quantum_flux": 0.30487299508749693, "timestamp": 1770375112.42391}
+
+data: {"global_coherence": 0.5009918768536438, "active_particles": 2, "quantum_flux": 0.30497382786416083, "timestamp": 1770375112.437164}
+
+data: {"global_coherence": 0.5008538695486523, "active_particles": 2, "quantum_flux": 0.30488322715614624, "timestamp": 1770375112.4503884}
+
+data: {"global_coherence": 0.5008439352117179, "active_particles": 3, "quantum_flux": 0.30501699181847014, "timestamp": 1770375112.4629138}
+
+data: {"global_coherence": 0.5004935803089613, "active_particles": 3, "quantum_flux": 0.30483763483540416, "timestamp": 1770375112.4752135}
+
+data: {"global_coherence": 0.5004071046418941, "active_particles": 3, "quantum_flux": 0.30480094931645524, "timestamp": 1770375112.487529}
+
+data: {"global_coherence": 0.5001500910268751, "active_particles": 3, "quantum_flux": 0.3049861470444821, "timestamp": 1770375112.5008411}
+
+data: {"global_coherence": 0.5002711124492147, "active_particles": 3, "quantum_flux": 0.30490696055203403, "timestamp": 1770375112.5133932}
+
+data: {"global_coherence": 0.5003277641538664, "active_particles": 3, "quantum_flux": 0.304997410162072, "timestamp": 1770375112.5259027}
+
+data: {"global_coherence": 0.5002798830731676, "active_particles": 3, "quantum_flux": 0.305024703239133, "timestamp": 1770375112.537881}
+
+data: {"global_coherence": 0.5000590422088053, "active_particles": 3, "quantum_flux": 0.3049575585530327, "timestamp": 1770375112.549867}
+
+data: {"global_coherence": 0.5001225172582422, "active_particles": 3, "quantum_flux": 0.30511616309235823, "timestamp": 1770375112.561857}
+
+data: {"global_coherence": 0.5000605878526909, "active_particles": 3, "quantum_flux": 0.3050773390348448, "timestamp": 1770375112.5751455}
+
+data: {"global_coherence": 0.5000670026504236, "active_particles": 3, "quantum_flux": 0.30519137120744294, "timestamp": 1770375112.5879707}
+
+data: {"global_coherence": 0.5002208585020277, "active_particles": 3, "quantum_flux": 0.3051617645459416, "timestamp": 1770375112.6004493}
+
+data: {"global_coherence": 0.5003561400175698, "active_particles": 3, "quantum_flux": 0.30523421318329896, "timestamp": 1770375112.6124578}
+
+data: {"global_coherence": 0.5003045174122004, "active_particles": 4, "quantum_flux": 0.3051616860756587, "timestamp": 1770375112.624604}
+
+data: {"global_coherence": 0.5003661507480488, "active_particles": 4, "quantum_flux": 0.3051128540443308, "timestamp": 1770375112.636687}
+
+data: {"global_coherence": 0.5003628792525292, "active_particles": 4, "quantum_flux": 0.3048512121348566, "timestamp": 1770375112.650299}
+
+data: {"global_coherence": 0.5002175633353647, "active_particles": 4, "quantum_flux": 0.304966700445294, "timestamp": 1770375112.662887}
+
+data: {"global_coherence": 0.5002587641496236, "active_particles": 3, "quantum_flux": 0.30484590631325315, "timestamp": 1770375112.6757352}
+
+data: {"global_coherence": 0.5003050040591791, "active_particles": 3, "quantum_flux": 0.3044923478106533, "timestamp": 1770375112.6879869}

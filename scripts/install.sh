@@ -41,6 +41,10 @@ RUST_BINARIES=(
     "sasc-diplomacy"
     "sasc-research"
     "sasc-constellate"
+    "sasc-stream"
+    "sasc-starlink"
+    "sasc-mobile"
+    "sasc-contracts"
 )
 
 for bin in "${RUST_BINARIES[@]}"; do

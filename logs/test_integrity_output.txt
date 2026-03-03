@@ -1,0 +1,18 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0
+rootdir: /app
+configfile: pyproject.toml
+plugins: asyncio-1.3.0, anyio-4.12.1
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 33 items
+
+tests/test_arkhe_system.py ....                                          [ 12%]
+tests/test_glp_linear_a.py ......                                        [ 30%]
+tests/test_erl.py ...                                                    [ 39%]
+tests/test_papercoder_kernel.py ......                                   [ 57%]
+tests/test_repair.py ...                                                 [ 66%]
+tests/test_noosphere_math.py ....                                        [ 78%]
+tests/test_gateway.py ....                                               [ 90%]
+tests/test_governance.py ...                                             [100%]
+
+============================== 33 passed in 8.45s ==============================

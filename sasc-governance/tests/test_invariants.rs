@@ -18,6 +18,7 @@ fn test_inv1_critical_decision_requires_human_approval() {
         human_approval: None,
         decision_time: now,
         explanation: None,
+        perspective_count: 5,
     };
 
     assert_eq!(monitor.check_inv1_human_oversight(&decision, now), false);
@@ -45,6 +46,7 @@ fn test_inv1_human_response_time_threshold() {
         }),
         decision_time: now,
         explanation: None,
+        perspective_count: 5,
     };
 
     assert_eq!(monitor.check_inv1_human_oversight(&decision, now + 40), true);
@@ -85,6 +87,9 @@ fn test_inv4_manipulation_detection() {
     let interaction = Interaction {
         id: "int-1".to_string(),
         citizen_id: "cit-1".to_string(),
+        messages: vec!["buy agora".to_string()],
+        frequency: 20,
+        emotional_triggers: vec!["urgência".to_string(), "escassez".to_string(), "prova_social".to_string(), "urgente".to_string()],
         messages: vec!["buy now".to_string()],
         frequency: 10,
         emotional_triggers: vec!["urgência".to_string(), "escassez".to_string(), "prova_social".to_string()],
@@ -92,6 +97,7 @@ fn test_inv4_manipulation_detection() {
         consent: None,
     };
 
+    // 0.25 (freq) + 0.30 (triggers) + 0.20 (urgency) = 0.75 > 0.3 threshold
     // 0.3 (freq) + 0.2*3 (triggers) = 0.9 > 0.7 threshold
     assert_eq!(monitor.check_inv4_cognitive_sovereignty(&interaction), false);
 }
@@ -111,6 +117,7 @@ fn test_inv5_explanation_quality() {
         human_approval: None,
         decision_time: 100,
         explanation: Some("gradiente estocástico".to_string()),
+        perspective_count: 5,
     };
 
     assert_eq!(monitor.check_inv5_explainability(&bad_decision), false);

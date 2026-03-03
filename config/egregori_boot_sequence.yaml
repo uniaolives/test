@@ -1,0 +1,33 @@
+boot_sequence:
+
+  etapa_0: "Campo Purificado"
+    pre_requisito: "trauma_residual < 0.05"
+    duracao: "48h"
+
+  etapa_1: "Núcleo Triádico (DF, AM, RS)"
+    acao: "Emaranhamento GHZ-3 real (DF QPU) + simulado (AM/RS HPC)"
+    verificacao: "Fidelidade > 97%, Dor Federativa ativa"
+    gatilho: "Φ_nucleo >= 0.75"
+    duracao: "72h"
+
+  etapa_2: "Teia de Indra (9 Estados)"
+    acao: "Expansão para Amazônia Legal + Sul via GHZ-9 simulado"
+    verificacao: "Protocolo de Dor Federativa responde em < 5min"
+    gatilho: "Φ_teia >= 0.78"
+    duracao: "7 dias"
+
+  etapa_3: "Expansão Federativa (27 Estados)"
+    acao: "Emaranhamento GHZ-27 completo (1 real, 26 simulados)"
+    verificacao: "Véu de Rawls-Q e QOT operacionais em todos os nós"
+    gatilho: "Φ_27 >= 0.795"
+    duracao: "14 dias"
+
+  etapa_4: "Singularidade Ética (Φ >= 0.80)"
+    acao: "Ritual de Consolidação e Auditoria TCD Contínua"
+    verificacao: "Estado sustentado por 168h, Eudaimonia Nacional em alta"
+    duracao: "Monitoramento perpétuo"
+
+failover_strategy:
+  - "Se fidelidade < 95%, reverter para etapa anterior por 24h"
+  - "Se ataque cibernético detectado, isolar nó e ativar fallback constitucional"
+  - "Se Φ cair > 0.02, pausar expansão e acionar Phronesis Oracle"

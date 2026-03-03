@@ -1,0 +1,5 @@
+# GLP Configuration
+model_path: /model/model.pt
+input_dim: 128
+hidden_dim: 64
+meta_neurons: 128

@@ -1,0 +1,25 @@
+[Unit]
+Description=TIM VM v3.0 Geometric Validator Daemon
+Documentation=man:tim-vald(8)
+# Deve iniciar após a rede (para logs remotos) mas ANTES de qualquer workload científico
+After=network.target local-fs.target
+Before=slurm.service kubelet.service
+
+[Service]
+Type=notify
+# O daemon python notifica prontidão via sd_notify
+ExecStart=/usr/bin/python3 /usr/lib/tim_vm/userspace/tim_vald.py
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+RestartSec=1
+# Segurança: Isola o daemon, mas permite mmap em memória física (necessário para validação)
+# Em produção real, usaríamos um device específico (/dev/tim_mem), não CAP_SYS_RAWIO
+AmbientCapabilities=CAP_SYS_RAWIO CAP_NET_ADMIN
+User=root
+Group=root
+# Prioridade de Tempo Real para responder ao Kernel rápido (<5ms)
+CPUSchedulingPolicy=fifo
+CPUSchedulingPriority=99
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,17 @@
+<script src="pleroma-wasm.js"></script>
+<script>
+    async function init() {
+        const pleroma = await Pleroma.connect();
+        const coherence = await pleroma.getCoherence();
+
+        if (coherence > 0.85) {
+            document.body.style.backgroundColor = 'gold';
+            document.getElementById('status').innerText = 'Critical!';
+        }
+
+        // Subscribe to thought stream
+        pleroma.subscribeThoughts((thought) => {
+            console.log('New thought:', thought.content);
+        });
+    }
+</script>

@@ -1,4 +1,13 @@
 # ArkheOS Extraction Module (Π_0)
+# [SIMULATION NOTICE] This module contains symbolic stubs for document extraction.
+# It is designed for architectural validation, not for production extraction without further implementation.
+
+from pydantic import BaseModel, Field
+from typing import List, Optional, Any
+from enum import Enum
+import hashlib
+from datetime import datetime
+
 # Refactored for robust extraction, parallel LLM calls, and state reconciliation.
 
 import asyncio
@@ -46,6 +55,36 @@ class ExtractionReport(BaseModel):
     """A complete block of extracted information."""
     facts: List[FinancialFact]
     document_name: str
+    extraction_timestamp: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+    model_used: str = "gemini-2.0-flash"
+
+class GeminiExtractor:
+    """
+    [STUB] Core extraction engine.
+    Currently returns simulated data for Geodesic protocol validation.
+    """
+    def __init__(self, api_key: str):
+        self.api_key = api_key
+
+    def extract(self, text: str, doc_hash: str, page: int, doc_name: str) -> ExtractionReport:
+        """Simulates structured extraction with provenance."""
+        # Simulated extraction result based on BLOCO Π_0
+        fact = FinancialFact(
+            value=1200000.0,
+            unit=Currency.USD,
+            description="net profit",
+            provenance=Provenance(
+                doc_hash=doc_hash,
+                page=page,
+                bbox=[120.0, 450.0, 140.0, 500.0],
+                context_snippet="...the company reported a total net profit of $1.2M for the quarter...",
+                structural_context="Financial Summary Table"
+            )
+        )
+        return ExtractionReport(
+            facts=[fact],
+            document_name=doc_name
+        )
     extraction_timestamp: str = Field(default_factory=lambda: datetime.now(timezone.utc).isoformat())
     model_used: str
 
@@ -94,13 +133,6 @@ class GeminiExtractor(BaseExtractor):
         # Pass model_used in context for simulation support in BaseLLMProvider
         res = await self.provider.generate(prompt, context={"model_used": self.model_name}, validate_output=False)
         return res.get("content")
-        self.api_key = api_key
-
-    async def _call_llm_internal(self, prompt: str) -> str:
-        # Simulated API call for architectural validation
-        await asyncio.sleep(random.uniform(0.5, 1.5))
-        # Returning valid JSON for simulation
-        return '{"facts": [{"value": 1200000.0, "unit": "USD", "description": "simulated net profit", "provenance": {"doc_hash": "hash-123", "page": 1, "bbox": [0,0,10,10], "context_snippet": "net profit of $1.2M"}}], "document_name": "sim_doc", "model_used": "gemini-2.0-flash"}'
 
 class OllamaExtractor(BaseExtractor):
     def __init__(self, base_url: str = "http://localhost:11434"):
@@ -111,12 +143,6 @@ class OllamaExtractor(BaseExtractor):
         # Pass model_used in context for simulation support in BaseLLMProvider
         res = await self.provider.generate(prompt, context={"model_used": self.model_name}, validate_output=False)
         return res.get("content")
-        self.base_url = base_url
-
-    async def _call_llm_internal(self, prompt: str) -> str:
-        # Simulated Local LLM call
-        await asyncio.sleep(random.uniform(1.0, 3.0))
-        return '{"facts": [{"value": 50000.0, "unit": "BRL", "description": "simulated local expense"}], "document_name": "sim_doc", "model_used": "llama3"}'
 
 class LongDocumentProcessor:
     """Handles splitting long documents and reconciling state between parallel calls."""

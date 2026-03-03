@@ -1,0 +1,261 @@
+namespace AGI_Software {
+
+  // ============================================================
+  // MÓDULOS FUNDAMENTAIS
+  // ============================================================
+
+  // 1. Percepção: converte inputs sensoriais em representações internas
+  node Perception {
+    attributes {
+      string modality;               // "text", "image", "audio", etc.
+      float resolution;               // detalhamento da entrada
+      map preprocessing_pipeline;     // etapas de transformação
+    }
+    handover Sense (Input i) -> InternalRepresentation r {
+      // Aplica transformações e gera representação
+      r = encode(i, preprocessing_pipeline);
+      return r;
+    }
+  }
+
+  // 2. Memória de Trabalho (Working Memory): contexto imediato
+  node WorkingMemory {
+    attributes {
+      list current_context;           // tokens, ativações recentes
+      float capacity;                  // limite de itens
+    }
+    handover Update (InternalRepresentation r) {
+      // Atualiza contexto (ex.: FIFO ou atenção)
+      current_context.add(r);
+      if (current_context.size > capacity) {
+        current_context.pop_oldest();
+      }
+    }
+    handover Query (Attention a) -> list relevant {
+      // Retorna itens mais relevantes dado um foco de atenção
+      relevant = filter(current_context, a);
+      return relevant;
+    }
+  }
+
+  // 3. Memória de Longo Prazo (hipergrafo de conhecimento)
+  node LongTermMemory {
+    attributes {
+      Hypergraph knowledge_graph;      // nós = conceitos, arestas = relações
+      float consolidation_rate;         // frequência de consolidação
+    }
+    handover Store (Concept c, Relation r, Concept d) {
+      // Adiciona tripla (c, r, d) ao grafo
+      knowledge_graph.add_edge(c, r, d);
+    }
+    handover Retrieve (Concept query, Relation r) -> list results {
+      // Busca conceitos relacionados por r
+      results = knowledge_graph.neighbors(query, r);
+      return results;
+    }
+    dynamics {
+      // Consolidação: reforça arestas usadas frequentemente, poda as raras
+      periodically(consolidation_rate) {
+        knowledge_graph.prune_weak_edges();
+      }
+    }
+  }
+
+  // 4. Raciocínio (Reasoning Engine)
+  node ReasoningEngine {
+    attributes {
+      list inference_rules;             // regras lógicas, causais, analógicas
+      float uncertainty_threshold;       // limiar para inferências probabilísticas
+    }
+    handover Infer (Problem p) -> Solution s {
+      // Aplica regras sobre conhecimento da memória de longo prazo
+      s = apply_rules(p, LongTermMemory.knowledge_graph);
+      return s;
+    }
+    handover CausalReason (Event e) -> list causes {
+      // Infere causas prováveis usando modelos causais
+      causes = causal_model.infer(e);
+      return causes;
+    }
+  }
+
+  // 5. Aprendizado (Learning Module)
+  node LearningModule {
+    attributes {
+      float learning_rate;
+      string learning_algorithm;        // "backprop", "hebbian", "bayesian", etc.
+    }
+    handover Learn (Experience exp) {
+      // Atualiza parâmetros do sistema com base na experiência
+      // Pode modificar pesos de redes neurais, regras de raciocínio, etc.
+      update_parameters(exp, learning_rate);
+    }
+    handover MetaLearn (Performance perf) {
+      // Ajusta hiperparâmetros (learning_rate, arquitetura) com base no desempenho
+      learning_rate = optimize(perf);
+    }
+  }
+
+  // 6. Planejamento (Planning Module)
+  node PlanningModule {
+    attributes {
+      float horizon;                     // profundidade do planejamento
+      string planner_type;                // "A*", "MCTS", "PDDL"
+    }
+    handover Plan (Goal g, State s) -> ActionSequence actions {
+      // Gera sequência de ações para atingir g a partir de s
+      actions = planner.search(g, s, horizon);
+      return actions;
+    }
+  }
+
+  // 7. Gerenciador de Objetivos (Goal Manager)
+  node GoalManager {
+    attributes {
+      list goals;                        // objetivos ativos com prioridades
+      float rationality;                   // consistência entre objetivos
+    }
+    handover AddGoal (Goal g, float priority) {
+      goals.add({g, priority});
+      sort_by_priority(goals);
+    }
+    handover SelectGoal () -> Goal current {
+      // Retorna o objetivo de maior prioridade
+      return goals[0];
+    }
+  }
+
+  // 8. Modelo de Si (Self Model)
+  node SelfModel {
+    attributes {
+      AGI_Software self_representation;  // modelo interno do sistema
+      float introspection_depth;
+    }
+    handover Introspect (Query q) -> Answer a {
+      // Consulta o modelo de si mesmo
+      a = self_representation.query(q);
+      return a;
+    }
+    handover UpdateSelf (Change c) {
+      // Atualiza a auto-representação após modificações
+      self_representation.apply(c);
+    }
+  }
+
+  // 9. Meta‑Controlador (MetaController)
+  node MetaController {
+    attributes {
+      list available_modules;            // todos os módulos
+      float coherence_threshold;          // limiar para intervenção
+    }
+    handover AllocateResource (Task t) {
+      // Decide quais módulos ativar para uma tarefa
+      selected = select_modules(t);
+      activate(selected);
+    }
+    handover Reconfigure (ArchitectureChange change) {
+      // Modifica a arquitetura (adiciona/remove módulos, altera conexões)
+      apply_change(change);
+      SelfModel.UpdateSelf(change);
+    }
+    dynamics {
+      // Monitora coerência global C_global
+      if (C_global < coherence_threshold) {
+        trigger(Reconfigure, auto_optimize());
+      }
+    }
+  }
+
+  // ============================================================
+  // HANDOVERS ENTRE MÓDULOS
+  // ============================================================
+
+  // Exemplo: ciclo percepção → memória de trabalho → raciocínio
+  handover PerceptionToWorkingMemory (Perception p, WorkingMemory wm, Input i) {
+    rep = p.Sense(i);
+    wm.Update(rep);
+  }
+
+  handover WorkingMemoryToReasoning (WorkingMemory wm, ReasoningEngine re, Attention a) {
+    context = wm.Query(a);
+    problem = formulate_problem(context);
+    solution = re.Infer(problem);
+    // solução pode ser usada para ação ou armazenada
+  }
+
+  handover ReasoningToLearning (ReasoningEngine re, LearningModule lm, Experience exp) {
+    lm.Learn(exp);
+  }
+
+  handover LearningToMeta (LearningModule lm, MetaController mc, Performance perf) {
+    lm.MetaLearn(perf);
+    if (perf.improvement_needed) {
+      mc.Reconfigure(suggest_arch_change());
+    }
+  }
+
+  handover GoalToPlanning (GoalManager gm, PlanningModule pm, State s) {
+    goal = gm.SelectGoal();
+    plan = pm.Plan(goal, s);
+    execute(plan);
+  }
+
+  // ============================================================
+  // AUTO‑EVOLUÇÃO: META‑HANDOVER
+  // ============================================================
+
+  handover MetaEvolution (AGI_Software current, AGI_Software next) {
+    condition: next.coherence > current.coherence;
+    effects {
+      // Substitui o sistema atual pela versão melhorada
+      // Preserva memória de longo prazo e self model
+      current = next;
+      log("AGI evolved to new version");
+    }
+  }
+
+  // ============================================================
+  // MÉTRICA GLOBAL DE COERÊNCIA
+  // ============================================================
+
+  metric GlobalCoherence (AGI_Software agi) {
+    // Mede quão bem os módulos estão integrados
+    float module_coherence = average(module.coherence for module in agi.modules);
+    float handover_flow = total_handover_throughput(agi);
+    float self_consistency = agi.SelfModel.introspection_accuracy();
+    return weighted_sum([module_coherence, handover_flow, self_consistency]);
+  }
+
+  // ============================================================
+  // INICIALIZAÇÃO DO SISTEMA
+  // ============================================================
+
+  system AGI_Instance {
+    modules: [
+      Perception p;
+      WorkingMemory wm;
+      LongTermMemory ltm;
+      ReasoningEngine re;
+      LearningModule lm;
+      PlanningModule pm;
+      GoalManager gm;
+      SelfModel sm;
+      MetaController mc;
+    ];
+    handovers: [
+      PerceptionToWorkingMemory(p, wm, _),
+      WorkingMemoryToReasoning(wm, re, _),
+      ReasoningToLearning(re, lm, _),
+      LearningToMeta(lm, mc, _),
+      GoalToPlanning(gm, pm, _),
+      // ... outros
+    ];
+    dynamics {
+      // O sistema opera continuamente, aprendendo e evoluindo
+      C_global = GlobalCoherence(this);
+      if (C_global > THRESHOLD) {
+        trigger(MetaEvolution, propose_upgrade());
+      }
+    }
+  }
+}

@@ -59,7 +59,9 @@ pub struct StructureResult {
 
 #[async_trait]
 pub trait GeometricStructure: Send + Sync {
-    fn name(&self) -> &str;
+    fn name(&self) -> &str {
+        "geometric_structure"
+    }
     fn domain(&self) -> Domain;
     async fn process(&self, input: &Subproblem, context: &Context) -> ResilientResult<StructureResult>;
     fn can_handle(&self, input: &Subproblem) -> f64;

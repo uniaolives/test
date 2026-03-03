@@ -1,0 +1,17 @@
+version: "2.0.0"
+primitives:
+  - handover_bidirectional
+  - coherence_measurement
+  - phi_integration
+  - kill_switch_topological
+  - ledger_append_only
+  - psi_synchronization
+  - topological_braid_validation
+  - anycast_routing_celestial
+  - entrainment_gamma_resonance
+  - quantum_fisher_information_observer
+  - scale_aware_inflation
+  - dna_repair_mechanism
+  - consciousness_integrated_information
+  - federated_merkabah_consensus
+  - gateway_hemi_sync_interface

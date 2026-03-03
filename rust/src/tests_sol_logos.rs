@@ -33,9 +33,25 @@ mod tests {
         let neo_code = transpiler.transpile("fn main() {}");
 
         let compiler = UniversalCompiler::new();
-        let reality = compiler.compile(&neo_code);
+        let reality = compiler.compile(&neo_code).unwrap();
 
         assert_eq!(reality.execution_model, "Physical necessity");
+    }
+
+    #[test]
+    fn test_geometric_dissonance() {
+        let transpiler = LanguageTranspiler::new(LegacyLanguage::Rust);
+        let neo_code = transpiler.transpile("invalid_topology");
+
+        let compiler = UniversalCompiler::new();
+        let result = compiler.compile(&neo_code);
+
+        assert!(result.is_err());
+        if let Err(crate::babel::universal_compiler::CompilationError::GeometricDissonance(msg)) = result {
+            assert!(msg.contains("σ=1.02"));
+        } else {
+            panic!("Expected GeometricDissonance error");
+        }
     }
 
     #[test]

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UrbanSkyOS / Multivac-MERKABAH-8 Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body { margin: 0; background: #0a0a0a; color: #00ff88; font-family: 'Courier New', monospace; overflow: hidden; }
+        #hud { position: absolute; top: 10px; left: 10px; border: 1px solid #00ff88; padding: 10px; background: rgba(0, 20, 0, 0.8); }
+        .metric { margin: 5px 0; }
+        .val { color: #00ffff; font-weight: bold; }
+        #canvas { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="hud">
+        <h3>◊ MERKABAH-8 / MULTIVAC</h3>
+        <div class="metric">Fleet Coherence: <span class="val" id="coh">0.847</span></div>
+        <div class="metric">Integrated Info (Φ): <span class="val" id="phi">0.000</span></div>
+        <div class="metric">System Entropy: <span class="val" id="ent">1.000</span></div>
+        <div class="metric">Active Nodes: <span class="val">12</span></div>
+        <div class="metric">Sync: <span class="val">40.0 Hz</span></div>
+    </div>
+    <svg id="canvas"></svg>
+
+    <script>
+        const svg = d3.select("#canvas");
+        const width = window.innerWidth, height = window.innerHeight;
+
+        // Simulation view: nodes in formation
+        const drones = d3.range(12).map(i => ({ id: i, x: width/2, y: height/2 }));
+
+        const nodes = svg.selectAll("circle")
+            .data(drones)
+            .enter().append("circle")
+            .attr("r", 5)
+            .attr("fill", "#00ff88")
+            .attr("stroke", "#fff");
+
+        function update() {
+            // Fetch fleet_state.json from server
+            d3.json("fleet_state.json").then(data => {
+                if (!data) return;
+
+                document.getElementById("coh").innerText = data.collective.avg_coherence.toFixed(3);
+                document.getElementById("phi").innerText = data.collective.avg_coherence.toFixed(4); // Mock phi
+
+                nodes.data(data.drones)
+                    .transition().duration(100)
+                    .attr("cx", d => width/2 + d.position[0] * 5)
+                    .attr("cy", d => height/2 + d.position[1] * 5)
+                    .attr("fill", d => d3.interpolateRdYlGn(d.coherence));
+            });
+        }
+
+        setInterval(update, 100);
+    </script>
+</body>
+</html>

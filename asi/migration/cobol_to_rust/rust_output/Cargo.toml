@@ -1,0 +1,13 @@
+[package]
+name = "rust_output"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rust_decimal = "1.33"
+rust_decimal_macros = "1.33"
+tokio = { version = "1", features = ["full"] }
+thiserror = "1.0"
+
+[workspace]
+# Make this crate an independent workspace to avoid issues with broken root workspace

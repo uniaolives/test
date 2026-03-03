@@ -1,0 +1,25 @@
+# arkhe-axos-instaweb/docker/docker-compose.yml
+version: "3.8"
+
+services:
+  axos-master:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.axos
+    container_name: axos-master
+    environment:
+      - ARKHE_NODE_ID=master-01
+      - ARKHE_ROLE=orchestrator
+      - ARKHE_HYPERBOLIC_COORDS=0.0,0.0,0.0
+    ports:
+      - "7777:7777/tcp"
+      - "7777:7777/udp"
+      - "8443:8443"
+      - "50051:50051"
+    networks:
+      - arkhe-mesh
+    restart: unless-stopped
+
+networks:
+  arkhe-mesh:
+    driver: bridge

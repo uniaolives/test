@@ -22,6 +22,12 @@ class TimeCrystalVisualizer:
         self.ax = self.fig.add_subplot(111, projection='3d')
         self.ax.set_facecolor('black')
         self.time_step = 0
+        self.coherence_modulation = 1.0
+
+    def modulate_with_user_state(self, coherence_level):
+        """Modula a pulsação do cristal com base no nível de coerência do usuário"""
+        print(f"🧠 Modulating Arkhé with user coherence: {coherence_level:.2f}")
+        self.coherence_modulation = coherence_level
 
     def generate_crystal_lattice(self):
         phi = (1 + np.sqrt(5)) / 2
@@ -35,8 +41,16 @@ class TimeCrystalVisualizer:
     def update(self, frame):
         self.ax.clear()
         self.ax.set_axis_off()
+        phase = (frame % 24) / 24 * 2 * np.pi
+        pulse = 1.0 + 0.3 * np.sin(phase / 2)
+        points = self.generate_crystal_lattice() * pulse
 
         phase = (frame % 24) / 24 * 2 * np.pi
+
+        # Coerência do usuário afeta a estabilidade do pulso
+        pulse_amplitude = 0.3 * self.coherence_modulation
+        pulse = 1.0 + pulse_amplitude * np.sin(phase / 2)
+
         pulse = 1.0 + 0.3 * np.sin(phase / 2)
         points = self.generate_crystal_lattice() * pulse
 
@@ -83,11 +97,59 @@ class ConsciousnessVisualizer3D:
         else:
             self.particle_system.set_mode("MANDALA")
 
+
+class ConsciousnessVisualizer3D:
+    """
+    Sistema de visualização 3D para estados de consciência.
+    Suporta MANDALA, DNA, HYPERCORE e BIO_GENESIS.
+    """
+    def __init__(self, num_particles=120):
+        self.particle_system = UnifiedParticleSystem(num_particles=num_particles)
+        self.fig = plt.figure(figsize=(10, 8))
+        self.ax = self.fig.add_subplot(111, projection='3d')
+        self.ax.set_facecolor('black')
+
+    def update_from_state(self, attention: float, meditation: float, bio_active: bool = False):
+        if bio_active:
+            self.particle_system.set_mode("BIO_GENESIS")
+        elif attention > 0.7:
+            self.particle_system.set_mode("DNA")
+        elif meditation > 0.7:
+            self.particle_system.set_mode("HYPERCORE")
+        else:
+            self.particle_system.set_mode("MANDALA")
+
     def update_frame(self, frame):
         self.ax.clear()
         self.ax.set_axis_off()
         self.particle_system.update(0.05)
         data = self.particle_system.get_particle_data()
+
+        pos = np.array(data['positions'])
+        colors = np.array(data['colors'])
+
+        self.ax.scatter(pos[:,0], pos[:,1], pos[:,2], c=colors[:,:3], s=30, alpha=0.8)
+
+        # Renderiza ligações biológicas ou geométricas
+        if data['mode'] == "BIO_GENESIS" or data['mode'] == "HYPERCORE":
+            bonds = data.get('bonds', [])
+            if data['mode'] == "HYPERCORE":
+                # Simula conexões do polítopo para os primeiros pontos
+                for i in range(min(40, len(pos))):
+                    for j in range(i+1, min(40, len(pos))):
+                        if np.linalg.norm(pos[i]-pos[j]) < 2.5:
+                            self.ax.plot([pos[i,0], pos[j,0]], [pos[i,1], pos[j,1]], [pos[i,2], pos[j,2]],
+                                         color='violet', alpha=0.1, linewidth=0.5)
+            else:
+                for b in bonds:
+                    p1, p2 = np.array(b[0]), np.array(b[1])
+                    self.ax.plot([p1[0], p2[0]], [p1[1], p2[1]], [p1[2], p2[2]],
+                                 color='lime', alpha=0.4, linewidth=1.0)
+
+        title = f"CONSCIOUSNESS FIELD: {data['mode']}"
+        if data['transition'] < 1.0:
+            title += f" (EVOLVING: {data['transition']:.2f})"
+        self.ax.set_title(title, color='white')
         self.ax.scatter(
             rotated_points[:,0], rotated_points[:,1], rotated_points[:,2],
             s=100 * pulse, c='gold', edgecolors='white', alpha=0.9
@@ -131,6 +193,12 @@ class ConsciousnessVisualizer3D:
         self.attention_level = 0.5
         self.meditation_level = 0.5
 
+    def save_gif(self, filename="crystal_loop.gif", frames=48, fps=20, dpi=150):
+        """Salva a animação como GIF"""
+        print(f"🎬 Generating eternal loop: {filename}...")
+        anim = FuncAnimation(self.fig, self.update, frames=frames, interval=1000/fps)
+        anim.save(filename, writer='pillow', fps=fps, dpi=dpi)
+        print(f"✅ GIF saved successfully.")
     def update_from_state(self, attention: float, meditation: float):
         """Atualiza modo baseado em níveis de atenção e meditação."""
         self.attention_level = attention
@@ -184,6 +252,16 @@ class ConsciousnessVisualizer3D:
         anim.save(filename, writer='pillow')
         print(f"✅ Animation saved.")
 
+    def render_4k_version(self, filename="arkhe_4k.png"):
+        """Gera uma versão de alta resolução para documentação"""
+        print(f"✨ Rendering high-resolution Arkhé: {filename}...")
+        original_size = self.fig.get_size_inches()
+        self.fig.set_size_inches(25.6, 14.4) # 3840x2160 at 150 DPI is approx this
+        self.update(0)
+        self.fig.savefig(filename, dpi=150, facecolor='black')
+        self.fig.set_size_inches(original_size)
+        print(f"✅ 4K version saved.")
+
 def run_visualizer(save_gif=False):
     viz = TimeCrystalVisualizer()
     if save_gif:
@@ -203,6 +281,9 @@ def run_consciousness_viz(save_gif=False):
             viz.update_frame(frame)
         anim = FuncAnimation(viz.fig, sequence, frames=80, interval=50)
         anim.save("consciousness_genesis.gif", writer='pillow')
+    else:
+        viz.update_from_state(0.5, 0.5, bio_active=True)
+        viz.update_frame(0); plt.savefig("bio_genesis_snapshot.png")
     else:
         viz.update_from_state(0.5, 0.5, bio_active=True)
         viz.update_frame(0); plt.savefig("bio_genesis_snapshot.png")
