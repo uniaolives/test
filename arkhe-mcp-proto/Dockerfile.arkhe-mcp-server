@@ -1,0 +1,63 @@
+# Stage 1: Builder
+FROM rust:1.84-slim-bookworm AS builder
+
+WORKDIR /build
+
+# Instala dependências de compilação
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libssl-dev \
+    libsqlite3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copia manifests primeiro (cache de dependências)
+COPY Cargo.toml ./
+COPY arkhe-mcp-server/Cargo.toml ./arkhe-mcp-server/
+COPY arkhe-qhttp-client/Cargo.toml ./arkhe-qhttp-client/
+COPY mock-cern-node/Cargo.toml ./mock-cern-node/
+
+# Cria estrutura dummy para cache
+RUN mkdir -p arkhe-mcp-server/src arkhe-qhttp-client/src mock-cern-node/src && \
+    echo "fn main() {}" > arkhe-mcp-server/src/main.rs && \
+    echo "" > arkhe-qhttp-client/src/lib.rs && \
+    echo "fn main() {}" > mock-cern-node/src/main.rs && \
+    cargo build --release && \
+    rm -rf arkhe-mcp-server/src arkhe-qhttp-client/src mock-cern-node/src
+
+# Copia código real
+COPY . .
+
+# Build final
+RUN cargo build --release -p arkhe-mcp-server
+
+# Stage 2: Runtime
+FROM debian:bookworm-slim AS runtime
+
+# Instala apenas runtime dependencies
+RUN apt-get update && apt-get install -y \
+    libsqlite3-0 \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Cria usuário não-root
+RUN groupadd -r arkhe && useradd -r -g arkhe -d /data arkhe
+
+WORKDIR /app
+
+# Copia binário do builder
+COPY --from=builder /build/target/release/arkhe-mcp-server .
+
+# Diretório de dados
+RUN mkdir -p /data && chown arkhe:arkhe /data
+
+USER arkhe
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD ./arkhe-mcp-server --health-check || exit 1
+
+EXPOSE 8080
+
+ENTRYPOINT ["./arkhe-mcp-server"]
+CMD ["--stdio"]
