@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "arkhe-mcp-server",
+    "arkhe-qhttp-client",
+    "mock-cern-node",
+]
+resolver = "2"

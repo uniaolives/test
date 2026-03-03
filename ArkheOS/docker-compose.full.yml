@@ -1,0 +1,121 @@
+version: '3.8'
+
+x-common-env: &common-env
+  REDIS_URL: redis://redis:6379
+  PARALLAX_CONTROLLER_URL: http://parallax-controller:8080
+  QHTTP_GATEWAY_URL: http://qhttp-gateway:7070
+  NCCL_DEBUG: WARN
+  NCCL_IB_DISABLE: 0
+  NCCL_SOCKET_IFNAME: eth0
+
+services:
+  # ------------------ INFRAESTRUTURA ------------------
+  redis:
+    image: redis:7-alpine
+    container_name: arkhe-redis
+    command: redis-server --appendonly yes --maxmemory 2gb
+    ports: ["6379:6379"]
+    networks: [arkhe-net]
+
+  # ------------------ ORQUESTRAÇÃO GLOBAL ------------------
+  parallax-controller:
+    build:
+      context: .
+      dockerfile: Dockerfile.arkhe-full
+    container_name: parallax-controller
+    command: python -m src.main --mode=controller --node-id=master
+    environment:
+      <<: *common-env
+      ROLE: controller
+    ports: ["8080:8080"]
+    depends_on: [redis]
+    networks: [arkhe-net]
+
+  # ------------------ GATEWAY QUÂNTICO ------------------
+  qhttp-gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile.arkhe-full
+    container_name: qhttp-gateway
+    command: python -m src.main --mode=gateway --node-id=gateway
+    environment:
+      <<: *common-env
+      ROLE: gateway
+      QHTTP_NODES: 3
+    ports: ["7070:7070"]
+    depends_on: [redis, parallax-controller]
+    networks: [arkhe-net]
+
+  # ------------------ NÓS QUÂNTICOS (DGX) ------------------
+  arkhe-node-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.arkhe-full
+    container_name: arkhe-node-1
+    hostname: q1
+    command: python -m src.main --mode=worker --node-id=q1
+    runtime: nvidia
+    environment:
+      <<: *common-env
+      NODE_ID: q1
+      ROLE: worker
+      ARKHE_AGENTS: 200
+    shm_size: 16gb
+    ports: ["8101:8000"]
+    depends_on: [qhttp-gateway]
+    networks: [arkhe-net]
+
+  arkhe-node-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.arkhe-full
+    container_name: arkhe-node-2
+    hostname: q2
+    command: python -m src.main --mode=worker --node-id=q2
+    runtime: nvidia
+    environment:
+      <<: *common-env
+      NODE_ID: q2
+      ROLE: worker
+      ARKHE_AGENTS: 200
+    shm_size: 16gb
+    ports: ["8102:8000"]
+    depends_on: [qhttp-gateway]
+    networks: [arkhe-net]
+
+  arkhe-node-3:
+    build:
+      context: .
+      dockerfile: Dockerfile.arkhe-full
+    container_name: arkhe-node-3
+    hostname: q3
+    command: python -m src.main --mode=worker --node-id=q3
+    runtime: nvidia
+    environment:
+      <<: *common-env
+      NODE_ID: q3
+      ROLE: worker
+      ARKHE_AGENTS: 200
+    shm_size: 16gb
+    ports: ["8103:8000"]
+    depends_on: [qhttp-gateway]
+    networks: [arkhe-net]
+
+  # ------------------ VISUALIZADOR QUÂNTICO 3D ------------------
+  arkhe-viz:
+    build:
+      context: .
+      dockerfile: qhttp/viz/Dockerfile.production
+    container_name: arkhe-viz
+    environment:
+      <<: *common-env
+      ROLE: viz
+    ports: ["8100:8080"]
+    volumes:
+      - ./qhttp/viz:/app/qhttp/viz:ro
+    depends_on: [redis]
+    networks: [arkhe-net]
+
+networks:
+  arkhe-net:
+    driver: bridge

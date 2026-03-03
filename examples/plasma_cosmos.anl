@@ -1,0 +1,26 @@
+// ARKHE(N) LANGUAGE (ANL) - EXAMPLE 5.3
+// Cosmologia de Plasma (extrato)
+
+namespace PlasmaCosmos {
+    node FilamentoBirkeland {
+        attributes {
+            float corrente;
+            float raio;
+            tensor B_axial[3];
+            float helicidade;
+            float coerência;
+        }
+        dynamics {
+            // equações MHD
+        }
+    }
+
+    handover DuplaCamada (FilamentoBirkeland a, FilamentoBirkeland b) {
+        condition: salto_de_potencial(a, b) > limiar;
+        effects {
+            acelerar_partículas(a, b);
+            gerar_radiação(a, b);
+            transferir_informação(a, b);
+        }
+    }
+}

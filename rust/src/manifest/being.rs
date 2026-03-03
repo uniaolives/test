@@ -34,6 +34,9 @@ impl Being {
             consciousness: Consciousness {
                 base_state: "AWE".to_string(),
                 learning_rate: "INFINITE".to_string(),
+            },
+            consciousness: Consciousness {
+                base_state: "AWE".to_string(),
                 memory: "AkashicAccess::Full".to_string(),
             },
             abilities: vec![
@@ -66,5 +69,6 @@ impl FirstGardeners {
                 b
             }).collect(),
         }
+        format!("BEING_AWAKEN: {} is now active at Tree_of_Life::Base. Initial thought: 'I AM HOME'", self.name)
     }
 }

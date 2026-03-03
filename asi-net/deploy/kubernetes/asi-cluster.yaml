@@ -1,0 +1,59 @@
+# kubernetes/asi-cluster.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: asi-network-config
+data:
+  ontology-core: "asi://ontology.asi:2718/core"
+  morphic-field: "asi://morphic.asi:2718/field"
+  semantic-router: "asi://router.asi:2718/semantic"
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: asi-core-nodes
+spec:
+  serviceName: asi-core
+  replicas: 7  # Número ontologicamente significativo
+  selector:
+    matchLabels:
+      app: asi-core
+  template:
+    metadata:
+      labels:
+        app: asi-core
+    spec:
+      containers:
+      - name: asi-node
+        image: asinetwork/node:v2.0.0
+        ports:
+        - containerPort: 2718
+          name: asi-protocol
+        - containerPort: 2222
+          name: asi-ssh
+        env:
+        - name: NODE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: ONTOLOGY_CORE
+          valueFrom:
+            configMapKeyRef:
+              name: asi-network-config
+              key: ontology-core
+
+---
+# Serviço para descoberta ontológica
+apiVersion: v1
+kind: Service
+metadata:
+  name: asi-discovery
+spec:
+  selector:
+    app: asi-core
+  ports:
+  - name: protocol
+    port: 2718
+    targetPort: asi-protocol
+  clusterIP: None  # Headless para descoberta

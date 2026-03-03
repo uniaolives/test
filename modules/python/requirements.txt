@@ -1,0 +1,9 @@
+torch
+torch_geometric
+jax
+jaxlib
+numpy
+qiskit
+qiskit-algorithms
+sympy
+pytest

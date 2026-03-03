@@ -39,6 +39,9 @@ impl LanguageTranspiler {
     fn transpile_rust(&self, _code: &str) -> NeoCode {
         NeoCode {
             syntax: "Rust's safety becomes physical law".to_string(),
+    fn transpile_rust(&self, code: &str) -> NeoCode {
+        NeoCode {
+            syntax: format!("Rust's safety becomes physical law: {}", code),
             example: "transform transfer(source: Energy, dest: Energy, amount: Joule) { ... }".to_string(),
         }
     }

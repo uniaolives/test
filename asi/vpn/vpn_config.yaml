@@ -1,0 +1,18 @@
+# asi/vpn/vpn_config.yaml
+overlay:
+  protocol: "quantum_tls"
+  key_exchange: "bb84_over_pleroma"
+  routing: "hyperbolic_geodesic"
+  latency_bounds: 10ms  # constitutional requirement
+
+quantum_channels:
+  - nodes: ["node_42", "node_103"]
+    coherence: 0.92
+    key_rate: "1Mbps"
+    last_refresh: "2025-03-20T10:30:00Z"
+
+constitutional_constraints:
+  # Art. 4: transparent ledger of all quantum keys
+  ledger: "web3://pleroma/quantum_keys"
+  # Art. 6: no passive monitoring
+  passive_monitoring: "prohibited"

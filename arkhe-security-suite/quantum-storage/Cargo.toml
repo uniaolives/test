@@ -1,0 +1,9 @@
+[package]
+name = "quantum-storage"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arkhe-crypto = { path = "../crypto" }
+arkhe-quantum-core = { path = "../quantum-core" }
+serde = { version = "1.0", features = ["derive"] }

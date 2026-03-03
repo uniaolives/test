@@ -49,10 +49,10 @@ impl MeshNeuronV03 {
     }
 
     fn deterministic_shard(hash: Blake3Hash) -> u64 {
-        let mut state = ChunkState::new(0);
-        state.update(hash.as_bytes());
-        state.update(&0xbd36332890d15e2f_u64.to_le_bytes());
-        let final_hash = state.finalize(true);
+        let mut hasher = blake3::Hasher::new();
+        hasher.update(hash.as_bytes());
+        hasher.update(&0xbd36332890d15e2f_u64.to_le_bytes());
+        let final_hash = hasher.finalize();
 
         (final_hash.as_bytes()[0] as u64) % 128
     }

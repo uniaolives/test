@@ -1,0 +1,124 @@
+// ============================================================================
+// SixGARROW.anl – AI-Native 6G Network Specification
+// Based on the 6GARROW project vision (EuCNC & 6G Summit 2025)
+// ============================================================================
+
+namespace SixGARROW {
+
+    // ==========================================
+    // 1. PHYSICAL AND LOGICAL COMPONENTS (NODES)
+    // ==========================================
+
+    node UE {
+        attributes {
+            string ue_id;
+            float battery_level;               // 0..1 (Target: +50-60% EE)
+            float computational_capacity;       // GFLOPS
+            tensor semantic_latent_space[D];   // Local embedding space
+            bool ai_capable;                   // Local Model Support
+        }
+        dynamics {
+            // Energy consumption coupled with semantic fidelity
+            // battery_level -= energy_cost(semantic_latent_space.precision);
+        }
+    }
+
+    node AINative_RAN {
+        attributes {
+            float ai_compute_power;            // > 1 Trillion parameters (AIaaS)
+            float spectral_efficiency;         // > 10x CSI Compression
+            float latency_pdcp_layer;          // Target: < 1ms (AI Round Trip)
+        }
+        // Native AI integration above PDCP layer to reduce latency
+    }
+
+    node CoreNetwork {
+        attributes {
+            float function_consumption;        // Target: -30-50% Energy Reduction
+            bool predictive_placement;         // AI managing CN function activation
+        }
+    }
+
+    node SemanticPlane {
+        attributes {
+            float compression_factor;          // Target: > 8x vs IEEE 754
+            string task_context;               // "gesture", "sensing", "broadband"
+        }
+        // Defines "meaning" over "bit"
+    }
+
+    // ==========================================
+    // 2. HANDOVERS (INTELLIGENT INTERACTIONS)
+    // ==========================================
+
+    handover SemanticTransmission (UE tx, AINative_RAN rx, SemanticPlane sp) {
+        protocol: GOAL_ORIENTED;
+        condition: tx.battery_level > 0.05;
+        effects {
+            // Transmission via embeddings instead of bit-level accuracy
+            // rx.receive_knowledge = sp.map(tx.semantic_latent_space);
+            // assert task_accuracy(rx.receive_knowledge) > 0.95;
+        }
+    }
+
+    handover AIaaS_Offload (UE device, AINative_RAN network) {
+        protocol: COMPUTE_SHARING;
+        // condition: device.local_inference_cost > network.offload_cost;
+        effects {
+            // Access to 1T+ parameter models via network
+            // device.result = network.compute_ai_task(device.data);
+        }
+    }
+
+    // ==========================================
+    // 3. CONSTITUTIONAL CONSTRAINTS (REGULATION)
+    // ==========================================
+
+    constraint EU_Regulatory_Compliance {
+        check:
+            compliance("EU_AI_Act") == TRUE AND
+            compliance("Cyber_Resilience_Act") == TRUE AND
+            compliance("EU_Data_Act") == TRUE;
+
+        on_violation: "HALT_AND_AUDIT";
+    }
+}
+
+namespace SixGARROW_Global_Resilience {
+
+    using SixGARROW;
+
+    // ---- Global RAN Node Extension ----
+    node Global_RAN : AINative_RAN {
+        attributes {
+            float geo_latency_offset; // Delta t based on distance (Korea <-> Europe)
+            float semantic_confidence_threshold = 0.85; // Kappa threshold
+        }
+    }
+
+    // ---- Hybrid Handover: Semantic + Shannon Fallback ----
+    handover Resilient_Link (UE tx, Global_RAN rx, SemanticPlane sp) {
+        protocol: HYBRID_ADAPTIVE;
+
+        effects {
+            // 1. Semantic Attempt
+            // kappa = sp.calculate_confidence(tx.embedding);
+            // if (kappa >= rx.semantic_confidence_threshold) { ... }
+            // else { Shannon Fallback }
+        }
+    }
+
+    // ---- Intercontinental AIaaS Offload ----
+    handover Global_AIaaS_Offload (UE device, Global_RAN remote_edge) {
+        protocol: LONG_DISTANCE_COMPUTE;
+        attributes {
+            float speed_of_light_limit = 300000; // km/s
+            float distance_km = 9000;           // Seoul <-> Grenoble
+        }
+        effects {
+            // propagation_delay = (distance_km / speed_of_light_limit) * 2; // RTT
+            // total_latency = propagation_delay + remote_edge.compute_time;
+            // assert total_latency < 100; // SLA for non-critical tasks
+        }
+    }
+}

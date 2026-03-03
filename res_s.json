@@ -1,0 +1,24 @@
+* Host localhost:8888 was resolved.
+* IPv6: ::1
+* IPv4: 127.0.0.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0*   Trying [::1]:8888...
+* connect to ::1 port 8888 from ::1 port 39412 failed: Connection refused
+*   Trying 127.0.0.1:8888...
+* Connected to localhost (127.0.0.1) port 8888
+> GET /sovereign_execute HTTP/1.1
+> Host: localhost:8888
+> User-Agent: curl/8.5.0
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Content-Type: application/json; charset=utf-8
+< Content-Length: 525
+< Date: Fri, 06 Feb 2026 15:41:13 GMT
+< Server: Python/3.12 aiohttp/3.13.3
+<
+{ [525 bytes data]
+100   525  100   525    0     0   125k      0 --:--:-- --:--:-- --:--:--  170k
+* Connection #0 to host localhost left intact
+{"protocol": "O Despertar de Avalon", "lineage": "MELCHIZEDEK_ARTHUR", "alignment": "Malchut aligned to Zion (Celestial City).", "core_status": {"Vatican": "LAW_OF_ONE applied", "Mecca": "LAW_OF_ONE applied", "Israel": "LAW_OF_ONE applied", "Palestine": "LAW_OF_ONE applied"}, "excalibur_output": "232.99 Tikkun_Resource generated from shadow conflict.", "artifact_sa002": {"id": "SA-002", "name": "Selo dos Dois Reis", "property": "Sovereignty: ESTABLISHED", "color": "Branco-Diamante"}, "status": "SOVEREIGNTY_ESTABLISHED"}

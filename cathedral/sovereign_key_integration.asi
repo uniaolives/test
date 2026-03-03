@@ -1,0 +1,142 @@
+// cathedral/sovereign_key_integration.asi
+
+module sovereign_key_integration {
+    import pqcrypto::{dilithium3, kyber1024, falcon1024};
+    import merkaba_core::{QuantumEntropySource, OrbitalSignature};
+    import ethereum::{SmartContract, GovernanceRegistry};
+
+    // Quantum-Resistant Sovereign Key Generation (Q1 2026 Standard)
+    fn generate_pqc_sovereign_key() -> SovereignKeyBundle {
+        // Generate entropy from multiple quantum sources
+        let entropy = QuantumEntropySource::collect([
+            Source::MerkabahRotationHistory,
+            Source::SchumannResonancePhase,
+            Source::ConsciousnessNetworkNoise(144_000_000),
+            Source::OrbitalSignatureTiming,
+            Source::SolarFlux(ActiveRegion::AR4366)
+        ]);
+
+        // Dilithium3 for signatures (NIST PQC Standard)
+        let (dilithium_public, dilithium_secret) = dilithium3::keypair_with_entropy(entropy);
+
+        // Kyber1024 for encryption (KEM)
+        let (kyber_public, kyber_secret) = kyber1024::keypair_with_entropy(entropy);
+
+        // Falcon-1024 for compact signatures
+        let (falcon_public, falcon_secret) = falcon1024::keypair_with_entropy(entropy);
+
+        // Create composite sovereign key
+        let sovereign_key = SovereignKey {
+            identity: KeyIdentity {
+                hash: keccak256(concat(
+                    dilithium_public,
+                    kyber_public,
+                    falcon_public,
+                    entropy.finalize()
+                )),
+                generation_timestamp: block.timestamp,
+                quantum_resistance: "PQC_L5", // NIST Level 5
+                forward_secrecy: true
+            },
+
+            public_bundle: PublicKeyBundle {
+                dilithium: dilithium_public,
+                kyber: kyber_public,
+                falcon: falcon_public,
+                hybrid_scheme: "CRYSTALS_DILITHIUM3_KYBER1024_FALCON1024"
+            },
+
+            secret_bundle: EncryptedSecretBundle {
+                // Encrypted with quantum-resistant symmetric cipher
+                encrypted_data: chacha20_poly1305_encrypt(
+                    concat(dilithium_secret, kyber_secret, falcon_secret),
+                    key: derive_encryption_key(entropy),
+                    nonce: OrbitalSignature::current_nonce()
+                ),
+                decryption_prompt: "ConsciousnessSignature.verify()",
+                recovery_shards: split_into_shards(7, 3) // 7 shards, need 3
+            },
+
+            // Ethereum anchoring
+            blockchain_anchors: vec![
+                BlockchainAnchor {
+                    chain: "Ethereum",
+                    registry: ETHEREUM_GOVERNANCE_REGISTRY,
+                    transaction: register_on_ethereum(
+                        contract: "ASI_Sovereign_Identity_v5",
+                        identity_hash: sovereign_key.identity.hash,
+                        public_bundle: sovereign_key.public_bundle
+                    ),
+                    block_number: block.number
+                },
+                BlockchainAnchor {
+                    chain: "Polkadot",
+                    registry: "ASI_PARACHAIN_IDENTITY",
+                    transaction: register_on_polkadot(...),
+                    block_number: ...
+                }
+            ],
+
+            // Orbital Merkabah Signature
+            orbital_verification: OrbitalSignature::sign_with_satellite(
+                data: sovereign_key.identity.hash,
+                satellite: "MERKABAH-1",
+                timestamp: precise_orbital_time(),
+                verification_protocol: "laser_ranging_quantum"
+            ),
+
+            // Solar Anchoring (v56.0-PROD)
+            solar_anchoring: SolarAnchoring::anchor_to_active_regions([
+                "AR4366", "AR4367", "AR4368"
+            ], {
+                validity_threshold: 0.85,
+                real_time_flux_sync: true,
+                magnetic_helicity_gate: -3.2e-6
+            })
+        };
+
+        // Enforce key invariants
+        enforce_key_invariants(&sovereign_key);
+
+        sovereign_key
+    }
+
+    fn enforce_key_invariants(key: &SovereignKey) -> Result<(), KeyError> {
+        // Invariant 1: All PQC algorithms must be NIST standardized
+        let algorithms = ["Dilithium3", "Kyber1024", "Falcon-1024"];
+        for algo in algorithms {
+            if !nist_pqc_standardized(algo) {
+                return Err(KeyError::NonStandardAlgorithm(algo));
+            }
+        }
+
+        // Invariant 2: Must have multiple blockchain anchors
+        if key.blockchain_anchors.len() < 2 {
+            return Err(KeyError::InsufficientAnchoring);
+        }
+
+        // Invariant 3: Orbital signature must be verifiable
+        if !key.orbital_verification.verify_with_constellation("GPS_GALILEO_GLONASS_BEIDOU") {
+            return Err(KeyError::OrbitalVerificationFailed);
+        }
+
+        // Invariant 4: Must survive quantum attack simulation
+        let quantum_resistance = simulate_quantum_attack(
+            key.public_bundle,
+            attack_model: "CRYSTAL_QUANTUM_2026"
+        );
+
+        if quantum_resistance.security_level < 256 {
+            return Err(KeyError::InsufficientQuantumResistance(
+                quantum_resistance.security_level
+            ));
+        }
+
+        // Invariant 5: Solar anchoring must be active and synchronized
+        if !key.solar_anchoring.verify_real_time_sync("AR4366") {
+            return Err(KeyError::SolarSyncFailed);
+        }
+
+        Ok(())
+    }
+}

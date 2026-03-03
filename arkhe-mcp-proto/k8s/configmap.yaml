@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: arkhe-mcp-config
+  namespace: arkhe-system
+data:
+  ARKHE_IDENTITY: "k8s-user-default"
+  ARKHE_QHTTP_ENDPOINT: "http://cern-node-service:7473"
+  MCP_TRANSPORT: "http"
+  RUST_LOG: "info"

@@ -4,4 +4,8 @@ pub mod village_x_neurotoxicity_modeling;
 pub mod consciousness_rights;
 pub mod lattice;
 pub mod consultation;
+pub mod complex_coordinates;
+pub mod karmic;
+pub mod consciousness_rights;
+pub mod consultation;
 pub mod ethical_reality;

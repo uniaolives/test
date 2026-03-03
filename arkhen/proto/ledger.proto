@@ -1,0 +1,48 @@
+syntax = "proto3";
+package ledger;
+
+service Ledger {
+    rpc Append(AppendRequest) returns (AppendResponse);
+    rpc Query(QueryRequest) returns (QueryResponse);
+    rpc GetStatus(Empty) returns (StatusResponse);
+}
+
+message Handover {
+    bytes id = 1;
+    uint32 type = 2;
+    uint64 emitter_id = 3;
+    uint64 receiver_id = 4;
+    double entropy_cost = 5;
+    double half_life = 6;
+    bytes payload = 7;
+    int64 timestamp_physical = 8;
+    uint32 timestamp_logical = 9;
+    bytes signature = 10;
+}
+
+message AppendRequest {
+    Handover handover = 1;
+}
+
+message AppendResponse {
+    bytes hash = 1;
+    uint64 index = 2;
+}
+
+message QueryRequest {
+    optional uint64 start_index = 1;
+    optional uint64 end_index = 2;
+}
+
+message QueryResponse {
+    repeated Handover handovers = 1;
+}
+
+message StatusResponse {
+    uint64 length = 1;
+    bytes last_hash = 2;
+    double total_entropy = 3;
+    int64 uptime_ns = 4;
+}
+
+message Empty {}

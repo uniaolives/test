@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.0.2, pluggy-1.6.0
+rootdir: /app
+configfile: pyproject.toml
+plugins: asyncio-1.3.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 7 items
+
+tests/asi/test_asi_core.py ...                                           [ 42%]
+tests/asi/test_physical_network.py ...                                   [ 85%]
+tests/test_anl_v07.py .                                                  [100%]
+
+=============================== warnings summary ===============================
+tests/asi/test_asi_core.py:7
+  /app/tests/asi/test_asi_core.py:7: PytestUnknownMarkWarning: Unknown pytest.mark.asi - is this a typo?  You can register custom marks to avoid this warning - for details, see https://docs.pytest.org/en/stable/how-to/mark.html
+    @pytest.mark.asi
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+========================= 7 passed, 1 warning in 2.81s =========================

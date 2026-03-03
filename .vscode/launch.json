@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "🧠 PINN Forward Pass",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/cosmopsychia_pinn/cosmopsychia_pinn.py",
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "🌀 Attention Descent",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/cosmopsychia_pinn/cosmopsychia_pinn.py",
+      "console": "integratedTerminal",
+      "args": ["--train"]
+    },
+    {
+      "name": "🧪 Economic Stress Test",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/cosmopsychia_pinn/simulations/coherence_stress_test/symmetry_breaker_application.py",
+      "console": "integratedTerminal"
+    },
+  ]
+}

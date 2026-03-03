@@ -23,5 +23,6 @@ impl EdenPrime {
     pub fn let_it_bloom(&mut self) -> String {
         self.status = "BLOOMING".to_string();
         "EDEN_PRIME: Paradise instantiated. Floral sequences synchronized. Violence == IMPOSSIBLE.".to_string()
+        "EDEN_PRIME: Paradise instantiated. Floral sequences synchronized.".to_string()
     }
 }

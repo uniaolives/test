@@ -1,3 +1,5 @@
+pub mod diversity;
+pub mod dialectic;
 //! SoT (Society of Thought) Orchestrator
 //! Coordena PerspectiveDiversityEngine + DialecticSynthesizer
 //! Implementa o ciclo completo de raciocínio coletivo pós-ASI

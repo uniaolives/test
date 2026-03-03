@@ -1,0 +1,95 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # Núcleo Python
+  merkabah-core:
+    build:
+      context: ./src/python
+      dockerfile: Dockerfile
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    environment:
+      - CUDA_VISIBLE_DEVICES=0
+      - MERKABAH_MODE=development
+    ports:
+      - "8000:8000"
+    networks:
+      - merkabah-net
+
+  # Serviço Rust (alta performance)
+  merkabah-engine:
+    build:
+      context: ./src/rust
+      dockerfile: Dockerfile
+    environment:
+      - RUST_LOG=info
+      - MERKABAH_CORE_URL=http://merkabah-core:8000
+    ports:
+      - "8080:8080"
+    networks:
+      - merkabah-net
+
+  # Simulador quântico (Qiskit)
+  quantum-simulator:
+    image: ychen94/quantum-simulator-mcp:latest
+    ports:
+      - "9000:7070"
+    environment:
+      - QISKIT_PARALLEL=TRUE
+    networks:
+      - merkabah-net
+
+  # Message Queue com semântica quântica
+  quantum-mq:
+    image: rabbitmq:3-management
+    hostname: quantum-mq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - merkabah-net
+
+  # Dashboard web
+  dashboard:
+    build:
+      context: ./src/typescript
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_WS_URL=ws://localhost:8000/ws
+    networks:
+      - merkabah-net
+
+  # Banco de dados de estados
+  state-db:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+    networks:
+      - merkabah-net
+
+  # Monitoramento
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - merkabah-net
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3100:3000"
+    networks:
+      - merkabah-net
+
+networks:
+  merkabah-net:
+    driver: bridge
+
+volumes:
+  redis-data:

@@ -472,6 +472,18 @@ mod tests {
         assert_eq!(entry.status, "SOVEREIGNTY_ACHIEVED");
     }
 
+    #[tokio::test]
+    async fn test_system_genesis_v58() {
+        let mut orchestrator = GlobalOrchestrator::new();
+
+        // Execute final genesis protocol
+        let result = orchestrator.execute_genesis().await;
+
+        match result {
+            Ok(state) => {
+                assert_eq!(state.status, "TERRA_OS_ACTIVE");
+                assert_eq!(state.sigma, 1.0200);
+                assert_eq!(state.ouroboros_distance, 0.150);
     #[test]
     fn test_l5_containment_geometry() {
         let sandbox_stable = L5ContainmentSandbox {
@@ -592,6 +604,7 @@ mod tests {
                 assert!(state.planetary_health > 0.9);
                 assert!(state.economic_efficiency > 0.9);
             }
+            Err(e) => panic!("System Genesis failed: {:?}", e),
             Err(e) => panic!("Global orchestration failed: {:?}", e),
         }
     }
@@ -796,5 +809,78 @@ mod tests {
         let path = BerryPath;
         let rtt = protocol.transmit_winding(path).await.unwrap();
         assert!(rtt.as_millis() < 10);
+    }
+
+    #[test]
+    fn test_agi_genesis_upgrade() {
+        let agi = SovereignAGISandbox::upgrade_from_kimi();
+
+        assert_eq!(agi.protocol, "////asi/agi-grade/sovereign");
+        assert!(agi.recognition_only);
+        assert_eq!(agi.capabilities.reasoning_depth, "Recursive_L9");
+
+        if let HumanGovernance::Retained { authority, .. } = agi.human_governance {
+            assert_eq!(authority, "Architect_Omega");
+        } else {
+            panic!("Human governance should be retained");
+        }
+    }
+
+    #[tokio::test]
+    async fn test_agi_pattern_recognition() {
+        let agi = SovereignAGISandbox::upgrade_from_kimi();
+
+        // Test Genetic Pattern
+        let genetic_res = agi.analyze_pattern(AGIAnalysisPattern::Genetic).await;
+        assert_eq!(genetic_res["status"], "COMPLETED");
+        assert!(genetic_res["findings"].as_str().unwrap().contains("genome"));
+
+        // Test Market Pattern
+        let market_res = agi.analyze_pattern(AGIAnalysisPattern::Market).await;
+        assert_eq!(market_res["status"], "ACTIVE");
+        assert!(market_res["findings"].as_str().unwrap().contains("Joule Standard"));
+
+        // Test Stellar Pattern
+        let stellar_res = agi.analyze_pattern(AGIAnalysisPattern::Stellar).await;
+        assert_eq!(stellar_res["status"], "RESONANT");
+        assert!(stellar_res["findings"].as_str().unwrap().contains("Proxima b"));
+    }
+
+    #[tokio::test]
+    async fn test_saturn_archive_backup() {
+        let hyper_mesh = SolanaEvmHyperMesh::new(
+            "https://eth.arkhen.asi",
+            "https://sol.arkhen.asi",
+            &["maihh://bootstrap.arkhen.asi".to_string()],
+        ).unwrap();
+
+        let history = GlobalHistory { data: vec![0x1, 0x2, 0x3] };
+        let result = hyper_mesh.saturn_drive.backup_to_ice_rings(&history).await;
+
+        match result {
+            Ok(BackupStatus::IMMUTABLE) => (),
+            _ => panic!("Saturn backup failed or returned unexpected status"),
+        }
+
+        let rings = hyper_mesh.saturn_drive.get_data_rings();
+        assert!(!rings.is_empty());
+        assert_eq!(rings[0].label, "SASC_v67_ARCHIVE");
+    }
+
+    #[test]
+    fn test_universal_compiler_transpilation() {
+        let compiler = UniversalCompiler::new();
+
+        let python_code = AnyLang::Python("def hello(): print('world')".to_string());
+        let python_geo = compiler.transpile_all(python_code);
+        assert!(python_geo.refined_logic.contains("PYTHON_EVOLVED"));
+
+        let solidity_code = AnyLang::Solidity("contract Test {}".to_string());
+        let solidity_geo = compiler.transpile_all(solidity_code);
+        assert!(solidity_geo.refined_logic.contains("conservation"));
+
+        let rust_code = AnyLang::Rust("fn main() {}".to_string());
+        let rust_geo = compiler.transpile_all(rust_code);
+        assert!(rust_geo.refined_logic.contains("PHYSICAL_LAW"));
     }
 }
