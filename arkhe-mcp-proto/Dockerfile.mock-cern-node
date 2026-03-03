@@ -1,0 +1,23 @@
+FROM rust:1.84-slim-bookworm AS builder
+
+WORKDIR /build
+COPY . .
+RUN cargo build --release -p mock-cern-node
+
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y ca-certificates curl && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY --from=builder /build/target/release/mock-cern-node .
+
+EXPOSE 7473
+
+ENV NODE_ID=cern-docker-001
+ENV INITIAL_PHI=0.618
+ENV RUST_LOG=info
+
+HEALTHCHECK --interval=10s --timeout=3s \
+    CMD curl -f http://localhost:7473/health || exit 1
+
+CMD ["./mock-cern-node"]

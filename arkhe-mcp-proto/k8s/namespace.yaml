@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: arkhe-system
+  labels:
+    app.kubernetes.io/name: arkhe
+    app.kubernetes.io/component: quantum-os

@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  # Servidor MCP principal
+  arkhe-mcp:
+    build:
+      context: .
+      dockerfile: Dockerfile.arkhe-mcp-server
+    container_name: arkhe-mcp-server
+    environment:
+      - ARKHE_LEDGER_PATH=/data/ledger.db
+      - ARKHE_IDENTITY=${ARKHE_IDENTITY:-docker-user-001}
+      - ARKHE_QHTTP_ENDPOINT=http://cern-node:7473
+      - RUST_LOG=info
+      - MCP_TRANSPORT=stdio  # ou http para modo servidor
+    volumes:
+      - arkhe-data:/data
+    networks:
+      - arkhe-net
+    restart: unless-stopped
+
+  # Nó CERN simulado
+  cern-node:
+    build:
+      context: .
+      dockerfile: Dockerfile.mock-cern-node
+    container_name: arkhe-cern-node
+    environment:
+      - NODE_ID=cern-docker-001
+      - INITIAL_PHI=0.618
+    ports:
+      - "7473:7473"
+    networks:
+      - arkhe-net
+    restart: unless-stopped
+
+  # Nó adicional: Mauna Kea simulado
+  mauna-node:
+    build:
+      context: .
+      dockerfile: Dockerfile.mock-cern-node
+    container_name: arkhe-mauna-node
+    environment:
+      - NODE_ID=mauna-docker-001
+      - INITIAL_PHI=0.42
+    ports:
+      - "7474:7473"
+    networks:
+      - arkhe-net
+
+volumes:
+  arkhe-data:
+
+networks:
+  arkhe-net:
+    driver: bridge
