@@ -170,6 +170,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
       - name: Start services with Docker Compose
         working-directory: merkabah-cy
         run: |
@@ -180,27 +186,39 @@ jobs:
         run: |
           bash ./scripts/wait-for-services.sh
 
+      - name: Install dependencies
+        working-directory: merkabah-cy
+        run: |
+          pip install -r src/python/requirements.txt
+
       - name: Test qhttp:// Protocol
         working-directory: merkabah-cy
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)/src/python
           export QHTTP_SIMULATION=1
-          python -m pytest tests/integration/test_qhttp_protocol.py -v \
+          python3 -m pytest tests/integration/test_qhttp_protocol.py -v \
             --qhttp-endpoint=http://localhost:8443
 
       - name: Test End-to-End Pipeline
         working-directory: merkabah-cy
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)/src/python
-          python -m pytest tests/integration/test_e2e_pipeline.py -v \
+          python3 -m pytest tests/integration/test_e2e_pipeline.py -v \
             --duration=short
 
       - name: Test Safety Containment
         working-directory: merkabah-cy
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)/src/python
-          python -m pytest tests/integration/test_safety_containment.py -v \
+          python3 -m pytest tests/integration/test_safety_containment.py -v \
             --critical-h11=${{ env.CRITICAL_H11 }}
+
+      - name: Test Hyperprompting Protocol
+        working-directory: .
+        run: |
+          export PYTHONPATH=$PYTHONPATH:$(pwd)/src
+          python3 -m pytest tests/test_hyperprompt.py tests/test_temporal_navigation.py -v
+          python3 -m pytest tests/test_hyperprompt.py -v
 
   # =============================================================================
   # FASE 4: BENCHMARK EM CLUSTER (Condicional)

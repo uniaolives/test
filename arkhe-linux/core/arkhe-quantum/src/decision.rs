@@ -1,4 +1,6 @@
 use std::io::{self, Write};
+use tokio::time::{sleep, Duration};
+use crate::manifold_ext::ExtendedManifold;
 
 #[derive(Debug, Clone)]
 pub struct ArkheState {
@@ -51,6 +53,7 @@ impl ArchitectDecision {
         println!("╚═══════════════════════════════════════════════════════════════════╝");
 
         // For non-interactive automation/simulation, we default to R (Retain)
+        // or T (Transmit) based on env vars if needed.
         Decision::Retain
     }
 }
