@@ -3,6 +3,7 @@ from .utils import Memory, Environment
 from .hyperprompt import HyperpromptProtocol
 from .hyperprompt_kernel import PrecisionOperator, EpistemicForaging, NarrativeReconsolidation, Substrate
 from .temporal_navigation import TemporalNavigator, TemporalCoordinate, InformationPacket
+from .mummer_mnemosyne import MUMmerMnemosyne, MUM
 
 __all__ = [
     "ExperientialLearning",
@@ -15,6 +16,9 @@ __all__ = [
     "Substrate",
     "TemporalNavigator",
     "TemporalCoordinate",
+    "InformationPacket",
+    "MUMmerMnemosyne",
+    "MUM"
     "InformationPacket"
     "Substrate"
 ]
