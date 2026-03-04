@@ -654,6 +654,7 @@ dependencies = [
  "aes-gcm",
  "anyhow",
  "arkhe-constitution",
+ "arkhe-foundry-bridge",
  "arkhe-manifold",
  "arkhe-noether",
  "arkhe-thermodynamics",
@@ -8251,6 +8252,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8d8034d9489cdaf79228eb9f6a3b8d7bb32ba00d6645ebd48eef4077ceb5bd9"
 dependencies = [
  "asn1-rs 0.6.2",
+]
+
+[[package]]
+name = "oloid-core"
+version = "0.1.0"
+dependencies = [
+ "arkhe-time-crystal",
+ "chrono",
+ "log",
+ "serde",
+ "thiserror 1.0.69",
 ]
 
 [[package]]
