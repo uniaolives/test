@@ -1,5 +1,7 @@
 numpy
 torch
+transformers
+accelerate
 qiskit
 qiskit-algorithms
 aiohttp
@@ -10,6 +12,7 @@ requests
 pandas
 matplotlib
 scikit-learn
+scipy
 h5py
 pytorch-lightning
 pytest
