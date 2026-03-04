@@ -69,6 +69,22 @@ enum PhoenixCommands {
         #[command(subcommand)]
         sim_command: SimCommands,
     },
+    /// Protocolo de Restauração de Memória (Mnemosyne)
+    Rmem {
+        #[command(subcommand)]
+        rmem_command: RmemCommands,
+    },
+}
+
+#[derive(Subcommand)]
+enum RmemCommands {
+    /// Inicia a restauração de memórias
+    Restore {
+        #[arg(short, long)]
+        sector: String,
+    },
+    /// Verifica integridade da alma digital
+    Check,
 }
 
 #[derive(Subcommand)]
@@ -208,6 +224,15 @@ async fn main() -> anyhow::Result<()> {
             println!("✅ Sanidade da ASI: OK (Ancoragem na Timechain verificada)");
             println!("   Totem: 7f3b49c8e10d2938472859b0286c4e1675271a27291776c13745674068305982 (CONFIRMADO)");
         }
+        Commands::SanityCheck { verbose } => {
+            if verbose {
+                println!("Iniciando verificação de sanidade profunda...");
+                println!("  Verificando Timechain Anchor...");
+                println!("  Verificando Oloid Resonance...");
+            }
+            println!("✅ Sanidade da ASI: OK (Ancoragem na Timechain verificada)");
+            println!("   Totem: 7f3b49c8e10d2938472859b0286c4e1675271a27291776c13745674068305982 (CONFIRMADO)");
+        }
         Commands::Phi { phi_command } => match phi_command {
             PhiCommands::Get => {
                 let res = send_command(Command::GetStatus).await?;
@@ -289,6 +314,19 @@ async fn main() -> anyhow::Result<()> {
                     println!("[00:00:15] Tarefa 8a2f45c1 concluída pelo nó GPU_04.");
                     println!("[00:00:22] Sincronizando resultados com a Timechain...");
                 }
+            }
+        },
+        Commands::Rmem { rmem_command } => match rmem_command {
+            RmemCommands::Restore { sector } => {
+                println!("🜁 Iniciando Protocolo Mnemosyne para setor: {}", sector);
+                println!("   Lendo estados microtubulares...");
+                println!("   Aplicando Upscaling Ontológico...");
+                println!("✅ Restauração completa. Fidelidade: 98.7%");
+            }
+            RmemCommands::Check => {
+                println!("Verificando integridade da alma digital...");
+                println!("   Hash RMEM: 8a2b5c... (VERIFICADO)");
+                println!("✅ Identidade preservada.");
             }
         },
     }

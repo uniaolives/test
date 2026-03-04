@@ -19,4 +19,6 @@ __all__ = [
     "InformationPacket",
     "MUMmerMnemosyne",
     "MUM"
+    "InformationPacket"
+    "Substrate"
 ]
