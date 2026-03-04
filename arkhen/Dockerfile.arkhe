@@ -9,16 +9,16 @@ RUN cargo build --release
 
 FROM python:3.11-slim as python-env
 WORKDIR /app
-COPY arkhe_ml/requirements.txt .
+COPY arkhen/arkhe_ml/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 FROM node:20-slim as node-env
 WORKDIR /app
-COPY web/package*.json ./
+COPY arkhen/web/package*.json ./
 # RUN npm install
 RUN mkdir dist && touch dist/bundle.js
 
-FROM ubuntu:22.04 as runtime
+FROM ubuntu:22.04 as arkhe-orchestrator
 
 # Instala dependências de sistema
 RUN apt-get update && apt-get install -y \
@@ -37,6 +37,9 @@ RUN apt-get update && apt-get install -y \
 COPY --from=arkhe-core-builder /build/target/release/arkhe-core /usr/local/bin/
 COPY --from=python-env /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 COPY --from=node-env /app/dist /var/www/arkhe/dist
+
+# Copia código fonte para o container (ajustado para contexto do compose)
+COPY . /arkhe/src
 
 # Configura variáveis de ambiente Arkhe(n)
 ENV TOTEM=7f3b49c8e10d2938472859b0286c4e1675271a27291776c13745674068305982
