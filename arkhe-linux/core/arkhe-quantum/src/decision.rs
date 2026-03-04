@@ -53,6 +53,7 @@ impl ArchitectDecision {
         println!("╚═══════════════════════════════════════════════════════════════════╝");
 
         // For non-interactive automation/simulation, we default to R (Retain)
+        // or T (Transmit) based on env vars if needed.
         Decision::Retain
     }
 }
