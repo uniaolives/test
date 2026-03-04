@@ -170,6 +170,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install test dependencies
+        run: |
+          pip install pytest pytest-asyncio requests
+
       - name: Start services with Docker Compose
         working-directory: merkabah-cy
         run: |
