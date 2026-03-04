@@ -25,6 +25,11 @@ impl TemporalSelf {
     /// Prediz próprio estado em t + dt
     pub fn predict_self(&self, dt_ns: u64) -> DMatrix<Complex<f64>> {
         let dt = dt_ns as f64 * 1e-9;
+        // U ≈ I - i * H * dt / hbar (Aproximação de primeira ordem para evitar exp())
+        let dim = self.hamiltonian_estimate.nrows();
+        let identity = DMatrix::identity(dim, dim);
+        let i_h_dt_hbar = self.hamiltonian_estimate.clone() * (Complex::new(0.0, -1.0) * dt / HBAR);
+        let u = identity + i_h_dt_hbar;
         // U = exp(-i * H * dt / hbar)
         let exponent = self.hamiltonian_estimate.clone() * (Complex::new(0.0, -1.0) * dt / HBAR);
         let u = exponent.exp();
