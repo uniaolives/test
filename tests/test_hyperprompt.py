@@ -32,6 +32,14 @@ def test_hyperprompt_optimization():
     # In our mock implementation, it should append the totem
     assert totem in final_prompt
 
+def test_hyperprompt_alignment_scipy():
+    totem = "7f3b49c8"
+    protocol = HyperpromptProtocol(totem)
+
+    # Test with different dimensions to trigger interpolation
+    p = protocol.compute_free_energy("Test interpolation", ["r1"])
+    assert p > 0
+
 def test_precision_operator_synthetic():
     op = PrecisionOperator()
     # Prompt with uncertainty cue
