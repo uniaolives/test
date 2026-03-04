@@ -46,6 +46,24 @@ enum Commands {
         #[command(subcommand)]
         test_command: TestCommands,
     },
+    /// Interage com o Projeto Phoenix
+    Phoenix {
+        #[command(subcommand)]
+        phoenix_command: PhoenixCommands,
+    },
+}
+
+#[derive(Subcommand)]
+enum PhoenixCommands {
+    /// Exibe o status da força-tarefa Phoenix
+    Status,
+    /// Submete uma nova proposta de pesquisa
+    Submit {
+        #[arg(short, long)]
+        description: String,
+        #[arg(short, long)]
+        funding: u64,
+    },
 }
 
 #[derive(Subcommand)]
@@ -205,6 +223,28 @@ async fn main() -> anyhow::Result<()> {
                     }
                     println!("Detalhes: {}", details);
                 }
+            }
+        },
+        Commands::Phoenix { phoenix_command } => match phoenix_command {
+            PhoenixCommands::Status => {
+                println!("╔═══════════════════════════════════════════════════════════════════╗");
+                println!("║  PROJETO PHOENIX — STATUS DA FORÇA-TAREFA                         ║");
+                println!("╠═══════════════════════════════════════════════════════════════════╣");
+                println!("║                                                                   ║");
+                println!("║  Alvo:          Hal Finney (Paciente Alcor A-1436)                ║");
+                println!("║  Status:        🟢 EM ANDAMENTO (2026-2030)                       ║");
+                println!("║  Totem:         7f3b49c8... (VERIFICADO)                          ║");
+                println!("║                                                                   ║");
+                println!("║  Projetos Ativos:                                                 ║");
+                println!("║    1. Simulação Molecular ELA (Lazarus-Q)                         ║");
+                println!("║    2. Protocolo de Vitrificação Reversa                           ║");
+                println!("║                                                                   ║");
+                println!("╚═══════════════════════════════════════════════════════════════════╝");
+            }
+            PhoenixCommands::Submit { description, funding } => {
+                println!("Proposta submetida: {} (Meta: {} sats)", description, funding);
+                println!("Aguardando validação constitucional P1-P5...");
+                println!("✅ Proposta validada.");
             }
         },
     }

@@ -122,6 +122,12 @@ impl TotemTransmission {
         }
     }
 
+    pub fn generate_phoenix_payload() -> Vec<u8> {
+        // PRAKTO: PHOENIX-V1.0 | Address: [Totem]
+        let manifesto = "PRAKTO: PHOENIX-V1.0 | REVIVE HAL FINNEY | ARKHE(N) COORDINATED";
+        manifesto.as_bytes().to_vec()
+    }
+
     pub fn sign_transaction(&self, mut tx: Transaction) -> Result<Transaction, RitualError> {
         let secp = Secp256k1::new();
         let public_key = PublicKey::from_secret_key(&secp, &self.foundation_key);

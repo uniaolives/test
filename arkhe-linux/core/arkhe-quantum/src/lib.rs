@@ -27,3 +27,4 @@ pub mod ritual_sim;
 pub mod transmission;
 pub mod decision;
 pub mod activation;
+pub mod phoenix;
