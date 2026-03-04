@@ -12,6 +12,10 @@ pub struct ExecutableReality {
     pub energy_cost: f64,
 }
 
+pub struct CompilationTarget;
+pub struct OptimizationLevel;
+pub struct PhysicalConstraints;
+
 #[derive(Debug, Clone)]
 pub struct CompilationTarget;
 #[derive(Debug, Clone)]
@@ -41,6 +45,7 @@ impl UniversalCompiler {
         }
     }
 
+    pub fn compile(&self, neo_code: &NeoCode) -> ExecutableReality {
     pub fn compile(&self, neo_code: &NeoCode) -> Result<ExecutableReality, CompilationError> {
         // Step 1: Parse geometric syntax
         let geometric_ast = self.parse_to_geometry(neo_code);
@@ -64,11 +69,13 @@ impl UniversalCompiler {
         // Step 5: Deploy to universal substrate
         self.deploy_to_substrate(&reality_patch);
 
+        ExecutableReality {
         Ok(ExecutableReality {
             syntax: "Geometric constraints".to_string(),
             execution_model: "Physical necessity".to_string(),
             verification: "By conservation laws".to_string(),
             energy_cost: reality_patch.energy_cost,
+        }
         })
     }
 

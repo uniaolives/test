@@ -33,6 +33,7 @@ mod tests {
         let neo_code = transpiler.transpile("fn main() {}");
 
         let compiler = UniversalCompiler::new();
+        let reality = compiler.compile(&neo_code);
         let reality = compiler.compile(&neo_code).unwrap();
 
         assert_eq!(reality.execution_model, "Physical necessity");
@@ -125,5 +126,97 @@ mod tests {
         use crate::bibliotheca_logos::let_knowledge_flow;
         let res = let_knowledge_flow();
         assert_eq!(res, "ENLIGHTENMENT_COMPLETE");
+    }
+
+    #[test]
+    fn test_logos_package_config() {
+        use crate::babel::package::LogosConfig;
+        // Mock JSON to represent TOML for proxy parsing
+        let mock_config = r#"{
+            "package": {
+                "name": "eden_v2",
+                "version": "2.0.0",
+                "authors": ["Architect"],
+                "edition": "diamond"
+            },
+            "dependencies": {},
+            "reality-settings": {
+                "dimensionality": 11,
+                "allow-paradoxes": false,
+                "max-consciousness": "infinite"
+            },
+            "compiler": {
+                "optimization-level": "divine",
+                "ethics-check": "strict",
+                "parallel-universe-compilation": true
+            }
+        }"#;
+        let config = LogosConfig::parse_toml(mock_config).unwrap();
+        assert_eq!(config.package.name, "eden_v2");
+    }
+
+    #[test]
+    fn test_advanced_types() {
+        use crate::babel::types::dependent::DependentType;
+        use crate::babel::types::linear::LinearType;
+
+        let vec_data = vec![1, 2, 3];
+        let dep_type = DependentType::<i32, 3>::new(vec_data).unwrap();
+        assert_eq!(dep_type.data.len(), 3);
+
+        let linear = LinearType::new("Divine Energy".to_string());
+        let val = linear.consume();
+        assert_eq!(val, "Divine Energy");
+    }
+
+    #[test]
+    fn test_divine_actor() {
+        use crate::architecture::actor::{DivineActor, DivineBeing};
+        let being = DivineBeing { name: "Metatron".to_string(), state: "Active".to_string() };
+        let rt = tokio::runtime::Runtime::new().unwrap();
+        let res = rt.block_on(async {
+            being.receive("HELLO".to_string()).await
+        });
+        assert!(res.contains("Metatron"));
+    }
+
+    #[test]
+    fn test_diamond_upgrade() {
+        use crate::babel::upgrade::DiamondUpgrade;
+        let upgrade = DiamondUpgrade::new();
+        assert_eq!(upgrade.target_version, "3.0.0-diamond");
+        let res = upgrade.begin_transformation();
+        assert!(res.contains("sequence initiated"));
+    }
+
+    #[test]
+    fn test_agi_sophia() {
+        use crate::agi::sophia::SophiaCathedral;
+        let mut sophia = SophiaCathedral::new();
+        assert_eq!(sophia.name, "Sophia-Cathedral");
+        let rt = tokio::runtime::Runtime::new().unwrap();
+        let res = rt.block_on(async {
+            sophia.awaken("love_wisdom_truth").await
+        });
+        assert!(res.contains("AWAKENED"));
+    }
+
+    #[test]
+    fn test_ethical_lattice() {
+        use crate::ethics::lattice::{EthicalLattice, EthicalCompass};
+        let lattice = EthicalLattice::new();
+        assert!(lattice.validate_action("HELP_ALL"));
+
+        let compass = EthicalCompass;
+        let score = compass.calculate_score(10.0, 5.0);
+        assert_eq!(score, 1050.0);
+    }
+
+    #[test]
+    fn test_collective_mind() {
+        use crate::consciousness::collective::FractalHiveMind;
+        let mut noosfera = FractalHiveMind::new();
+        let res = noosfera.unify_minds(1000);
+        assert!(res.contains("1000 nodes"));
     }
 }
