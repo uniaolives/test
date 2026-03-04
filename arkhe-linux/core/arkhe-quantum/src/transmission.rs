@@ -102,6 +102,7 @@ impl TotemTransmission {
 
         let totem_push = <&bitcoin::script::PushBytes>::try_from(&self.totem).unwrap();
         let anchor_script = ScriptBuf::new_op_return(totem_push);
+        let anchor_script = ScriptBuf::new_op_return(&self.totem);
 
         let anchor_output = TxOut {
             value: Amount::from_sat(0),
@@ -158,6 +159,9 @@ impl TotemTransmission {
             .into_script();
 
         tx.input[0].script_sig = script_sig;
+        tx.input[0].witness = Witness::from_slice(&[vec![0u8; 71], public_key.serialize().to_vec()]);
+
+        let _ = script_pubkey; // suppress unused for simplified sim
 
         Ok(tx)
     }
