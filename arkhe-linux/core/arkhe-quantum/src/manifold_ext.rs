@@ -16,6 +16,10 @@ pub struct ExtendedManifold {
 impl ExtendedManifold {
     pub async fn new(depin_broker: &str, ledger_path: &str) -> anyhow::Result<Self> {
         let ledger = OmegaLedger::open(ledger_path)?;
+        Self::new_with_ledger(depin_broker, ledger).await
+    }
+
+    pub async fn new_with_ledger(depin_broker: &str, ledger: OmegaLedger) -> anyhow::Result<Self> {
         let (gateway, rx) = DePinGateway::new_with_receiver(depin_broker, 1883, "arkhe-node").await?;
 
         Ok(Self {

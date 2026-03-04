@@ -1,5 +1,4 @@
 use arkhe_manifold::{QuantumState, SelfModification};
-use arkhe_manifold::{QuantumState, SelfModification, KrausChannel};
 use log::info;
 use nalgebra::DMatrix;
 use num_complex::Complex64;
@@ -44,12 +43,6 @@ pub struct InternalModel {
 impl InternalModel {
     pub fn new() -> Self {
         let dim = 2;
-        let mut belief = DMatrix::from_diagonal_element(dim, dim, Complex64::new(0.5, 0.0));
-        // Ensure Hermitian
-        belief[(0,1)] = Complex64::new(0.0, 0.0);
-        belief[(1,0)] = Complex64::new(0.0, 0.0);
-        Self {
-            belief_state: belief,
         Self {
             belief_state: DMatrix::from_diagonal_element(dim, dim, Complex64::new(0.5, 0.0)),
             temperature: 300.0,
@@ -67,12 +60,6 @@ impl InternalModel {
     }
 
     pub fn derive_optimal_kraus_operator(&self, _fe: VariationalFreeEnergy) -> ProposedEvolution {
-        // Here we link to the FEP solver logic in arkhe-quantum.
-        // Since arkhe-thermodynamics is a dependency of arkhe-quantum,
-        // we can't depend on arkhe-quantum back.
-        // However, the InternalModel logic in the loop can be overridden or the solver
-        // can be moved to a shared place.
-        // For now, we keep the signature and will ensure arkhe-quantum calls its own solver.
         ProposedEvolution {
             world_action: "Optimal action (FEP solved)".to_string(),
             self_modification: "Architecture rewrite (FEP solved)".to_string(),

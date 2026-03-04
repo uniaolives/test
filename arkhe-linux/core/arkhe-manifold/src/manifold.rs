@@ -86,7 +86,6 @@ impl QuantumState {
         entropy
     }
 
-    /// Calcula a surpresa (divergência KL) dada uma distribution prevista.
     /// Calcula a surpresa (divergência KL) dada uma distribuição prevista.
     pub fn surprise_given(&self, predicted_eigenvalues: &[f64]) -> f64 {
         let mut kl = 0.0;
@@ -108,8 +107,6 @@ pub struct KrausOperator {
 
 pub struct KrausChannel;
 
-#[derive(Debug, Clone)]
-pub enum SelfModification {
 #[derive(Debug, Clone)]
 pub enum SelfModification {
     AddLayer(String),

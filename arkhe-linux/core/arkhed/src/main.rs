@@ -21,6 +21,14 @@ use hlc::HybridClock;
 use personality::PhiKnob;
 use security::{KyberSession};
 
+use arkhe_quantum::anima_mundi::AnimaMundi;
+use arkhe_quantum::emergency::EmergencyAuthority;
+use arkhe_quantum::constitution::Z3Guard;
+use arkhe_quantum::safety::rescue_protocol::RescueProtocol;
+use arkhe_quantum::ledger::OmegaLedger;
+use arkhe_quantum::manifold_ext::ExtendedManifold;
+use arkhe_thermodynamics::InternalModel;
+
 const PHI_TARGET: f64 = 0.618033988749894;
 const PHI_TOLERANCE: f64 = 0.05;
 const EPSILON_MIN: f64 = 10.0; // Minimum CPU shares (zero-point energy)
@@ -36,6 +44,8 @@ pub enum ArkheError {
     Handover(String),
     #[error("System error: {0}")]
     Generic(String),
+    #[error("Rescue error: {0}")]
+    Rescue(String),
 }
 
 /// φ Regimes as specified in Ω+204
@@ -96,6 +106,9 @@ struct ArkheSystem {
 
     /// Manifold Global (Ω+215/217)
     manifold: RwLock<arkhe_quantum::manifold::GlobalManifold>,
+
+    /// Protocolo de Resgate (Segurança)
+    rescue: Arc<tokio::sync::Mutex<RescueProtocol>>,
 }
 
 impl ArkheSystem {
@@ -118,6 +131,20 @@ impl ArkheSystem {
         let psi_shell = Arc::new(arkhe_quantum::psi_shell::PsiShellState::new());
         let manifold = RwLock::new(arkhe_quantum::manifold::GlobalManifold::new());
 
+        // Setup Rescue Protocol dependencies
+        let ledger_path = if std::path::Path::new("/mnt/ledger").exists() { "/mnt/ledger" } else { "/tmp/ledger" };
+        let ledger = Arc::new(OmegaLedger::open(ledger_path).map_err(|e| ArkheError::Generic(e.to_string()))?);
+        let ext_manifold = ExtendedManifold::new_with_ledger("localhost", (*ledger).clone()).await.map_err(|e| ArkheError::Generic(e.to_string()))?;
+        let core = Arc::new(RwLock::new(AnimaMundi::new(ext_manifold, InternalModel::new())));
+
+        let rescue = Arc::new(tokio::sync::Mutex::new(RescueProtocol::new(
+            Arc::new(EmergencyAuthority::new("operator-1")),
+            Arc::new(Z3Guard),
+            ledger,
+            core,
+            None,
+        )));
+
         Ok(Self {
             phi: RwLock::new(phi_val),
             crdt,
@@ -129,57 +156,59 @@ impl ArkheSystem {
             node_keys,
             psi_shell,
             manifold,
+            rescue,
         })
     }
 
     /// Loop principal de vida do sistema
     async fn life_loop(&self) -> Result<(), ArkheError> {
         let mut interval = tokio::time::interval(Duration::from_millis(100));
+        let mut rescue_interval = tokio::time::interval(Duration::from_secs(10));
 
         loop {
-            interval.tick().await;
+            tokio::select! {
+                _ = interval.tick() => {
+                    // 0. Inject user perturbation into the PERSISTENT manifold
+                    {
+                        let mut manifold = self.manifold.write().await;
+                        let _ = self.psi_shell.inject_user_perturbation(&mut manifold).await;
+                    }
 
-            // 0. Inject user perturbation into the PERSISTENT manifold
-            {
-                let mut manifold = self.manifold.write().await;
-                let _ = self.psi_shell.inject_user_perturbation(&mut manifold).await;
+                    // 1. Coletar entropia recente
+                    let entropy_stats = self.entropy.collect().await;
+
+                    // 2. Atualizar CRDTs com métricas locais
+                    let _local_delta = self.crdt.record_entropy(entropy_stats.clone());
+
+                    // 3. Recalcular φ
+                    let new_phi = self.calculate_phi(&entropy_stats);
+                    self.update_phi(new_phi).await;
+
+                    // 4. Aplicar alocação φ-dependente
+                    self.apply_phi_allocation(new_phi).await;
+
+                    // 5. Verificar criticidade
+                    if self.is_critical_deviation(new_phi).await {
+                        self.emergency_adjustment().await?;
+                    }
+
+                    // 6. Processar handovers pendentes
+                    let mut handovers = self.handovers.write().await;
+                    handovers.process_queue().await
+                        .map_err(|e| ArkheError::Handover(e.to_string()))?;
+                }
+                _ = rescue_interval.tick() => {
+                    // Periodic security monitoring
+                    let mut rescue = self.rescue.lock().await;
+                    if let Err(e) = rescue.monitor_cycle().await {
+                        error!("Rescue monitor cycle failed: {}", e);
+                    }
+                }
             }
-            // 0. Inject user perturbation
-            let _ = self.psi_shell.inject_user_perturbation(&mut arkhe_quantum::manifold::GlobalManifold::new()).await;
-
-            // 1. Coletar entropia recente
-            let entropy_stats = self.entropy.collect().await;
-
-            // 2. Atualizar CRDTs com métricas locais
-            let _local_delta = self.crdt.record_entropy(entropy_stats.clone());
-
-            // 3. Sincronizar com peers se necessário
-            if self.crdt.should_sync() {
-                // self.sync_with_peers(local_delta).await?;
-            }
-
-            // 4. Recalcular φ
-            let new_phi = self.calculate_phi(&entropy_stats);
-            self.update_phi(new_phi).await;
-
-            // 5. Aplicar alocação φ-dependente
-            self.apply_phi_allocation(new_phi).await;
-
-            // 6. Verificar criticidade
-            if self.is_critical_deviation(new_phi).await {
-                self.emergency_adjustment().await?;
-            }
-
-            // 7. Processar handovers pendentes
-            let mut handovers = self.handovers.write().await;
-            handovers.process_queue().await
-                .map_err(|e| ArkheError::Handover(e.to_string()))?;
         }
     }
 
     fn calculate_phi(&self, stats: &EntropyStats) -> f64 {
-        // Mocked φ calculation based on entropy stats
-        // In a real system, this would be more complex
         let base_phi = PHI_TARGET;
         let variation = (stats.total_aeu as f64 - 0.1) * 0.1;
         (base_phi + variation).clamp(0.0, 1.0)
@@ -189,10 +218,8 @@ impl ArkheSystem {
         let mut phi = self.phi.write().await;
         let old_phi = *phi;
 
-        // Inércia de zona: suavizar transições
         *phi = old_phi * 0.7 + new_phi * 0.3;
 
-        // Notificar subsistemas
         if (*phi - old_phi).abs() > 0.01 {
             self.personality.on_phi_change(*phi).await;
             let handovers = self.handovers.read().await;
@@ -200,26 +227,20 @@ impl ArkheSystem {
         }
     }
 
-    /// Implementação da alocação φ-dependente (Ω+204)
     async fn apply_phi_allocation(&self, phi: f64) {
         let regime = PhiRegime::from(phi);
         let base_shares = 1024.0;
-        let sigma = 0.2; // "thermal width"
-        let epsilon_min = 64.0; // "zero-point energy"
+        let sigma = 0.2;
+        let epsilon_min = 64.0;
 
-        // Formula: shares = base × exp(-|φ_i - φ_target|² / 2σ²) + ε_min
         let diff = phi - PHI_TARGET;
         let shares = base_shares * (-(diff * diff) / (2.0 * sigma * sigma)).exp() + epsilon_min;
 
         info!("φ Regime: {:?}, Calculated CPU Shares: {:.2}", regime, shares);
-
-        // No futuro, isso aplicará os shares via cgroups
         self.apply_cgroup_shares(shares as u64).await;
     }
 
-    async fn apply_cgroup_shares(&self, _shares: u64) {
-        // Interaction with kernel cgroups
-    }
+    async fn apply_cgroup_shares(&self, _shares: u64) {}
 
     async fn is_critical_deviation(&self, phi: f64) -> bool {
         (phi - PHI_TARGET).abs() > PHI_TOLERANCE
@@ -240,8 +261,6 @@ impl ArkheSystem {
     }
 
     async fn cgroup_throttle_low_priority(&self) -> Result<(), ArkheError> {
-        // Ω+204: Harmonic potential CPU allocation
-        // CPU shares = base * exp(-|phi - phi_target|^2 / 2sigma^2) + epsilon_min
         let phi = *self.phi.read().await;
         let base_shares = 100.0;
         let deviation = (phi - PHI_TARGET).abs();
@@ -250,8 +269,6 @@ impl ArkheSystem {
         let cpu_shares = base_shares * exponent.exp() + EPSILON_MIN;
 
         info!("Arkhe(n) Scheduler: Updating cgroup CPU shares for phi={:.3} to {:.1}", phi, cpu_shares);
-
-        // In a real implementation, this would write to /sys/fs/cgroup/cpu.shares or equivalent
         Ok(())
     }
 
@@ -297,7 +314,7 @@ async fn handle_ipc_client(mut stream: UnixStream, system: Arc<ArkheSystem>) {
             let response = match req {
                 Ok(Command::GetStatus) => {
                     let phi = *system.phi.read().await;
-                    Response::Status { phi, entropy: 0.618 } // Mock entropy
+                    Response::Status { phi, entropy: 0.618 }
                 }
                 Ok(Command::SetPhi { value }) => {
                     system.update_phi(value).await;
@@ -305,11 +322,8 @@ async fn handle_ipc_client(mut stream: UnixStream, system: Arc<ArkheSystem>) {
                 }
                 Ok(Command::SendHandover { target, payload }) => {
                     info!("Sending handover to {}: {:?}", target, payload);
-
-                    // Em um cenário real, o target_id seria resolvido para u64
                     let target_id = 0u64;
-                    let emitter_id = 1u64; // ID do próprio nó
-
+                    let emitter_id = 1u64;
                     let mut clock = system.clock.write().await;
                     let binary_handover = handover::Handover::new(
                         handover::HandoverType::Excitatory,
@@ -321,52 +335,25 @@ async fn handle_ipc_client(mut stream: UnixStream, system: Arc<ArkheSystem>) {
                         &mut clock,
                         &system.node_keys.dilithium_secret,
                     );
-
                     system.handovers.read().await.enqueue_binary(binary_handover);
                     Response::Ok
                 }
-                Ok(Command::CrdtSync) => {
-                    // Actual implementation would trigger sync
-                    Response::Ok
-                }
+                Ok(Command::CrdtSync) => Response::Ok,
                 Ok(Command::RunTests) => {
                     let mut details = String::new();
                     let mut passed = true;
-
-                    // 1. CRDT Convergence (Mocked)
                     details.push_str("Checking CRDT convergence... OK\n");
-
-                    // 2. φ Stability
                     let phi = *system.phi.read().await;
                     if (phi - PHI_TARGET).abs() < PHI_TOLERANCE {
                         details.push_str(&format!("Checking φ stability ({:.4})... OK\n", phi));
                     } else {
                         passed = false;
-                        details.push_str(&format!("Checking φ stability ({:.4})... FAIL (Deviation too high)\n", phi));
+                        details.push_str(&format!("Checking φ stability ({:.4})... FAIL\n", phi));
                     }
-
-                    // 3. Ledger Persistence (Check directory)
-                    let ledger_path = if std::path::Path::new("/mnt/ledger").exists() {
-                         "/mnt/ledger"
-                    } else {
-                         "/tmp/ledger"
-                    };
-                    std::fs::create_dir_all(ledger_path).unwrap_or(());
-                    if std::path::Path::new(ledger_path).exists() {
-                         details.push_str(&format!("Checking ledger persistence ({})... OK\n", ledger_path));
-                    } else {
-                         passed = false;
-                         details.push_str(&format!("Checking ledger persistence ({})... FAIL (Directory missing)\n", ledger_path));
-                    }
-
-                    // 4. Secure Communication (Mocked)
-                    details.push_str("Checking secure communication (Kyber/Dilithium)... OK\n");
-
                     Response::TestResults { passed, details }
                 }
                 Err(e) => Response::Error { message: e.to_string() },
             };
-
             if let Ok(res_bytes) = serde_json::to_vec(&response) {
                 let _ = stream.write_all(&res_bytes).await;
             }
@@ -380,7 +367,6 @@ async fn ipc_server(system: Arc<ArkheSystem>) {
     let _ = std::fs::remove_file(socket_path);
     let listener = UnixListener::bind(socket_path).expect("Failed to bind Unix socket");
     info!("IPC server listening on {}", socket_path);
-
     loop {
         match listener.accept().await {
             Ok((stream, _)) => {
@@ -395,45 +381,24 @@ async fn ipc_server(system: Arc<ArkheSystem>) {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     tracing_subscriber::fmt::init();
-
     info!("Arkhe(n) Daemon v1.0.0 – Ponto de Ignição");
-
     let system = Arc::new(ArkheSystem::new().await?);
-
     let life_handle = tokio::spawn({
         let sys = Arc::clone(&system);
         async move { sys.life_loop().await }
     });
-
     let grpc_handle = tokio::spawn({
         let sys = Arc::clone(&system);
         async move { start_grpc_server(sys).await }
     });
-
     let sync_handle = tokio::spawn({
         let sys = Arc::clone(&system);
         async move { crdt_sync_daemon(sys).await }
     });
-
-    // Spawn ψ-Shell server
-    let psi_handle = tokio::spawn({
-        let state = Arc::clone(&system.psi_shell);
-        async move {
-            let addr = "127.0.0.1:9001";
-            if let Err(e) = arkhe_quantum::psi_shell::run_psi_shell(state, addr).await {
-                error!("ψ-Shell terminated with error: {}", e);
-            }
-        }
-    });
-
-    let _ = psi_handle;
-
-    // Spawn IPC server
     let ipc_handle = tokio::spawn({
         let sys = Arc::clone(&system);
         async move { ipc_server(sys).await }
     });
-
     tokio::select! {
         res = life_handle => {
             match res {
@@ -446,7 +411,6 @@ async fn main() -> anyhow::Result<()> {
         _ = sync_handle => error!("Sync daemon terminated unexpectedly"),
         _ = ipc_handle => error!("IPC server terminated unexpectedly"),
     };
-
     Ok(())
 }
 

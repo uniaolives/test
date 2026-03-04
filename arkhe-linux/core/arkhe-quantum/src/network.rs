@@ -31,13 +31,12 @@ impl NetworkManager {
             node.handover_count += 1;
         }
 
-    ) -> Result<bool> {
         let mut encrypted_payload = payload;
         if let Some(key) = session_key {
             encrypted_payload = crypto::encrypt_payload(&encrypted_payload, key)?;
         }
 
-        let signature = crypto::sign_message(&encrypted_payload, &self.node_keys.dilithium_secret);
+        let _signature = crypto::sign_message(&encrypted_payload, &self.node_keys.dilithium_secret);
 
         tracing::info!("Sending handover to {} (signed, encrypted: {})", receiver_id, session_key.is_some());
         // gRPC call would go here
