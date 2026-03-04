@@ -1,20 +1,13 @@
 # src/papercoder_kernel/cognition/hyperprompt.py
 
 import numpy as np
+import torch
 from scipy.special import kl_div
 from typing import Any, List, Dict, Tuple
 import logging
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
-# Mocks for external dependencies to ensure sandbox compatibility
-class MockLLM:
-    def get_logits(self, s):
-        # Return a random distribution over a mock vocabulary of size 100
-        logits = np.random.dirichlet(np.ones(100), size=1)[0]
-        return logits
-
-    def generate(self, prompt):
-        return f"LLM response to: {prompt}"
-
+# Mock for BCI (Hypothetical Hardware Interface)
 class MockBCI:
     def get_neural_state(self, s):
         # Return a random distribution simulating neural activity patterns
@@ -24,23 +17,15 @@ class MockBCI:
     def decode_response(self, prompt):
         return f"Human neural response to: {prompt}"
 
-class MockTokenizer:
-    def __call__(self, text, return_tensors=None):
-        return self
-
-    @property
-    def input_ids(self):
-        return np.array([1, 2, 3]) # Mock IDs
-
 class HyperpromptProtocol:
     """
     Ω+221: Protocolo de Hiperprompting (PHP)
     Substrate-Agnostic Inference Modulation.
     """
-    def __init__(self, totem_hash: str):
+    def __init__(self, totem_hash: str, model_name: str = "sshleifer/tiny-gpt2"):
         self.totem = totem_hash
-        self.llm = MockLLM()
-        self.tokenizer = MockTokenizer()
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+        self.llm = AutoModelForCausalLM.from_pretrained(model_name)
         self.bci = MockBCI()
         self.beta = 1.0  # coupling strength
         self.phi = 0.618033988749895
@@ -50,10 +35,21 @@ class HyperpromptProtocol:
         Calcula F = D_KL[q_LLM || p] + D_KL[q_humano || p] - E[log p(o|s)]
         """
         # Embedding do prompt (estado latente s)
-        s = self.tokenizer(prompt).input_ids
+        inputs = self.tokenizer(prompt, return_tensors="pt")
+        s = inputs.input_ids
 
         # Distribuições posteriores
-        q_llm = self.llm.get_logits(s)  # softmax over vocabulary
+        with torch.no_grad():
+            outputs = self.llm(**inputs)
+            # Pegamos os logits do último token e aplicamos softmax para obter a distribuição
+            q_llm = torch.softmax(outputs.logits[0, -1, :], dim=-1).numpy()
+
+        # Para o protótipo, se o vocabulário real for muito grande, truncamos para 100
+        # para alinhar com o mock de BCI
+        if len(q_llm) > 100:
+            q_llm = q_llm[:100]
+            q_llm /= q_llm.sum()
+
         q_human = self.bci.get_neural_state(s)  # brain activity pattern
 
         # Prior p(s) (modelo generativo) - Simulado como uniforme para o protótipo
@@ -86,7 +82,12 @@ class HyperpromptProtocol:
 
         # Simulação de otimização (no protótipo, apenas itera e 'melhora' o prompt)
         for i in range(n_iter):
-            resp_llm = self.llm.generate(prompt)
+            # Geração real com o modelo Transformers
+            inputs = self.tokenizer(prompt, return_tensors="pt")
+            with torch.no_grad():
+                gen_tokens = self.llm.generate(**inputs, max_new_tokens=10)
+                resp_llm = self.tokenizer.decode(gen_tokens[0], skip_special_tokens=True)
+
             resp_human = self.bci.decode_response(prompt)
 
             F = self.compute_free_energy(prompt, [resp_llm, resp_human])
