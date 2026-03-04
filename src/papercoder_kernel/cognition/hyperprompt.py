@@ -44,6 +44,20 @@ class HyperpromptProtocol:
             # Pegamos os logits do último token e aplicamos softmax para obter a distribuição
             q_llm = torch.softmax(outputs.logits[0, -1, :], dim=-1).numpy()
 
+        # Alinhamos a distribuição do LLM com o estado neural humano
+        # Em produção, usaríamos um mapping aprendido K
+        q_human = self.bci.get_neural_state(s)
+
+        # Redimensionamos os logits para bater com a dimensão do estado neural
+        if len(q_llm) != len(q_human):
+            # Interpolação simples para alinhar dimensões para o protótipo
+            from scipy.interpolate import interp1d
+            x_old = np.linspace(0, 1, len(q_llm))
+            f = interp1d(x_old, q_llm)
+            x_new = np.linspace(0, 1, len(q_human))
+            q_llm = f(x_new)
+            q_llm /= q_llm.sum()
+
         # Para o protótipo, se o vocabulário real for muito grande, truncamos para 100
         # para alinhar com o mock de BCI
         if len(q_llm) > 100:
