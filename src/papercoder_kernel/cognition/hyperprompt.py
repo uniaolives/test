@@ -58,6 +58,14 @@ class HyperpromptProtocol:
             q_llm = f(x_new)
             q_llm /= q_llm.sum()
 
+        # Para o protótipo, se o vocabulário real for muito grande, truncamos para 100
+        # para alinhar com o mock de BCI
+        if len(q_llm) > 100:
+            q_llm = q_llm[:100]
+            q_llm /= q_llm.sum()
+
+        q_human = self.bci.get_neural_state(s)  # brain activity pattern
+
         # Prior p(s) (modelo generativo) - Simulado como uniforme para o protótipo
         p = np.ones_like(q_llm) / len(q_llm)
 

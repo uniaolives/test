@@ -27,4 +27,7 @@ __all__ = [
     "EpigeneticModulation",
     "QualicDynamics",
     "MonteCarloValidator"
+    "MUM"
+    "InformationPacket"
+    "Substrate"
 ]
