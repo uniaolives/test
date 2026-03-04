@@ -18,7 +18,6 @@ zeroize = { version = "1.8", features = ["derive", "zeroize_derive"] }
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 thiserror = "1.0"
-async-trait = "0.1"
 blake3 = "1.5"
 nalgebra = { version = "0.32", features = ["serde-serialize"] }
 ndarray = { version = "0.15", features = ["serde"] }
@@ -167,6 +166,8 @@ required-features = ["materio_ii"]
 [[bin]]
 name = "logos"
 path = "src/bin/logos.rs"
+
+[[bin]]
 name = "tiger_init_hardened"
 path = "src/bin/tiger_init_hardened.rs"
 
