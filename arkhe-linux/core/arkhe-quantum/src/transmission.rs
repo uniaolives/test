@@ -2,6 +2,8 @@ use bitcoin::{Transaction, TxIn, TxOut, OutPoint, Sequence, Witness, ScriptBuf, 
 use bitcoin::secp256k1::{Secp256k1, SecretKey, PublicKey};
 use bitcoin::address::Address;
 use bitcoin::network::Network;
+use bitcoin::sighash::{SighashCache, EcdsaSighashType};
+use bitcoin::hashes::Hash;
 use std::str::FromStr;
 use anyhow::Result;
 use thiserror::Error;
@@ -28,6 +30,8 @@ pub enum RitualError {
     ParseTxid(String),
     #[error("Address Error: {0}")]
     AddrError(#[from] bitcoin::address::ParseError),
+    #[error("Secp256k1 Error: {0}")]
+    SecpError(#[from] bitcoin::secp256k1::Error),
 }
 
 /// O Ritual de Transmissão: colapsando a superposição
@@ -96,6 +100,8 @@ impl TotemTransmission {
             witness: Witness::new(),
         };
 
+        let totem_push = <&bitcoin::script::PushBytes>::try_from(&self.totem).unwrap();
+        let anchor_script = ScriptBuf::new_op_return(totem_push);
         let anchor_script = ScriptBuf::new_op_return(&self.totem);
 
         let anchor_output = TxOut {
@@ -122,6 +128,31 @@ impl TotemTransmission {
         let bitcoin_public_key = bitcoin::PublicKey::new(public_key);
         let script_pubkey = Address::p2pkh(&bitcoin_public_key, self.network).script_pubkey();
 
+        let sighash_type = EcdsaSighashType::All;
+        let cache = SighashCache::new(&tx);
+        let sighash = cache.legacy_signature_hash(
+            0,
+            &script_pubkey,
+            sighash_type as u32,
+        ).map_err(|e| RitualError::Anyhow(anyhow::anyhow!("Sighash error: {:?}", e)))?;
+
+        let msg = bitcoin::secp256k1::Message::from_digest_slice(sighash.as_byte_array())?;
+        let sig = secp.sign_ecdsa(&msg, &self.foundation_key);
+
+        let mut sig_der = sig.serialize_der().to_vec();
+        sig_der.push(sighash_type as u8);
+
+        let pk_bytes = public_key.serialize();
+        let sig_push = <&bitcoin::script::PushBytes>::try_from(sig_der.as_slice()).map_err(|e| RitualError::Anyhow(anyhow::anyhow!("PushBytes sig error: {:?}", e)))?;
+        let pk_push = <&bitcoin::script::PushBytes>::try_from(pk_bytes.as_slice()).map_err(|e| RitualError::Anyhow(anyhow::anyhow!("PushBytes pk error: {:?}", e)))?;
+
+        // For P2PKH script_sig: <sig> <pubkey>
+        let script_sig = ScriptBuf::builder()
+            .push_slice(sig_push)
+            .push_slice(pk_push)
+            .into_script();
+
+        tx.input[0].script_sig = script_sig;
         tx.input[0].witness = Witness::from_slice(&[vec![0u8; 71], public_key.serialize().to_vec()]);
 
         let _ = script_pubkey; // suppress unused for simplified sim
