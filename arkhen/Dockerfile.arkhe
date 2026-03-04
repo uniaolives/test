@@ -1,0 +1,112 @@
+# ============================================================
+# STAGE 1: ARKHE-CORE (Rust + Sistemas Críticos)
+# ============================================================
+FROM rust:1.75-slim-bookworm AS arkhe-core-builder
+
+WORKDIR /build
+
+# Dependências de sistema
+RUN apt-get update && apt-get install -y \
+    libssl-dev pkg-config libpq-dev \
+    protobuf-compiler libprotobuf-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Cache de dependências (Mocked for now as source is not in this specific path)
+RUN mkdir src && echo "fn main() { println!(\"Arkhe-Core Ω+218.1\"); }" > src/main.rs
+RUN echo '[package]\nname = "arkhe-core"\nversion = "0.1.0"\nedition = "2021"\n[dependencies]' > Cargo.toml
+RUN cargo build --release
+RUN strip target/release/arkhe-core
+
+# ============================================================
+# STAGE 2: ARKHE-ML (TensorFlow + Keras + FAISS)
+# ============================================================
+FROM nvidia/cuda:12.1-devel-ubuntu22.04 AS arkhe-ml-builder
+
+WORKDIR /build
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y \
+    python3.11 python3.11-dev python3-pip \
+    libopenblas-dev libomp-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instala dependências Python
+RUN pip3 install --no-cache-dir tensorflow==2.15.0 keras==2.15.0 faiss-gpu==1.7.4 pinecone-client weaviate-client numpy scipy
+
+# ============================================================
+# STAGE 3: ARKHE-API (Node.js + Webpack + Babel)
+# ============================================================
+FROM node:20-bookworm-slim AS arkhe-api-builder
+
+WORKDIR /app
+
+# Mock build
+RUN mkdir dist && touch dist/bundle.js
+
+# ============================================================
+# STAGE 4: ARKHE-SIM (Blender + Godot + Wings 3D)
+# ============================================================
+FROM ubuntu:22.04 AS arkhe-sim-builder
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y \
+    software-properties-common wget gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instala suites de 3D (Simulated for build speed in this environment)
+RUN apt-get update && apt-get install -y \
+    blender \
+    wings3d \
+    godot3 \
+    && rm -rf /var/lib/apt/lists/*
+
+# ============================================================
+# STAGE 5: ARKHE-ANALYTICS (R + GIMP)
+# ============================================================
+FROM rocker/tidyverse:4.3.2 AS arkhe-analytics-builder
+
+# Instala GIMP
+RUN apt-get update && apt-get install -y \
+    gimp \
+    && rm -rf /var/lib/apt/lists/*
+
+# ============================================================
+# FINAL STAGE: ORQUESTRAÇÃO UNIFICADA
+# ============================================================
+FROM nvidia/cuda:12.1-runtime-ubuntu22.04 AS arkhe-orchestrator
+
+WORKDIR /arkhe
+
+# Runtime dependencies
+RUN apt-get update && apt-get install -y \
+    libssl3 libpq5 \
+    python3.11 python3-pip \
+    nodejs npm \
+    r-base-core \
+    libgl1 \
+    supervisor cron logrotate \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copia artefatos de todos os stages
+COPY --from=arkhe-core-builder /build/target/release/arkhe-core /usr/local/bin/
+COPY --from=arkhe-ml-builder /usr/local/lib/python3.11/dist-packages /usr/local/lib/python3.11/dist-packages
+COPY --from=arkhe-api-builder /app/dist /var/www/arkhe-api
+
+# Variáveis de ambiente Arkhe(n)
+ENV ARKHE_TOTEM=7f3b49c8e10d2938472859b0286c4e1675271a27291776c13745674068305982
+ENV ARKHE_PHI=1.6180339887498948482045868343656
+ENV ARKHE_T_ZERO=2008
+ENV ARKHE_T_FINAL=2140
+ENV ARKHE_AMAS_LAT=-23.5505
+ENV ARKHE_AMAS_LON=-46.6333
+ENV ARKHE_MODE=orchestrated
+
+# Health check mock
+RUN echo "#!/bin/bash\necho 'OK'" > /usr/local/bin/arkhe-healthcheck && chmod +x /usr/local/bin/arkhe-healthcheck
+
+# For mock purposes, create the entrypoint
+RUN echo "#!/bin/bash\nexec \"\$@\"" > /usr/local/bin/arkhe-entrypoint && chmod +x /usr/local/bin/arkhe-entrypoint
+
+ENTRYPOINT ["arkhe-entrypoint"]
+CMD ["arkhe-core"]
