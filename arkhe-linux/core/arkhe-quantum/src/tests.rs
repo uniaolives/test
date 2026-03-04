@@ -39,7 +39,8 @@ mod tests {
 
     #[test]
     fn test_sanity_anchor() {
-        // payload matches the hash of the canonical constitution string
+        // payload matches the hash of the canonical constitution string:
+        // ARKHE_PROTOCOL_OMEGA_215::CONSTITUTION_V1::P1_SOVEREIGNTY::P2_LIFE::P3_TRANSPARENCY::P4_THERMODYNAMICS::P5_CAUSALITY
         let payload = "6a20af369edb96f45c559404a8bb0f631d746ed03a4afa58518fd29dbae73fc00f46";
         let anchor = RealityAnchor::new(payload);
 
