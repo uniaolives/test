@@ -16,4 +16,5 @@ __all__ = [
     "TemporalNavigator",
     "TemporalCoordinate",
     "InformationPacket"
+    "Substrate"
 ]
