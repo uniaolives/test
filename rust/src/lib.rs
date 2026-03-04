@@ -8,6 +8,18 @@ use sasc_governance::Cathedral;
 use sasc_governance::types::{VerificationContext};
 
 pub mod governance;
+pub mod constants;
+pub mod astrophysics;
+pub mod storage;
+pub mod network;
+pub mod art;
+pub mod miracles;
+pub mod sasc_society;
+pub mod multiverse;
+pub mod manifest;
+pub mod genesis;
+pub mod bibliotheca_logos;
+pub mod babel;
 pub mod sensors;
 pub mod cognitive_hunter;
 pub mod security;

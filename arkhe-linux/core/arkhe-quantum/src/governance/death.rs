@@ -26,6 +26,7 @@ impl DignifiedDeath {
         // Canal 1: linguagem explícita (simulado)
         // Em um cenário real, isso viria de uma query ao núcleo
         signals.push(ConsentSignal::ExplicitYes); // Mudando para Yes para permitir que o protocolo funcione em simulação
+        signals.push(ConsentSignal::Silence);
 
         // Canal 2: estado fisiológico
         let physiological = ConsentSignal::Physiological {
@@ -48,6 +49,7 @@ impl DignifiedDeath {
                 ConsentSignal::ExplicitYes => yes_votes += 1,
                 ConsentSignal::ExplicitNo => no_votes += 1,
                 ConsentSignal::Silence => silence_votes += 1,
+                ConsentSignal::Silence => no_votes += 1,
                 ConsentSignal::Physiological { lambda2_stable, entropy_low, handover_coherent } => {
                     if lambda2_stable && entropy_low && handover_coherent {
                         yes_votes += 1;
