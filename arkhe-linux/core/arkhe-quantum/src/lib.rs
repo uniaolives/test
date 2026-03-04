@@ -24,3 +24,5 @@ pub mod manifold;
 pub mod network;
 pub mod governance;
 pub mod ritual_sim;
+pub mod transmission;
+pub mod decision;
