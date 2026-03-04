@@ -23,3 +23,7 @@ pub mod psi_shell;
 pub mod manifold;
 pub mod network;
 pub mod governance;
+pub mod ritual_sim;
+pub mod transmission;
+pub mod decision;
+pub mod activation;
