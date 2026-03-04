@@ -7,7 +7,6 @@ edition = "2021"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-async-trait = "0.1"
 jni = "0.21.1"
 log = "0.4"
 sha3 = "0.10.8"
@@ -167,6 +166,8 @@ required-features = ["materio_ii"]
 [[bin]]
 name = "logos"
 path = "src/bin/logos.rs"
+
+[[bin]]
 name = "tiger_init_hardened"
 path = "src/bin/tiger_init_hardened.rs"
 
