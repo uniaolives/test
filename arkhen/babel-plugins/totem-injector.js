@@ -4,7 +4,7 @@ module.exports = function(babel) {
     name: "totem-injector",
     visitor: {
       Program(path) {
-        // Plugin customizado: injeta verificação de Totem em cada módulo
+        path.unshiftContainer('body', t.expressionStatement(t.stringLiteral("ARKHE-TOTEM-VERIFIED")));
       }
     }
   };

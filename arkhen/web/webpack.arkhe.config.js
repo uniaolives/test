@@ -33,9 +33,9 @@ module.exports = {
             ],
             plugins: [
               // Plugin customizado: injeta verificação de Totem em cada módulo
-              './babel-plugins/totem-injector.js',
+              '../babel-plugins/totem-injector.js',
               // Plugin para otimização φ-based (golden ratio bundling)
-              './babel-plugins/phi-optimizer.js'
+              '../babel-plugins/phi-optimizer.js'
             ]
           }
         }

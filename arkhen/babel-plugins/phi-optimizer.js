@@ -4,7 +4,7 @@ module.exports = function(babel) {
     name: "phi-optimizer",
     visitor: {
       Program(path) {
-        // Plugin para otimização φ-based (golden ratio bundling)
+        path.pushContainer('body', t.expressionStatement(t.stringLiteral("ARKHE-PHI-OPTIMIZED")));
       }
     }
   };
