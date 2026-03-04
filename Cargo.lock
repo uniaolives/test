@@ -666,7 +666,9 @@ dependencies = [
  "hex",
  "log",
  "nalgebra 0.32.6",
+ "num-bigint 0.4.6",
  "num-complex",
+ "num-traits",
  "pqcrypto-dilithium 0.5.0",
  "pqcrypto-kyber 0.8.1",
  "pqcrypto-traits",
@@ -10737,7 +10739,6 @@ dependencies = [
 name = "sasc_core"
 version = "0.1.0"
 dependencies = [
- "async-trait",
  "anyhow",
  "arkhe-quantum",
  "async-trait",
