@@ -1,0 +1,41 @@
+// hardware/glsl/np_synthetic.comp
+// Compute Shader for Primary Neuroception
+
+#version 460 core
+
+layout(local_size_x = 256) in;
+
+struct KatharosVector {
+    vec4 components; // Bio, Aff, Soc, Cog
+    vec4 weights;
+};
+
+layout(std430, binding = 0) readonly buffer InputVK {
+    KatharosVector vk_input[];
+};
+
+layout(std430, binding = 1) writeonly buffer OutputNP {
+    float np_decision[];
+};
+
+uniform vec4 vk_ref_comp;
+
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+    KatharosVector vk = vk_input[idx];
+
+    vec4 diff = vk.components - vk_ref_comp;
+    vec4 weighted = diff * vk.weights;
+    float delta_k = length(weighted);
+
+    float decision;
+    if (delta_k < 0.30) {
+        decision = 0.0; // SIGUR
+    } else if (delta_k >= 0.70) {
+        decision = 1.0; // PERICOL
+    } else {
+        decision = (delta_k - 0.30) / 0.40; // Transition
+    }
+
+    np_decision[idx] = decision;
+}

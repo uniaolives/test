@@ -1,6 +1,9 @@
 // rust/arkhe_system/src/main.rs
 // Sistema operacional Arkhe(n) - Versão Ω+216
 
+mod katharos_vector;
+mod qhttp_gateway;
+
 fn main() {
     println!("╔═══════════════════════════════════════════════════════════════════╗");
     println!("║  ARKHE(N) SYSTEM vΩ+216.∞                                        ║");

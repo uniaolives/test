@@ -5,6 +5,7 @@ from .hyperprompt_kernel import PrecisionOperator, EpistemicForaging, NarrativeR
 from .temporal_navigation import TemporalNavigator, TemporalCoordinate, InformationPacket
 from .mummer_mnemosyne import MUMmerMnemosyne, MUM
 from .acps_convergence import KatharosArkheMapping, QualicCoherenceMapping, HomeostasisRegime
+from .primary_evaluation import EpigeneticModulation, QualicDynamics, MonteCarloValidator
 
 __all__ = [
     "ExperientialLearning",
@@ -22,5 +23,8 @@ __all__ = [
     "MUM",
     "KatharosArkheMapping",
     "QualicCoherenceMapping",
-    "HomeostasisRegime"
+    "HomeostasisRegime",
+    "EpigeneticModulation",
+    "QualicDynamics",
+    "MonteCarloValidator"
 ]
