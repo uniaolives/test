@@ -10,6 +10,8 @@ from .physics.arkhe_s2_lhc import LHCDataLoader, ArkheLHCTrigger, ArkheLHCAnalys
 from .blockchain.satoshi import verify_satoshi_temporal
 from .quantum.noether import QHTTPNoetherBridge
 from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, QiskitInterface
+from .knowledge.google_scanner import SemanticMiner
+from contextlib import asynccontextmanager
 from contextlib import asynccontextmanager
 from .blockchain.satoshi import verify_satoshi_temporal
 from .quantum.noether import QHTTPNoetherBridge
@@ -159,6 +161,25 @@ async def submit_quantum_job(xi: float, dt: float, token: str = None):
     circuit = novikov_loop_kraus(xi, dt)
     result = qiskit_iface.submit_job(circuit, token)
     return result
+
+@app.post("/knowledge/scan")
+async def scan_semantic_anomalies(data: Dict[str, List[float]], threshold: float = 1.5):
+    """
+    Scans concept adoption data for retrocausal injection signatures.
+    data: Dict mapping concept name to a list of prevalence values over time.
+    """
+    import pandas as pd
+    df = pd.DataFrame(data)
+    miner = SemanticMiner(df)
+    anomalies = miner.detect_anomalies(threshold=threshold)
+    return {"status": "success", "anomalies_detected": anomalies}
+
+@app.get("/knowledge/concept/{concept}")
+async def analyze_concept(concept: str, values: List[float]):
+    import pandas as pd
+    df = pd.DataFrame({concept: values})
+    miner = SemanticMiner(df)
+    return miner.analyze_knowledge_squeezing(concept)
 
 @app.post("/geoloc/verify")
 async def verify_location(agent_id: str, lat: float, lon: float, measurements: List[Dict]):
