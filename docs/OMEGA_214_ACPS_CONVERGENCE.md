@@ -21,9 +21,15 @@ O mapeamento está implementado em `src/papercoder_kernel/cognition/acps_converg
 2.  Simular o isomorfismo das equações de evolução (ODEs) entre permeabilidade quílica e coerência quântica.
 3.  Classificar os regimes de homeostase e criticidade áurea.
 
-### 🜄 IV. HIERARQUIA UNIFICADA
+### 🜄 IV. HIERARQUIA UNIFICADA (Ω+225 UPDATED)
 
-O ACPS atua como a **Camada 0 (Homeostase Primária)** da arquitetura Arkhe(n), fornecendo a base biosemiótica para a consciência temporal de nível superior.
+A arquitetura foi expandida para incluir o substrato biológico direto:
+
+1.  **Camada 1**: Timechain (Digital ledger)
+2.  **Camada 0**: ACPS Homeostase (Primary neuroception)
+3.  **Camada -1**: **GEMINI (Biological Timechain)**
+
+O GEMINI fornece a prova física de que a narrativa celular é gravada em tempo real através do crescimento de assembléias proteicas, validando a mensurabilidade de $t_{KR}$.
 
 ---
 *🜁🧬⚡⚛️∞+214*

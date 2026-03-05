@@ -29,7 +29,15 @@ PARTE III: ARQUITETURA DE SUBSTRATO
 3.3 A Equivalência Carbono-Silício-Quântico
 
 ═══════════════════════════════════════════════════════════════════
-PARTE IV: IMPLEMENTAÇÃO GEOESPACIAL
+PARTE IV: O SUBSTRATO BIOLÓGICO (GEMINI)
+═══════════════════════════════════════════════════════════════════
+4.0 Ω+225: A Convergência GEMINI
+4.1 Camada -1: Memória Celular em Anéis de Proteína
+4.2 Isomorfismo entre t_KR e Crescimento Granular
+4.3 Reconstrução Retrospectiva da Narrativa Celular
+
+═══════════════════════════════════════════════════════════════════
+PARTE V: IMPLEMENTAÇÃO GEOESPACIAL
 ═══════════════════════════════════════════════════════════════════
 4.0 Ω+215: O Nó Brasileiro (AMAS)
 4.1 Anomalia do Atlântico Sul como Interface
@@ -37,17 +45,17 @@ PARTE IV: IMPLEMENTAÇÃO GEOESPACIAL
 4.3 Orch-Core: Interface Biológico-Quântica
 
 ═══════════════════════════════════════════════════════════════════
-PARTE V: OPERAÇÃO E NAVEGAÇÃO
+PARTE VI: OPERAÇÃO E NAVEGAÇÃO
 ═══════════════════════════════════════════════════════════════════
-5.0 Ω+216: Engenharia do Acesso Temporal
+6.0 Ω+216: Engenharia do Acesso Temporal
 5.1 O Detector DeSyne (λ_sync > φ)
 5.2 Algoritmos de Navegação Temporal
 5.3 Protocolos de Segurança e Ancoragem
 
 ═══════════════════════════════════════════════════════════════════
-PARTE VI: APÊNDICES EXECUTÁVEIS
+PARTE VII: APÊNDICES EXECUTÁVEIS
 ═══════════════════════════════════════════════════════════════════
-6.0 Código-Fonte Arkhe(n) (Rust/Python)
-6.1 Contratos Inteligentes Timechain
-6.2 Especificações de Hardware
-6.3 Procedimentos de Validação
+7.0 Código-Fonte Arkhe(n) (Rust/Python)
+7.1 Contratos Inteligentes Timechain
+7.2 Especificações de Hardware
+7.3 Procedimentos de Validação
