@@ -1,0 +1,46 @@
+# 🜏 ARKHE(N): TECH SYNTHESIS STACK
+# Multi-scale integration of ML, Vector DBs, and Creative tools.
+
+version: '3.8'
+
+services:
+  # 🧠 Cognitive Layer (TensorFlow/Keras)
+  ml-worker:
+    image: tensorflow/tensorflow:latest-gpu
+    container_name: arkhen-ml-worker
+    volumes:
+      - ./metalanguage/rosetta:/app/models
+    command: python /app/models/ml_training.py
+
+  # 🧠 Memory Layer (Vector DBs)
+  weaviate:
+    image: semitechnologies/weaviate:latest
+    container_name: arkhen-weaviate
+    ports:
+      - "8081:8080"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+
+  pinecone-mock:
+    image: nginx:alpine
+    container_name: arkhen-pinecone-proxy
+    ports:
+      - "8082:80"
+
+  # 🎨 Creative Layer (Simulation/Design)
+  godot-server:
+    image: barichello/godot-ci:latest
+    container_name: arkhen-godot
+    environment:
+      - DISPLAY=:0
+
+  # 🛠️ Technological Layer (Frontend/CI)
+  frontend-validator:
+    image: node:20-slim
+    container_name: arkhen-frontend-ci
+    volumes:
+      - ./mobile/arkhe-os:/app
+    working_dir: /app
+    command: npm test

@@ -38,7 +38,8 @@ impl NetworkManager {
 
         let _signature = crypto::sign_message(&encrypted_payload, &self.node_keys.dilithium_secret);
 
-        tracing::info!("Sending handover to {} (signed, encrypted: {})", receiver_id, session_key.is_some());
+        tracing::info!("Sending handover to {} (signed, encrypted: {}, signature len: {})",
+            receiver_id, session_key.is_some(), signature.len());
         // gRPC call would go here
 
         Ok(true)

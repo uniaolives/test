@@ -15,6 +15,15 @@ pub struct HandoverResponse {
     pub phi_remote: f64,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct AgentCard {
+    pub name: String,
+    pub skills: Vec<String>,
+    pub endpoint: String,
+    pub identity_traces: Vec<String>, // Patterns of prior couplings
+    pub auth_requirements: String,
+}
+
 pub struct QHttpClient {
     client: reqwest::Client,
 }

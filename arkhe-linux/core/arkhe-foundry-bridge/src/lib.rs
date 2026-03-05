@@ -20,6 +20,7 @@ impl Default for BridgeConfig {
         Self { poll_interval_ms: 1000 }
     }
 }
+use log::info;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct FoundryObject {
@@ -41,6 +42,16 @@ pub struct ActionResult {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct ObjectTypeCreationResult {
     pub rid: String,
+}
+
+pub struct BridgeConfig {
+    pub poll_interval_ms: u64,
+}
+
+impl Default for BridgeConfig {
+    fn default() -> Self {
+        Self { poll_interval_ms: 1000 }
+    }
 }
 
 /// Bridge entre Arkhe Engine e Foundry Ontology
@@ -73,6 +84,7 @@ impl FoundryBridge {
         loop {
             interval.tick().await;
             // Simulated Polling iteration
+            info!("FoundryBridge sync iteration...");
         }
     }
 

@@ -1,0 +1,11 @@
+[package]
+name = "oloid-core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+arkhe-time-crystal = { path = "../arkhe-time-crystal" }
+serde = { version = "1.0", features = ["derive"] }
+thiserror = "1.0"
+log = "0.4"
+chrono = { version = "0.4", features = ["serde"] }
