@@ -32,6 +32,14 @@ class MockDigitalMemoryRing:
             int(time.time()),
             bio, aff, soc, cog
         ))
+        self.layers.append({
+            "timestamp": int(time.time()),
+            "bio": bio,
+            "aff": aff,
+            "soc": soc,
+            "cog": cog,
+            "q": q
+        })
 
     def measure_t_kr(self):
         return len(self.layers) * 3600
