@@ -8474,6 +8474,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "openclaw_arkhe"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "arkhe-quantum",
+ "log",
+ "nalgebra 0.32.6",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+]
+
+[[package]]
 name = "openssl"
 version = "0.10.75"
 source = "registry+https://github.com/rust-lang/crates.io-index"
