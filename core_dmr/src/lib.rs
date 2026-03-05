@@ -89,6 +89,19 @@ impl PyDigitalMemoryRing {
         self.inner.t_kr.as_secs()
     }
 
+    fn get_stats(&self) -> PyResult<String> {
+        let stats = serde_json::json!({
+            "id": self.inner.id,
+            "layer_count": self.inner.layers.len(),
+            "t_kr": self.inner.t_kr.as_secs(),
+            "vk_ref_bio": self.inner.vk_ref.bio,
+            "vk_ref_aff": self.inner.vk_ref.aff,
+            "vk_ref_soc": self.inner.vk_ref.soc,
+            "vk_ref_cog": self.inner.vk_ref.cog,
+        });
+        Ok(stats.to_string())
+    }
+
     fn reconstruct_trajectory(&self) -> PyResult<Vec<PyStateLayer>> {
         let trajectory = self.inner.reconstruct_trajectory();
         Ok(trajectory
