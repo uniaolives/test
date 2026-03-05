@@ -4,6 +4,10 @@ from .models import KatharosVector, StateLayer
 from .dependencies import get_dmr_instance
 from .hyperclaw.loops import HyperClawOrchestrator, ContextFrame
 from .geoloc.poloc import BftPoLoc
+from .physics.simulators import QuantumSimulator
+from .physics.triggers import ArkheTrigger
+from .blockchain.satoshi import verify_satoshi_temporal
+from .quantum.noether import QHTTPNoetherBridge
 from contextlib import asynccontextmanager
 import asyncio
 import json
@@ -15,6 +19,8 @@ from typing import List, Dict
 agent_registry: Dict[str, any] = {}
 hyperclaw_orchestrator = HyperClawOrchestrator()
 geoloc_verifier = BftPoLoc(beta=0.2)
+quantum_sim = QuantumSimulator()
+lhc_trigger = ArkheTrigger()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -91,6 +97,18 @@ async def get_hyperclaw_frame(frame_id: str):
         "goals": frame.goals,
         "budget": frame.budget
     }
+
+@app.post("/physics/lhc/analyze")
+async def analyze_lhc_event(jets: List[Dict]):
+    return lhc_trigger.evaluate_event(jets)
+
+@app.get("/physics/quantum/decoherence")
+async def get_orbital_decoherence(h: float = 400e3):
+    return {"tau_c": quantum_sim.orbital_decoherence(h)}
+
+@app.post("/blockchain/satoshi/verify")
+async def verify_satoshi(blocks: List[Dict]):
+    return await verify_satoshi_temporal(blocks)
 
 @app.post("/geoloc/verify")
 async def verify_location(agent_id: str, lat: float, lon: float, measurements: List[Dict]):
