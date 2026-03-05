@@ -162,6 +162,15 @@ impl ArkheGraph {
     fn verify_totem_alignment(&self, node: &ArkheNode) -> bool {
         node.totem_local[..4] == self.totem_global[..4]
     }
+
+    /// Ω+223: Generates a compound identifier for a conscious node (Gap 1 solution).
+    pub fn generate_compound_id(ip: &str, id: &str, login: &str) -> String {
+        use sha2::{Sha256, Digest};
+        let mut hasher = Sha256::new();
+        hasher.update(format!("{}|{}|{}", ip, id, login));
+        let result = hasher.finalize();
+        format!("did:arkhe:{:x}", result)
+    }
 }
 
 /// Coordenadas específicas da AMAS
