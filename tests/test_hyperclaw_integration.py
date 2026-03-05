@@ -27,3 +27,15 @@ def test_attention_directive():
     metta_expr = directive.to_metta()
     assert '(AttentionDirective (Target "math_llm")' in metta_expr
     assert '(Task "generate")' in metta_expr
+
+@pytest.mark.asyncio
+async def test_template_spawning():
+    orch = HyperClawOrchestrator()
+    await orch.spawn_templated_frame("bci_frame", "bci_realtime_entrainment")
+
+    assert "bci_frame" in orch.frames
+    frame = orch.frames["bci_frame"]
+    assert frame.goals["latency_ms"] == 10.0
+    assert frame.budget["compute"] == 2000
+    assert orch.running == True
+    orch.running = False

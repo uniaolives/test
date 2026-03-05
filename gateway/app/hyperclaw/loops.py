@@ -104,3 +104,8 @@ class HyperClawOrchestrator:
     async def start(self, frame_id: str):
         self.running = True
         self.fast_loop_task = asyncio.create_task(self._fast_loop(frame_id))
+
+    async def spawn_templated_frame(self, frame_id: str, template_id: str):
+        from .templates import spawn_frame_from_template
+        self.frames[frame_id] = spawn_frame_from_template(template_id, dmr_id=frame_id)
+        await self.start(frame_id)

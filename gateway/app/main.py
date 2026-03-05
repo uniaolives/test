@@ -71,6 +71,16 @@ async def get_vk_trajectory(agent_id: str):
         ))
     return result
 
+@app.get("/hyperclaw/templates")
+async def get_hyperclaw_templates():
+    from .hyperclaw.templates import BIOTECH_TEMPLATES
+    return BIOTECH_TEMPLATES
+
+@app.post("/hyperclaw/spawn/{template_id}")
+async def spawn_hyperclaw_frame(template_id: str, frame_id: str):
+    await hyperclaw_orchestrator.spawn_templated_frame(frame_id, template_id)
+    return {"status": "spawned", "frame_id": frame_id, "template_id": template_id}
+
 @app.get("/hyperclaw/frame/{frame_id}")
 async def get_hyperclaw_frame(frame_id: str):
     frame = hyperclaw_orchestrator.frames.get(frame_id)
