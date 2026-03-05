@@ -20,6 +20,40 @@ const App: React.FC = () => {
 
   const [agentStatus, setAgentStatus] = useState<string>('Initializing...');
   const agentRef = useRef<ArkhenAgent | null>(null);
+  const [remoteStatus, setRemoteStatus] = useState<string>('DISCONNECTED');
+
+  useEffect(() => {
+    // WebSocket Connection for Remote Orchestration
+    const socket = new WebSocket('ws://localhost:8000/ws/vk');
+
+    socket.onopen = () => {
+      console.log("[Ω] Connected to Arkhe(n) Gateway");
+      setRemoteStatus('CONNECTED');
+      socket.send(JSON.stringify({ type: 'HEARTBEAT', timestamp: Date.now() }));
+    };
+
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'MATTER_BEAM_SYNC') {
+           console.log("[Ω] Remote Sync Received:", data);
+        }
+      } catch (e) {
+        console.log("[Ω] Received from Gateway:", event.data);
+      }
+    };
+
+    socket.onerror = (error) => {
+      console.warn("[Ω] Gateway unreachable. Running in Isolated Mode.");
+      setRemoteStatus('ISOLATED');
+    };
+
+    socket.onclose = () => {
+      setRemoteStatus('DISCONNECTED');
+    };
+
+    return () => socket.close();
+  }, []);
 
   useEffect(() => {
     const init = async () => {
@@ -75,6 +109,7 @@ const App: React.FC = () => {
           NODE IDENT: UNGOVERNABLE_VRAM_0x7F3B...<br />
           SUBSTRATE: WebGPU/WebLLM Layer -1 to 6<br />
           λ_sync: {(vkState.q_permeability * 0.99).toFixed(4)} Hz<br />
+          GATEWAY: {remoteStatus}<br />
           AGENT STATUS: {agentStatus}
         </div>
       </div>
