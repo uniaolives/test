@@ -6,6 +6,11 @@ from .hyperclaw.loops import HyperClawOrchestrator, ContextFrame
 from .geoloc.poloc import BftPoLoc
 from .physics.simulators import QuantumSimulator
 from .physics.triggers import ArkheTrigger
+from .physics.arkhe_s2_lhc import LHCDataLoader, ArkheLHCTrigger, ArkheLHCAnalysis
+from .blockchain.satoshi import verify_satoshi_temporal
+from .quantum.noether import QHTTPNoetherBridge
+from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, QiskitInterface
+from contextlib import asynccontextmanager
 from .blockchain.satoshi import verify_satoshi_temporal
 from .quantum.noether import QHTTPNoetherBridge
 from contextlib import asynccontextmanager
@@ -25,6 +30,8 @@ hyperclaw_orchestrator = HyperClawOrchestrator()
 geoloc_verifier = BftPoLoc(beta=0.2)
 quantum_sim = QuantumSimulator()
 lhc_trigger = ArkheTrigger()
+s2_trigger = ArkheLHCTrigger()
+qiskit_iface = QiskitInterface()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -71,6 +78,8 @@ async def get_vk_trajectory(agent_id: str):
         agent_registry[agent_id] = get_dmr_instance(agent_id)
 
     ring = agent_registry[agent_id]
+    # Thread-safe access to potentially heavy Rust method
+    trajectory = await asyncio.to_thread(ring.reconstruct_trajectory)
     trajectory = ring.reconstruct_trajectory()
 
     # Adapt Rust PyStateLayer to Pydantic StateLayer if needed
@@ -111,6 +120,17 @@ async def get_hyperclaw_frame(frame_id: str):
 async def analyze_lhc_event(jets: List[Dict]):
     return lhc_trigger.evaluate_event(jets)
 
+@app.post("/physics/s2/run_analysis")
+async def run_s2_analysis(file_pattern: str, threshold: float = 0.05, output: str = "candidates.parquet"):
+    # Run heavy analysis in a separate thread to avoid blocking the event loop
+    def _run():
+        loader = LHCDataLoader(file_pattern)
+        analysis = ArkheLHCAnalysis(loader, s2_trigger)
+        return analysis.run(trigger_threshold=threshold, output_file=output)
+
+    candidates = await asyncio.to_thread(_run)
+    return {"status": "completed", "candidates_count": len(candidates), "output": output}
+
 @app.get("/physics/quantum/decoherence")
 async def get_orbital_decoherence(h: float = 400e3):
     return {"tau_c": quantum_sim.orbital_decoherence(h)}
@@ -118,6 +138,27 @@ async def get_orbital_decoherence(h: float = 400e3):
 @app.post("/blockchain/satoshi/verify")
 async def verify_satoshi(blocks: List[Dict]):
     return await verify_satoshi_temporal(blocks)
+
+@app.get("/quantum/qiskit/novikov_loop")
+async def get_novikov_loop(xi: float, dt: float, n_qubits: int = 2, use_kraus: bool = False):
+    if use_kraus:
+        circuit = novikov_loop_kraus(xi, dt, n_qubits_main=n_qubits)
+    else:
+        circuit = novikov_loop_circuit(xi, dt, n_qubits)
+
+    # Return as QASM for visibility or execute simulation
+    counts = await asyncio.to_thread(qiskit_iface.run_simulation, circuit)
+    return {
+        "params": {"xi": xi, "dt": dt, "n_qubits": n_qubits, "use_kraus": use_kraus},
+        "counts": counts,
+        "qasm": circuit.qasm()
+    }
+
+@app.post("/quantum/qiskit/submit")
+async def submit_quantum_job(xi: float, dt: float, token: str = None):
+    circuit = novikov_loop_kraus(xi, dt)
+    result = qiskit_iface.submit_job(circuit, token)
+    return result
 
 @app.post("/geoloc/verify")
 async def verify_location(agent_id: str, lat: float, lon: float, measurements: List[Dict]):

@@ -4,3 +4,9 @@ pydantic
 python-multipart
 numpy
 scipy
+uproot
+awkward
+pandas
+pyarrow
+qiskit
+qiskit-aer
