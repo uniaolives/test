@@ -3,13 +3,13 @@ use pqcrypto_kyber::kyber1024::{
     PublicKey as KyberPublicKey,
     SecretKey as KyberSecretKey,
     Ciphertext as KyberCiphertext,
-    SharedSecret as KyberSharedSecret
+    SharedSecret as KyberSharedSecret,
 };
 use pqcrypto_dilithium::dilithium5::{
     self,
     PublicKey as DilithiumPublicKey,
     SecretKey as DilithiumSecretKey,
-    DetachedSignature as DilithiumSignature
+    DetachedSignature as DilithiumSignature,
 };
 use pqcrypto_traits::kem::{Ciphertext, SharedSecret};
 use pqcrypto_traits::sign::{PublicKey, SecretKey, DetachedSignature};

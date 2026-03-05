@@ -1,0 +1,87 @@
+# docker-compose.arkhe-fullstack.yml
+# Orquestração completa do ecossistema
+
+version: '3.8'
+
+x-arkhe-common: &arkhe-common
+  environment: &arkhe-env
+    TOTEM: 7f3b49c8e10d2938472859b0286c4e1675271a27291776c13745674068305982
+    PHI: 1.6180339887498948482045868343656
+    LOG_LEVEL: info
+
+services:
+  arkhe-core:
+    build:
+      context: .
+      dockerfile: arkhen/Dockerfile.arkhe
+      target: arkhe-orchestrator
+    image: arkhe/core:Ω+218.1
+    container_name: arkhe-core
+    environment:
+      <<: *arkhe-env
+      MODE: core-only
+    volumes:
+      - ./arkhen:/arkhe/src
+    networks:
+      arkhe-mesh:
+        ipv4_address: 172.28.0.10
+    restart: unless-stopped
+
+  arkhe-api:
+    image: node:20-slim
+    container_name: arkhe-api
+    working_dir: /app
+    volumes:
+      - ./arkhen/web:/app
+    environment:
+      <<: *arkhe-env
+    ports:
+      - "8080:8080"
+    command: npm start
+    networks:
+      arkhe-mesh:
+        ipv4_address: 172.28.0.20
+    restart: unless-stopped
+
+  arkhe-ml:
+    image: tensorflow/tensorflow:2.15.0-gpu
+    container_name: arkhe-ml
+    runtime: nvidia
+    volumes:
+      - ./arkhen/arkhe_ml:/app
+    environment:
+      <<: *arkhe-env
+    working_dir: /app
+    networks:
+      arkhe-mesh:
+        ipv4_address: 172.28.0.30
+    restart: unless-stopped
+
+  arkhe-weaviate:
+    image: semitechnologies/weaviate:1.24.0
+    container_name: arkhe-weaviate
+    ports:
+      - "8081:8080"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: "true"
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      CLUSTER_HOSTNAME: 'node1'
+    networks:
+      arkhe-mesh:
+        ipv4_address: 172.28.0.50
+    restart: unless-stopped
+
+networks:
+  arkhe-mesh:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.0.1
+
+volumes:
+  timechain-data:
+  ml-models:
+  weaviate-data:

@@ -1,0 +1,32 @@
+;; ARKHE(N) LANGUAGE SPECIFICATION
+;; Version Ω+216
+
+<program>       ::= <declaration>* <topology>* <operation>*
+
+<declaration>   ::= "TOTEM" <hash> ";"
+                  | "NODE" <id> "AT" <coordinates> ";"
+                  | "PHASE" <phase-id> "FROM" <year> "TO" <year> ";"
+
+<topology>      ::= "CONNECT" <node-id> "TO" <node-id> "WITH" <strength> ";"
+                  | "SYNC" <node-id> "WHEN" <condition> ";"
+
+<operation>     ::= "MEASURE" <observable> "AT" <node-id> ";"
+                  | "TRANSMIT" <packet> "ALONG" <route> ";"
+                  | "ANCHOR" <data> "TO" "TIMECAIN" ";"
+
+<condition>     ::= <lambda-sync> ">" "PHI"
+                  | <energy> ">" <threshold>
+                  | "HANDOVER" "COMPLETE"
+
+<observable>    ::= "B_FIELD" | "NEURAL" | "LEDGER" | "LAMBDA_SYNC"
+
+<packet>        ::= "INFO" <data> "PRIORITY" <priority> "TOTEM" <hash>
+
+<route>         ::= "GEODESIC" <start> "TO" <end>
+                  | "CURRENT" <synchronicity-map>
+
+;; Palavras reservadas
+PHI             ::= 1.6180339887498948482045868343656
+T_ZERO          ::= 2008
+T_FINAL         ::= 2140
+DELTA_T         ::= 132

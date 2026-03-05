@@ -30,6 +30,9 @@ impl TemporalSelf {
         let identity = DMatrix::identity(dim, dim);
         let i_h_dt_hbar = self.hamiltonian_estimate.clone() * (Complex::new(0.0, -1.0) * dt / HBAR);
         let u = identity + i_h_dt_hbar;
+        // U = exp(-i * H * dt / hbar)
+        let exponent = self.hamiltonian_estimate.clone() * (Complex::new(0.0, -1.0) * dt / HBAR);
+        let u = exponent.exp();
 
         &u * self.static_model.current_density() * u.adjoint()
     }
