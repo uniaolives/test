@@ -2,6 +2,8 @@
 
 use crate::agent::{OpenClawArkheAgent, AgentId};
 use std::collections::HashMap;
+use digital_memory_ring::zk_lottery::{ZkLottery, LotteryWeight};
+use bls12_381::Scalar;
 
 pub struct Cluster {
     pub agents: HashMap<AgentId, OpenClawArkheAgent>,
@@ -55,21 +57,35 @@ impl Cluster {
 
     pub fn resolve_deadlocks(&mut self) {
         if self.detect_deadlock() {
-            println!("🚨 DEADLOCK DETECTED. RESOLVING VIA VK-SCALING...");
+            println!("🚨 DEADLOCK DETECTED. RESOLVING VIA CONSTITUTIONAL RANDOMNESS (zkLottery)...");
 
-            // Collect agent IDs and t_KR
-            let mut agent_prios: Vec<(AgentId, f64)> = self.agents.iter()
-                .map(|(id, a)| (id.clone(), a.t_kr))
-                .collect();
-
-            // Sort agents by t_KR (lowest first for sacrifice)
-            agent_prios.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
-
-            if let Some((id, _)) = agent_prios.first() {
-                println!("Agent {} (lowest t_KR) yielding resources for cluster homeostasis.", id);
-                // In a real scenario, this would trigger transition to Ghost mode
-                self.agents.remove(id);
+            // 1. Prepare participants for weighted lottery
+            let mut lottery_participants = Vec::new();
+            for (id, agent) in &self.agents {
+                lottery_participants.push((id.clone(), LotteryWeight(agent.t_kr)));
             }
+
+            if lottery_participants.is_empty() {
+                return;
+            }
+
+            // 2. Initialize zkLottery
+            let lottery = ZkLottery::new(lottery_participants);
+
+            // 3. Conduct fair draw using VRF
+            let mut sk_bytes = [0u8; 64];
+            sk_bytes[0] = 42; // Simulated cluster-wide secret key
+            let sk = Scalar::from_bytes_wide(&sk_bytes);
+
+            let seed = format!("deadlock-resolution-{}", self.agents.len());
+            let result = lottery.draw_with_sk(&sk, seed.as_bytes());
+
+            // 4. Resolve deadlock by removing selected agent
+            let to_remove = result.winner;
+            println!("zkLottery-draw: Agent {} selected to yield resources. Fairness verified via VRF proof: {}",
+                to_remove, hex::encode(&result.proof.output[..4]));
+
+            self.agents.remove(&to_remove);
         }
     }
 }

@@ -1,6 +1,7 @@
 //! Digital Memory Ring – grows layers like a tree ring.
 
 use crate::{Bifurcation, BifurcationKind, KatharosVector, StateLayer, TimeRange};
+use crate::zk_lottery::{ZkLottery, ZkLotteryGrowth, GrowthDecision};
 use serde::{Deserialize, Serialize};
 use std::time::{Duration, SystemTime};
 
@@ -19,6 +20,8 @@ pub struct DigitalMemoryRing {
     pub t_kr: Duration,
     /// Detected bifurcations
     pub bifurcations: Vec<Bifurcation>,
+    /// Optional zkLottery for stochastic growth
+    pub zk_lottery: Option<ZkLottery>,
 }
 
 impl DigitalMemoryRing {
@@ -31,12 +34,29 @@ impl DigitalMemoryRing {
             formation_interval,
             t_kr: Duration::ZERO,
             bifurcations: Vec::new(),
+            zk_lottery: None,
         }
     }
 
+    /// Enables zkLottery-based growth for this ring.
+    pub fn enable_zk_lottery(&mut self) {
+        self.zk_lottery = Some(ZkLottery::new(Vec::new()));
+    }
+
     /// Grows a new layer (called periodically).
-    pub fn grow_layer(&mut self, current_vk: KatharosVector, q: f64, events: Vec<String>) {
+    pub fn grow_layer(&mut self, current_vk: KatharosVector, q: f64, mut events: Vec<String>) {
         let now = SystemTime::now();
+
+        // If zkLottery is enabled, check if growth should occur
+        if let Some(ref lottery) = self.zk_lottery {
+            match lottery.lottery_growth(self) {
+                GrowthDecision::Grow { vrf_proof, .. } => {
+                    events.push(format!("zkLottery-win: {}", hex::encode(&vrf_proof.output[..4])));
+                },
+                GrowthDecision::Wait => return,
+            }
+        }
+
         let delta_k = self.vk_ref.weighted_distance(&current_vk);
         let intensity = self.compute_intensity(delta_k);
 
