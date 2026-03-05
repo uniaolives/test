@@ -15,6 +15,7 @@ export interface NodeState {
     deltaK: number;
     t_KR: number;
     isCrisis: boolean;
+    phases?: number[];
 }
 
 export class ArkheVisualizer {
@@ -200,7 +201,11 @@ export class ArkheVisualizer {
         this.cubeMaterial.emissive.setHex(this.state.isCrisis ? 0x440000 : 0x002222);
 
         this.agents.forEach((agent, i) => {
-            agent.userData.angle += agent.userData.speed * (this.state.isCrisis ? 3 : 1);
+            if (this.state.phases && this.state.phases[i] !== undefined) {
+                agent.userData.angle = this.state.phases[i];
+            } else {
+                agent.userData.angle += agent.userData.speed * (this.state.isCrisis ? 3 : 1);
+            }
             const x = Math.cos(agent.userData.angle) * agent.userData.radius;
             const z = Math.sin(agent.userData.angle) * agent.userData.radius;
             const y = Math.sin(agent.userData.angle * 2) * 1.5;
