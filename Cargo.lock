@@ -705,6 +705,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "arkhe-system"
+version = "0.1.0"
+dependencies = [
+ "arkhe-topology",
+ "tokio",
+]
+
+[[package]]
 name = "arkhe-thermodynamics"
 version = "0.1.0"
 dependencies = [
@@ -718,6 +726,14 @@ dependencies = [
 [[package]]
 name = "arkhe-time-crystal"
 version = "0.1.0"
+
+[[package]]
+name = "arkhe-topology"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "sha2 0.10.9",
+]
 
 [[package]]
 name = "arkhe-webhook"
@@ -3935,6 +3951,23 @@ dependencies = [
  "const-oid",
  "crypto-common",
  "subtle",
+]
+
+[[package]]
+name = "digital_memory_ring"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bincode 1.3.3",
+ "bls12_381",
+ "chrono",
+ "ff 0.13.1",
+ "group 0.13.0",
+ "hex",
+ "rand 0.8.5",
+ "rand_chacha 0.3.1",
+ "serde",
+ "sha2 0.10.9",
 ]
 
 [[package]]
@@ -8471,6 +8504,24 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 1.0.109",
+]
+
+[[package]]
+name = "openclaw_arkhe"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "arkhe-quantum",
+ "bls12_381",
+ "digital_memory_ring",
+ "hex",
+ "log",
+ "nalgebra 0.32.6",
+ "rand 0.8.5",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
 ]
 
 [[package]]
