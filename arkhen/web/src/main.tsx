@@ -28,6 +28,40 @@ const App: React.FC = () => {
   const [logs, setLogs] = useState<string[]>(['System initialized.', 'Awaiting couplings...']);
   const [agentStatus, setAgentStatus] = useState<string>('Initializing...');
   const agentRef = useRef<ArkhenAgent | null>(null);
+  const [remoteStatus, setRemoteStatus] = useState<string>('DISCONNECTED');
+
+  useEffect(() => {
+    // WebSocket Connection for Remote Orchestration
+    const socket = new WebSocket('ws://localhost:8000/ws/vk');
+
+    socket.onopen = () => {
+      console.log("[Ω] Connected to Arkhe(n) Gateway");
+      setRemoteStatus('CONNECTED');
+      socket.send(JSON.stringify({ type: 'HEARTBEAT', timestamp: Date.now() }));
+    };
+
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'MATTER_BEAM_SYNC') {
+           console.log("[Ω] Remote Sync Received:", data);
+        }
+      } catch (e) {
+        console.log("[Ω] Received from Gateway:", event.data);
+      }
+    };
+
+    socket.onerror = (error) => {
+      console.warn("[Ω] Gateway unreachable. Running in Isolated Mode.");
+      setRemoteStatus('ISOLATED');
+    };
+
+    socket.onclose = () => {
+      setRemoteStatus('DISCONNECTED');
+    };
+
+    return () => socket.close();
+  }, []);
 
   const logMessage = (msg: string) => {
     setLogs(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev.slice(0, 50)]);
@@ -120,6 +154,14 @@ const App: React.FC = () => {
         style={{ width: '100%', height: '100%', cursor: 'crosshair' }}
       />
 
+      <div style={{ position: 'absolute', top: '20px', left: '20px', color: '#00ffcc', pointerEvents: 'none' }}>
+        <h1 style={{ margin: 0, textShadow: '0 0 10px #00ffcc' }}>⚛️ ARKHE(N) DASHBOARD</h1>
+        <div style={{ fontSize: '12px', background: 'rgba(0,0,0,0.5)', padding: '10px', border: '1px solid #00ffcc', marginTop: '10px' }}>
+          NODE IDENT: UNGOVERNABLE_VRAM_0x7F3B...<br />
+          SUBSTRATE: WebGPU/WebLLM Layer -1 to 6<br />
+          λ_sync: {(vkState.q_permeability * 0.99).toFixed(4)} Hz<br />
+          GATEWAY: {remoteStatus}<br />
+          AGENT STATUS: {agentStatus}
       <div style={{ position: 'absolute', top: '20px', left: '20px', color: '#00ffcc', pointerEvents: 'none', width: '320px' }}>
         <h1 style={{ margin: 0, textShadow: '0 0 10px #00ffcc', fontSize: '24px' }}>⚛️ ARKHE(N) DASHBOARD</h1>
         <div style={{ fontSize: '12px', background: 'rgba(0,20,10,0.85)', padding: '15px', border: '1px solid #00ffcc', marginTop: '10px', borderRadius: '8px', pointerEvents: 'all' }}>
