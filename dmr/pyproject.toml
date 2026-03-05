@@ -1,0 +1,16 @@
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "core_dmr"
+requires-python = ">=3.9"
+dependencies = [
+    "serde>=1.0",
+    "serde_json>=1.0"
+]
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+python-source = "python"
+module-name = "core_dmr"

@@ -28,6 +28,7 @@ const App: React.FC = () => {
   const [logs, setLogs] = useState<string[]>(['System initialized.', 'Awaiting couplings...']);
   const [agentStatus, setAgentStatus] = useState<string>('Initializing...');
   const agentRef = useRef<ArkhenAgent | null>(null);
+  const wsRef = useRef<WebSocket | null>(null);
 
   const logMessage = (msg: string) => {
     setLogs(prev => [`[${new Date().toLocaleTimeString()}] ${msg}`, ...prev.slice(0, 50)]);
@@ -54,26 +55,50 @@ const App: React.FC = () => {
     init();
   }, []);
 
-  // Metabolism Loop
+  // Kuramoto Metabolism WebSocket Connection
   useEffect(() => {
-    const interval = setInterval(() => {
-      setNodeState(prev => {
-        let next = { ...prev };
-        if (prev.isCrisis) {
-          next.deltaK -= 0.002;
-          if (next.deltaK < 0.3) {
-            next.isCrisis = false;
-            logMessage("HOMEOSTASIS RESTORED. Reconnecting...");
-          }
-        } else {
-          next.t_KR += 0.1;
-          if (next.deltaK > 0.05) next.deltaK -= 0.001;
-        }
-        next.Q = Math.max(0.0, 1.0 - (next.deltaK * 1.1));
-        return next;
-      });
-    }, 100);
-    return () => clearInterval(interval);
+    const connect = () => {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const socket = new WebSocket(`${protocol}//localhost:8000/ws/metabolism`);
+      wsRef.current = socket;
+
+      socket.onopen = () => {
+        logMessage("Connected to Kuramoto Metabolism Gateway.");
+      };
+
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        setNodeState(prev => {
+            const wasInCrisis = prev.isCrisis;
+            const isInCrisis = data.is_crisis;
+            if (wasInCrisis && !isInCrisis) {
+                logMessage("HOMEOSTASIS RESTORED. Reconnecting...");
+            }
+            return {
+                ...prev,
+                Q: data.q_permeability,
+                deltaK: data.delta_k,
+                isCrisis: isInCrisis,
+                phases: data.phases,
+                t_KR: prev.t_KR + 0.05
+            };
+        });
+      };
+
+      socket.onclose = () => {
+        logMessage("Metabolism Gateway disconnected. Retrying...");
+        setTimeout(connect, 2000);
+      };
+
+      socket.onerror = (err) => {
+        console.error("WebSocket Error:", err);
+      };
+    };
+
+    connect();
+    return () => {
+      if (wsRef.current) wsRef.current.close();
+    };
   }, []);
 
   useEffect(() => {
@@ -96,19 +121,44 @@ const App: React.FC = () => {
     setVkState((prev) => ({ ...prev, ...newVk }));
   };
 
-  const triggerIncident = () => {
+  const triggerIncident = async () => {
     if (nodeState.isCrisis) return;
     logMessage("INCIDENT: Hostile H > 1 load detected! Critical ΔK.");
-    setNodeState(prev => ({
-      ...prev,
-      isCrisis: true,
-      deltaK: 0.85,
-      t_KR: 0
-    }));
+
+    // Manifest intention via REST API (Ω+226.GEN)
+    try {
+        await fetch('http://localhost:8000/world/intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                agent_id: "corus_prime",
+                prompt: "Trigger system crisis for homeostatic validation",
+                target_vk: { bio: 0.9, aff: 0.1, soc: 0.1, cog: 0.1 }
+            })
+        });
+    } catch (e) {
+        console.error("Failed to manifest intention:", e);
+    }
   };
 
-  const forceGrowth = () => {
-    if (nodeState.isCrisis) return;
+  const forceGrowth = async () => {
+    if (nodeState.isCrisis) {
+        logMessage("RESTORING: Re-coupling oscillators...");
+        try {
+            await fetch('http://localhost:8000/world/intent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    agent_id: "corus_prime",
+                    prompt: "Restore homeostasis",
+                    target_vk: { bio: 0.5, aff: 0.5, soc: 0.3, cog: 0.4 }
+                })
+            });
+        } catch (e) {
+            console.error("Failed to restore homeostasis:", e);
+        }
+        return;
+    }
     logMessage("METABOLISM: Stimulating A2A growth...");
     setNodeState(prev => ({ ...prev, t_KR: prev.t_KR + 50 }));
   };
