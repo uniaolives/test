@@ -44,6 +44,16 @@ pub struct ObjectTypeCreationResult {
     pub rid: String,
 }
 
+pub struct BridgeConfig {
+    pub poll_interval_ms: u64,
+}
+
+impl Default for BridgeConfig {
+    fn default() -> Self {
+        Self { poll_interval_ms: 1000 }
+    }
+}
+
 /// Bridge entre Arkhe Engine e Foundry Ontology
 pub struct FoundryBridge {
     pub foundry_url: String,
