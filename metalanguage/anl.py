@@ -746,14 +746,13 @@ class ArkheLink(Handover):
         return self.signature is not None
 
     def execute(self, source: Node, target: Node) -> bool:
+        """Execute the link handover between source and target."""
         if not self.verify_identity() or not self.verify_signature():
             return False
         return True
-            return False
-        return True
-        return self.signature.startswith("ed25519")
 
-    def execute(self) -> bool:
+    def execute_complex(self) -> bool:
+        """Internal execution with pre/post conditions."""
         if not self.verify_identity() or not self.verify_signature():
             return False
         for pre in self.preconditions:
