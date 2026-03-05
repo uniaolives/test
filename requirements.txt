@@ -118,3 +118,7 @@ starlette
 websockets
 websockets
 wrapt
+qutip
+uproot
+awkward
+matplotlib

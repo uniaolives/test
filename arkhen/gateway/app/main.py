@@ -9,6 +9,7 @@ from datetime import datetime
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from app.hyperclaw.templates import BIOTECH_TEMPLATES, HyperClawTemplate
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -66,6 +67,26 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/hyperclaw/templates", response_model=List[HyperClawTemplate])
+async def list_hyperclaw_templates():
+    """Lists available HyperClaw orchestration templates for biotech operational domains."""
+    return BIOTECH_TEMPLATES
+
+@app.post("/hyperclaw/spawn/{template_id}")
+async def spawn_hyperclaw_frame(template_id: str):
+    """Spawns a new HyperClaw cognitive orchestration frame based on a template."""
+    template = next((t for t in BIOTECH_TEMPLATES if t.id == template_id), None)
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+    # In a real implementation, this would initialize the Fast/Slow loops
+    # and register the frame in arkhe_state.
+    return {
+        "status": "spawned",
+        "frame_id": f"frame_{template_id}_{int(time.time())}",
+        "template": template.name
+    }
 
 @app.get("/health")
 async def health_check():
