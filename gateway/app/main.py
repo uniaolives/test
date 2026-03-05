@@ -1,8 +1,9 @@
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .models import KatharosVector, StateLayer
 from .dependencies import get_dmr_instance
 from .hyperclaw.loops import HyperClawOrchestrator, ContextFrame
+from .geoloc.poloc import BftPoLoc
 from contextlib import asynccontextmanager
 import asyncio
 import json
@@ -13,6 +14,7 @@ from typing import List, Dict
 # Global registry for agents
 agent_registry: Dict[str, any] = {}
 hyperclaw_orchestrator = HyperClawOrchestrator()
+geoloc_verifier = BftPoLoc(beta=0.2)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -63,7 +65,7 @@ async def get_vk_trajectory(agent_id: str):
         result.append(StateLayer(
             timestamp=layer.timestamp,
             vk=KatharosVector(bio=layer.bio, aff=layer.aff, soc=layer.soc, cog=layer.cog),
-            delta_k=0.0, # Computed in Rust but maybe not exposed yet in PyStateLayer
+            delta_k=0.0,
             q=0.95,
             intensity=0.5
         ))
@@ -79,6 +81,24 @@ async def get_hyperclaw_frame(frame_id: str):
         "goals": frame.goals,
         "budget": frame.budget
     }
+
+@app.post("/geoloc/verify")
+async def verify_location(agent_id: str, lat: float, lon: float, measurements: List[Dict]):
+    """
+    Verifies location using BFT-PoLoc.
+    measurements: List of {'lat': float, 'lon': float, 'rtt': float}
+    """
+    result = geoloc_verifier.verify(lat, lon, measurements)
+
+    if agent_id in agent_registry:
+        ring = agent_registry[agent_id]
+        # High uncertainty increases delta_k (simulated via growth)
+        if result["is_valid"]:
+            ring.grow_layer(0.5, 0.5, 0.5, 0.5, 0.95)
+        else:
+            ring.grow_layer(0.7, 0.7, 0.7, 0.7, 0.3)
+
+    return result
 
 @app.websocket("/ws/entrainment")
 async def websocket_entrainment(websocket: WebSocket):
