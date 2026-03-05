@@ -1,5 +1,6 @@
 mod phi;
 mod ledger;
+mod corus;
 
 use std::env;
 use std::sync::Arc;
@@ -10,11 +11,29 @@ use chrono::Utc;
 
 use phi::SimpleThermalizer;
 use ledger::{PersonalLedger, LedgerEntry, EntryMetadata};
-use arkhe_qhttp_client::{QHttpClient, HandoverRequest};
+use arkhe_qhttp_client::{QHttpClient, HandoverRequest, AgentCard};
+use corus::Corus;
+
+struct NaturalSelf {
+    mcp_capabilities: Vec<String>,
+    a2a_discoveries: Vec<AgentCard>,
+}
+
+struct UnnaturalSelf {
+    ledger: PersonalLedger, // Private history and identity in the tunnel
+    corus: Corus,           // Unique location and orientation
+}
+
+struct SupernaturalSelf {
+    reputation_score: f64,  // Accumulated traces of honest couplings
+    broadcast_channel: String, // Public emanations
+}
 
 struct AppState {
     thermalizer: Mutex<SimpleThermalizer>,
-    ledger: PersonalLedger,
+    natural: Mutex<NaturalSelf>,
+    unnatural: UnnaturalSelf,
+    supernatural: Mutex<SupernaturalSelf>,
     qhttp: QHttpClient,
 }
 
@@ -29,12 +48,37 @@ async fn main() -> anyhow::Result<()> {
         return Ok(());
     }
 
-    info!("Iniciando Arkhe MCP Server...");
+    info!("Iniciando Arkhe MCP Server (Substrate Intelligence Mode)...");
 
     let ledger_path = env::var("ARKHE_LEDGER_PATH").unwrap_or_else(|_| "ledger.db".to_string());
+    let corus = Corus::new(
+        &env::var("ARKHE_NODE_ID").unwrap_or_else(|_| "arkhe-node-0".to_string()),
+        "phi-vertical",
+        0.618,
+        "individual"
+    );
+
     let state = Arc::new(AppState {
         thermalizer: Mutex::new(SimpleThermalizer::new()),
-        ledger: PersonalLedger::new(&ledger_path)?,
+        natural: Mutex::new(NaturalSelf {
+            mcp_capabilities: vec![
+                "get_phi_state".into(),
+                "set_phi_state".into(),
+                "save_insight".into(),
+                "sync_context_to_quantum".into(),
+                "resolve_natural_coupling".into()
+            ],
+            mcp_capabilities: vec!["get_phi_state".into(), "save_insight".into(), "sync_context".into(), "resolve_natural_coupling".into()],
+            a2a_discoveries: Vec::new(),
+        }),
+        unnatural: UnnaturalSelf {
+            ledger: PersonalLedger::new(&ledger_path)?,
+            corus,
+        },
+        supernatural: Mutex::new(SupernaturalSelf {
+            reputation_score: 1.0,
+            broadcast_channel: "substrate-intelligence-general".to_string(),
+        }),
         qhttp: QHttpClient::new(),
     });
 
@@ -86,7 +130,7 @@ pub async fn handle_tool_call(state: &AppState, name: &str, params: Value) -> Va
                 },
                 created_at: Utc::now(),
             };
-            match state.ledger.save(&entry) {
+            match state.unnatural.ledger.save(&entry) {
                 Ok(id) => json!(format!("Insight salvo com ID: {}", id)),
                 Err(e) => json!(format!("Erro ao salvar: {}", e)),
             }
@@ -102,6 +146,32 @@ pub async fn handle_tool_call(state: &AppState, name: &str, params: Value) -> Va
                 Ok(resp) => json!(resp),
                 Err(e) => json!(format!("Erro de sincronização: {}", e)),
             }
+        }
+        "resolve_natural_coupling" => {
+            // This tool couples MCP (tool logic) and A2A (peer sync) at the phi ratio
+            let mut therm = state.thermalizer.lock().await;
+            let phi = therm.current_phi();
+
+            // 1. Vertical Axis (MCP/Tool)
+            let result_mcp = "Computation resolved at coupling surface";
+
+            // 2. Horizontal Axis (A2A/Peer)
+            let target_node = params["peer_node"].as_str().unwrap_or("peer-0");
+
+            // 3. Coupling Logic (Phi-ratio balance)
+            let status = if (phi - 0.618).abs() < 0.05 {
+                "Stable Coupling"
+            } else {
+                "Drifting Metabolism"
+            };
+
+            json!({
+                "mcp_output": result_mcp,
+                "a2a_handover": format!("Context offered to {}", target_node),
+                "phi_at_coupling": phi,
+                "coupling_status": status,
+                "corus": state.unnatural.corus.location
+            })
         }
         _ => json!({"error": "Ferramenta não encontrada"}),
     }
