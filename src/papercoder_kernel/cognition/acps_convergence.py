@@ -78,3 +78,30 @@ class HomeostasisRegime:
 
     def map_delta_k_to_lambda(self, delta_K: float) -> float:
         return self.phi * np.exp(-delta_K)
+
+class GeminiMapping:
+    """
+    Ω+225.GEMINI: Layer -1 (Biological Timechain)
+    Physical record of consciousness history.
+    """
+    def __init__(self):
+        self.phi = 0.618033988749895
+
+    def reconstruct_vk_from_gemini(self, intensity: float, bio: float, aff: float) -> np.ndarray:
+        """
+        Extracts VK components from GEMINI fluorescent patterns.
+        """
+        # bio, aff are already components. soc and cog are derived.
+        soc = 1.0 - (intensity / 2.0)
+        cog = 1.0 / (1.0 + intensity)
+        return np.array([bio, aff, soc, cog])
+
+    def measure_physical_tkr(self, layers: List[Dict[str, Any]], threshold: float = 0.30) -> float:
+        """
+        Physical measurement of t_KR via GEMINI layer thickness.
+        """
+        t_kr = 0.0
+        for layer in layers:
+            if layer['intensity'] < threshold:
+                t_kr += layer['thickness']
+        return t_kr

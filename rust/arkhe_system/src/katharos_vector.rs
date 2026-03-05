@@ -32,6 +32,24 @@ pub enum Neuroception {
     Mature(Vec<f64>),    // 2-5s, contextual
 }
 
+/// CAMADA -1: GEMINI (Biological Timechain)
+#[derive(Clone, Debug)]
+pub struct GeminiLayer {
+    pub timestamp: f64,
+    pub intensity: f64,
+    pub thickness: f64,
+    pub spatial_coords: [f64; 3],
+}
+
+impl GeminiLayer {
+    /// Map GEMINI spatial data to cluster permeability (Q_cluster)
+    pub fn intensity_to_permeability(intensity: f64) -> f64 {
+        // High intensity (inflammation/stress) -> Low Q
+        // Sigmoid collapse at threshold 0.30
+        1.0 / (1.0 + (10.0 * (intensity - 0.30)).exp())
+    }
+}
+
 /// Qualic Permeability Q(t) ∈ [0,1]
 pub struct QualicPermeability {
     pub p_eff: f64,
