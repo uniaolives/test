@@ -79,6 +79,7 @@ members = [
     "rust/openclaw_arkhe",
     "rust/arkhe_topology",
     "rust/arkhe_system",
+    "dmr",
 ]
 resolver = "2"
 
