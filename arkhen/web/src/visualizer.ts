@@ -10,13 +10,25 @@ export interface KatharosVector {
     q_permeability: number;
 }
 
-export class TorusVisualizer {
+export interface NodeState {
+    Q: number;
+    deltaK: number;
+    t_KR: number;
+    isCrisis: boolean;
+}
+
+export class ArkheVisualizer {
     private scene: THREE.Scene;
     private camera: THREE.PerspectiveCamera;
-    private renderer: any; // Using any for WebGPURenderer as types might be tricky
-    private torus: THREE.Mesh;
-    private material: THREE.MeshStandardMaterial;
+    private renderer: any;
+    private cube: THREE.Mesh;
+    private sphere: THREE.Mesh;
+    private agents: THREE.Mesh[] = [];
+    private threads: THREE.Line[] = [];
+    private cubeMaterial: THREE.MeshStandardMaterial;
+    private sphereMaterial: THREE.MeshPhysicalMaterial;
     private vk: KatharosVector;
+    private state: NodeState;
 
     // WebGPU related
     private device: GPUDevice | null = null;
@@ -28,9 +40,9 @@ export class TorusVisualizer {
 
     constructor(container: HTMLElement) {
         this.scene = new THREE.Scene();
-        this.camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+        this.scene.fog = new THREE.FogExp2(0x020202, 0.05);
+        this.camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
 
-        // Attempt to use WebGPURenderer
         try {
             this.renderer = new WebGPURenderer({ antialias: true, alpha: true });
         } catch (e) {
@@ -41,25 +53,54 @@ export class TorusVisualizer {
         this.renderer.setSize(container.clientWidth, container.clientHeight);
         container.appendChild(this.renderer.domElement);
 
-        const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
-        this.material = new THREE.MeshStandardMaterial({
-            color: 0x00ffcc,
-            metalness: 0.7,
-            roughness: 0.2,
-            emissive: 0x003322,
-            wireframe: true
+        // Core Cube
+        const cubeGeo = new THREE.BoxGeometry(1.5, 1.5, 1.5);
+        this.cubeMaterial = new THREE.MeshStandardMaterial({
+            color: 0x111111, metalness: 0.9, roughness: 0.1, emissive: 0x002222
         });
-        this.torus = new THREE.Mesh(geometry, this.material);
-        this.scene.add(this.torus);
+        this.cube = new THREE.Mesh(cubeGeo, this.cubeMaterial);
+        this.scene.add(this.cube);
 
-        const light = new THREE.PointLight(0xffffff, 1, 100);
-        light.position.set(20, 20, 20);
-        this.scene.add(light);
-        this.scene.add(new THREE.AmbientLight(0x404040));
+        // Membrane Sphere
+        const sphereGeo = new THREE.SphereGeometry(2.5, 32, 32);
+        this.sphereMaterial = new THREE.MeshPhysicalMaterial({
+            color: 0x00ffcc, transmission: 0.9, opacity: 1, transparent: true, roughness: 0.0, clearcoat: 1.0
+        });
+        this.sphere = new THREE.Mesh(sphereGeo, this.sphereMaterial);
+        this.scene.add(this.sphere);
 
-        this.camera.position.z = 30;
+        // Agents & Mycelial Threads
+        const agentGeo = new THREE.SphereGeometry(0.15, 16, 16);
+        const agentMat = new THREE.MeshBasicMaterial({ color: 0xaaffaa });
+        const lineMat = new THREE.LineBasicMaterial({ color: 0x00ffcc, transparent: true, opacity: 0.5 });
+
+        for (let i = 0; i < 12; i++) {
+            const agent = new THREE.Mesh(agentGeo, agentMat.clone());
+            const angle = (i / 12) * Math.PI * 2;
+            agent.userData = {
+                angle: angle,
+                radius: 4 + Math.random() * 2,
+                speed: 0.005 + Math.random() * 0.01,
+                reputation: 50 + Math.random() * 100
+            };
+            this.scene.add(agent);
+            this.agents.push(agent);
+
+            const lineGeo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,0,0)]);
+            const thread = new THREE.Line(lineGeo, lineMat.clone());
+            this.scene.add(thread);
+            this.threads.push(thread);
+        }
+
+        const ambientLight = new THREE.AmbientLight(0x223333);
+        this.scene.add(ambientLight);
+        const coreLight = new THREE.PointLight(0x00ffcc, 1.5, 20);
+        this.scene.add(coreLight);
+
+        this.camera.position.z = 8;
 
         this.vk = { bio: 0.618, aff: 0.5, soc: 0.5, cog: 0.5, q_permeability: 1.0 };
+        this.state = { Q: 1.0, deltaK: 0.05, t_KR: 100, isCrisis: false };
 
         window.addEventListener('resize', () => this.onWindowResize(container));
     }
@@ -115,8 +156,9 @@ export class TorusVisualizer {
         this.renderer.setSize(container.clientWidth, container.clientHeight);
     }
 
-    public async updateVK(newVk: Partial<KatharosVector>) {
-        this.vk = { ...this.vk, ...newVk };
+    public async updateState(newState: Partial<NodeState>, vk: Partial<KatharosVector>) {
+        this.state = { ...this.state, ...newState };
+        this.vk = { ...this.vk, ...vk };
 
         if (this.device && this.computePipeline && this.vkBuffer && this.bindGroup) {
             const vkData = new Float32Array([
@@ -147,25 +189,62 @@ export class TorusVisualizer {
             readBuffer.destroy();
         }
 
-        const color = new THREE.Color().setHSL(this.vk.bio * 0.3 + 0.5, 0.8, 0.5);
-        this.material.color.copy(color);
-        this.material.emissive.setHSL(this.vk.soc * 0.3 + 0.5, 0.8, 0.2 * this.vk.aff);
+        // Apply Visual Effects
+        this.sphereMaterial.transmission = this.state.Q;
+        this.sphereMaterial.color.setHex(this.state.isCrisis ? 0xff3366 : 0x00ffcc);
+        const targetRadius = this.state.isCrisis ? 0.8 : 1.0;
+        this.sphere.scale.lerp(new THREE.Vector3(targetRadius, targetRadius, targetRadius), 0.05);
 
-        const scale = 0.8 + this.vk.q_permeability * 0.4;
-        this.torus.scale.set(scale, scale, scale);
+        const stressPulse = this.state.isCrisis ? Math.sin(Date.now() * 0.01) * 0.2 : 0;
+        this.cube.scale.set(1 + stressPulse, 1 + stressPulse, 1 + stressPulse);
+        this.cubeMaterial.emissive.setHex(this.state.isCrisis ? 0x440000 : 0x002222);
+
+        this.agents.forEach((agent, i) => {
+            agent.userData.angle += agent.userData.speed * (this.state.isCrisis ? 3 : 1);
+            const x = Math.cos(agent.userData.angle) * agent.userData.radius;
+            const z = Math.sin(agent.userData.angle) * agent.userData.radius;
+            const y = Math.sin(agent.userData.angle * 2) * 1.5;
+            agent.position.set(x, y, z);
+
+            const isMatureEnough = agent.userData.reputation > 60;
+            let Q_ij = 0;
+            if (!this.state.isCrisis && isMatureEnough) {
+                Q_ij = this.state.Q;
+            }
+
+            const thread = this.threads[i];
+            if (Q_ij > 0.3) {
+                const positions = new Float32Array([
+                    this.cube.position.x, this.cube.position.y, this.cube.position.z,
+                    agent.position.x, agent.position.y, agent.position.z
+                ]);
+                thread.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                thread.material.opacity = Q_ij * 0.6;
+                thread.visible = true;
+                (agent.material as THREE.MeshBasicMaterial).color.setHex(0x00ffcc);
+            } else {
+                thread.visible = false;
+                (agent.material as THREE.MeshBasicMaterial).color.setHex(0x555555);
+            }
+        });
     }
 
     public animate() {
         requestAnimationFrame(() => this.animate());
 
-        const rotationSpeed = 0.005 + (this.vk.cog * 0.02);
-        this.torus.rotation.x += rotationSpeed;
-        this.torus.rotation.y += rotationSpeed * 1.5;
+        this.cube.rotation.x += 0.005;
+        this.cube.rotation.y += 0.008;
+        this.sphere.rotation.y -= 0.002;
+        this.sphere.rotation.z -= 0.001;
 
         this.renderer.render(this.scene, this.camera);
     }
 
     public getVK() {
         return this.vk;
+    }
+
+    public getState() {
+        return this.state;
     }
 }
