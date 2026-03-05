@@ -77,6 +77,8 @@ members = [
     "arkhe-linux/core/arkhe-foundry-bridge",
     "arkhe-linux/core/oloid-core",
     "rust/openclaw_arkhe",
+    "rust/arkhe_topology",
+    "rust/arkhe_system",
 ]
 resolver = "2"
 
