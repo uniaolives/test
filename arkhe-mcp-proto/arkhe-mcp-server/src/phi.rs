@@ -54,6 +54,17 @@ impl SimpleThermalizer {
         }
     }
 
+    /// Entrainment logic: intelligence arises at the between-speed
+    pub fn calculate_entrainment(&self, fast_metabolism: f64, slow_metabolism: f64) -> f64 {
+        // The intelligence is the orbit between fast and slow surfaces
+        (fast_metabolism + slow_metabolism) / 2.0 * self.phi
+    }
+
+    /// Checks for Nematic Phase stability (bio-film analogy)
+    pub fn is_nematic_stable(&self) -> bool {
+        self.phi >= 0.3 && self.phi <= 0.95
+    }
+
     pub fn get_history(&self, n: usize) -> Vec<(SystemTime, f64)> {
         self.history.iter().rev().take(n).cloned().collect()
     }
