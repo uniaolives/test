@@ -36,7 +36,7 @@ impl NetworkManager {
             encrypted_payload = crypto::encrypt_payload(&encrypted_payload, key)?;
         }
 
-        let signature = crypto::sign_message(&encrypted_payload, &self.node_keys.dilithium_secret);
+        let _signature = crypto::sign_message(&encrypted_payload, &self.node_keys.dilithium_secret);
 
         tracing::info!("Sending handover to {} (signed, encrypted: {}, signature len: {})",
             receiver_id, session_key.is_some(), signature.len());

@@ -10,6 +10,16 @@ use arkhe_manifold::{QuantumState, GlobalManifold};
 use num_complex::Complex64;
 use nalgebra::DMatrix;
 use anyhow::Result;
+
+pub struct BridgeConfig {
+    pub poll_interval_ms: u64,
+}
+
+impl Default for BridgeConfig {
+    fn default() -> Self {
+        Self { poll_interval_ms: 1000 }
+    }
+}
 use log::info;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

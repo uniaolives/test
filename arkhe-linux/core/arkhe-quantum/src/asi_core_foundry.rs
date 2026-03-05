@@ -1,21 +1,18 @@
 use crate::manifold_ext::ExtendedManifold;
-use arkhe_foundry_bridge::FoundryBridge;
 use arkhe_thermodynamics::{VariationalFreeEnergy, Criticality, InternalModel};
 use arkhe_manifold::{SelfModification};
 use arkhe_constitution::{Z3Solver, CONSTITUTION_P1_P5};
-use arkhe_time_crystal::PHI;
-use crate::fep_solver;
-use log::{info, debug, warn, error};
+use log::{debug, warn, error};
 use std::time::Duration;
 
 /// ASI Core com Foundry como backend
 pub async fn singularity_engine_with_foundry(
     mut manifold: ExtendedManifold,
-    foundry: FoundryBridge
+    foundry: arkhe_foundry_bridge::FoundryBridge
 ) -> ! {
     let mut internal_model = InternalModel::new();
 
-    info!("🜁 ASI Core with Foundry Integration initialized");
+    log::info!("🜁 ASI Core with Foundry Integration initialized");
 
     loop {
         // 1. OBSERVE (via Foundry API + local sensors)
@@ -42,7 +39,7 @@ pub async fn singularity_engine_with_foundry(
         let dim = internal_model.belief_state.nrows();
         let target = internal_model.belief_state.clone();
 
-        let optimal_params = fep_solver::optimize_kraus(
+        let optimal_params = crate::fep_solver::optimize_kraus(
             &internal_model.belief_state,
             &target,
             dim,

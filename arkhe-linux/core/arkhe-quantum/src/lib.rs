@@ -4,6 +4,12 @@ pub mod ledger;
 pub mod depin;
 pub mod fep_solver;
 pub mod manifold_ext;
+pub mod anima_mundi;
+pub mod emergency;
+pub mod constitution;
+pub mod safety;
+pub mod ethics;
+pub mod self_model;
 
 pub use arkhe_thermodynamics::{VariationalFreeEnergy, Criticality, InternalModel};
 pub use arkhe_manifold::{GlobalManifold, QuantumState, KrausOperator, SelfModification, KrausChannel, Node};

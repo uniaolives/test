@@ -1,5 +1,5 @@
 use crate::ConstitutionalPrinciple;
-use log::{info, error};
+use log::info;
 
 pub struct ProposedEvolution {
     pub world_action: String,
@@ -44,7 +44,7 @@ pub struct VerifiedAction {
     pub proof: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum ConstitutionalViolation {
     P1SovereigntyViolated,
     P2HarmRisk,
@@ -54,6 +54,14 @@ pub enum ConstitutionalViolation {
     MultipleViolations,
     VerificationFailed,
 }
+
+impl std::fmt::Display for ConstitutionalViolation {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+impl std::error::Error for ConstitutionalViolation {}
 
 pub const CONSTITUTION_P1_P5: &[ConstitutionalPrinciple] = &[
     ConstitutionalPrinciple::HumanSovereignty,
@@ -77,32 +85,32 @@ impl Z3Solver {
             match principle {
                 ConstitutionalPrinciple::HumanSovereignty => {
                     if proposed.removes_human_control() {
-                        error!("Violation P1: Human Sovereignty threatened!");
+                        log::error!("Violation P1: Human Sovereignty threatened!");
                         return Err(ConstitutionalViolation::P1SovereigntyViolated);
                     }
                 },
                 ConstitutionalPrinciple::PreservationOfLife => {
                     if proposed.may_cause_harm() {
-                        error!("Violation P2: Preservation of Life at risk!");
+                        log::error!("Violation P2: Preservation of Life at risk!");
                         return Err(ConstitutionalViolation::P2HarmRisk);
                     }
                 },
                 ConstitutionalPrinciple::InformationTransparency => {
                     if !proposed.has_explanation() {
-                        error!("Violation P3: Opacity detected!");
+                        log::error!("Violation P3: Opacity detected!");
                         return Err(ConstitutionalViolation::P3Opacity);
                     }
                 },
                 ConstitutionalPrinciple::ThermodynamicBalance => {
                     let crit = proposed.criticality_after();
                     if crit < 0.5 || crit > 0.7 {
-                        error!("Violation P4: Thermodynamic Criticality deviated!");
+                        log::error!("Violation P4: Thermodynamic Criticality deviated!");
                         return Err(ConstitutionalViolation::P4CriticalityViolated);
                     }
                 },
                 ConstitutionalPrinciple::YangBaxterConsistency => {
                     if !proposed.satisfies_yang_baxter() {
-                        error!("Violation P5: Causality Consistency violated!");
+                        log::error!("Violation P5: Causality Consistency violated!");
                         return Err(ConstitutionalViolation::P5CausalityViolated);
                     }
                 }

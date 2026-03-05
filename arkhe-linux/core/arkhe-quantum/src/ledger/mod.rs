@@ -2,7 +2,7 @@ use serde::{Serialize, Deserialize};
 use sha2::{Sha256, Digest};
 use std::sync::Arc;
 use tokio::sync::Mutex;
-use anyhow::{Result, anyhow};
+use anyhow::Result;
 use log::{info, error};
 
 /// Um handover completo, incluindo o hash do anterior e a assinatura.
@@ -17,6 +17,7 @@ pub struct StoredHandover {
 }
 
 /// Ledger imutável baseado em Sled.
+#[derive(Clone)]
 pub struct OmegaLedger {
     db: sled::Db,
     last_hash: Arc<Mutex<Option<[u8; 32]>>>,
@@ -53,7 +54,7 @@ impl OmegaLedger {
         };
         hasher.update(&prev_hash);
 
-        let now = chrono::Utc::now().timestamp_nanos();
+        let now = chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0);
         hasher.update(&now.to_le_bytes());
 
         let hash_result = hasher.finalize();

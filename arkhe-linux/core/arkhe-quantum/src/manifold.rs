@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use std::time::Instant;
 use crate::crypto::NodeKeys;
 use crate::qkd::QuantumTunnel;
+use crate::QuantumState;
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq)]
@@ -66,11 +67,9 @@ impl GlobalManifold {
         self.nodes.get_mut("self")
     }
 
-    /// Pre-RC analogy: Licenciamento de nós.
     pub fn license_node(&mut self, node_id: &str) -> bool {
         if let Some(node) = self.nodes.get_mut(node_id) {
             if node.state == NodeState::Active {
-                // Geminin: impedir relicenciamento de nós ativos
                 return false;
             }
             node.state = NodeState::Licensing;
