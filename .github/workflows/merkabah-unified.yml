@@ -170,6 +170,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install test dependencies
+        run: |
+          pip install pytest pytest-asyncio requests
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
