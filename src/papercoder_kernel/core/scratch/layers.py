@@ -52,3 +52,40 @@ class Softmax(Layer):
         exps = np.exp(input.data - np.max(input.data, axis=1, keepdims=True))
         data = exps / np.sum(exps, axis=1, keepdims=True)
         return ScratchTensor(data, requires_grad=input.requires_grad, creators=[input], op="softmax")
+
+class Conv2D(Layer):
+    """
+    Manual 2D Convolution layer.
+    """
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1, padding=0):
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.kernel_size = kernel_size
+        self.stride = stride
+        self.padding = padding
+        # He initialization
+        limit = np.sqrt(2. / (in_channels * kernel_size * kernel_size))
+        weights_data = np.random.randn(out_channels, in_channels, kernel_size, kernel_size) * limit
+        self.weights = ScratchTensor(weights_data, requires_grad=True)
+        self.bias = ScratchTensor(np.zeros((out_channels, 1)), requires_grad=True)
+
+    def forward(self, input):
+        return input.conv2d(self.weights, self.bias, self.stride, self.padding)
+
+class MaxPool2D(Layer):
+    """
+    Manual 2D Max Pooling layer.
+    """
+    def __init__(self, kernel_size, stride=None):
+        self.kernel_size = kernel_size
+        self.stride = stride if stride is not None else kernel_size
+
+    def forward(self, input):
+        return input.maxpool2d(self.kernel_size, self.stride)
+
+class Flatten(Layer):
+    """
+    Flatten layer to transition from Conv to Linear.
+    """
+    def forward(self, input):
+        return input.flatten()

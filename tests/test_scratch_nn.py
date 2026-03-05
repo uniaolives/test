@@ -82,3 +82,64 @@ def test_numerical_gradient():
     num_grad = (loss_plus - loss_minus) / (2 * eps)
 
     assert np.allclose(grad, num_grad, atol=1e-5)
+
+def test_conv2d_forward_shape():
+    from papercoder_kernel.core.scratch.layers import Conv2D
+    # [N, C, H, W] = [1, 1, 5, 5]
+    X = ScratchTensor(np.ones((1, 1, 5, 5)), requires_grad=True)
+    # [F, C, HH, WW] = [2, 1, 3, 3]
+    conv = Conv2D(in_channels=1, out_channels=2, kernel_size=3, stride=1, padding=0)
+    Y = conv.forward(X)
+    # H_out = (5 - 3) / 1 + 1 = 3
+    assert Y.shape == (1, 2, 3, 3)
+
+def test_maxpool2d_forward_shape():
+    from papercoder_kernel.core.scratch.layers import MaxPool2D
+    X = ScratchTensor(np.ones((1, 1, 4, 4)), requires_grad=True)
+    pool = MaxPool2D(kernel_size=2, stride=2)
+    Y = pool.forward(X)
+    assert Y.shape == (1, 1, 2, 2)
+
+def test_conv2d_numerical_gradient():
+    from papercoder_kernel.core.scratch.layers import Conv2D
+    X_data = np.random.randn(1, 1, 4, 4)
+
+    def f(x_data):
+        X = ScratchTensor(x_data, requires_grad=True)
+        # Fix weights for deterministic gradient
+        W_data = np.ones((1, 1, 2, 2))
+        b_data = np.zeros((1, 1))
+
+        W = ScratchTensor(W_data, requires_grad=True)
+        b = ScratchTensor(b_data, requires_grad=True)
+
+        Y = X.conv2d(W, b, stride=1, padding=0)
+        loss = np.sum(Y.data)
+        Y.backward(np.ones_like(Y.data))
+        return loss, X.grad
+
+    loss, grad = f(X_data)
+
+    eps = 1e-5
+    # Check one element of the gradient
+    X_plus = X_data.copy()
+    X_plus[0, 0, 0, 0] += eps
+    loss_plus, _ = f(X_plus)
+
+    X_minus = X_data.copy()
+    X_minus[0, 0, 0, 0] -= eps
+    loss_minus, _ = f(X_minus)
+
+    num_grad = (loss_plus - loss_minus) / (2 * eps)
+    assert np.allclose(grad[0, 0, 0, 0], num_grad, atol=1e-5)
+
+def test_flatten():
+    from papercoder_kernel.core.scratch.layers import Flatten
+    X = ScratchTensor(np.ones((2, 3, 4, 4)), requires_grad=True)
+    flatten = Flatten()
+    Y = flatten.forward(X)
+    assert Y.shape == (2, 3 * 4 * 4)
+
+    Y.backward(np.ones_like(Y.data))
+    assert X.grad.shape == (2, 3, 4, 4)
+    assert np.all(X.grad == 1.0)
