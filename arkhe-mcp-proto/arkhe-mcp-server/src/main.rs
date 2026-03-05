@@ -61,7 +61,7 @@ async fn main() -> anyhow::Result<()> {
     let state = Arc::new(AppState {
         thermalizer: Mutex::new(SimpleThermalizer::new()),
         natural: Mutex::new(NaturalSelf {
-            mcp_capabilities: vec!["get_phi_state".into(), "save_insight".into(), "sync_context".into()],
+            mcp_capabilities: vec!["get_phi_state".into(), "save_insight".into(), "sync_context".into(), "resolve_natural_coupling".into()],
             a2a_discoveries: Vec::new(),
         }),
         unnatural: UnnaturalSelf {
