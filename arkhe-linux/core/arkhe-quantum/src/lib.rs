@@ -29,5 +29,3 @@ pub mod decision;
 pub mod activation;
 pub mod phoenix;
 pub mod phoenix_sim;
-pub mod mnemosyne;
-pub mod finney_protocol;

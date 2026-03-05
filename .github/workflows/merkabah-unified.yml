@@ -218,8 +218,6 @@ jobs:
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)/src
           python3 -m pytest tests/test_hyperprompt.py tests/test_temporal_navigation.py tests/test_mummer_mnemosyne.py tests/test_acps_convergence.py -v
-          python3 -m pytest tests/test_hyperprompt.py tests/test_temporal_navigation.py -v
-          python3 -m pytest tests/test_hyperprompt.py -v
 
   # =============================================================================
   # FASE 4: BENCHMARK EM CLUSTER (Condicional)
