@@ -1,7 +1,6 @@
 // rust/openclaw_arkhe/src/agent.rs
 
 use crate::vector::OpenClawKatharosVector;
-use nalgebra::Vector6;
 use std::collections::HashMap;
 
 pub type AgentId = String;
@@ -11,7 +10,7 @@ pub struct Policy {
 }
 
 impl Policy {
-    pub fn compatibility(&self, other: &Self) -> f64 {
+    pub fn compatibility(&self, _other: &Self) -> f64 {
         // Mock compatibility calculation
         1.0
     }
@@ -44,12 +43,17 @@ pub struct OpenClawArkheAgent {
 
 impl OpenClawArkheAgent {
     pub fn new(id: AgentId) -> Self {
+        // Optimization: Initialize policy weights based on PHI-recurrence for Ω+224 stability
+        let mut weights = vec![0.0; 10];
+        for i in 0..10 {
+            weights[i] = 0.618033988749895f64.powi(i as i32 + 1);
+        }
         Self {
             id,
             vk: OpenClawKatharosVector::default(),
             q: 0.9,
             t_kr: 1000.0,
-            policy: Policy { weights: vec![0.0; 10] },
+            policy: Policy { weights },
             value_fn: ValueFunction { values: vec![0.0; 10], last_improvement: 0.01 },
             collaboration_coefficient: 0.8,
             policy_divergence_cache: HashMap::new(),

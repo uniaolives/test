@@ -2,8 +2,7 @@
 
 pub mod ring;
 pub mod analysis;
-pub mod validation;
-pub mod simple_agent;
+pub mod zk_lottery;
 
 pub use crate::ring::DigitalMemoryRing;
 

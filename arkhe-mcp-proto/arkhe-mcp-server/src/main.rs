@@ -68,6 +68,7 @@ async fn main() -> anyhow::Result<()> {
                 "sync_context_to_quantum".into(),
                 "resolve_natural_coupling".into()
             ],
+            mcp_capabilities: vec!["get_phi_state".into(), "save_insight".into(), "sync_context".into(), "resolve_natural_coupling".into()],
             a2a_discoveries: Vec::new(),
         }),
         unnatural: UnnaturalSelf {

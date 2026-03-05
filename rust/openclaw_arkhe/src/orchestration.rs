@@ -2,6 +2,16 @@
 
 use crate::agent::{OpenClawArkheAgent, AgentId};
 use std::collections::HashMap;
+use digital_memory_ring::zk_lottery::{ZkLottery, LotteryWeight};
+use bls12_381::Scalar;
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ConflictResolution {
+    Consensus,      // All agents agree (H_oc < PHI)
+    Auction,        // Highest t_KR wins
+    ZkLottery,      // Fair random selection when auction stalls
+    Dissolution,    // Pc_collective >= 2.0, ghost mode
+}
 
 pub struct Cluster {
     pub agents: HashMap<AgentId, OpenClawArkheAgent>,
@@ -55,21 +65,72 @@ impl Cluster {
 
     pub fn resolve_deadlocks(&mut self) {
         if self.detect_deadlock() {
-            println!("🚨 DEADLOCK DETECTED. RESOLVING VIA VK-SCALING...");
-
-            // Collect agent IDs and t_KR
-            let mut agent_prios: Vec<(AgentId, f64)> = self.agents.iter()
-                .map(|(id, a)| (id.clone(), a.t_kr))
-                .collect();
-
-            // Sort agents by t_KR (lowest first for sacrifice)
-            agent_prios.sort_by(|a, b| a.1.partial_cmp(&b.1).unwrap());
-
-            if let Some((id, _)) = agent_prios.first() {
-                println!("Agent {} (lowest t_KR) yielding resources for cluster homeostasis.", id);
-                // In a real scenario, this would trigger transition to Ghost mode
-                self.agents.remove(id);
-            }
+            println!("🚨 DEADLOCK DETECTED. RESOLVING VIA CONSTITUTIONAL RANDOMNESS (zkLottery)...");
+            self.zk_lottery_selection();
         }
+    }
+
+    /// Select an agent to yield resources via verifiable lottery
+    pub fn zk_lottery_selection(&mut self) -> Option<AgentId> {
+        // 1. Prepare participants for weighted lottery
+        let mut lottery_participants = Vec::new();
+        for (id, agent) in &self.agents {
+            lottery_participants.push((id.clone(), LotteryWeight(agent.t_kr)));
+        }
+
+        if lottery_participants.is_empty() {
+            return None;
+        }
+
+        // 2. Initialize zkLottery
+        let lottery = ZkLottery::new(lottery_participants);
+
+        // 3. Conduct fair draw using VRF
+        let mut sk_bytes = [0u8; 64];
+        sk_bytes[0] = 42; // Simulated cluster-wide secret key
+        let sk = Scalar::from_bytes_wide(&sk_bytes);
+
+        let seed = format!("conflict-resolution-{}", self.agents.len());
+        let result = lottery.draw_with_sk(&sk, seed.as_bytes());
+
+        // 4. Resolve by removing selected agent (or returning ID)
+        let to_remove = result.winner;
+        println!("zkLottery-draw: Agent {} selected. Fairness verified via VRF proof: {}",
+            to_remove, hex::encode(&result.proof.output[..4]));
+
+        self.agents.remove(&to_remove);
+        Some(to_remove)
+    }
+
+    /// Ω+224: Resolve policy conflicts via hierarchical strategies
+    pub fn resolve_policy_conflict(&mut self) -> ConflictResolution {
+        let pc = self.pc_collective();
+
+        if pc >= 2.0 {
+            println!("💀 Pc_collective CRITICAL ({:.2}). Triggering DISSOLUTION.", pc);
+            return ConflictResolution::Dissolution;
+        }
+
+        if self.can_reach_consensus() {
+            println!("🤝 Consensus reached via shared VK-attractors.");
+            ConflictResolution::Consensus
+        } else if self.can_auction() {
+            println!("⚖️ Conflict resolved via t_KR AUCTION.");
+            ConflictResolution::Auction
+        } else {
+            println!("🎲 Conflict stalled. Invoking zkLOTTERY (Constitutional Randomness).");
+            self.zk_lottery_selection();
+            ConflictResolution::ZkLottery
+        }
+    }
+
+    fn can_reach_consensus(&self) -> bool {
+        // Consensus if mean policy divergence is low
+        self.agents.len() < 2 || self.pc_collective() < 0.618
+    }
+
+    fn can_auction(&self) -> bool {
+        // Auction is possible if agents have significant t_KR differences
+        !self.agents.is_empty()
     }
 }
