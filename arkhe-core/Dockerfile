@@ -18,6 +18,21 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 
 WORKDIR /build
+COPY gateway/requirements.txt .
+RUN pip install --no-cache-dir pybind11
+
+# 3. Source Code
+# Assuming build context is the repository root
+COPY . /build/
+
+# 4. Build Rust Multi-Scale Layer (Workspace)
+WORKDIR /build
+RUN cargo build --release --package arkhen-rust --package digital_memory_ring
+
+# 5. Build C++ Kernel & Python Bindings
+# We need to ensure the Rust shared library is available for CMake if needed,
+# though usually they are independent at this stage.
+WORKDIR /build
 
 # Install dependencies for C++, Python bindings and tests
 RUN apt-get update && apt-get install -y \
@@ -99,6 +114,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY --from=builder /build/arkhe-core/build_cpp/arkhe_core*.so /app/
 COPY --from=builder /build/arkhe-core/build_cpp/arkhen_node /app/
 COPY --from=builder /build/target/release/libarkhen_rust.so /app/
+COPY --from=builder /build/target/release/libdmr_bridge.so /app/dmr_bridge.so
+
+# Ensure library path for compiled shared objects
+ENV LD_LIBRARY_PATH="/app:${LD_LIBRARY_PATH}"
 COPY --from=builder /build/target/release/dmr_bridge.so /app/
 
 EXPOSE 8000
