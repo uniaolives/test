@@ -3,6 +3,8 @@
 use std::cmp::Ordering;
 
 /// Representa uma tarefa (processo/thread) no sistema Arkhe(n).
+use std::cmp::Ordering;
+
 #[derive(Debug, Clone)]
 pub struct Task {
     pub id: u64,
@@ -16,6 +18,10 @@ pub struct Task {
     /// Tempo de criação (timestamp).
     pub created_at: std::time::Instant,
     /// Tempo já consumido (acumulado).
+    pub coherence_required: f64,
+    pub estimated_duration: u64,
+    pub priority: i32,
+    pub created_at: std::time::Instant,
     pub time_consumed: u64,
 }
 
@@ -42,6 +48,13 @@ impl Task {
 impl Ord for Task {
     fn cmp(&self, other: &Self) -> Ordering {
         // Critério: prioridade (maior primeiro). Em caso de empate, menor duração.
+    pub fn required_density(&self) -> f64 {
+        crate::lib::miller::coherence_to_density(self.coherence_required)
+    }
+}
+
+impl Ord for Task {
+    fn cmp(&self, other: &Self) -> Ordering {
         self.priority
             .cmp(&other.priority)
             .then_with(|| other.estimated_duration.cmp(&self.estimated_duration))

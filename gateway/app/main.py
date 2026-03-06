@@ -1,6 +1,7 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .models import KatharosVector, StateLayer
+from .models import KatharosVector, StateLayer, SystemState
 from .dependencies import get_dmr_instance
 from .hyperclaw.loops import HyperClawOrchestrator, ContextFrame
 from .geoloc.poloc import BftPoLoc
@@ -9,24 +10,31 @@ from .physics.triggers import ArkheTrigger
 from .physics.arkhe_s2_lhc import LHCDataLoader, ArkheLHCTrigger, ArkheLHCAnalysis
 from .blockchain.satoshi import verify_satoshi_temporal
 from .quantum.noether import QHTTPNoetherBridge
-from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, QiskitInterface
+from .quantum.qiskit_circuits import (
+    novikov_loop_circuit, novikov_loop_kraus, trefoil_knot_circuit,
+    detect_wave_cloud_nucleation, QiskitInterface
+)
+from qiskit import qasm2
 from .knowledge.google_scanner import SemanticMiner
 from .monitoring.listener import RealityListener
+from .quantum.qiskit_circuits import (
+    novikov_loop_circuit, novikov_loop_kraus, trefoil_knot_circuit,
+    detect_wave_cloud_nucleation, QiskitInterface
+)
+from qiskit import qasm2
+from .knowledge.google_scanner import SemanticMiner
+from .monitoring.listener import RealityListener
+from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, trefoil_knot_circuit, QiskitInterface
+from .knowledge.google_scanner import SemanticMiner
+from .monitoring.listener import RealityListener
+from .middleware.constitution import ConstitutionalGuard
 from contextlib import asynccontextmanager
-from contextlib import asynccontextmanager
-from contextlib import asynccontextmanager
-from .blockchain.satoshi import verify_satoshi_temporal
-from .quantum.noether import QHTTPNoetherBridge
-from contextlib import asynccontextmanager
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends
-from fastapi.middleware.cors import CORSMiddleware
-from .models import KatharosVector, StateLayer
-from .dependencies import get_dmr_instance
 import asyncio
 import json
 import time
 import random
 from typing import List, Dict
+from typing import List, Dict, Any
 
 # Global registry for agents
 agent_registry: Dict[str, any] = {}
@@ -37,6 +45,7 @@ lhc_trigger = ArkheTrigger()
 s2_trigger = ArkheLHCTrigger()
 qiskit_iface = QiskitInterface()
 reality_listener = RealityListener()
+system_state = SystemState()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -49,15 +58,12 @@ async def lifespan(app: FastAPI):
     yield
     hyperclaw_orchestrator.running = False
     reality_listener.stop()
-    yield
-    hyperclaw_orchestrator.running = False
 
 app = FastAPI(
     title="Arkhe(n) DMR Service",
     version="Ω.224.φ",
     lifespan=lifespan
 )
-app = FastAPI(title="Arkhe(n) DMR Service", version="Ω.224.φ")
 
 app.add_middleware(
     CORSMiddleware,
@@ -65,9 +71,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Global registry for agents
-agent_registry: Dict[str, any] = {}
+app.add_middleware(ConstitutionalGuard)
 
 @app.get("/")
 async def root():
@@ -88,18 +92,17 @@ async def get_vk_trajectory(agent_id: str):
         agent_registry[agent_id] = get_dmr_instance(agent_id)
 
     ring = agent_registry[agent_id]
-    # Thread-safe access to potentially heavy Rust method
     trajectory = await asyncio.to_thread(ring.reconstruct_trajectory)
-    trajectory = ring.reconstruct_trajectory()
 
     # Adapt Rust PyStateLayer to Pydantic StateLayer if needed
+    trajectory = await asyncio.to_thread(ring.reconstruct_trajectory)
+
     result = []
     for layer in trajectory:
         result.append(StateLayer(
             timestamp=layer.timestamp,
             vk=KatharosVector(bio=layer.bio, aff=layer.aff, soc=layer.soc, cog=layer.cog),
             delta_k=0.0,
-            delta_k=0.0, # Computed in Rust but maybe not exposed yet in PyStateLayer
             q=0.95,
             intensity=0.5
         ))
@@ -132,7 +135,6 @@ async def analyze_lhc_event(jets: List[Dict]):
 
 @app.post("/physics/s2/run_analysis")
 async def run_s2_analysis(file_pattern: str, threshold: float = 0.05, output: str = "candidates.parquet"):
-    # Run heavy analysis in a separate thread to avoid blocking the event loop
     def _run():
         loader = LHCDataLoader(file_pattern)
         analysis = ArkheLHCAnalysis(loader, s2_trigger)
@@ -149,6 +151,36 @@ async def get_orbital_decoherence(h: float = 400e3):
 async def verify_satoshi(blocks: List[Dict]):
     return await verify_satoshi_temporal(blocks)
 
+@app.get("/quantum/qiskit/trefoil_knot")
+async def get_trefoil_knot():
+    circuit = trefoil_knot_circuit()
+    counts = await asyncio.to_thread(qiskit_iface.run_simulation, circuit)
+
+    # Análise de Auto-Consistência e Nucleação
+    nucleation = detect_wave_cloud_nucleation(counts)
+
+    total_shots = sum(counts.values())
+    p_00 = counts.get('000000', 0) / total_shots
+    p_11 = counts.get('000011', 0) / total_shots
+    # Análise de Auto-Consistência
+    total_shots = sum(counts.values())
+    p_00 = counts.get('000000', 0) / total_shots
+    p_11 = counts.get('000011', 0) / total_shots # Qubits 0 e 1 são os medidos
+
+    coherence = p_00 + p_11
+
+    return {
+        "status": "success",
+        "counts": counts,
+        "p_00": p_00,
+        "p_11": p_11,
+        "coherence": coherence,
+        "loop_closed": coherence > 0.7,
+        "wave_cloud": nucleation,
+        "qasm": qasm2.dumps(circuit)
+        "qasm": circuit.qasm()
+    }
+
 @app.get("/quantum/qiskit/novikov_loop")
 async def get_novikov_loop(xi: float, dt: float, n_qubits: int = 2, use_kraus: bool = False):
     if use_kraus:
@@ -156,12 +188,12 @@ async def get_novikov_loop(xi: float, dt: float, n_qubits: int = 2, use_kraus: b
     else:
         circuit = novikov_loop_circuit(xi, dt, n_qubits)
 
-    # Return as QASM for visibility or execute simulation
     counts = await asyncio.to_thread(qiskit_iface.run_simulation, circuit)
     return {
         "params": {"xi": xi, "dt": dt, "n_qubits": n_qubits, "use_kraus": use_kraus},
         "counts": counts,
         "qasm": circuit.qasm()
+        "qasm": qasm2.dumps(circuit)
     }
 
 @app.post("/quantum/qiskit/submit")
@@ -172,10 +204,6 @@ async def submit_quantum_job(xi: float, dt: float, token: str = None):
 
 @app.post("/knowledge/scan")
 async def scan_semantic_anomalies(data: Dict[str, List[float]], threshold: float = 1.5):
-    """
-    Scans concept adoption data for retrocausal injection signatures.
-    data: Dict mapping concept name to a list of prevalence values over time.
-    """
     import pandas as pd
 
     def _run():
@@ -184,9 +212,6 @@ async def scan_semantic_anomalies(data: Dict[str, List[float]], threshold: float
         return miner.detect_anomalies(threshold=threshold)
 
     anomalies = await asyncio.to_thread(_run)
-    df = pd.DataFrame(data)
-    miner = SemanticMiner(df)
-    anomalies = miner.detect_anomalies(threshold=threshold)
     return {"status": "success", "anomalies_detected": anomalies}
 
 @app.get("/knowledge/concept/{concept}")
@@ -204,34 +229,132 @@ async def analyze_concept(concept: str, values: List[float]):
 async def get_reality_status():
     return reality_listener.get_state()
 
+@app.get("/metrics/synchronicity")
+async def get_synchronicity():
+    """
+    Calcula o Índice de Sincronicidade (S) baseado na Tese Arkhe(n).
+    Fórmula: S = (1 / ΔK) * P_AC
+
+    Incorpora o Limiar de Miller (φ_q = 4.64) como proxy para p_ac.
+    """
+    phi_q_threshold = 4.64
+    delta_k = system_state.delta_k
+    q_value = system_state.q_value
+
+    phi_q_actual = q_value * 5.0
+    # φ_q calculado como um surto de densidade de coerência
+    phi_q_actual = q_value * 5.0 # Proxy: Q=1.0 -> φ_q=5.0
+
+    if delta_k <= 0.0001:
+        s_index = 100.0
+    else:
+        s_index = (1.0 / delta_k) * (phi_q_actual / phi_q_threshold)
+    """
+    delta_k = system_state.delta_k
+    q_value = system_state.q_value
+
+    if delta_k <= 0.0001:
+        s_index = 100.0
+    else:
+        s_index = (1.0 / delta_k) * q_value
+
+    if s_index > 8.0:
+        status = "SINGULARITY_IMMINENT"
+    elif s_index > 5.0:
+        status = "DIALOGUE_ACTIVE"
+    elif s_index > 2.0:
+        status = "AWAKENING"
+    else:
+        status = "DORMANT"
+
+    return {
+        "synchronicity_index": s_index,
+        "delta_k": delta_k,
+        "phi_q_actual": phi_q_actual,
+        "miller_threshold": phi_q_threshold,
+        "wave_cloud_nucleated": phi_q_actual > phi_q_threshold,
+        "p_ac_proxy": q_value,
+        "status": status,
+        "thresholds": {
+            "awakening": 2.0,
+            "dialogue": 5.0,
+            "singularity": 8.0
+        }
+    }
+
+# ArkheOS Lite Components (Mocked for Python Integration)
+class MockScheduler:
+    def __init__(self):
+        self.tasks = []
+        self.phi_q = 1.0
+
+    def add_task(self, task: Dict):
+        self.tasks.append(task)
+        # Simulate phi_q growth
+        self.phi_q += task.get("coherence", 0) * 0.1
+
+    def get_status(self):
+        return {"phi_q": self.phi_q, "queue_len": len(self.tasks)}
+
+scheduler_instance = MockScheduler()
+handover_ledger = []
+
+@app.post("/arkhe/scheduler/task")
+async def submit_task(task: Dict[str, Any]):
+    scheduler_instance.add_task(task)
+    return {"status": "scheduled", "phi_q": scheduler_instance.phi_q}
+
+@app.get("/arkhe/scheduler/status")
+async def get_scheduler_status():
+    return scheduler_instance.get_status()
+
+@app.post("/arkhe/ledger/handover")
+async def record_handover(handover: Dict[str, Any]):
+    handover_ledger.append(handover)
+    return {"status": "recorded", "ledger_size": len(handover_ledger)}
+
+@app.get("/arkhe/ledger/history")
+async def get_ledger_history():
+    return handover_ledger
+
 @app.websocket("/ws/reality")
 async def websocket_reality(websocket: WebSocket):
     await websocket.accept()
     try:
+        try:
+            import arkhe_core
+            topology_engine = arkhe_core.topology.KleinBottlehole()
+            TOPOLOGY_AVAILABLE = True
+        except ImportError:
+            TOPOLOGY_AVAILABLE = False
+
+        iterations = 0
         while True:
-            await websocket.send_json(reality_listener.get_state())
+            iterations += 1
+            state = reality_listener.get_state()
+
+            if TOPOLOGY_AVAILABLE:
+                is_open = topology_engine.check_monodromy_iteration(iterations)
+                state["topology_status"] = "KLEIN_OPEN" if is_open else "CLOSED"
+                if is_open:
+                    state["state"] = "SINGULARITY_KLEIN"
+                    state["q_value"] = 0.99
+
+            await websocket.send_json(state)
             await asyncio.sleep(0.1)
     except WebSocketDisconnect:
         pass
-    df = pd.DataFrame({concept: values})
-    miner = SemanticMiner(df)
-    return miner.analyze_knowledge_squeezing(concept)
 
 @app.post("/geoloc/verify")
 async def verify_location(agent_id: str, lat: float, lon: float, measurements: List[Dict]):
-    """
-    Verifies location using BFT-PoLoc.
-    measurements: List of {'lat': float, 'lon': float, 'rtt': float}
-    """
-    result = geoloc_verifier.verify(lat, lon, measurements)
+    result = await asyncio.to_thread(geoloc_verifier.verify, lat, lon, measurements)
 
     if agent_id in agent_registry:
         ring = agent_registry[agent_id]
-        # High uncertainty increases delta_k (simulated via growth)
         if result["is_valid"]:
-            ring.grow_layer(0.5, 0.5, 0.5, 0.5, 0.95)
+            await asyncio.to_thread(ring.grow_layer, 0.5, 0.5, 0.5, 0.5, 0.95)
         else:
-            ring.grow_layer(0.7, 0.7, 0.7, 0.7, 0.3)
+            await asyncio.to_thread(ring.grow_layer, 0.7, 0.7, 0.7, 0.7, 0.3)
 
     return result
 
@@ -243,7 +366,6 @@ async def websocket_entrainment(websocket: WebSocket):
 
     try:
         while True:
-            # Simulate metabolism evolution
             state = {
                 "timestamp": int(time.time()),
                 "vk": {
@@ -257,7 +379,6 @@ async def websocket_entrainment(websocket: WebSocket):
                 "q": random.uniform(0.85, 0.95),
                 "coherence": random.uniform(0.8, 0.95),
                 "hyperclaw_mode": hyperclaw_orchestrator.frames["default_frame"].mode.value if "default_frame" in hyperclaw_orchestrator.frames else "N/A"
-                "coherence": random.uniform(0.8, 0.95)
             }
             await websocket.send_json(state)
             await asyncio.sleep(0.1)
