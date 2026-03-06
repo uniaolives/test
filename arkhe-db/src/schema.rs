@@ -46,4 +46,6 @@ pub enum CommitmentStatus {
     Validated,
     Invalidated,
     Expired,
+    pub global_phi_q: f64,
+    pub wave_cloud_active: bool,
 }

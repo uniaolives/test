@@ -32,6 +32,9 @@ impl TeknetLedger {
         writeln!(file, "{}", json)?;
         file.flush()?;
 
+        let mut index = self.memory_index.lock().unwrap();
+        let id = index.len() as u64;
+        handover.id = id;
         index.push(handover.clone());
 
         Ok(id)

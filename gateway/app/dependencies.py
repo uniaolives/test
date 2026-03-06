@@ -21,6 +21,7 @@ try:
     RUST_AVAILABLE = True
 except ImportError:
     RUST_AVAILABLE = False
+    print(f"[WARNING] Rust dmr_bridge not found in {RUST_LIB_PATHS}. Using mock.")
     print(f"[WARNING] Rust dmr_bridge not found at {RUST_LIB_PATH}. Using mock.")
 
 class MockStateLayer:

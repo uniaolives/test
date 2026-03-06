@@ -3,6 +3,8 @@
 pub mod ring;
 pub mod analysis;
 pub mod zk_lottery;
+pub mod stats;
+pub mod hmt;
 
 pub use crate::ring::DigitalMemoryRing;
 
@@ -148,6 +150,92 @@ pub enum BifurcationKind {
     CrisisExit,
 }
 
+#[pyclass]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum HydraulicState {
+    Pool,
+    Pressurize,
+    Circulate,
+    Lift,
+    Erode,
+}
+
+impl From<crate::hmt::hydraulic_engine::HydraulicState> for HydraulicState {
+    fn from(state: crate::hmt::hydraulic_engine::HydraulicState) -> Self {
+        match state {
+            crate::hmt::hydraulic_engine::HydraulicState::Pool => HydraulicState::Pool,
+            crate::hmt::hydraulic_engine::HydraulicState::Pressurize => HydraulicState::Pressurize,
+            crate::hmt::hydraulic_engine::HydraulicState::Circulate => HydraulicState::Circulate,
+            crate::hmt::hydraulic_engine::HydraulicState::Lift => HydraulicState::Lift,
+            crate::hmt::hydraulic_engine::HydraulicState::Erode => HydraulicState::Erode,
+        }
+    }
+}
+
+#[pyclass]
+pub struct PyHydraulicEngine {
+    inner: crate::hmt::hydraulic_engine::HydraulicEngine,
+}
+
+#[pymethods]
+impl PyHydraulicEngine {
+    #[new]
+    fn new() -> Self {
+        Self {
+            inner: crate::hmt::hydraulic_engine::HydraulicEngine::new(),
+        }
+    }
+
+    fn update(&mut self, phi_q: f64, coherence: f64) {
+        self.inner.update(phi_q, coherence);
+    }
+
+    fn get_report(&self) -> PyResult<PyHydraulicReport> {
+        let report = self.inner.get_report();
+        Ok(PyHydraulicReport {
+            state: report.state.into(),
+            flow_rate: report.flow_rate,
+            pressure: report.pressure,
+            viscosity: report.viscosity,
+        })
+    }
+}
+
+#[pyclass]
+pub struct PyHydraulicReport {
+    #[pyo3(get)]
+    pub state: HydraulicState,
+    #[pyo3(get)]
+    pub flow_rate: f64,
+    #[pyo3(get)]
+    pub pressure: f64,
+    #[pyo3(get)]
+    pub viscosity: f64,
+}
+
+#[pyclass]
+pub struct PyTransferEntropy {
+    inner: crate::stats::transfer_entropy::TransferEntropyEstimator,
+}
+
+#[pymethods]
+impl PyTransferEntropy {
+    #[new]
+    fn new(bins: usize, capacity: usize) -> Self {
+        Self {
+            inner: crate::stats::transfer_entropy::TransferEntropyEstimator::new(bins, capacity),
+        }
+    }
+
+    fn add_observation(&mut self, x: f64, y: f64) {
+        self.inner.add_observation(x, y);
+    }
+
+    fn calculate_te(&self) -> f64 {
+        self.inner.calculate_te_x_to_y()
+    }
+}
+
 /// Time range with start and end.
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct TimeRange {
@@ -160,5 +248,9 @@ fn dmr_bridge(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<KatharosVector>()?;
     m.add_class::<PyDigitalMemoryRing>()?;
     m.add_class::<PyStateLayer>()?;
+    m.add_class::<HydraulicState>()?;
+    m.add_class::<PyHydraulicEngine>()?;
+    m.add_class::<PyHydraulicReport>()?;
+    m.add_class::<PyTransferEntropy>()?;
     Ok(())
 }
