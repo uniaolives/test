@@ -1,3 +1,13 @@
+//! Alocador de "densidade do vácuo" (coerência) para as tarefas.
+//! Gerencia a reserva global de exergia.
+
+use crate::physics::miller::{PHI_Q, quantum_interest};
+
+/// Erros do alocador.
+ |  | 
+7
+ 
+
 use crate::lib::miller::{PHI_Q, quantum_interest};
 
 #[derive(Debug, thiserror::Error)]
@@ -8,6 +18,13 @@ pub enum AllocError {
     QuantumInterestTooHigh { interest: f64, budget: f64 },
 }
 
+/// Gerencia a reserva de coerência do sistema.
+pub struct CoherenceAllocator {
+    /// Coerência total disponível (exergia).
+    available_coherence: f64,
+    /// Coerência reservada para tarefas em execução.
+    reserved_coherence: f64,
+    /// Limite superior de segurança (ex.: 90% do total).
 pub struct CoherenceAllocator {
     available_coherence: f64,
     reserved_coherence: f64,
@@ -19,6 +36,12 @@ impl CoherenceAllocator {
         Self {
             available_coherence: initial_coherence,
             reserved_coherence: 0.0,
+            safety_margin: 0.9, // não usar mais que 90% da reserva total
+        }
+    }
+
+    /// Tenta alocar coerência para uma tarefa.
+    /// Retorna a quantidade alocada ou um erro.
             safety_margin: 0.9,
         }
     }
@@ -34,6 +57,7 @@ impl CoherenceAllocator {
             });
         }
 
+        // Calcular o quantum interest com base na duração estimada
         let interest = quantum_interest(required, task.estimated_duration as f64);
         if interest > self.available_coherence * (1.0 - self.safety_margin) {
             return Err(AllocError::QuantumInterestTooHigh {
@@ -42,10 +66,15 @@ impl CoherenceAllocator {
             });
         }
 
+        // Reservar a coerência (o interesse será descontado após execução)
         self.reserved_coherence += required;
         Ok(required)
     }
 
+    /// Liberta a coerência após a execução da tarefa, descontando o interesse.
+    pub fn free(&mut self, task: &super::task::Task) {
+        let interest = quantum_interest(task.coherence_required, task.estimated_duration as f64);
+        // A coerência efectivamente consumida é a requerida + interesse
     pub fn free(&mut self, task: &super::task::Task) {
         let interest = quantum_interest(task.coherence_required, task.estimated_duration as f64);
         let consumed = task.coherence_required + interest;
@@ -63,6 +92,7 @@ impl CoherenceAllocator {
         }
     }
 
+    /// Retorna a coerência actualmente disponível.
     pub fn available(&self) -> f64 {
         self.available_coherence - self.reserved_coherence
     }
@@ -70,6 +100,23 @@ impl CoherenceAllocator {
     pub fn current_phi_q(&self) -> f64 {
         let baseline_density = 1.0;
         baseline_density + crate::lib::miller::ZPF_COUPLING * self.available_coherence
+    /// Retorna a densidade φ_q equivalente (coerência convertida).
+    pub fn current_phi_q(&self) -> f64 {
+        // A densidade é a coerência disponível convertida + baseline
+        let baseline_density = 1.0; // ρ₀
+        baseline_density + crate::physics::miller::ZPF_COUPLING * self.available_coherence
+    }
+
+    /// Verifica se o sistema está próximo da nucleação (φ_q próximo de 4.64).
+    pub fn nucleation_risk(&self) -> f64 {
+        let phi = self.current_phi_q();
+        if phi > PHI_Q {
+            1.0 // já nucleou
+        } else {
+            (phi / PHI_Q).min(1.0)
+        }
+    pub fn current_phi_q(&self) -> f64 {
+        1.0 + crate::lib::miller::ZPF_COUPLING * self.available_coherence
     }
 
     pub fn nucleation_risk(&self) -> f64 {
