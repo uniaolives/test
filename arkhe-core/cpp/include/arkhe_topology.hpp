@@ -38,6 +38,10 @@ public:
         // Chronology protection mechanism (Novikov consistency cost)
         double protection_mechanism = planck_scale_ / (abs_dt + 1e-50);
 
+
+        // Chronology protection mechanism (Novikov consistency cost)
+        double protection_mechanism = planck_scale_ / (abs_dt + 1e-50);
+
         // Chronology protection mechanism: Prohibitive for macro-CTCs
         double protection_mechanism = abs_dt / (planck_scale_ + 1e-100);
 
