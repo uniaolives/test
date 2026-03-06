@@ -3,6 +3,7 @@
 #include <vector>
 #include <complex>
 #include <functional>
+#include "arkhe_topology.hpp"
 
 namespace arkhe {
 
@@ -38,12 +39,18 @@ public:
     // Coherence check
     bool check_coherence(const FieldState& state) const;
 
+    // Topological check (Ω+219)
+    bool check_topology(int iterations) {
+        return bottlehole_.check_monodromy_iteration(iterations);
+    }
+
     // IBM Quantum state loader
     void load_quantum_state(const std::vector<std::complex<double>>& qubits);
 
 private:
     double lambda_target_;
     FieldState current_state_;
+    topology::KleinBottlehole bottlehole_;
 
     // Temporal unitary transformation
     void apply_temporal_operator(FieldState& state, double dt);

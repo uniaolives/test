@@ -13,6 +13,19 @@ pub unsafe extern "C" fn arkhe_ledger_create(path: *const c_char) -> *mut c_void
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn arkhe_quantum_interest_validate(
+    energy_debt: f64,
+    duration: f64,
+    complexity: f64,
+) -> f64 {
+    let constitution = Constitution::new();
+    match constitution.validate_quantum_interest(energy_debt, duration, complexity) {
+        Ok(cost) => cost,
+        Err(_) => -1.0, // Error code
+    }
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn arkhe_ledger_append(
     ledger_ptr: *mut c_void,
     handover_id: u64,

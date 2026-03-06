@@ -25,4 +25,25 @@ impl Constitution {
         }
         Ok(())
     }
+
+    /// The Law of Quantum Interest (Ω+219 Amendment)
+    pub fn validate_quantum_interest(
+        &self,
+        energy_debt: f64,
+        duration: f64,
+        topology_complexity: f64,
+    ) -> Result<f64> {
+        let interest_rate = topology_complexity * duration.abs();
+        let total_cost = energy_debt * (interest_rate.exp());
+
+        let available_energy = 10.0; // Dynamic scaling threshold
+
+        if total_cost.abs() > available_energy {
+            Err(ArkheError::ConstitutionViolation(
+                "VIOLATION: Quantum Interest debt exceeds system capacity. CTC collapsed.".into()
+            ))
+        } else {
+            Ok(total_cost)
+        }
+    }
 }

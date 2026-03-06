@@ -12,6 +12,7 @@ extern "C" {
     const char* arkhe_constitution_verify(const char* emitter,
                                          const char* receiver,
                                          double coherence);
+    double arkhe_quantum_interest_validate(double energy_debt, double duration, double complexity);
     void arkhe_free_string(const char* s);
 }
 
@@ -93,6 +94,14 @@ int main(int argc, char* argv[]) {
 
         auto result = kernel.evolve(h);
         std::cout << "✓ Handover evolved, new coherence: " << result.coherence << "\n";
+
+        // Teste Ω+219: Quantum Interest
+        double cost = arkhe_quantum_interest_validate(0.1, 1.0, 2.0);
+        if (cost < 0) {
+            std::cout << "✗ Quantum Interest validation failed\n";
+            return 1;
+        }
+        std::cout << "✓ Quantum Interest validated, cost: " << cost << "\n";
 
         uint8_t payload[] = {0x00, 0x01, 0x02, 0x03};
         int ret = arkhe_ledger_append(ledger, h.id,
