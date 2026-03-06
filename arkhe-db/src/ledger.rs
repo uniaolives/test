@@ -22,6 +22,10 @@ impl TeknetLedger {
     }
 
     pub fn commit_handover(&self, mut handover: Handover) -> std::io::Result<u64> {
+        let mut index = self.memory_index.lock().unwrap();
+        let id = index.len() as u64;
+        handover.id = id;
+
         let json = serde_json::to_string(&handover).unwrap();
 
         let mut file = self.file.lock().unwrap();
