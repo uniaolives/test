@@ -4,6 +4,10 @@
 use crate::physics::miller::{PHI_Q, quantum_interest};
 
 /// Erros do alocador.
+ |  | 
+7
+ 
+
 use crate::lib::miller::{PHI_Q, quantum_interest};
 
 #[derive(Debug, thiserror::Error)]
