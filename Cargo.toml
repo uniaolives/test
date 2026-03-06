@@ -80,6 +80,7 @@ members = [
     "rust/arkhe_topology",
     "rust/arkhe_system",
     "core_dmr",
+    "arkhe-core/rust",
 ]
 resolver = "2"
 

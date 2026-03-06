@@ -11,6 +11,8 @@ from .blockchain.satoshi import verify_satoshi_temporal
 from .quantum.noether import QHTTPNoetherBridge
 from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, QiskitInterface
 from .knowledge.google_scanner import SemanticMiner
+from .monitoring.listener import RealityListener
+from contextlib import asynccontextmanager
 from contextlib import asynccontextmanager
 from contextlib import asynccontextmanager
 from .blockchain.satoshi import verify_satoshi_temporal
@@ -34,6 +36,7 @@ quantum_sim = QuantumSimulator()
 lhc_trigger = ArkheTrigger()
 s2_trigger = ArkheLHCTrigger()
 qiskit_iface = QiskitInterface()
+reality_listener = RealityListener()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -41,6 +44,11 @@ async def lifespan(app: FastAPI):
     frame_id = "default_frame"
     hyperclaw_orchestrator.frames[frame_id] = ContextFrame()
     await hyperclaw_orchestrator.start(frame_id)
+    # Start Reality Listener
+    reality_listener.start()
+    yield
+    hyperclaw_orchestrator.running = False
+    reality_listener.stop()
     yield
     hyperclaw_orchestrator.running = False
 
@@ -169,6 +177,13 @@ async def scan_semantic_anomalies(data: Dict[str, List[float]], threshold: float
     data: Dict mapping concept name to a list of prevalence values over time.
     """
     import pandas as pd
+
+    def _run():
+        df = pd.DataFrame(data)
+        miner = SemanticMiner(df)
+        return miner.detect_anomalies(threshold=threshold)
+
+    anomalies = await asyncio.to_thread(_run)
     df = pd.DataFrame(data)
     miner = SemanticMiner(df)
     anomalies = miner.detect_anomalies(threshold=threshold)
@@ -177,6 +192,27 @@ async def scan_semantic_anomalies(data: Dict[str, List[float]], threshold: float
 @app.get("/knowledge/concept/{concept}")
 async def analyze_concept(concept: str, values: List[float]):
     import pandas as pd
+
+    def _run():
+        df = pd.DataFrame({concept: values})
+        miner = SemanticMiner(df)
+        return miner.analyze_knowledge_squeezing(concept)
+
+    return await asyncio.to_thread(_run)
+
+@app.get("/monitoring/reality")
+async def get_reality_status():
+    return reality_listener.get_state()
+
+@app.websocket("/ws/reality")
+async def websocket_reality(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            await websocket.send_json(reality_listener.get_state())
+            await asyncio.sleep(0.1)
+    except WebSocketDisconnect:
+        pass
     df = pd.DataFrame({concept: values})
     miner = SemanticMiner(df)
     return miner.analyze_knowledge_squeezing(concept)
