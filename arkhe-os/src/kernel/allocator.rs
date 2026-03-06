@@ -93,6 +93,9 @@ impl CoherenceAllocator {
         self.available_coherence - self.reserved_coherence
     }
 
+    pub fn current_phi_q(&self) -> f64 {
+        let baseline_density = 1.0;
+        baseline_density + crate::lib::miller::ZPF_COUPLING * self.available_coherence
     /// Retorna a densidade φ_q equivalente (coerência convertida).
     pub fn current_phi_q(&self) -> f64 {
         // A densidade é a coerência disponível convertida + baseline

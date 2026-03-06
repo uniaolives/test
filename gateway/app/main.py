@@ -84,15 +84,14 @@ async def get_vk_trajectory(agent_id: str):
         agent_registry[agent_id] = get_dmr_instance(agent_id)
 
     ring = agent_registry[agent_id]
-    # Thread-safe access to potentially heavy Rust method
     trajectory = await asyncio.to_thread(ring.reconstruct_trajectory)
 
-    # Adapt Rust PyStateLayer to Pydantic StateLayer if needed
     result = []
     for layer in trajectory:
         result.append(StateLayer(
             timestamp=layer.timestamp,
             vk=KatharosVector(bio=layer.bio, aff=layer.aff, soc=layer.soc, cog=layer.cog),
+            delta_k=0.0,
             delta_k=0.0, # Computed in Rust but maybe not exposed yet in PyStateLayer
             q=0.95,
             intensity=0.5
@@ -126,7 +125,6 @@ async def analyze_lhc_event(jets: List[Dict]):
 
 @app.post("/physics/s2/run_analysis")
 async def run_s2_analysis(file_pattern: str, threshold: float = 0.05, output: str = "candidates.parquet"):
-    # Run heavy analysis in a separate thread to avoid blocking the event loop
     def _run():
         loader = LHCDataLoader(file_pattern)
         analysis = ArkheLHCAnalysis(loader, s2_trigger)
@@ -180,7 +178,6 @@ async def get_novikov_loop(xi: float, dt: float, n_qubits: int = 2, use_kraus: b
     else:
         circuit = novikov_loop_circuit(xi, dt, n_qubits)
 
-    # Return as QASM for visibility or execute simulation
     counts = await asyncio.to_thread(qiskit_iface.run_simulation, circuit)
     return {
         "params": {"xi": xi, "dt": dt, "n_qubits": n_qubits, "use_kraus": use_kraus},
@@ -236,6 +233,7 @@ async def get_synchronicity():
     delta_k = system_state.delta_k
     q_value = system_state.q_value
 
+    phi_q_actual = q_value * 5.0
     # φ_q calculado como um surto de densidade de coerência
     phi_q_actual = q_value * 5.0 # Proxy: Q=1.0 -> φ_q=5.0
 
@@ -315,7 +313,6 @@ async def get_ledger_history():
 async def websocket_reality(websocket: WebSocket):
     await websocket.accept()
     try:
-        # Optional C++ Topology Module
         try:
             import arkhe_core
             topology_engine = arkhe_core.topology.KleinBottlehole()
@@ -364,7 +361,6 @@ async def websocket_entrainment(websocket: WebSocket):
 
     try:
         while True:
-            # Simulate metabolism evolution
             state = {
                 "timestamp": int(time.time()),
                 "vk": {

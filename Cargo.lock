@@ -582,6 +582,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "arkhe-db"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "arkhe-foundry-bridge"
 version = "0.1.0"
 dependencies = [
@@ -642,6 +651,14 @@ name = "arkhe-os"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "arkhe-db",
+ "chrono",
+ "env_logger",
+ "log",
+ "nom 7.1.3",
+ "rand 0.8.5",
+ "serde",
+ "serde_json",
  "chrono",
  "env_logger",
  "log",
