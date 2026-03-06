@@ -72,6 +72,7 @@ class LHCDataLoader:
                     rename = {v: k for k, v in branch_dict.items()}
                     # Awkward 2.x doesn't have ak.rename, we reconstruct with zip
                     data = ak.zip({new_name: data[old_name] for old_name, new_name in rename.items()})
+                    data = ak.rename(data, rename)
                     arrays.append(data)
             except Exception as e:
                 logger.error(f"Erro ao ler {file_path}: {e}")
