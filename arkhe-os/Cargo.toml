@@ -35,6 +35,9 @@ uuid = { version = "1.0", features = ["v4", "serde"] }
 statrs = "0.16"
 sha3 = "0.10"
 nalgebra = "0.32"
+clap = { version = "4.0", features = ["derive"] }
+
+[dev-dependencies]
 
 [dev-dependencies]
 

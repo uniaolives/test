@@ -390,6 +390,9 @@ async def websocket_reality(websocket: WebSocket):
     except WebSocketDisconnect:
         pass
 
+@app.post("/geoloc/verify")
+async def verify_location(agent_id: str, lat: float, lon: float, measurements: List[Dict]):
+
 @app.post("/bio/telemetry")
 async def receive_bio_telemetry(agent_id: str, x: float, y: float):
     """

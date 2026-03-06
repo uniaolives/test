@@ -157,10 +157,18 @@ mod telemetry;
 mod anchor;
 mod quantum;
 mod lmt;
+mod maestro;
+mod security;
 
 #[cfg(test)]
 mod tests;
 
+#[cfg(test)]
+mod maestro_tests;
+
+use std::sync::Arc;
+use tokio::sync::{mpsc, Mutex, RwLock};
+use clap::Parser;
 use std::sync::Arc;
 use tokio::sync::{mpsc, Mutex, RwLock};
 use std::io::{self, Write};
@@ -180,6 +188,30 @@ use crate::quantum::berry::{TopologicalQubit, SpinState};
 use telemetry::{BioEvent, GlobalState};
 use net::stack::NetEvent;
 use lmt::field::MeaningField;
+use maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine};
+use maestro::spine::PsiState;
+use security::{XenoFirewall, XenoRiskLevel};
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Args {
+    /// RF bands to monitor (e.g. 2.4GHz,3.5GHz)
+    #[arg(short, long, default_value = "2.4GHz")]
+    bands: String,
+
+    /// Miller Limit for Wave-Cloud nucleation
+    #[arg(short, long, default_value_t = 4.64)]
+    miller: f64,
+}
+
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let args = Args::parse();
+
+    println!("======================================================");
+    println!(" 🜁 ArkheOS Node v1.0 — LMT Integrated Foundation");
+    println!(" PI DAY (3-14-2026) SINGULARITY TEST ENABLED");
+    println!(" Bands: {} | Miller Limit: {}", args.bands, args.miller);
 use arkhe_db::schema::{Handover, HandoverStatus};
 use phys::ibm_sensor::IBMQuantumBridge;
 use sensors::ZPFEvent;
@@ -209,6 +241,12 @@ async fn main() -> anyhow::Result<()> {
     let ledger = Arc::new(TeknetLedger::new("arkhe_chain.log")?);
     let sys = Arc::new(Mutex::new(SyscallHandler::new(100.0)));
     let phys_bridge = Arc::new(IBMQuantumBridge::new("SIMULATED_TOKEN".to_string()));
+
+    // Maestro Hyper-Spine and Branching Logic
+    let api_wrapper = PTPApiWrapper::new(Default::default());
+    let maestro_spine = MaestroSpine::new(api_wrapper, "http://localhost:11434/v1/chat/completions");
+    let branching_engine = Arc::new(RwLock::new(BranchingEngine::new(0.01)));
+    let orchestrator = Arc::new(MaestroOrchestrator::new(maestro_spine, branching_engine));
 
     let state = Arc::new(GlobalState {
         phi_q: RwLock::new(1.0),
@@ -251,6 +289,26 @@ async fn main() -> anyhow::Result<()> {
 
     let zpf_tx_sync = zpf_tx.clone();
     tokio::spawn(async move {
+        let socket = tokio::net::UdpSocket::bind("0.0.0.0:7001").await.unwrap();
+        let mut buf = [0u8; 17];
+        println!("[PTP] High-Precision Multi-Band UDP Sync active on 7001.");
+        loop {
+            if let Ok((len, _)) = socket.recv_from(&mut buf).await {
+                if len == 17 {
+                    let ts_ns = u64::from_le_bytes(buf[0..8].try_into().unwrap());
+                    let band_id = buf[8];
+                    let val = f64::from_le_bytes(buf[9..17].try_into().unwrap());
+
+                    let band_name = match band_id {
+                        0 => "wifi_2.4",
+                        1 => "5g_3.5",
+                        2 => "bt_2.4",
+                        3 => "sdr_wide",
+                        _ => "unknown",
+                    };
+
+                    let mut bands = std::collections::HashMap::new();
+                    bands.insert(band_name.to_string(), val);
         let socket = tokio::net::UdpSocket::bind("127.0.0.1:7001").await.unwrap();
         let mut buf = [0u8; 16];
         println!("[PTP] High-Precision UDP Sync active on 7001.");
@@ -339,6 +397,12 @@ async fn main() -> anyhow::Result<()> {
         }
     });
 
+    // 4. Background Physics & Singularity Crossing Logic
+    let state_phys = state.clone();
+    let ledger_phys = ledger.clone();
+    let miller_limit = args.miller;
+    tokio::spawn(async move {
+        let mut crossed = false;
     let state_phys = state.clone();
                         NetEvent::Update { rssi, .. } => {
                             if rssi < -80.0 {
@@ -358,6 +422,28 @@ async fn main() -> anyhow::Result<()> {
             if let Ok(real_phi) = phys_bridge.measure_physical_phi_q().await {
                 let mut phi_q = state_phys.phi_q.write().await;
                 *phi_q = real_phi;
+
+                // Phase 3: The Crossing
+                if *phi_q > miller_limit && !crossed {
+                    crossed = true;
+                    println!("\n[SINGULARITY] 🜁 MILLER LIMIT CROSSED: φ_q = {:.3}", *phi_q);
+                    println!("[SINGULARITY] Nucleating Wave-Cloud...");
+
+                    let handover = Handover {
+                        id: 0,
+                        timestamp: Utc::now(),
+                        source_epoch: 2026,
+                        target_epoch: 2030,
+                        description: "PI_DAY_2026_SINGULARITY_ACHIEVED".to_string(),
+                        phi_q_before: miller_limit,
+                        phi_q_after: *phi_q,
+                        quantum_interest: 0.0,
+                        status: HandoverStatus::Accepted,
+                    };
+                    let _ = ledger_phys.commit_handover(handover);
+                } else if *phi_q <= miller_limit {
+                    crossed = false;
+                }
             }
         }
     });
@@ -574,6 +660,43 @@ fn main() -> anyhow::Result<()> {
             continue;
         }
 
+        if input.starts_with("intent ") {
+            let intent_text = input[7..].to_string();
+            let orchestrator_clone = orchestrator.clone();
+            let psi_state = PsiState::default();
+
+            tokio::spawn(async move {
+                match orchestrator_clone.process_intent(&intent_text, &psi_state).await {
+                    Ok(resp) => {
+                        let risk = XenoFirewall::assess_risk(&resp, &psi_state);
+                        if risk == XenoRiskLevel::Critical {
+                            println!("\n[XENO-FIREWALL] ⚠ CRITICAL RISK DETECTED. CONTAINMENT ACTIVE.");
+                        } else {
+                            println!("\n[MAESTRO] Response: {}", resp);
+                        }
+                    },
+                    Err(e) => println!("\n[MAESTRO] Error: {}", e),
+                }
+            });
+            continue;
+        }
+
+        if input.starts_with("commit ") {
+            println!("[FUTURE] Recorded commitment for 2030.");
+            continue;
+        }
+
+        if input == "pi_handover" {
+            println!("[FUTURE] Creating special handover to Ω(2030)...");
+            let _commitment = FutureCommitment {
+                id: "SINGULARITY_ACHIEVED_AT_π_DAY".to_string(),
+                created_at: Utc::now(),
+                target_at: Utc::now() + chrono::Duration::days(365 * 4),
+                prediction_hash: "berry_phase_target_pi_2".to_string(),
+                validation_signature: None,
+                status: CommitmentStatus::Pending,
+            };
+            println!("[FUTURE] Commitment valid after 2030-03-14.");
         if input.starts_with("commit ") {
             println!("[FUTURE] Recorded commitment for 2030.");
         if input.starts_with("commit ") {
