@@ -7470,6 +7470,19 @@ checksum = "c7cd50a78ccfada14de94cbacd3ce4b0138157f376870f13d3a8422cd075b4fd"
 dependencies = [
  "libp2p-core 0.41.3",
  "libp2p-identity",
+ "libp2p-identity",
+ "libp2p-swarm 0.43.7",
+ "void",
+]
+
+[[package]]
+name = "libp2p-connection-limits"
+version = "0.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c7cd50a78ccfada14de94cbacd3ce4b0138157f376870f13d3a8422cd075b4fd"
+dependencies = [
+ "libp2p-core 0.41.3",
+ "libp2p-identity",
  "libp2p-swarm 0.44.2",
  "void",
 ]

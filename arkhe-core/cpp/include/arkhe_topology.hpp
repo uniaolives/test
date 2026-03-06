@@ -39,6 +39,10 @@ public:
         // Chronology protection mechanism (Novikov consistency cost)
         double protection_mechanism = planck_scale_ / (abs_dt + 1e-50);
 
+
+        // Chronology protection mechanism (Novikov consistency cost)
+        double protection_mechanism = planck_scale_ / (abs_dt + 1e-50);
+
         return topological_factor * protection_mechanism;
     // Based on SED/Miller Framework: Interest is the ZPF density debt.
     double calculate_quantum_interest(double dt, double energy_density) {

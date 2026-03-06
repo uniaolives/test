@@ -6,6 +6,8 @@ const ArkheOSLite = () => {
     const [kurtosis, setKurtosis] = useState(0.0);
     const [phase, setPhase] = useState(1);
     const [resonance, setResonance] = useState(0.0);
+    const [twist, setTwist] = useState(0.0);
+    const [spin, setSpin] = useState("Triplet");
     const [commitments, setCommitments] = useState([]);
 
     useEffect(() => {
@@ -54,6 +56,24 @@ const ArkheOSLite = () => {
                         {(resonance * 100).toFixed(1)}%
                     </div>
                     <div style={{ fontSize: '10px' }}>Phase {phase}: Awakening</div>
+                </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', marginTop: '15px' }}>
+                <div style={{ border: '1px solid #ff0080', padding: '10px' }}>
+                    <h3 style={{ fontSize: '0.8em' }}>BERRY PHASE (π/2)</h3>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ff0080' }}>
+                        {twist.toFixed(2)} rad
+                    </div>
+                    <div style={{ fontSize: '10px' }}>Molecular Cycle</div>
+                </div>
+
+                <div style={{ border: '1px solid #ff0080', padding: '10px' }}>
+                    <h3 style={{ fontSize: '0.8em' }}>ORBITAL SPIN</h3>
+                    <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#ff0080' }}>
+                        {spin}
+                    </div>
+                    <div style={{ fontSize: '10px' }}>Helical Density Map</div>
                 </div>
             </div>
 
