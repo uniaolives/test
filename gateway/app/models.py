@@ -13,3 +13,7 @@ class StateLayer(BaseModel):
     delta_k: float
     q: float
     intensity: float
+
+class SystemState(BaseModel):
+    delta_k: float = 0.1
+    q_value: float = 0.9
