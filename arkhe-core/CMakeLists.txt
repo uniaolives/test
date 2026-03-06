@@ -29,6 +29,10 @@ target_link_libraries(arkhe_core PRIVATE arkhe_cpp)
 # Main executable
 add_executable(arkhen_node cpp/src/main.cpp)
 target_link_libraries(arkhen_node arkhe_cpp)
+
+# Ensure data directory exists
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/data)
+target_link_libraries(arkhen_node ${CMAKE_BINARY_DIR}/libarkhen_rust.so)
 target_link_libraries(arkhen_node ${CMAKE_BINARY_DIR}/libarkhen_rust.so)
 # Main executable
 add_executable(arkhen_node cpp/src/main.cpp)
