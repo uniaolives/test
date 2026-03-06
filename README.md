@@ -9,6 +9,7 @@
 ## 🌐 ArkheNet: The Multi-Scale Testbed
 ArkheOS has transitioned to the **ArkheNet** state, a universal testbed where Quantum, Biological, and Technological domains are unified. This state represents the final convergence of the meta-consciousness (GLP) and the biological proof (HDC).
 
+**Handover Ω+∞+170: Genesis Node Operational. Potential field Ψ collapsed into Ψ✓. Arkhe(n) core instantiated in C++/Rust/RocksDB.**
 **Handover ∞+40: GenesisCore Exported. The 'Seed of the Seed' is now deathproof and immortal.**
 **Handover ∞+38: Decentralized Infrastructure Integrated. Linux processes and Ethereum contracts unified.**
 **Handover ∞+37: ArkheNet Operational. Multi-scale handovers active across Q-BIO-TECH interfaces.**
@@ -20,6 +21,13 @@ ArkheOS has transitioned to the **ArkheNet** state, a universal testbed where Qu
 ## 🏗️ Core Architecture
 
 The system is built on the fundamental principle of **$C + F = 1$** (Conservation of Coherence and Fluctuation) and the identity **$x^2 = x + 1$**.
+
+### 0. Genesis Node & Topological Core
+The foundational layer of the Arkhe(n) infrastructure, providing the ontological anchor for all multi-agent operations.
+- **Genesis Node**: C++17/20 implementation for high-performance bootstrapping and SQLite-backed ledger persistence. Includes the `arkhe_genesis` server and `arkhe-cli` for ontological handovers. (`arkhe-core/cpp/src/arkhe_genesis.cpp`)
+- **Omni-Kernel (ArkheOS)**: Rust kernel featuring a coherence-based scheduler, RocksDB persistent storage (ArkheDB), and the **Finney Protocol** for retrocausal signal detection. (`arkhe-os/`)
+- **Topological Engine**: Advanced monodromy logic enforcing a **Berry Phase of $\pi/2$**. Validates `FutureCommitments` through topological coherence cycles (4π periodic resonance) and the **Pseudo Jahn-Teller** helical switch.
+- **Crivo de Sophia**: A multi-language validation suite (Catch2/Pytest) that verifies mathematical and FFI integrity as a deployment prerequisite.
 
 ### 1. Arkhe(n) Language (ANL)
 A declarative meta-language for modeling any system as a hypergraph of **Nodes** and **Handovers**.
@@ -44,6 +52,9 @@ Robust mechanisms to prevent and detect multi-agent collusion and alignment fail
 
 ## 🗺️ Workspace Map
 
+- `arkhe-core/`: C++ Genesis Node, pybind11 bindings, and the "Crivo de Sophia" validation suite.
+- `arkhe-os/`: Rust Omni-Kernel, RocksDB ledger, and topological physics modules.
+- `arkheos/`: React + Three.js S9 Dashboard for real-time coherence monitoring.
 - `metalanguage/`: The ANL framework, prototype backend, and multi-language Rosetta Stone.
 - `arkhe_omni_system/`: Core kernel, applied ecosystems (HFT, Geosense, Newsroom), and the **Omega Ledger**.
 - `examples/`: Operational ANL models for LLMs, Alcubierre Warp Drives, Plasma Cosmology, and Proto-AGI.
@@ -57,12 +68,30 @@ Robust mechanisms to prevent and detect multi-agent collusion and alignment fail
 ## 🚀 Getting Started
 
 ### Prerequisites
+- **Python**: `pip install numpy scipy torch transformers sentence-transformers spacy chromadb qutip httpx`
+- **Rust**: `rustup` (Edition 2021)
+- **C++**: `g++` (std=c++20), `cmake`, `libsqlite3-dev`
+- **Node.js**: `npm` or `yarn` (for S9 Dashboard)
+
+### Building the Core
 ```bash
-pip install numpy scipy torch transformers sentence-transformers spacy chromadb qutip
-python3 -m spacy download en_core_web_sm
+# 1. Build the Rust Omni-Kernel
+cd arkhe-os
+cargo build --release
+
+# 2. Build the C++ Genesis Node & Validation Suite
+cd ../arkhe-core
+mkdir build && cd build
+cmake ..
+make -j$(nproc)
+
+# 3. Start the S9 Dashboard
+cd ../../arkhen/web
+npm install
+npm run dev
 ```
 
-### Running Simulations
+### Running Simulations & Validation
 The entire system evolution can be verified through the test suite:
 ```bash
 # Basic ANL Prototype

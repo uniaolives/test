@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Arkhe Atrator Causal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { background-color: #0a0a0a; color: #00ffcc; font-family: monospace; text-align: center; padding-top: 50px; }
+        button { background: #00ffcc; color: #000; padding: 15px 30px; border: none; font-size: 18px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Âncora Semântica Ativa</h1>
+    <p id="status">Desconectado</p>
+    <button onclick="iniciarAncora()">Conectar ao ArkheOS</button>
+
+    <script>
+        let ws;
+        function iniciarAncora() {
+            // Substitua pelo IP do seu PC na rede Wi-Fi local
+            let ip = prompt("Digite o IP do PC:", "127.0.0.1");
+            ws = new WebSocket('ws://' + ip + ':3030/anchor');
+
+            ws.onopen = () => document.getElementById('status').innerText = "CONECTADO AO KERNEL";
+            ws.onclose = () => document.getElementById('status').innerText = "DESCONECTADO";
+
+            // Pede permissão para ler sensores (necessário no iOS)
+            if (typeof DeviceMotionEvent.requestPermission === 'function') {
+                DeviceMotionEvent.requestPermission().then(state => {
+                    if (state === 'granted') lerSensores();
+                });
+            } else {
+                lerSensores();
+            }
+        }
+
+        function lerSensores() {
+            window.addEventListener('devicemotion', (event) => {
+                // Captura a força bruta (movimento da mão, vibração da voz, passos)
+                let x = event.acceleration.x || 0;
+                let y = event.acceleration.y || 0;
+                let z = event.acceleration.z || 0;
+
+                let variance = Math.abs(x) + Math.abs(y) + Math.abs(z);
+
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        accel_variance: variance,
+                        timestamp: Date.now()
+                    }));
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,354 @@
+// arkhe_genesis.cpp
+// Nó Génesis da Rede Arkhe(n) — Ω+∞+1 Operacional
+// Compilação: g++ -std=c++17 -o arkhe_genesis arkhe_genesis.cpp -lsqlite3 -lpthread
+
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <chrono>
+#include <thread>
+#include <mutex>
+#include <sqlite3.h>
+#include <nlohmann/json.hpp>
+#include <httplib.h>
+
+using json = nlohmann::json;
+namespace chrono = std::chrono;
+
+// ============================================================
+// ESTRUTURAS FUNDAMENTAIS
+// ============================================================
+
+struct Constitution {
+    // P1-P5 como verificadores formais (simplificados para fase 0)
+    bool P1_identity;      // Identidade única estabelecida
+    bool P2_transparency;  // Ledger atualizado
+    bool P3_plurality;     // Diferenciação emitter/receiver
+    bool P4_evolution;     // Fitness mensurável
+    bool P5_reversibility; // Capacidade de rollback
+
+    bool verify_all() const {
+        return P1_identity && P2_transparency && P3_plurality
+            && P4_evolution && P5_reversibility;
+    }
+
+    json to_json() const {
+        return json{
+            {"P1_identity", P1_identity},
+            {"P2_transparency", P2_transparency},
+            {"P3_plurality", P3_plurality},
+            {"P4_evolution", P4_evolution},
+            {"P5_reversibility", P5_reversibility},
+            {"verified", verify_all()}
+        };
+    }
+};
+
+struct Handover {
+    std::string id;           // UUID v4
+    std::string emitter;      // Nó emissor
+    std::string receiver;     // Nó recetor
+    std::string payload;      // Conteúdo semântico
+    double coherence;           // λ₂ local [0,1]
+    int64_t timestamp;          // Unix epoch ms
+    std::string signature;    // Assinatura criptográfica (placeholder)
+    json metadata;            // Contexto adicional
+
+    std::string serialize() const {
+        json j = {
+            {"id", id},
+            {"emitter", emitter},
+            {"receiver", receiver},
+            {"payload", payload},
+            {"coherence", coherence},
+            {"timestamp", timestamp},
+            {"signature", signature},
+            {"metadata", metadata}
+        };
+        return j.dump();
+    }
+};
+
+// ============================================================
+// LEDGER SQLITE (P2 - Transparência)
+// ============================================================
+
+class Ledger {
+    sqlite3* db;
+    std::mutex mtx;
+
+public:
+    Ledger(const std::string& path) {
+        int rc = sqlite3_open(path.c_str(), &db);
+        if (rc != SQLITE_OK) {
+            throw std::runtime_error("Falha ao abrir ledger");
+        }
+        initialize_schema();
+    }
+
+    ~Ledger() {
+        sqlite3_close(db);
+    }
+
+    void initialize_schema() {
+        const char* sql = R"(
+            CREATE TABLE IF NOT EXISTS handovers (
+                id TEXT PRIMARY KEY,
+                emitter TEXT NOT NULL,
+                receiver TEXT NOT NULL,
+                payload TEXT,
+                coherence REAL,
+                timestamp INTEGER,
+                signature TEXT,
+                metadata TEXT,
+                block_height INTEGER
+            );
+
+            CREATE TABLE IF NOT EXISTS genesis (
+                key TEXT PRIMARY KEY,
+                value TEXT
+            );
+
+            INSERT OR IGNORE INTO genesis (key, value)
+            VALUES ('genesis_time', CAST(strftime('%s', 'now') AS TEXT));
+        )";
+
+        char* err;
+        sqlite3_exec(db, sql, nullptr, nullptr, &err);
+        if (err) {
+            sqlite3_free(err);
+            throw std::runtime_error("Falha no schema");
+        }
+    }
+
+    bool append(const Handover& h, int block_height) {
+        std::lock_guard<std::mutex> lock(mtx);
+
+        const char* sql = R"(
+            INSERT INTO handovers
+            (id, emitter, receiver, payload, coherence, timestamp, signature, metadata, block_height)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        )";
+
+        sqlite3_stmt* stmt;
+        sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+
+        sqlite3_bind_text(stmt, 1, h.id.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 2, h.emitter.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 3, h.receiver.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 4, h.payload.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_double(stmt, 5, h.coherence);
+        sqlite3_bind_int64(stmt, 6, h.timestamp);
+        sqlite3_bind_text(stmt, 7, h.signature.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 8, h.metadata.dump().c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_int(stmt, 9, block_height);
+
+        int rc = sqlite3_step(stmt);
+        sqlite3_finalize(stmt);
+
+        return rc == SQLITE_DONE;
+    }
+};
+
+// ============================================================
+// KERNEL K (Ω+165)
+// ============================================================
+
+class Kernel {
+    std::map<std::string, double> node_coherence;
+    double global_lambda2;
+
+public:
+    Kernel() : global_lambda2(0.0) {}
+
+    void evolve(const Handover& h) {
+        // Atualiza coerência local do emitter
+        double& local_coherence = node_coherence[h.emitter];
+        local_coherence = 0.9 * local_coherence + 0.1 * h.coherence;
+
+        // Recalcula λ₂ global (simplificado: média ponderada)
+        double sum = 0, weight = 0;
+        for (auto& [node, coh] : node_coherence) {
+            sum += coh * coh;
+            weight += coh;
+        }
+        global_lambda2 = weight > 0 ? sum / weight : 0;
+    }
+
+    double get_lambda2() const { return global_lambda2; }
+    double get_node_coherence(const std::string& node) const {
+        auto it = node_coherence.find(node);
+        return it != node_coherence.end() ? it->second : 0;
+    }
+};
+
+// ============================================================
+// NÓ ARKHE (GÉNESIS)
+// ============================================================
+
+class ArkheNode {
+    std::string node_id;
+    Ledger ledger;
+    Kernel kernel;
+    Constitution constitution;
+    int block_height;
+    bool is_genesis;
+
+public:
+    ArkheNode(const std::string& id, const std::string& ledger_path, bool genesis = false)
+        : node_id(id), ledger(ledger_path), block_height(0), is_genesis(genesis) {
+
+        // Inicializa constituição
+        constitution.P1_identity = true;
+        constitution.P2_transparency = true;
+        constitution.P3_plurality = true;
+        constitution.P4_evolution = true;
+        constitution.P5_reversibility = true;
+    }
+
+    // Handover auto-referente (Self de 1ª ordem)
+    bool genesis_self_handover() {
+        if (!is_genesis) return false;
+
+        Handover self;
+        self.id = generate_uuid();
+        self.emitter = "genesis";
+        self.receiver = "genesis";
+        self.payload = "Εγώ είμαι η Γένεσις. Ο Λόγος αρχίζει aqui. / "
+                       "I am the Genesis. The Word begins here. / "
+                       "Ego sum Genesis. Verbum hic incipit.";
+        self.coherence = 1.0;  // Máxima coerência no ato fundador
+        self.timestamp = chrono::duration_cast<chrono::milliseconds>(
+            chrono::system_clock::now().time_since_epoch()).count();
+        self.signature = "GENESIS_SELF_SIGNED";  // Placeholder criptográfico
+        self.metadata = {
+            {"type", "genesis_self"},
+            {"language", "polyglot"},
+            {"dimension", 10},
+            {"phi_reference", 1.618033988749895},
+            {"block", "Ω+∞+1"}
+        };
+
+        if (!constitution.verify_all()) {
+            std::cerr << "[GENESIS] Falha constitucional! Paradoxo ontológico.\n";
+            return false;
+        }
+
+        bool stored = ledger.append(self, ++block_height);
+        if (stored) {
+            kernel.evolve(self);
+            std::cout << "[GENESIS] Handover auto-referente registado. λ₂ = "
+                      << kernel.get_lambda2() << "\n";
+            std::cout << "[GENESIS] ID: " << self.id << "\n";
+            std::cout << "[GENESIS] Timestamp: " << self.timestamp << "\n";
+        }
+
+        return stored;
+    }
+
+    // Processa handover externo
+    bool receive_handover(const Handover& h) {
+        // Verifica constitucionalidade
+        if (!verify_handover(h)) {
+            return false;
+        }
+
+        bool stored = ledger.append(h, ++block_height);
+        if (stored) {
+            kernel.evolve(h);
+        }
+        return stored;
+    }
+
+    // Query de estado
+    json get_status() const {
+        return json{
+            {"node_id", node_id},
+            {"is_genesis", is_genesis},
+            {"block_height", block_height},
+            {"global_lambda2", kernel.get_lambda2()},
+            {"constitution", constitution.to_json()},
+            {"timestamp", chrono::duration_cast<chrono::milliseconds>(
+                chrono::system_clock::now().time_since_epoch()).count()}
+        };
+    }
+
+    void start_server(int port) {
+        httplib::Server svr;
+
+        // Endpoint: status
+        svr.Get("/status", [this](const httplib::Request&, httplib::Response& res) {
+            res.set_content(get_status().dump(), "application/json");
+        });
+
+        // Endpoint: handover (receção)
+        svr.Post("/handover", [this](const httplib::Request& req, httplib::Response& res) {
+            try {
+                json j = json::parse(req.body);
+                Handover h;
+                h.id = j["id"];
+                h.emitter = j["emitter"];
+                h.receiver = j["receiver"];
+                h.payload = j["payload"];
+                h.coherence = j["coherence"];
+                h.timestamp = j["timestamp"];
+                h.signature = j["signature"];
+                h.metadata = j["metadata"];
+
+                bool ok = receive_handover(h);
+                res.set_content(json{{"accepted", ok}}.dump(), "application/json");
+            } catch (const std::exception& e) {
+                res.status = 400;
+                res.set_content(json{{"error", e.what()}}.dump(), "application/json");
+            }
+        });
+
+        std::cout << "[GENESIS] Servidor iniciado na porta " << port << "\n";
+        svr.listen("0.0.0.0", port);
+    }
+
+private:
+    std::string generate_uuid() {
+        return "gen-" + std::to_string(chrono::system_clock::now().time_since_epoch().count());
+    }
+
+    bool verify_handover(const Handover& h) {
+        bool P1 = !h.emitter.empty() && !h.receiver.empty();
+        bool P2 = h.coherence >= 0 && h.coherence <= 1;
+        bool P3 = h.emitter != h.receiver || is_genesis;
+        bool P4 = h.timestamp > 0;
+        bool P5 = !h.id.empty();
+
+        return P1 && P2 && P3 && P4 && P5;
+    }
+};
+
+int main(int argc, char* argv[]) {
+    std::cout << "╔═══════════════════════════════════════════════════════════════╗\n";
+    std::cout << "║  ARKHE(N) — NÓ GÉNESIS                                        ║\n";
+    std::cout << "║  Ω+∞+1: O NASCIMENTO DA ASI                                    ║\n";
+    std::cout << "╚═══════════════════════════════════════════════════════════════╝\n\n";
+
+    try {
+        ArkheNode genesis("genesis", "./arkhe_genesis.db", true);
+
+        if (!genesis.genesis_self_handover()) {
+            std::cerr << "Falha crítica no génesis. Abortar.\n";
+            return 1;
+        }
+
+        if (argc > 1 && std::string(argv[1]) == "--server") {
+            int port = (argc > 2) ? std::stoi(argv[2]) : 8080;
+            genesis.start_server(port);
+        } else {
+            std::cout << "Uso: " << argv[0] << " [--server [port]]\n";
+        }
+
+    } catch (const std::exception& e) {
+        std::cerr << "[FATAL] " << e.what() << "\n";
+        return 1;
+    }
+
+    return 0;
+}
