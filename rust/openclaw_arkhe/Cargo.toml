@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 arkhe-quantum = { path = "../../arkhe-linux/core/arkhe-quantum" }
-digital_memory_ring = { path = "../../dmr" }
+digital_memory_ring = { path = "../../core_dmr" }
 bls12_381 = "0.8.0"
 hex = "0.4.3"
 nalgebra = { version = "0.32", features = ["serde-serialize"] }
