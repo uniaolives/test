@@ -6,7 +6,6 @@ namespace arkhe {
 namespace topology {
 
 // Trefoil Knot Parameters
-// p=2, q=3 for a standard trefoil knot
 struct TrefoilParams {
     int p = 2;
     int q = 3;
@@ -27,7 +26,7 @@ public:
     // Calculates "Quantum Interest" for a CTC of duration dt
     // Based on SED/Miller Framework: Interest is the ZPF density debt.
     double calculate_quantum_interest(double dt, double energy_density) {
-        if (dt == 0) return 0.0;
+        if (dt <= 0) return 0.0;
         double abs_dt = std::abs(dt);
 
         // Ratio against Miller Limit
