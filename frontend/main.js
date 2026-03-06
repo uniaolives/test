@@ -1,6 +1,9 @@
 // O Olho de Arkhe - S9 Visualizer
 const qDisplay = document.getElementById('q-display');
 const sDisplay = document.getElementById('s-display');
+const teDisplay = document.getElementById('te-display');
+const pressureDisplay = document.getElementById('hmt-pressure');
+const flowDisplay = document.getElementById('hmt-flow');
 const stateDisplay = document.getElementById('state-display');
 
 // Setup Three.js
@@ -41,6 +44,11 @@ socket.onmessage = (event) => {
 function updateUI(data) {
     qDisplay.innerText = data.q_value.toFixed(3);
     sDisplay.innerText = data.s_index.toFixed(3);
+    if (data.te_coupling) teDisplay.innerText = data.te_coupling.toFixed(3);
+    if (data.hydraulic) {
+        pressureDisplay.innerText = data.hydraulic.pressure.toFixed(3);
+        flowDisplay.innerText = `${data.hydraulic.state} (v=${data.hydraulic.flow_rate.toFixed(2)})`;
+    }
     stateDisplay.innerText = data.state;
 
     const color = data.q_value > 0.9 ? '#ff0066' : data.q_value > 0.7 ? '#ffff00' : '#00ffcc';
@@ -48,6 +56,10 @@ function updateUI(data) {
 }
 
 function updateVisuals(data) {
+    let scale = 1 + (data.q_value * 0.8);
+    if (data.te_coupling) scale += (data.te_coupling * 0.5);
+    if (data.hydraulic) scale += (data.hydraulic.pressure * 0.2);
+
     const scale = 1 + (data.q_value * 0.8);
     sphere.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.1);
 

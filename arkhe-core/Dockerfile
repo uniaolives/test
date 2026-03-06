@@ -27,6 +27,16 @@ COPY . /build/
 
 # 4. Build Rust Multi-Scale Layer (Workspace)
 WORKDIR /build
+WORKDIR /build
+COPY gateway/requirements.txt .
+RUN pip install --no-cache-dir pybind11
+
+# 3. Source Code
+# Assuming build context is the repository root
+COPY . /build/
+
+# 4. Build Rust Multi-Scale Layer (Workspace)
+WORKDIR /build
 RUN cargo build --release --package arkhen-rust --package digital_memory_ring
 
 # 5. Build C++ Kernel & Python Bindings

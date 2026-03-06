@@ -5,6 +5,7 @@ mod physics;
 mod kernel;
 mod constitution;
 mod ffi;
+mod stats;
 
 use std::sync::Arc;
 use tokio::sync::Mutex;

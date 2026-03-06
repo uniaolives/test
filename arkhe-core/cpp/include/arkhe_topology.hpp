@@ -30,6 +30,13 @@ public:
         if (dt == 0) return 0.0;
         double abs_dt = std::abs(dt);
 
+        // Topological factor based on knot complexity (genus)
+        double topological_factor = std::exp(std::abs(energy_density) * abs_dt);
+
+        // Chronology protection mechanism
+        double protection_mechanism = planck_scale_ / (abs_dt + 1e-50);
+
+        return topological_factor * protection_mechanism;
         // Ratio against Miller Limit
         double density_ratio = energy_density / MillerLimit::PHI_Q;
 
