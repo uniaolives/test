@@ -26,6 +26,14 @@ class ConstitutionalGuard(BaseHTTPMiddleware):
             raise HTTPException(
                 status_code=503,
                 detail=f"Constitutional Violation: System Coherence Debt Exceeded (H = {elena_h:.2f} > 1). Please wait for entropic resolution."
+        # Mock da verificação H <= 1
+        # Em uma implementação real, isso viria de um serviço de monitoramento
+        current_h = 0.5 # Exemplo: Sistema saudável
+
+        if current_h > 1.0:
+            raise HTTPException(
+                status_code=503,
+                detail="Constitutional Violation: System Coherence Debt Exceeded (H > 1). Please wait for entropic resolution."
             )
 
         response = await call_next(request)
