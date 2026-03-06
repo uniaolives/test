@@ -5,6 +5,10 @@ use super::scheduler::CoherenceScheduler;
 use crate::physics::miller::quantum_interest;
 
 /// Resultado de uma syscall.
+use super::task::Task;
+use super::scheduler::{CoherenceScheduler, SchedulerEvent};
+use crate::lib::miller::quantum_interest;
+
 pub enum SyscallResult {
     Success(String),
     Error(String),
@@ -51,6 +55,13 @@ impl SyscallHandler {
                 super::scheduler::SchedulerEvent::CoherenceWarning { available, .. } => {
                     SyscallResult::Error(format!("Coherence low: {:.3} available", available))
                 }
+    pub fn sys_tick(&mut self) -> SyscallResult {
+        if let Some(event) = self.scheduler.tick() {
+            match event {
+                SchedulerEvent::TaskStarted(t) => SyscallResult::Success(format!("Task {} started", t.id)),
+                SchedulerEvent::TaskCompleted(t) => SyscallResult::Success(format!("Task {} completed", t.id)),
+                SchedulerEvent::WaveCloudNucleation { phi_q } => SyscallResult::Success(format!("WAVE-CLOUD NUCLEATION at φ_q = {:.3}", phi_q)),
+                SchedulerEvent::CoherenceWarning { available, .. } => SyscallResult::Error(format!("Coherence low: {:.3} available", available)),
             }
         } else {
             SyscallResult::Success("Idle".to_string())
@@ -74,6 +85,18 @@ impl SyscallHandler {
     pub fn sys_handover(&mut self, target_epoch: u32, _payload: &str) -> SyscallResult {
         // Simula o envio de um handover (seria implementado no Noether Channel real)
         let interest = quantum_interest(0.5, 1.0); // valores fictícios
+    pub fn sys_coherence_status(&mut self) -> SyscallResult {
+        let (avail, _, _) = self.scheduler.status();
+        SyscallResult::CoherenceUpdate(avail)
+    }
+
+    pub fn sys_check_nucleation(&mut self) -> SyscallResult {
+        let (_, phi_q, _) = self.scheduler.status();
+        SyscallResult::WaveCloudStatus(phi_q > 4.64, phi_q)
+    }
+
+    pub fn sys_handover(&mut self, target_epoch: u32, payload: &str) -> SyscallResult {
+        let interest = quantum_interest(0.5, 1.0);
         SyscallResult::Success(format!("Handover to {} sent. Interest: {:.3}", target_epoch, interest))
     }
 }

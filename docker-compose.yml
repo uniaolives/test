@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  arkhe-nexus:
+    build:
+      context: .
+      dockerfile: arkhe-core/Dockerfile
+    container_name: arkhen_core_v2
+    ports:
+      - "8000:8000"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - IBM_QUANTUM_TOKEN=${IBM_QUANTUM_TOKEN:-simulacao}
+    volumes:
+      - ./frontend:/app/frontend
+    restart: unless-stopped

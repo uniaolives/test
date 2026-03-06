@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { ArkheVisualizer, KatharosVector, NodeState } from './visualizer';
 import { Chat } from './components/Chat';
+import ArkheOSLite from './components/ArkheOSLite';
 import { ArkhenAgent } from './agent';
 
 // @ts-ignore
@@ -249,6 +250,10 @@ const App: React.FC = () => {
         vkState={vkState}
         nodeState={nodeState}
       />
+
+      <div style={{ position: 'absolute', top: '20px', right: '20px', width: '400px', pointerEvents: 'all' }}>
+          <ArkheOSLite />
+      </div>
 
       {agentStatus.includes('Loading model') && (
           <div style={{
