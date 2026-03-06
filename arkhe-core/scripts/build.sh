@@ -15,6 +15,9 @@ cd ..
 cp ../target/release/libarkhen_rust.so build/
 
 # Build C++
+echo "Building C++ kernel and Python bindings..."
+cd build
+cmake .. -Dpybind11_DIR=$(python3 -m pybind11 --cmakedir) -DCMAKE_BUILD_TYPE=Release
 echo "Building C++ kernel..."
 cd build
 cmake ..

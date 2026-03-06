@@ -15,6 +15,17 @@ fn main() -> anyhow::Result<()> {
     println!("Comandos: create <nome> <coerência> <duração> <prioridade> | tick | status | nucleation | handover <época> <payload> | exit");
 
     let mut sys = SyscallHandler::new(100.0); // Coerência inicial de 100 unidades
+mod kernel;
+mod lib;
+
+use kernel::syscall::{SyscallHandler, SyscallResult};
+use std::io::{self, Write};
+
+fn main() -> anyhow::Result<()> {
+    println!("🜁 Arkhe-OS v0.1.0 – Kernel de Coerência do Vácuo");
+    println!("Limiar de Miller: φ_q = 4.64");
+
+    let mut sys = SyscallHandler::new(100.0);
 
     loop {
         print!("> ");
@@ -26,6 +37,7 @@ fn main() -> anyhow::Result<()> {
         if input.is_empty() {
             continue;
         }
+        if input.is_empty() { continue; }
 
         let parts: Vec<&str> = input.split_whitespace().collect();
         match parts[0] {
@@ -34,6 +46,7 @@ fn main() -> anyhow::Result<()> {
                     println!("Uso: create <nome> <coerência> <duração> <prioridade>");
                     continue;
                 }
+                if parts.len() < 5 { continue; }
                 let name = parts[1];
                 let coherence: f64 = parts[2].parse().unwrap_or(0.5);
                 let duration: u64 = parts[3].parse().unwrap_or(10);
@@ -42,6 +55,7 @@ fn main() -> anyhow::Result<()> {
                     kernel::syscall::SyscallResult::TaskId(id) => {
                         println!("Tarefa criada com ID {}", id);
                     }
+                    SyscallResult::TaskId(id) => println!("Tarefa {} criada", id),
                     _ => println!("Erro ao criar tarefa"),
                 }
             }
@@ -49,6 +63,8 @@ fn main() -> anyhow::Result<()> {
                 match sys.sys_tick() {
                     kernel::syscall::SyscallResult::Success(msg) => println!("{}", msg),
                     kernel::syscall::SyscallResult::Error(msg) => println!("Erro: {}", msg),
+                    SyscallResult::Success(msg) => println!("{}", msg),
+                    SyscallResult::Error(msg) => println!("Erro: {}", msg),
                     _ => (),
                 }
             }
@@ -91,6 +107,20 @@ fn main() -> anyhow::Result<()> {
                 }
             }
             "exit" | "quit" => break,
+                    SyscallResult::CoherenceUpdate(avail) => {
+                        match sys.sys_check_nucleation() {
+                            SyscallResult::WaveCloudStatus(nucleated, phi_q) => {
+                                println!("Coerência disponível: {:.3}", avail);
+                                println!("φ_q actual: {:.3}", phi_q);
+                                if nucleated { println!("⚠️  WAVE-CLOUD NUCLEATION DETECTED"); }
+                            }
+                            _ => (),
+                        }
+                    }
+                    _ => (),
+                }
+            }
+            "exit" => break,
             _ => println!("Comando desconhecido"),
         }
     }
