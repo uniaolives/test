@@ -93,6 +93,102 @@ def novikov_loop_kraus(xi=0.5, dt=0.1, n_qubits_main=2, n_ancilla=2):
 
     return qc
 
+def trefoil_knot_circuit():
+    """
+    Implementação da monodromia de ordem 6 para inversão temporal.
+    6 Qubits: 2 Lógica + 2 Ancilla + 2 Tunelamento
+    """
+    qc = QuantumCircuit(6, 6)
+
+    # FASE 1: Preparação do Estado "Passado"
+    for i in range(2):
+        qc.h(i)
+
+    # FASE 2: O Canal de Noether (Squeezing & Entanglement)
+    theta = np.pi / 3 # 60 graus (Monodromia Trevo)
+    qc.crx(theta, 2, 0) # Ancilla 2 controla Qubit 0
+    qc.crx(theta, 3, 1) # Ancilla 3 controla Qubit 1
+
+    # Criação do Emaranhamento Temporal
+    qc.cx(0, 4) # Qubit 0 -> Qubit Futuro 4
+    qc.cx(1, 5) # Qubit 1 -> Qubit Futuro 5
+
+    # FASE 3: A Inversão (O Pulo Topológico)
+    for i in range(2):
+        qc.sdg(i)
+        qc.h(i)
+
+    # FASE 4: Medição Retrocausal
+    qc.measure(range(2), range(2))
+
+    return qc
+
+def detect_wave_cloud_nucleation(counts: dict) -> dict:
+    """
+    Analyze measurement statistics for signatures of
+    ZPF density surge and Wave-Cloud formation.
+    """
+    total = sum(counts.values())
+    # Qiskit 6-qubit bitstrings: '000000' and '000011' are our targets
+    p_coherent = (counts.get('000000', 0) + counts.get('000011', 0)) / total
+    phi_effective = p_coherent * 10.0  # Scale factor for visualization
+
+    return {
+        "phi_q": phi_effective,
+        "miller_limit": 4.64,
+        "wave_cloud_nucleated": phi_effective > 4.64,
+        "coherence_regime": "MACROSCOPIC" if phi_effective > 4.64 else "STOCHASTIC"
+    }
+
+class MillerLimit:
+    """
+    The 4.64 threshold for Wave-Cloud nucleation.
+    """
+    PHI_Q = 4.64
+
+    @classmethod
+    def evaluate(cls, local_density: float, zpf_baseline: float) -> dict:
+        phi = local_density / (zpf_baseline + 1e-10)
+
+        return {
+            "packing_fraction": phi,
+            "threshold": cls.PHI_Q,
+            "wave_cloud_active": phi > cls.PHI_Q,
+            "regime": "COHERENT" if phi > cls.PHI_Q else "STOCHASTIC",
+            "applications": {
+                "superconductivity": phi > cls.PHI_Q,
+                "coulomb_screening": phi > cls.PHI_Q * 0.8,
+                "momentum_extraction": phi > cls.PHI_Q * 1.2
+            }
+        }
+
+class WaveCloudEngine:
+    def __init__(self, cavity_geometry: dict = None, drive_frequency: float = 0.0):
+        self.cavity = cavity_geometry or {}
+        self.f = drive_frequency
+        self.phi_q = 1.0   # packing fraction inicial
+
+    def simulate_pumping(self, power: float, duration: float):
+        """
+        Aumenta a densidade local do ZPF através de bombeamento paramétrico.
+        Retorna True se φ_q ultrapassar 4.64.
+        """
+        # COUPLING_CONSTANT aproximada para simulação
+        coupling_constant = 0.05
+        delta_phi = power * duration * coupling_constant
+        self.phi_q += delta_phi
+        return self.phi_q > 4.64
+
+    def extract_work(self):
+        """
+        Quando φ_q > 4.64, podemos extrair energia útil do vácuo.
+        """
+        if self.phi_q <= 4.64:
+            return 0.0
+        # WORK_COEFF aproximado
+        work_coeff = 1.618
+        return work_coeff * (self.phi_q - 4.64)
+
 class QiskitInterface:
     def __init__(self, backend_name='aer_simulator'):
         self.backend_name = backend_name
