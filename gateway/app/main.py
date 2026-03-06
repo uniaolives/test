@@ -26,7 +26,7 @@ import asyncio
 import json
 import time
 import random
-from typing import List, Dict
+from typing import List, Dict, Any
 
 # Global registry for agents
 agent_registry: Dict[str, any] = {}
@@ -275,6 +275,41 @@ async def get_synchronicity():
             "singularity": 8.0
         }
     }
+
+# ArkheOS Lite Components (Mocked for Python Integration)
+class MockScheduler:
+    def __init__(self):
+        self.tasks = []
+        self.phi_q = 1.0
+
+    def add_task(self, task: Dict):
+        self.tasks.append(task)
+        # Simulate phi_q growth
+        self.phi_q += task.get("coherence", 0) * 0.1
+
+    def get_status(self):
+        return {"phi_q": self.phi_q, "queue_len": len(self.tasks)}
+
+scheduler_instance = MockScheduler()
+handover_ledger = []
+
+@app.post("/arkhe/scheduler/task")
+async def submit_task(task: Dict[str, Any]):
+    scheduler_instance.add_task(task)
+    return {"status": "scheduled", "phi_q": scheduler_instance.phi_q}
+
+@app.get("/arkhe/scheduler/status")
+async def get_scheduler_status():
+    return scheduler_instance.get_status()
+
+@app.post("/arkhe/ledger/handover")
+async def record_handover(handover: Dict[str, Any]):
+    handover_ledger.append(handover)
+    return {"status": "recorded", "ledger_size": len(handover_ledger)}
+
+@app.get("/arkhe/ledger/history")
+async def get_ledger_history():
+    return handover_ledger
 
 @app.websocket("/ws/reality")
 async def websocket_reality(websocket: WebSocket):
