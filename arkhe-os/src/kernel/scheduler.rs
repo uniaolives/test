@@ -119,4 +119,11 @@ impl CoherenceScheduler {
     pub fn events(&self) -> &[SchedulerEvent] {
         &self.events
     }
+
+    /// Injeta coerência diretamente no sistema (ex.: via ponte biocibernética)
+    pub fn inject_coherence(&mut self, delta: f64) {
+        // Atualiza a coerência disponível no alocador (ou um campo global se preferir)
+        // Por agora, vamos apenas logar o impacto no φ_q
+        println!("[SCHEDULER] Coerência injetada: +{:.3}", delta);
+    }
 }

@@ -13,6 +13,9 @@ use kernel::task::Task;
 use compiler::parser::parse_intention_block;
 use db::ledger::{TeknetLedger, HandoverRecord};
 use phys::ibm_client::QuantumAntenna;
+use net::{P2PNode, HandoverData, BioAntenna};
+use std::sync::Arc;
+use tokio::sync::Mutex;
 use net::{P2PNode, HandoverData};
 use std::sync::Arc;
 use tokio::time::{sleep, Duration};
@@ -32,6 +35,7 @@ async fn main() -> anyhow::Result<()> {
     let ledger = Arc::new(TeknetLedger::new("./arkhe_chain_db").expect("Erro fatal: DB não pôde ser montado."));
     let (restored_phi_q, restored_last_id) = ledger.restore_vacuum_state();
 
+    let kernel = Arc::new(Mutex::new(CoherenceScheduler::new(restored_phi_q)));
     let mut kernel = CoherenceScheduler::new(restored_phi_q);
     let mut task_id_counter = restored_last_id + 1;
 
@@ -43,6 +47,14 @@ async fn main() -> anyhow::Result<()> {
         p2p_node.run_server().await;
     });
 
+    // 3. Iniciar Antena Biocibernética
+    let bio = BioAntenna::new(7001);
+    let kernel_clone = kernel.clone();
+    tokio::spawn(async move {
+        bio.run(kernel_clone).await;
+    });
+
+    // 4. Iniciar Antena Vertical (IBM Quantum) em background
     // 3. Iniciar Antena Vertical (IBM Quantum) em background
     let antenna = QuantumAntenna::new("SEU_IBM_QUANTUM_TOKEN".to_string());
     tokio::spawn(async move {
@@ -68,6 +80,14 @@ async fn main() -> anyhow::Result<()> {
         Ok((_, ast)) => {
             println!("[COMPILADOR] Intenção compilada: {}", ast.name);
             let task = Task::new(task_id_counter, &ast.name, ast.coherence, 5, ast.priority);
+            {
+                let mut k = kernel.lock().await;
+                k.schedule(task);
+            }
+
+            // Simular execução imediata para demonstração de persistência/rede
+            let mut k = kernel.lock().await;
+            if let Some(event) = k.tick() {
             kernel.schedule(task);
 
             // Simular execução imediata para demonstração de persistência/rede
@@ -77,6 +97,12 @@ async fn main() -> anyhow::Result<()> {
                     _ => {}
                 }
 
+                drop(k); // Release lock for other components if needed
+
+                // Avançar ticks para concluir
+                for _ in 0..5 {
+                    let mut k = kernel.lock().await;
+                    if let Some(event) = k.tick() {
                 // Avançar ticks para concluir
                 for _ in 0..5 {
                     if let Some(event) = kernel.tick() {
@@ -88,6 +114,11 @@ async fn main() -> anyhow::Result<()> {
                                 timestamp: Utc::now(),
                                 intention_name: ast.name.clone(),
                                 coherence_delta: ast.coherence,
+                                phi_q_after: k.status().0,
+                            };
+
+                            ledger.commit_handover(&record).unwrap();
+                            ledger.save_vacuum_state(k.status().0, t.id).unwrap();
                                 phi_q_after: kernel.status().0,
                             };
 
