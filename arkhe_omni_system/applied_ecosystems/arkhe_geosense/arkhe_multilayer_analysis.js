@@ -84,6 +84,22 @@ var roads = ee.FeatureCollection('TIGER/2016/Roads');
 var roadDistance = roads.distance(5000); // 5km buffer
 var infrastructureMask = roadDistance.lt(5000).rename('infrastructure_zone');
 
+// CAMADA DE HIDROGRAFIA (Polígonos e Linhas)
+// Utiliza o JRC Global Surface Water para interpretação de corpos d'água
+var waterSurface = ee.Image("JRC/GSW1_4/GlobalSurfaceWater").select('occurrence');
+var hydroPolyMask = waterSurface.gt(50).rename('hydro_poly');
+var hydroLineMask = waterSurface.gt(10).and(waterSurface.lte(50)).rename('hydro_line');
+
+// CAMADA DE FERROVIAS
+// Extração temática baseada em fontes de referência (OSM/TIGER)
+var railways = ee.FeatureCollection('TIGER/2016/Rails');
+var railwayMask = railways.distance(100).lt(100).rename('railways');
+
+// CAMADA DE PARQUES E PRAÇAS
+// Identificação via NDVI e áreas verdes urbanas
+var landcover = ee.Image("ESA/WorldCover/v100/2020").select('Map');
+var parksMask = landcover.eq(10).and(urbanMask).rename('parks_plazas');
+
 // ============================================
 // CAMADA 4: ANÁLISE DE COERÊNCIA MULTIVARIADA
 // ============================================
@@ -144,7 +160,10 @@ var enrichedCollection = unifiedCollection
           .addBands(urbanMask.rename('mask_urban'))
           .addBands(ruralMask.rename('mask_rural'))
           .addBands(coastalMask.rename('mask_coastal'))
-          .addBands(infrastructureMask.rename('mask_infra'));
+          .addBands(infrastructureMask.rename('mask_infra'))
+          .addBands(hydroPolyMask.rename('mask_hydro'))
+          .addBands(railwayMask.rename('mask_railway'))
+          .addBands(parksMask.rename('mask_parks'));
     });
 
 // Calcular métricas para cada zona aplicando as máscaras no momento do cálculo
@@ -198,6 +217,12 @@ Map.addLayer(
     'Fase Harmônica',
     true
 );
+
+// 4. Mapeamento Temático Sistemático (Hidrografia e Ferrovias)
+Map.addLayer(hydroPolyMask.selfMask(), {palette: '0000FF'}, 'Hidrografia (Polígono)');
+Map.addLayer(hydroLineMask.selfMask(), {palette: '0000AA'}, 'Hidrografia (Linha)');
+Map.addLayer(railwayMask.selfMask(), {palette: '333333'}, 'Ferrovias');
+Map.addLayer(parksMask.selfMask(), {palette: '00FF00'}, 'Parques e Praças');
 
 // ============================================
 // CAMADA 7: EXPORTAÇÃO E ANÁLISE ESTATÍSTICA

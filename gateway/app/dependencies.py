@@ -13,6 +13,8 @@ RUST_LIB_PATHS = [
 for path in RUST_LIB_PATHS:
     if path not in sys.path:
         sys.path.append(path)
+RUST_LIB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../target/release"))
+sys.path.append(RUST_LIB_PATH)
 
 try:
     import dmr_bridge
@@ -20,6 +22,7 @@ try:
 except ImportError:
     RUST_AVAILABLE = False
     print(f"[WARNING] Rust dmr_bridge not found in {RUST_LIB_PATHS}. Using mock.")
+    print(f"[WARNING] Rust dmr_bridge not found at {RUST_LIB_PATH}. Using mock.")
 
 class MockStateLayer:
     def __init__(self, timestamp, bio, aff, soc, cog):
@@ -41,6 +44,14 @@ class MockDigitalMemoryRing:
             int(time.time()),
             bio, aff, soc, cog
         ))
+        self.layers.append({
+            "timestamp": int(time.time()),
+            "bio": bio,
+            "aff": aff,
+            "soc": soc,
+            "cog": cog,
+            "q": q
+        })
 
     def measure_t_kr(self):
         return len(self.layers) * 3600

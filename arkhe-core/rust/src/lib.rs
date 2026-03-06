@@ -5,6 +5,7 @@ pub mod kernel;
 pub mod physics;
 pub mod net;
 pub mod phys;
+pub mod nexus_registry;
 
 use thiserror::Error;
 
