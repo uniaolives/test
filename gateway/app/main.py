@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from .models import KatharosVector, StateLayer
 from .models import KatharosVector, StateLayer, SystemState
 from .dependencies import get_dmr_instance
 from .hyperclaw.loops import HyperClawOrchestrator, ContextFrame
@@ -9,6 +10,9 @@ from .physics.triggers import ArkheTrigger
 from .physics.arkhe_s2_lhc import LHCDataLoader, ArkheLHCTrigger, ArkheLHCAnalysis
 from .blockchain.satoshi import verify_satoshi_temporal
 from .quantum.noether import QHTTPNoetherBridge
+from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, QiskitInterface
+from .knowledge.google_scanner import SemanticMiner
+from .monitoring.listener import RealityListener
 from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, trefoil_knot_circuit, QiskitInterface
 from .knowledge.google_scanner import SemanticMiner
 from .monitoring.listener import RealityListener
@@ -85,6 +89,7 @@ async def get_vk_trajectory(agent_id: str):
         result.append(StateLayer(
             timestamp=layer.timestamp,
             vk=KatharosVector(bio=layer.bio, aff=layer.aff, soc=layer.soc, cog=layer.cog),
+            delta_k=0.0,
             delta_k=0.0, # Computed in Rust but maybe not exposed yet in PyStateLayer
             q=0.95,
             intensity=0.5
@@ -182,6 +187,7 @@ async def submit_quantum_job(xi: float, dt: float, token: str = None):
 async def scan_semantic_anomalies(data: Dict[str, List[float]], threshold: float = 1.5):
     """
     Scans concept adoption data for retrocausal injection signatures.
+    data: Dict mapping concept name to a list of prevalence values over time.
     """
     import pandas as pd
 
@@ -276,11 +282,13 @@ async def websocket_reality(websocket: WebSocket):
 async def verify_location(agent_id: str, lat: float, lon: float, measurements: List[Dict]):
     """
     Verifies location using BFT-PoLoc.
+    measurements: List of {'lat': float, 'lon': float, 'rtt': float}
     """
     result = await asyncio.to_thread(geoloc_verifier.verify, lat, lon, measurements)
 
     if agent_id in agent_registry:
         ring = agent_registry[agent_id]
+        # High uncertainty increases delta_k (simulated via growth)
         if result["is_valid"]:
             await asyncio.to_thread(ring.grow_layer, 0.5, 0.5, 0.5, 0.5, 0.95)
         else:
