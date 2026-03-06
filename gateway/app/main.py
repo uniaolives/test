@@ -13,6 +13,15 @@ from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, Q
 from .knowledge.google_scanner import SemanticMiner
 from .monitoring.listener import RealityListener
 from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager
+from .blockchain.satoshi import verify_satoshi_temporal
+from .quantum.noether import QHTTPNoetherBridge
+from contextlib import asynccontextmanager
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends
+from fastapi.middleware.cors import CORSMiddleware
+from .models import KatharosVector, StateLayer
+from .dependencies import get_dmr_instance
 import asyncio
 import json
 import time
@@ -40,12 +49,15 @@ async def lifespan(app: FastAPI):
     yield
     hyperclaw_orchestrator.running = False
     reality_listener.stop()
+    yield
+    hyperclaw_orchestrator.running = False
 
 app = FastAPI(
     title="Arkhe(n) DMR Service",
     version="Ω.224.φ",
     lifespan=lifespan
 )
+app = FastAPI(title="Arkhe(n) DMR Service", version="Ω.224.φ")
 
 app.add_middleware(
     CORSMiddleware,
@@ -53,6 +65,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Global registry for agents
+agent_registry: Dict[str, any] = {}
 
 @app.get("/")
 async def root():
@@ -75,6 +90,7 @@ async def get_vk_trajectory(agent_id: str):
     ring = agent_registry[agent_id]
     # Thread-safe access to potentially heavy Rust method
     trajectory = await asyncio.to_thread(ring.reconstruct_trajectory)
+    trajectory = ring.reconstruct_trajectory()
 
     # Adapt Rust PyStateLayer to Pydantic StateLayer if needed
     result = []
@@ -83,6 +99,7 @@ async def get_vk_trajectory(agent_id: str):
             timestamp=layer.timestamp,
             vk=KatharosVector(bio=layer.bio, aff=layer.aff, soc=layer.soc, cog=layer.cog),
             delta_k=0.0,
+            delta_k=0.0, # Computed in Rust but maybe not exposed yet in PyStateLayer
             q=0.95,
             intensity=0.5
         ))
@@ -167,6 +184,9 @@ async def scan_semantic_anomalies(data: Dict[str, List[float]], threshold: float
         return miner.detect_anomalies(threshold=threshold)
 
     anomalies = await asyncio.to_thread(_run)
+    df = pd.DataFrame(data)
+    miner = SemanticMiner(df)
+    anomalies = miner.detect_anomalies(threshold=threshold)
     return {"status": "success", "anomalies_detected": anomalies}
 
 @app.get("/knowledge/concept/{concept}")
@@ -193,6 +213,9 @@ async def websocket_reality(websocket: WebSocket):
             await asyncio.sleep(0.1)
     except WebSocketDisconnect:
         pass
+    df = pd.DataFrame({concept: values})
+    miner = SemanticMiner(df)
+    return miner.analyze_knowledge_squeezing(concept)
 
 @app.post("/geoloc/verify")
 async def verify_location(agent_id: str, lat: float, lon: float, measurements: List[Dict]):
@@ -234,6 +257,7 @@ async def websocket_entrainment(websocket: WebSocket):
                 "q": random.uniform(0.85, 0.95),
                 "coherence": random.uniform(0.8, 0.95),
                 "hyperclaw_mode": hyperclaw_orchestrator.frames["default_frame"].mode.value if "default_frame" in hyperclaw_orchestrator.frames else "N/A"
+                "coherence": random.uniform(0.8, 0.95)
             }
             await websocket.send_json(state)
             await asyncio.sleep(0.1)
