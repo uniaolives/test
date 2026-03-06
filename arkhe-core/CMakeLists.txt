@@ -8,6 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(pybind11 REQUIRED)
 
 # Libraries
+# Source files
 add_library(arkhe_cpp SHARED
     cpp/src/kernel.cpp
 )
@@ -25,4 +26,9 @@ target_link_libraries(arkhe_core PRIVATE arkhe_cpp)
 # Main executable
 add_executable(arkhen_node cpp/src/main.cpp)
 target_link_libraries(arkhen_node arkhe_cpp)
+# Main executable
+add_executable(arkhen_node cpp/src/main.cpp)
+target_link_libraries(arkhen_node arkhe_cpp)
+
+# Link to Rust library
 target_link_libraries(arkhen_node ${CMAKE_BINARY_DIR}/libarkhen_rust.so)
