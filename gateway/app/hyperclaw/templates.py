@@ -75,6 +75,16 @@ BIOTECH_TEMPLATES = {
         "goals": {"species_diversity_index": 0.8, "metabolite_production": 0.5, "host_symbiosis_score": 0.9},
         "mode": Mode.EXPLORE,
         "budget": {"compute": 3000, "time": 604800}
+    },
+    "ruminant_genetics_ovis": {
+        "goals": {
+            "krt_fiber_optimization": 0.9,
+            "rumen_metabolic_efficiency": 0.85,
+            "karyotype_stability_2n54": 1.0,
+            "transgenic_expression_yield": 0.75
+        },
+        "mode": Mode.EXPLORE,
+        "budget": {"compute": 4500, "time": 1209600}
     }
 }
 
