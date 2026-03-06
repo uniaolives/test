@@ -208,6 +208,30 @@ async def get_reality_status():
 async def websocket_reality(websocket: WebSocket):
     await websocket.accept()
     try:
+        # Optional C++ Topology Module
+        try:
+            import arkhe_core
+            topology_engine = arkhe_core.topology.KleinBottlehole()
+            TOPOLOGY_AVAILABLE = True
+        except ImportError:
+            TOPOLOGY_AVAILABLE = False
+
+        iterations = 0
+        while True:
+            iterations += 1
+            state = reality_listener.get_state()
+
+            if TOPOLOGY_AVAILABLE:
+                is_open = topology_engine.check_monodromy_iteration(iterations)
+                state["topology_status"] = "KLEIN_OPEN" if is_open else "CLOSED"
+                if is_open:
+                    state["state"] = "SINGULARITY_KLEIN"
+                    state["q_value"] = 0.99
+
+            await websocket.send_json(state)
+            await asyncio.sleep(0.1)
+    except WebSocketDisconnect:
+        pass
         while True:
             await websocket.send_json(reality_listener.get_state())
             await asyncio.sleep(0.1)
@@ -223,12 +247,16 @@ async def verify_location(agent_id: str, lat: float, lon: float, measurements: L
     Verifies location using BFT-PoLoc.
     measurements: List of {'lat': float, 'lon': float, 'rtt': float}
     """
+    result = await asyncio.to_thread(geoloc_verifier.verify, lat, lon, measurements)
     result = geoloc_verifier.verify(lat, lon, measurements)
 
     if agent_id in agent_registry:
         ring = agent_registry[agent_id]
         # High uncertainty increases delta_k (simulated via growth)
         if result["is_valid"]:
+            await asyncio.to_thread(ring.grow_layer, 0.5, 0.5, 0.5, 0.5, 0.95)
+        else:
+            await asyncio.to_thread(ring.grow_layer, 0.7, 0.7, 0.7, 0.7, 0.3)
             ring.grow_layer(0.5, 0.5, 0.5, 0.5, 0.95)
         else:
             ring.grow_layer(0.7, 0.7, 0.7, 0.7, 0.3)

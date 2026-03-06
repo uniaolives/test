@@ -2,6 +2,17 @@ import sys
 import os
 
 # Path to the compiled Rust library
+# Check multiple locations: dev build path and production container path
+RUST_LIB_PATHS = [
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../target/release")),
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../target/release")), # Workspace root
+    "/app",
+    os.getcwd()
+]
+
+for path in RUST_LIB_PATHS:
+    if path not in sys.path:
+        sys.path.append(path)
 RUST_LIB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../target/release"))
 sys.path.append(RUST_LIB_PATH)
 
