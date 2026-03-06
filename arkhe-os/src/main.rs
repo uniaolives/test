@@ -47,6 +47,7 @@ async fn main() -> anyhow::Result<()> {
         p2p_node.run_server().await;
     });
 
+    // 3. Iniciar Antena Biocibernética (UDP SDR)
     // 3. Iniciar Antena Biocibernética
     let bio = BioAntenna::new(7001);
     let kernel_clone = kernel.clone();
@@ -54,6 +55,13 @@ async fn main() -> anyhow::Result<()> {
         bio.run(kernel_clone).await;
     });
 
+    // 4. Iniciar Ponte Biocibernética (WebSocket Mobile)
+    let kernel_clone_ws = kernel.clone();
+    tokio::spawn(async move {
+        net::start_bio_server(kernel_clone_ws).await;
+    });
+
+    // 5. Iniciar Antena Vertical (IBM Quantum) em background
     // 4. Iniciar Antena Vertical (IBM Quantum) em background
     // 3. Iniciar Antena Vertical (IBM Quantum) em background
     let antenna = QuantumAntenna::new("SEU_IBM_QUANTUM_TOKEN".to_string());
