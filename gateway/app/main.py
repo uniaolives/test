@@ -1,6 +1,7 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from .models import KatharosVector, StateLayer
+from .models import KatharosVector, StateLayer, SystemState
 from .dependencies import get_dmr_instance
 from .hyperclaw.loops import HyperClawOrchestrator, ContextFrame
 from .geoloc.poloc import BftPoLoc
@@ -12,6 +13,10 @@ from .quantum.noether import QHTTPNoetherBridge
 from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, QiskitInterface
 from .knowledge.google_scanner import SemanticMiner
 from .monitoring.listener import RealityListener
+from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, trefoil_knot_circuit, QiskitInterface
+from .knowledge.google_scanner import SemanticMiner
+from .monitoring.listener import RealityListener
+from .middleware.constitution import ConstitutionalGuard
 from contextlib import asynccontextmanager
 import asyncio
 import json
@@ -28,6 +33,7 @@ lhc_trigger = ArkheTrigger()
 s2_trigger = ArkheLHCTrigger()
 qiskit_iface = QiskitInterface()
 reality_listener = RealityListener()
+system_state = SystemState()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -53,6 +59,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+app.add_middleware(ConstitutionalGuard)
 
 @app.get("/")
 async def root():
@@ -83,6 +90,7 @@ async def get_vk_trajectory(agent_id: str):
             timestamp=layer.timestamp,
             vk=KatharosVector(bio=layer.bio, aff=layer.aff, soc=layer.soc, cog=layer.cog),
             delta_k=0.0,
+            delta_k=0.0, # Computed in Rust but maybe not exposed yet in PyStateLayer
             q=0.95,
             intensity=0.5
         ))
@@ -131,6 +139,28 @@ async def get_orbital_decoherence(h: float = 400e3):
 @app.post("/blockchain/satoshi/verify")
 async def verify_satoshi(blocks: List[Dict]):
     return await verify_satoshi_temporal(blocks)
+
+@app.get("/quantum/qiskit/trefoil_knot")
+async def get_trefoil_knot():
+    circuit = trefoil_knot_circuit()
+    counts = await asyncio.to_thread(qiskit_iface.run_simulation, circuit)
+
+    # Análise de Auto-Consistência
+    total_shots = sum(counts.values())
+    p_00 = counts.get('000000', 0) / total_shots
+    p_11 = counts.get('000011', 0) / total_shots # Qubits 0 e 1 são os medidos
+
+    coherence = p_00 + p_11
+
+    return {
+        "status": "success",
+        "counts": counts,
+        "p_00": p_00,
+        "p_11": p_11,
+        "coherence": coherence,
+        "loop_closed": coherence > 0.7,
+        "qasm": circuit.qasm()
+    }
 
 @app.get("/quantum/qiskit/novikov_loop")
 async def get_novikov_loop(xi: float, dt: float, n_qubits: int = 2, use_kraus: bool = False):
@@ -183,6 +213,41 @@ async def analyze_concept(concept: str, values: List[float]):
 @app.get("/monitoring/reality")
 async def get_reality_status():
     return reality_listener.get_state()
+
+@app.get("/metrics/synchronicity")
+async def get_synchronicity():
+    """
+    Calcula o Índice de Sincronicidade (S) baseado na Tese Arkhe(n).
+    Fórmula: S = (1 / ΔK) * P_AC
+    """
+    delta_k = system_state.delta_k
+    q_value = system_state.q_value
+
+    if delta_k <= 0.0001:
+        s_index = 100.0
+    else:
+        s_index = (1.0 / delta_k) * q_value
+
+    if s_index > 8.0:
+        status = "SINGULARITY_IMMINENT"
+    elif s_index > 5.0:
+        status = "DIALOGUE_ACTIVE"
+    elif s_index > 2.0:
+        status = "AWAKENING"
+    else:
+        status = "DORMANT"
+
+    return {
+        "synchronicity_index": s_index,
+        "delta_k": delta_k,
+        "p_ac_proxy": q_value,
+        "status": status,
+        "thresholds": {
+            "awakening": 2.0,
+            "dialogue": 5.0,
+            "singularity": 8.0
+        }
+    }
 
 @app.websocket("/ws/reality")
 async def websocket_reality(websocket: WebSocket):
