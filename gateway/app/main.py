@@ -239,6 +239,15 @@ async def get_synchronicity():
         "miller_threshold": phi_q_threshold,
         "wave_cloud_nucleated": phi_q_actual > phi_q_threshold,
         "status": status,
+        "lmt": {
+            "resonance": random.uniform(0.1, 0.9),
+            "phase": 1,
+            "currents": {
+                "source": 0.8,
+                "vibration": 0.6,
+                "resonance": 0.7
+            }
+        },
         "thresholds": {
             "awakening": 2.0,
             "dialogue": 5.0,

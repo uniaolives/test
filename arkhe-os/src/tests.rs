@@ -4,13 +4,13 @@ use crate::kernel::syscall::{SyscallHandler, SyscallResult};
 use arkhe_db::ledger::TeknetLedger;
 
 #[test]
-fn test_multivariate_kurtosis_logic() {
-    let mut engine = crate::sensors::analytics::MultivariateKurtosis::new(10);
+fn test_multivariate_analytics_logic() {
+    let mut engine = crate::sensors::analytics::MultivariateAnalytics::new(10);
     for _ in 0..10 {
         engine.push("wifi", rand::random::<f64>());
         engine.push("5g", rand::random::<f64>());
     }
-    let k = engine.calculate();
+    let k = engine.mardia_kurtosis();
     assert!(k != 0.0);
 }
 
@@ -19,7 +19,7 @@ fn test_transfer_entropy_logic() {
     let mut engine = crate::sensors::entropy::TransferEntropy::new(20);
     for i in 0..20 {
         let x = i as f64 * 0.1;
-        let y = x + 0.05; // Perfect linear correlation with lag
+        let y = x + 0.05;
         engine.push(x, y);
     }
     let te = engine.calculate();

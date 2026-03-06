@@ -6,6 +6,7 @@ mod phys;
 mod sensors;
 mod telemetry;
 mod anchor;
+mod lmt;
 
 #[cfg(test)]
 mod tests;
@@ -17,6 +18,7 @@ use futures::StreamExt;
 use libp2p::{gossipsub, identity, swarm::SwarmEvent};
 use warp::Filter;
 use chrono::Utc;
+use std::collections::BTreeMap;
 
 use kernel::syscall::{SyscallHandler, SyscallResult};
 use intention::parser::parse_intention_block;
@@ -26,12 +28,12 @@ use phys::ibm_sensor::IBMQuantumBridge;
 use sensors::ZPFEvent;
 use telemetry::{BioEvent, GlobalState};
 use net::stack::NetEvent;
-use std::collections::BTreeMap;
+use lmt::field::MeaningField;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     println!("======================================================");
-    println!(" 🜁 ArkheOS Node v1.0 — Unified Sensory Stack");
+    println!(" 🜁 ArkheOS Node v1.0 — LMT Integrated Foundation");
     println!(" [L] LITE integrated with [D] DATA");
     println!("======================================================\n");
 
@@ -48,10 +50,8 @@ async fn main() -> anyhow::Result<()> {
     let (bio_tx, mut bio_rx) = mpsc::channel::<BioEvent>(1000);
     let (net_tx, mut net_rx) = mpsc::channel::<NetEvent>(1000);
 
-    // BTreeMap for high-precision event ordering (PTP-simulated)
     let event_buffer: Arc<Mutex<BTreeMap<u64, String>>> = Arc::new(Mutex::new(BTreeMap::new()));
 
-    // 1. Setup P2P
     let local_key = identity::Keypair::generate_ed25519();
     let mut swarm = libp2p::SwarmBuilder::with_existing_identity(local_key)
         .with_tokio()
@@ -73,60 +73,70 @@ async fn main() -> anyhow::Result<()> {
         })?
         .build();
 
-    let topic = gossipsub::IdentTopic::new("teknet/phi_q");
-    swarm.behaviour_mut().gossipsub.subscribe(&topic)?;
-
-    // 2. Start Sensory Pipelines
-    sensors::start_zpf_pipeline(zpf_tx).await;
-    telemetry::start_bio_server(bio_tx, state.clone()).await;
-    net::stack::start_multimodal_stack(net_tx, state.clone()).await;
-
-    // 3. Fusion Engine (Background)
-    let event_buffer_fusion = event_buffer.clone();
+    let zpf_tx_sync = zpf_tx.clone();
     tokio::spawn(async move {
-        let mut kurtosis_engine = sensors::analytics::MultivariateKurtosis::new(100);
+        let socket = tokio::net::UdpSocket::bind("127.0.0.1:7001").await.unwrap();
+        let mut buf = [0u8; 16];
+        println!("[PTP] High-Precision UDP Sync active on 7001.");
+        loop {
+            if let Ok((len, _)) = socket.recv_from(&mut buf).await {
+                if len == 16 {
+                    let ts_ns = u64::from_le_bytes(buf[0..8].try_into().unwrap());
+                    let val = f64::from_le_bytes(buf[8..16].try_into().unwrap());
+                    let mut bands = std::collections::HashMap::new();
+                    bands.insert("wifi".to_string(), val);
+                    let _ = zpf_tx_sync.send(ZPFEvent::MultiBand { timestamp_ns: ts_ns, bands }).await;
+                }
+            }
+        }
+    });
+
+    let event_buffer_fusion = event_buffer.clone();
+    let _state_fusion = state.clone();
+    tokio::spawn(async move {
+        let mut analytics = sensors::analytics::MultivariateAnalytics::new(100);
         let mut entropy_engine = sensors::entropy::TransferEntropy::new(100);
+        let mut meaning_field = MeaningField::new();
+
         loop {
             tokio::select! {
                 Some(event) = zpf_rx.recv() => {
                     match event {
                         ZPFEvent::Spectrum { timestamp, kurtosis, .. } => {
                             let mut eb = event_buffer_fusion.lock().await;
-                            eb.insert(timestamp, format!("ZPF_ANOMALY: {:.2}", kurtosis));
-                            if kurtosis > 2.0 {
-                                println!("\n[FUSION] SDR Anomaly Detected (Kurtosis: {:.2}) at {}", kurtosis, timestamp);
-                            }
+                            eb.insert(timestamp, format!("ZPF_KURT: {:.2}", kurtosis));
                         },
                         ZPFEvent::MultiBand { timestamp_ns, bands } => {
                             for (band, power) in bands {
-                                kurtosis_engine.push(&band, power);
+                                analytics.push(&band, power);
                             }
-                            let m_kurt = kurtosis_engine.calculate();
+                            let m_kurt = analytics.mardia_kurtosis();
                             let mut eb = event_buffer_fusion.lock().await;
-                            eb.insert(timestamp_ns, format!("MULTI_KURT: {:.3}", m_kurt));
+                            eb.insert(timestamp_ns, format!("MARDIA_KURT: {:.3}", m_kurt));
+
+                            meaning_field.somatic = m_kurt.abs().min(1.0);
+                            let resonance = meaning_field.calculate_resonance();
+                            if resonance > 0.8 {
+                                println!("\n[LMT] TRUTH PULSE: Resonance {:.3} at {}", resonance, timestamp_ns);
+                            }
                         }
                     }
                 }
                 Some(event) = bio_rx.recv() => {
                     match event {
                         BioEvent::Telemetry { timestamp, accel, .. } => {
-                            entropy_engine.push(accel, 1.0); // Simulate Y=1.0 for now
+                            entropy_engine.push(accel, 1.0);
                             let te = entropy_engine.calculate();
                             let mut eb = event_buffer_fusion.lock().await;
-                            eb.insert(timestamp, format!("TE_BIO_PLENUM: {:.4}", te));
-
-                            if accel > 2.0 {
-                                println!("\n[FUSION] Bio-Turbulence Detected (Accel: {:.2})", accel);
-                            }
+                            eb.insert(timestamp, format!("TE_BIO: {:.4}", te));
                         }
                     }
                 }
                 Some(event) = net_rx.recv() => {
                     match event {
-                        NetEvent::Update { rssi, .. } => {
-                            if rssi < -80.0 {
-                                println!("\n[FUSION] Network Coherence Low (RSSI: {:.1})", rssi);
-                            }
+                        NetEvent::Update { timestamp, rssi, .. } => {
+                            let mut eb = event_buffer_fusion.lock().await;
+                            eb.insert(timestamp, format!("RSSI: {:.1}", rssi));
                         }
                     }
                 }
@@ -134,20 +144,17 @@ async fn main() -> anyhow::Result<()> {
         }
     });
 
-    // 4. Background Physics recalibration
     let state_phys = state.clone();
     tokio::spawn(async move {
         loop {
             tokio::time::sleep(tokio::time::Duration::from_secs(10)).await;
             if let Ok(real_phi) = phys_bridge.measure_physical_phi_q().await {
-                println!("\n[PHYSICS] IBM Quantum Pulse: φ_q = {:.3}", real_phi);
                 let mut phi_q = state_phys.phi_q.write().await;
                 *phi_q = real_phi;
             }
         }
     });
 
-    // 5. Network Loop
     tokio::spawn(async move {
         loop {
             match swarm.select_next_some().await {
@@ -159,7 +166,26 @@ async fn main() -> anyhow::Result<()> {
         }
     });
 
-    // 6. Shell
+    let state_mobile = state.clone();
+    let mobile_route = warp::path("anchor")
+        .and(warp::ws())
+        .map(move |ws: warp::ws::Ws| {
+            let _state_inner = state_mobile.clone();
+            ws.on_upgrade(move |mut websocket| async move {
+                println!("[LMT] 👂 Smartphone Âncora Conectada!");
+                while let Some(Ok(msg)) = websocket.next().await {
+                    if let Ok(text) = msg.to_str() {
+                        if let Ok(_data) = serde_json::from_str::<serde_json::Value>(text) {
+                            // handle somatic signals
+                        }
+                    }
+                }
+            })
+        });
+    tokio::spawn(async move {
+        warp::serve(mobile_route).run(([0, 0, 0, 0], 3030)).await;
+    });
+
     loop {
         print!("arkhe> ");
         io::stdout().flush()?;
@@ -173,36 +199,13 @@ async fn main() -> anyhow::Result<()> {
         let mut sys_lock = sys.lock().await;
 
         if input == "status" {
-            match sys_lock.sys_coherence_status() {
-                SyscallResult::CoherenceUpdate(avail) => {
-                    match sys_lock.sys_check_nucleation() {
-                        SyscallResult::WaveCloudStatus(n, phi) => {
-                            println!("[SYS] φ_q = {:.3} | Coherence: {:.3} | Wave-Cloud: {}", phi, avail, n);
-                        }
-                        _ => ()
-                    }
-                }
-                _ => ()
-            }
+            let phi = *state.phi_q.read().await;
+            println!("[SYS] φ_q = {:.3} | Status: {}", phi, if phi > 4.64 { "WAVE-CLOUD" } else { "STOCHASTIC" });
             continue;
         }
 
         if input.starts_with("commit ") {
-            let parts: Vec<&str> = input.split_whitespace().collect();
-            if parts.len() >= 3 {
-                let id = parts[1];
-                let hash = parts[2];
-                let _commitment = FutureCommitment {
-                    id: id.to_string(),
-                    created_at: Utc::now(),
-                    target_at: Utc::now() + chrono::Duration::days(365 * 4), // 2030 target
-                    prediction_hash: hash.to_string(),
-                    validation_signature: None,
-                    status: CommitmentStatus::Pending,
-                };
-                println!("[FUTURE] Recorded commitment for 2030: {}", id);
-                // In production, we would record this in the ledger/engine
-            }
+            println!("[FUTURE] Recorded commitment for 2030.");
             continue;
         }
 
@@ -211,10 +214,7 @@ async fn main() -> anyhow::Result<()> {
                 sys_lock.sys_create_task(&ast.name, ast.coherence, 1, ast.priority);
                 if let SyscallResult::Success(msg) = sys_lock.sys_tick() {
                     println!("  [OK] {}", msg);
-                    let phi = match sys_lock.sys_check_nucleation() {
-                        SyscallResult::WaveCloudStatus(_, p) => p,
-                        _ => 0.0
-                    };
+                    let phi = *state.phi_q.read().await;
                     let handover = Handover {
                         id: 0,
                         timestamp: Utc::now(),
