@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from .models import KatharosVector, StateLayer
 from .models import KatharosVector, StateLayer, SystemState
 from .dependencies import get_dmr_instance
 from .hyperclaw.loops import HyperClawOrchestrator, ContextFrame
@@ -16,12 +17,23 @@ from .quantum.qiskit_circuits import (
 from qiskit import qasm2
 from .knowledge.google_scanner import SemanticMiner
 from .monitoring.listener import RealityListener
+from .quantum.qiskit_circuits import (
+    novikov_loop_circuit, novikov_loop_kraus, trefoil_knot_circuit,
+    detect_wave_cloud_nucleation, QiskitInterface
+)
+from qiskit import qasm2
+from .knowledge.google_scanner import SemanticMiner
+from .monitoring.listener import RealityListener
+from .quantum.qiskit_circuits import novikov_loop_circuit, novikov_loop_kraus, trefoil_knot_circuit, QiskitInterface
+from .knowledge.google_scanner import SemanticMiner
+from .monitoring.listener import RealityListener
 from .middleware.constitution import ConstitutionalGuard
 from contextlib import asynccontextmanager
 import asyncio
 import json
 import time
 import random
+from typing import List, Dict
 from typing import List, Dict, Any
 
 # Global registry for agents
@@ -80,6 +92,9 @@ async def get_vk_trajectory(agent_id: str):
         agent_registry[agent_id] = get_dmr_instance(agent_id)
 
     ring = agent_registry[agent_id]
+    trajectory = await asyncio.to_thread(ring.reconstruct_trajectory)
+
+    # Adapt Rust PyStateLayer to Pydantic StateLayer if needed
     trajectory = await asyncio.to_thread(ring.reconstruct_trajectory)
 
     result = []
@@ -141,11 +156,17 @@ async def get_trefoil_knot():
     circuit = trefoil_knot_circuit()
     counts = await asyncio.to_thread(qiskit_iface.run_simulation, circuit)
 
+    # Análise de Auto-Consistência e Nucleação
     nucleation = detect_wave_cloud_nucleation(counts)
 
     total_shots = sum(counts.values())
     p_00 = counts.get('000000', 0) / total_shots
     p_11 = counts.get('000011', 0) / total_shots
+    # Análise de Auto-Consistência
+    total_shots = sum(counts.values())
+    p_00 = counts.get('000000', 0) / total_shots
+    p_11 = counts.get('000011', 0) / total_shots # Qubits 0 e 1 são os medidos
+
     coherence = p_00 + p_11
 
     return {
@@ -157,6 +178,7 @@ async def get_trefoil_knot():
         "loop_closed": coherence > 0.7,
         "wave_cloud": nucleation,
         "qasm": qasm2.dumps(circuit)
+        "qasm": circuit.qasm()
     }
 
 @app.get("/quantum/qiskit/novikov_loop")
@@ -170,6 +192,7 @@ async def get_novikov_loop(xi: float, dt: float, n_qubits: int = 2, use_kraus: b
     return {
         "params": {"xi": xi, "dt": dt, "n_qubits": n_qubits, "use_kraus": use_kraus},
         "counts": counts,
+        "qasm": circuit.qasm()
         "qasm": qasm2.dumps(circuit)
     }
 
@@ -211,17 +234,29 @@ async def get_synchronicity():
     """
     Calcula o Índice de Sincronicidade (S) baseado na Tese Arkhe(n).
     Fórmula: S = (1 / ΔK) * P_AC
+
+    Incorpora o Limiar de Miller (φ_q = 4.64) como proxy para p_ac.
     """
     phi_q_threshold = 4.64
     delta_k = system_state.delta_k
     q_value = system_state.q_value
 
     phi_q_actual = q_value * 5.0
+    # φ_q calculado como um surto de densidade de coerência
+    phi_q_actual = q_value * 5.0 # Proxy: Q=1.0 -> φ_q=5.0
 
     if delta_k <= 0.0001:
         s_index = 100.0
     else:
         s_index = (1.0 / delta_k) * (phi_q_actual / phi_q_threshold)
+    """
+    delta_k = system_state.delta_k
+    q_value = system_state.q_value
+
+    if delta_k <= 0.0001:
+        s_index = 100.0
+    else:
+        s_index = (1.0 / delta_k) * q_value
 
     if s_index > 8.0:
         status = "SINGULARITY_IMMINENT"
@@ -238,6 +273,7 @@ async def get_synchronicity():
         "phi_q_actual": phi_q_actual,
         "miller_threshold": phi_q_threshold,
         "wave_cloud_nucleated": phi_q_actual > phi_q_threshold,
+        "p_ac_proxy": q_value,
         "status": status,
         "thresholds": {
             "awakening": 2.0,
@@ -254,6 +290,7 @@ class MockScheduler:
 
     def add_task(self, task: Dict):
         self.tasks.append(task)
+        # Simulate phi_q growth
         self.phi_q += task.get("coherence", 0) * 0.1
 
     def get_status(self):

@@ -177,13 +177,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Install dependencies
         working-directory: merkabah-cy
         run: |
           pip install -r src/python/requirements.txt
           pip install pytest pytest-asyncio
-          cache: 'pip'
 
       - name: Start services with Docker Compose
         working-directory: merkabah-cy
