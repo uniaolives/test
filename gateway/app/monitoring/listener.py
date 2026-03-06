@@ -38,6 +38,7 @@ class RealityListener:
         self.monitor = RealityCoherenceMonitor()
         self.is_active = False
         self.current_q = 0.5
+        self.hydraulic_state = {"state": "Pool", "pressure": 0.0, "flow_rate": 0.0, "viscosity": 1.0}
         self.coherence_history = deque(maxlen=1000)
         self.pulse_queue = queue.Queue()
 
@@ -116,5 +117,7 @@ class RealityListener:
             'q_value': self.current_q,
             's_index': monitor_stats['current_s'],
             'state': monitor_stats['state'],
+            'te_coupling': getattr(self, 'te_coupling', 0.0),
+            'hydraulic': self.hydraulic_state,
             'is_active': self.is_active
         }
