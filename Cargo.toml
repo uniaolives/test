@@ -81,6 +81,8 @@ members = [
     "rust/arkhe_system",
     "core_dmr",
     "arkhe-core/rust",
+    "arkhe-os",
+    "arkhe-db",
 ]
 resolver = "2"
 
