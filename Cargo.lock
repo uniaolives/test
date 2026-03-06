@@ -638,6 +638,19 @@ name = "arkhe-noether"
 version = "0.1.0"
 
 [[package]]
+name = "arkhe-os"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "env_logger",
+ "log",
+ "rand 0.8.5",
+ "serde",
+ "thiserror 1.0.69",
+]
+
+[[package]]
 name = "arkhe-pkg"
 version = "0.1.0"
 dependencies = [
