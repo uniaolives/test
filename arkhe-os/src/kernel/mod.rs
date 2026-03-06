@@ -1,3 +1,5 @@
+//! Módulo principal do kernel.
+
 pub mod task;
 pub mod allocator;
 pub mod scheduler;
