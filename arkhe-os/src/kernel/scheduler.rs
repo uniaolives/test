@@ -115,6 +115,9 @@ impl CoherenceScheduler {
         )
     }
 
+    pub fn events(&self) -> &[SchedulerEvent] {
+        &self.events
+    }
     /// Lista todos os eventos ocorridos.
     pub fn events(&self) -> &[SchedulerEvent] {
         &self.events
