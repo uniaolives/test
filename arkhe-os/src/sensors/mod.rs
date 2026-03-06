@@ -1,6 +1,12 @@
 use tokio::sync::mpsc;
 use crate::net::multimodal_anchor::ConnectivityLayer;
 
+pub mod analytics;
+pub mod entropy;
+
+pub enum ZPFEvent {
+    Spectrum { timestamp: u64, kurtosis: f64, entropy: f64 },
+    MultiBand { timestamp_ns: u64, bands: std::collections::HashMap<String, f64> },
 pub enum ZPFEvent {
     Spectrum { timestamp: u64, kurtosis: f64, entropy: f64 },
 }

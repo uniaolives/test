@@ -24,6 +24,28 @@ pub enum HandoverStatus {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VacuumSnapshot {
     pub timestamp: DateTime<Utc>,
+    pub timestamp_ns: u64,
+    pub global_phi_q: f64,
+    pub wave_cloud_active: bool,
+    pub multi_band_metrics: Option<serde_json::Value>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct FutureCommitment {
+    pub id: String,
+    pub created_at: DateTime<Utc>,
+    pub target_at: DateTime<Utc>,
+    pub prediction_hash: String,
+    pub validation_signature: Option<String>,
+    pub status: CommitmentStatus,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub enum CommitmentStatus {
+    Pending,
+    Validated,
+    Invalidated,
+    Expired,
     pub global_phi_q: f64,
     pub wave_cloud_active: bool,
 }
