@@ -40,7 +40,15 @@ RUN pytest python/tests/test_arkhe_core.py
 
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y libssl-dev ca-certificates python3 && rm -rf /var/lib/apt/lists/*
+# Copy binaries
 COPY --from=builder /build/build/arkhen_node /usr/local/bin/
+# Copy shared libraries
+COPY --from=builder /build/build/libarkhe_cpp.so /usr/local/lib/
 COPY --from=builder /build/build/arkhe_core.so /usr/local/lib/
+# Set library path
+ENV LD_LIBRARY_PATH=/usr/local/lib
+# Set python path for the binding
+ENV PYTHONPATH=/usr/local/lib
+
 EXPOSE 8080 8333 50051
 ENTRYPOINT ["echo", "Arkhe Core Operational with Validated Topology"]
