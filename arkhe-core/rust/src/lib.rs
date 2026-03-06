@@ -1,6 +1,7 @@
 pub mod ledger;
 pub mod constitution;
 pub mod ffi;
+pub mod nexus_registry;
 
 use thiserror::Error;
 
