@@ -3,6 +3,7 @@ pub mod constitution;
 pub mod ffi;
 pub mod kernel;
 pub mod physics;
+pub mod nexus_registry;
 
 use thiserror::Error;
 
