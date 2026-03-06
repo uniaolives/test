@@ -28,6 +28,7 @@ public:
     // Based on SED/Miller Framework: Interest is the ZPF density debt.
     double calculate_quantum_interest(double dt, double energy_density) {
         if (dt == 0) return 0.0;
+        if (dt <= 0) return 0.0;
         double abs_dt = std::abs(dt);
 
         // Ratio against Miller Limit
@@ -38,6 +39,8 @@ public:
 
         // Chronology protection mechanism (Novikov consistency cost)
         double protection_mechanism = planck_scale_ / (abs_dt + 1e-50);
+        // Chronology protection mechanism: Prohibitive for macro-CTCs
+        double protection_mechanism = abs_dt / (planck_scale_ + 1e-100);
 
         return topological_factor * protection_mechanism * MillerLimit::PLANCK_ENERGY;
     }
@@ -51,6 +54,10 @@ public:
         // Phase 3: Inversion (Pure Retrocausality)
         // Phase 0, 6: Identity (Normal Causality)
         return (phase == 3 || phase == 0);
+        // Phase 3: Inversion (Pure Retrocausality) - True
+        // Phase 0, 6: Identity (Normal Causality) - False
+        int phase = iterations % 6;
+        return (phase == 3);
     }
 
 private:
