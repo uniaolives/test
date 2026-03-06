@@ -93,6 +93,36 @@ def novikov_loop_kraus(xi=0.5, dt=0.1, n_qubits_main=2, n_ancilla=2):
 
     return qc
 
+def trefoil_knot_circuit():
+    """
+    Implementação da monodromia de ordem 6 para inversão temporal.
+    6 Qubits: 2 Lógica + 2 Ancilla + 2 Tunelamento
+    """
+    qc = QuantumCircuit(6, 6)
+
+    # FASE 1: Preparação do Estado "Passado"
+    for i in range(2):
+        qc.h(i)
+
+    # FASE 2: O Canal de Noether (Squeezing & Entanglement)
+    theta = np.pi / 3 # 60 graus (Monodromia Trevo)
+    qc.crx(theta, 2, 0) # Ancilla 2 controla Qubit 0
+    qc.crx(theta, 3, 1) # Ancilla 3 controla Qubit 1
+
+    # Criação do Emaranhamento Temporal
+    qc.cx(0, 4) # Qubit 0 -> Qubit Futuro 4
+    qc.cx(1, 5) # Qubit 1 -> Qubit Futuro 5
+
+    # FASE 3: A Inversão (O Pulo Topológico)
+    for i in range(2):
+        qc.sdg(i)
+        qc.h(i)
+
+    # FASE 4: Medição Retrocausal
+    qc.measure(range(2), range(2))
+
+    return qc
+
 class QiskitInterface:
     def __init__(self, backend_name='aer_simulator'):
         self.backend_name = backend_name
