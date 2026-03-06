@@ -859,6 +859,15 @@ dependencies = [
 name = "arkhen-rust"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
+ "bincode 1.3.3",
+ "chrono",
+ "reqwest 0.11.27",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "thiserror 1.0.69",
+ "tokio",
  "bincode 1.3.3",
  "serde",
  "sha2 0.10.9",
