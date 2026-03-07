@@ -39,6 +39,10 @@ impl SyscallHandler {
     pub fn sys_tick(&mut self) -> SyscallResult {
         if let Some(event) = self.scheduler.tick() {
             match event {
+                SchedulerEvent::TaskStarted(t) => SyscallResult::Success(format!("Task {} started", t.id)),
+                SchedulerEvent::TaskCompleted(t) => SyscallResult::Success(format!("Task {} completed", t.id)),
+                SchedulerEvent::WaveCloudNucleation { phi_q } => SyscallResult::Success(format!("WAVE-CLOUD NUCLEATION at φ_q = {:.3}", phi_q)),
+                SchedulerEvent::CoherenceWarning { available, .. } => SyscallResult::Error(format!("Coherence low: {:.3} available", available)),
                 SchedulerEvent::TaskStarted(t) => {
                     SyscallResult::Success(format!("Task {} started", t.id))
                 }
@@ -59,18 +63,20 @@ impl SyscallHandler {
 
     /// Consulta o estado actual da coerência.
     pub fn sys_coherence_status(&mut self) -> SyscallResult {
-        let (avail, _phi_q, _) = self.scheduler.status();
+        let (avail, _, _) = self.scheduler.status();
         SyscallResult::CoherenceUpdate(avail)
     }
 
     /// Verifica se o limiar de Miller foi ultrapassado.
     pub fn sys_check_nucleation(&mut self) -> SyscallResult {
         let (_, phi_q, _) = self.scheduler.status();
-        let nucleated = phi_q > 4.64;
-        SyscallResult::WaveCloudStatus(nucleated, phi_q)
+        SyscallResult::WaveCloudStatus(phi_q > 4.64, phi_q)
     }
 
     /// Executa um handover simbólico (teste).
+    pub fn sys_handover(&mut self, target_epoch: u32, _payload: &str) -> SyscallResult {
+        let interest = quantum_interest(0.5, 1.0);
+        SyscallResult::Success(format!("Handover to {} sent. Interest: {:.3}", target_epoch, interest))
     pub fn sys_handover(&mut self, target_epoch: u32, payload: &str) -> SyscallResult {
         let interest = quantum_interest(0.5, 1.0); // valores fictícios
         SyscallResult::Success(format!("Handover to {} sent with payload '{}'. Interest: {:.3}", target_epoch, payload, interest))

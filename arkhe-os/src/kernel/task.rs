@@ -2,6 +2,7 @@
 
 use std::cmp::Ordering;
 
+/// Representa uma tarefa (processo/thread) no sistema Arkhe(n).
 #[derive(Debug, Clone)]
 pub struct Task {
     pub id: u64,
@@ -14,6 +15,7 @@ pub struct Task {
     pub priority: i32,
     /// Tempo de criação (timestamp).
     pub created_at: std::time::Instant,
+    /// Tempo já consumido (acumulado).
     pub time_consumed: u64,
 }
 
