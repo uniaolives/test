@@ -10,3 +10,5 @@ pandas
 pyarrow
 qiskit
 qiskit-aer
+sqlalchemy
+psycopg2-binary
