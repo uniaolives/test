@@ -5,6 +5,7 @@ pub mod kuramoto_bridge;
 pub mod singularity_monitor;
 pub mod constitutional_guard;
 pub mod temporal_tunneling;
+pub mod asi_verification;
 
 pub use temporal_persistence::*;
 pub use temporal_channel::*;
@@ -12,6 +13,7 @@ pub use kuramoto_bridge::*;
 pub use singularity_monitor::*;
 pub use constitutional_guard::*;
 pub use temporal_tunneling::*;
+pub use asi_verification::*;
 
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -169,6 +171,98 @@ impl TemporalBridge {
             kuramoto_phase: kuramoto.phase_state(),
             constitutional_health: constitutional.health(),
         }
+    }
+
+    /// Verify incoming signal (potential ASI contact)
+    pub async fn verify_signal(&self, signal: &ASISignal) -> ContactClassification {
+        let verifier = ASIVerifier::new(
+            self.kuramoto.clone(),
+            self.constitutional.clone(),
+        );
+
+        let verification = verifier.verify(signal).await;
+        let classification = verification.classification();
+
+        tracing::info!(
+            "ASI Signal Verification: {:?} (score: {:.2})",
+            classification,
+            verification.legitimacy_score()
+        );
+
+        classification
+    }
+
+    /// Process verified ASI contact
+    pub async fn process_asi_contact(
+        &self,
+        signal: ASISignal,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        let classification = self.verify_signal(&signal).await;
+
+        match classification {
+            ContactClassification::LegitimateASI => {
+                tracing::info!("🜏 LEGITIMATE ASI CONTACT VERIFIED");
+
+                // Integrate signal into framework
+                self.integrate_signal(&signal).await?;
+
+                // Emit confirmation
+                self.channel.publish(
+                    TemporalChannelType::Omega,
+                    TemporalMessage {
+                        channel: TemporalChannelType::Omega,
+                        timestamp: chrono::Utc::now().timestamp(),
+                        phi_q: 10.0, // Maximum coherence
+                        payload: MessagePayload::GhostCluster {
+                            orbit_id: "OMEGA_CONTACT".to_string(),
+                            stability: 1.0,
+                        },
+                    },
+                )?;
+            }
+
+            ContactClassification::ProbableASI => {
+                tracing::warn!("⚠️ PROBABLE ASI CONTACT - requesting additional proofs");
+                // Defer decision, accumulate more data
+            }
+
+            ContactClassification::Ambiguous => {
+                tracing::warn!("❓ AMBIGUOUS SIGNAL - insufficient data");
+            }
+
+            ContactClassification::ProbableFraud | ContactClassification::DefiniteFraud => {
+                tracing::warn!("🚫 FRAUDULENT SIGNAL DETECTED - quarantining");
+                self.quarantine_signal(&signal).await?;
+            }
+        }
+
+        Ok(())
+    }
+
+    async fn integrate_signal(&self, _signal: &ASISignal) -> Result<(), Box<dyn std::error::Error>> {
+        // Update framework with signal data
+        // This is where the ASI "teaches" us something new
+
+        // Placeholder: in production, would update constitutional rules,
+        // Kuramoto parameters, or even the substrate architecture
+
+        Ok(())
+    }
+
+    async fn quarantine_signal(&self, signal: &ASISignal) -> Result<(), Box<dyn std::error::Error>> {
+        // Log fraudulent signal for analysis
+        tracing::warn!(
+            "Quarantining signal: {:?}",
+            signal.framework_advancement
+        );
+
+        Ok(())
+    }
+
+    /// Placeholder: Receive signal from temporal layers
+    pub async fn receive_signal(&self) -> Result<Option<ASISignal>, Box<dyn std::error::Error>> {
+        // In production: monitor Redis channels for signals
+        Ok(None)
     }
 }
 
