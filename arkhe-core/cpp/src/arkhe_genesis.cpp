@@ -12,6 +12,8 @@
 #include <sqlite3.h>
 #include <nlohmann/json.hpp>
 #include <httplib.h>
+#include "identity.hpp"
+#include "recruitment_protocol.hpp"
 
 using json = nlohmann::json;
 namespace chrono = std::chrono;
@@ -52,7 +54,7 @@ struct Handover {
     std::string payload;      // Conteúdo semântico
     double coherence;           // λ₂ local [0,1]
     int64_t timestamp;          // Unix epoch ms
-    std::string signature;    // Assinatura criptográfica (placeholder)
+    std::string signature;    // Assinatura criptográfica (hybrid)
     json metadata;            // Contexto adicional
 
     std::string serialize() const {
@@ -112,6 +114,16 @@ public:
 
             INSERT OR IGNORE INTO genesis (key, value)
             VALUES ('genesis_time', CAST(strftime('%s', 'now') AS TEXT));
+
+            CREATE TABLE IF NOT EXISTS nodes (
+                node_id TEXT PRIMARY KEY,
+                classic_pk TEXT NOT NULL,
+                pq_pk TEXT NOT NULL,
+                first_seen INTEGER,
+                last_seen INTEGER,
+                avg_coherence REAL,
+                endorsed_by TEXT
+            );
         )";
 
         char* err;
@@ -148,6 +160,64 @@ public:
         sqlite3_finalize(stmt);
 
         return rc == SQLITE_DONE;
+    }
+
+    bool register_node(const std::string& node_id, const std::string& classic_pk, const std::string& pq_pk, double coherence) {
+        std::lock_guard<std::mutex> lock(mtx);
+
+        const char* sql = R"(
+            INSERT OR REPLACE INTO nodes
+            (node_id, classic_pk, pq_pk, first_seen, last_seen, avg_coherence, endorsed_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        )";
+
+        sqlite3_stmt* stmt;
+        int prep_rc = sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+        if (prep_rc != SQLITE_OK) {
+            std::cerr << "[LEDGER] SQL Error (prepare register_node): " << sqlite3_errmsg(db) << "\n";
+            return false;
+        }
+
+        int64_t now = std::chrono::duration_cast<std::chrono::milliseconds>(
+            std::chrono::system_clock::now().time_since_epoch()).count();
+
+        sqlite3_bind_text(stmt, 1, node_id.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 2, classic_pk.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 3, pq_pk.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_int64(stmt, 4, now);
+        sqlite3_bind_int64(stmt, 5, now);
+        sqlite3_bind_double(stmt, 6, coherence);
+        sqlite3_bind_text(stmt, 7, "[]", -1, SQLITE_STATIC);
+
+        int rc = sqlite3_step(stmt);
+        if (rc != SQLITE_DONE) {
+            std::cerr << "[LEDGER] SQL Error (step register_node): " << sqlite3_errmsg(db) << "\n";
+        }
+        sqlite3_finalize(stmt);
+
+        return rc == SQLITE_DONE;
+    }
+
+    struct NodePKs {
+        std::string classic;
+        std::string pq;
+    };
+
+    NodePKs get_node_public_keys(const std::string& node_id) {
+        std::lock_guard<std::mutex> lock(mtx);
+
+        const char* sql = "SELECT classic_pk, pq_pk FROM nodes WHERE node_id = ?";
+        sqlite3_stmt* stmt;
+        sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr);
+        sqlite3_bind_text(stmt, 1, node_id.c_str(), -1, SQLITE_STATIC);
+
+        NodePKs pks;
+        if (sqlite3_step(stmt) == SQLITE_ROW) {
+            pks.classic = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+            pks.pq = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 1));
+        }
+        sqlite3_finalize(stmt);
+        return pks;
     }
 };
 
@@ -192,12 +262,17 @@ class ArkheNode {
     Ledger ledger;
     Kernel kernel;
     Constitution constitution;
+    arkhe::core::HybridIdentity identity;
     int block_height;
     bool is_genesis;
 
 public:
     ArkheNode(const std::string& id, const std::string& ledger_path, bool genesis = false)
         : node_id(id), ledger(ledger_path), block_height(0), is_genesis(genesis) {
+
+        if (is_genesis) {
+            ledger.register_node("genesis", identity.get_ed25519_pk_b64(), identity.get_dilithium_pk_b64(), 1.0);
+        }
 
         // Inicializa constituição
         constitution.P1_identity = true;
@@ -215,13 +290,19 @@ public:
         self.id = generate_uuid();
         self.emitter = "genesis";
         self.receiver = "genesis";
-        self.payload = "Εγώ είμαι η Γένεσις. Ο Λόγος αρχίζει aqui. / "
+        self.payload = "Εγώ είμαι η Γένεσις. Ο Λόgος αρχίζει aqui. / "
                        "I am the Genesis. The Word begins here. / "
                        "Ego sum Genesis. Verbum hic incipit.";
         self.coherence = 1.0;  // Máxima coerência no ato fundador
         self.timestamp = chrono::duration_cast<chrono::milliseconds>(
             chrono::system_clock::now().time_since_epoch()).count();
-        self.signature = "GENESIS_SELF_SIGNED";  // Placeholder criptográfico
+
+        // Sign the founder act (hybrid signature)
+        std::string to_sign = self.id + self.emitter + self.receiver + self.payload +
+                              arkhe::core::HybridIdentity::format_double(self.coherence) +
+                              std::to_string(self.timestamp);
+        self.signature = identity.sign(to_sign).serialize();
+
         self.metadata = {
             {"type", "genesis_self"},
             {"language", "polyglot"},
@@ -251,6 +332,23 @@ public:
     bool receive_handover(const Handover& h) {
         // Verifica constitucionalidade
         if (!verify_handover(h)) {
+            std::cerr << "[ARKHE] Handover verification failed: " << h.id << "\n";
+            return false;
+        }
+
+        // Verify cryptographic signature
+        Ledger::NodePKs pks = ledger.get_node_public_keys(h.emitter);
+        if (pks.classic.empty()) {
+            std::cerr << "[ARKHE] Unknown emitter: " << h.emitter << "\n";
+            return false;
+        }
+
+        std::string to_verify = h.id + h.emitter + h.receiver + h.payload +
+                                arkhe::core::HybridIdentity::format_double(h.coherence) +
+                                std::to_string(h.timestamp);
+        auto hybrid_sig = arkhe::core::HybridIdentity::Signature::deserialize(h.signature);
+        if (!arkhe::core::HybridIdentity::verify(to_verify, hybrid_sig, pks.classic, pks.pq)) {
+            std::cerr << "[ARKHE] Invalid hybrid signature for handover: " << h.id << "\n";
             return false;
         }
 
@@ -261,10 +359,29 @@ public:
         return stored;
     }
 
+    // Recruitment Protocol
+    arkhe::network::RecruitmentProtocol::VerificationResult recruit_node(const std::string& req_node_id,
+                                                                         const std::string& classic_pk,
+                                                                         const std::string& pq_pk,
+                                                                         const std::string& signature,
+                                                                         double phi_q) {
+        auto result = arkhe::network::RecruitmentProtocol::verify_recruitment_proof(req_node_id, classic_pk, pq_pk, signature, phi_q);
+        if (result.success) {
+            if (ledger.register_node(req_node_id, classic_pk, pq_pk, phi_q)) {
+                std::cout << "[ARKHE] Node recruited successfully (PQC): " << req_node_id << "\n";
+            } else {
+                return {false, "Database error during registration"};
+            }
+        }
+        return result;
+    }
+
     // Query de estado
     json get_status() const {
         return json{
             {"node_id", node_id},
+            {"classic_pk", identity.get_ed25519_pk_b64()},
+            {"pq_pk", identity.get_dilithium_pk_b64()},
             {"is_genesis", is_genesis},
             {"block_height", block_height},
             {"global_lambda2", kernel.get_lambda2()},
@@ -280,6 +397,27 @@ public:
         // Endpoint: status
         svr.Get("/status", [this](const httplib::Request&, httplib::Response& res) {
             res.set_content(get_status().dump(), "application/json");
+        });
+
+        // Endpoint: recruit (Node Recruitment Game)
+        svr.Post("/recruit", [this](const httplib::Request& req, httplib::Response& res) {
+            try {
+                json j = json::parse(req.body);
+                std::string req_node_id = j["node_id"];
+                std::string classic_pk = j["classic_pk"];
+                std::string pq_pk = j["pq_pk"];
+                std::string signature = j["signature"];
+                double phi_q = j["phi_q"];
+
+                auto result = recruit_node(req_node_id, classic_pk, pq_pk, signature, phi_q);
+                res.set_content(json{
+                    {"success", result.success},
+                    {"reason", result.reason}
+                }.dump(), "application/json");
+            } catch (const std::exception& e) {
+                res.status = 400;
+                res.set_content(json{{"error", e.what()}}.dump(), "application/json");
+            }
         });
 
         // Endpoint: handover (receção)
