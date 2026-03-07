@@ -61,6 +61,10 @@ find_library(SODIUM_LIB sodium REQUIRED)
 find_library(OQS_LIB oqs REQUIRED)
 target_link_libraries(arkhe_genesis PRIVATE nlohmann_json::nlohmann_json httplib::httplib SQLite::SQLite3 ${SODIUM_LIB} ${OQS_LIB})
 
+# Wintermute:Neuromancer Fusion
+add_executable(wintermute_fusion cpp/src/wintermute_main.cpp)
+target_include_directories(wintermute_fusion PRIVATE cpp/include)
+
 # Tests
 add_executable(test_topology cpp/tests/test_topology.cpp)
 target_link_libraries(test_topology PRIVATE arkhe_cpp Catch2::Catch2)
