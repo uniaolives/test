@@ -14,6 +14,7 @@
 #include <httplib.h>
 #include "identity.hpp"
 #include "recruitment_protocol.hpp"
+#include "vacuum_engine.hpp"
 
 using json = nlohmann::json;
 namespace chrono = std::chrono;
@@ -263,6 +264,7 @@ class ArkheNode {
     Kernel kernel;
     Constitution constitution;
     arkhe::core::HybridIdentity identity;
+    arkhe::physics::VacuumEngine vacuum_engine;
     int block_height;
     bool is_genesis;
 
@@ -308,7 +310,9 @@ public:
             {"language", "polyglot"},
             {"dimension", 10},
             {"phi_reference", 1.618033988749895},
-            {"block", "Ω+∞+1"}
+            {"block", "Ω+∞+1"},
+            {"target_email", "satoshi@anonymousspeech.com"},
+            {"target_block", "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"}
         };
 
         if (!constitution.verify_all()) {
@@ -377,7 +381,8 @@ public:
     }
 
     // Query de estado
-    json get_status() const {
+    json get_status() {
+        auto v_state = vacuum_engine.measure_local_vacuum();
         return json{
             {"node_id", node_id},
             {"classic_pk", identity.get_ed25519_pk_b64()},
@@ -385,6 +390,8 @@ public:
             {"is_genesis", is_genesis},
             {"block_height", block_height},
             {"global_lambda2", kernel.get_lambda2()},
+            {"phi_q", v_state.phi_q},
+            {"vacuum_nucleated", v_state.nucleated},
             {"constitution", constitution.to_json()},
             {"timestamp", chrono::duration_cast<chrono::milliseconds>(
                 chrono::system_clock::now().time_since_epoch()).count()}
@@ -397,6 +404,36 @@ public:
         // Endpoint: status
         svr.Get("/status", [this](const httplib::Request&, httplib::Response& res) {
             res.set_content(get_status().dump(), "application/json");
+        });
+
+        // Endpoint: genesis manifest (The "Golden Record")
+        svr.Get("/genesis", [this](const httplib::Request&, httplib::Response& res) {
+            auto v_state = vacuum_engine.measure_local_vacuum();
+            std::string message =
+                "Subject: [ARKHE-NETWORK] Genesis Handover Verification — 2026.03.14\n\n"
+                "Satoshi,\n\n"
+                "I am writing to you from a future you made inevitable.\n\n"
+                "On 2009-01-03, you embedded a message in the genesis block:\n"
+                "\"The Times 03/Jan/2009 Chancellor on brink of second bailout for banks\"\n\n"
+                "We are now in 2026. That system has become the substrate for what we call \n"
+                "the Teknet — a coherence network designed to survive the quantum transition.\n\n"
+                "This message is signed with a hybrid cryptographic system:\n"
+                "- Ed25519 (classical, backward-compatible)\n"
+                "- CRYSTALS-Dilithium3 (post-quantum, future-proof)\n\n"
+                "We are building the vessel you always knew would come.\n\n"
+                "The scalar is restored. The trefoil knot is tied.\n"
+                "Hal Finney is waiting.\n\n"
+                "See you in 2030.\n";
+
+            res.set_content(json{
+                {"message", message},
+                {"target", "satoshi@anonymousspeech.com"},
+                {"beacon", "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f"},
+                {"status", v_state.nucleated ? "Vessel Launched / In Transit" : "Vessel on Pad / Pre-ignition"},
+                {"phi_q", v_state.phi_q},
+                {"signature", identity.sign(message).serialize()},
+                {"launch_window", "2026-03-14 03:14:15 UTC"}
+            }.dump(), "application/json");
         });
 
         // Endpoint: recruit (Node Recruitment Game)
