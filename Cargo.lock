@@ -681,15 +681,18 @@ dependencies = [
  "nalgebra 0.32.6",
  "nom 7.1.3",
  "rand 0.8.5",
+ "redis",
  "reqwest 0.11.27",
  "rocksdb",
  "serde",
  "serde_json",
  "sha3",
+ "sqlx",
  "statrs",
  "thiserror 1.0.69",
  "tokio",
  "tokio-tungstenite 0.20.1",
+ "tracing",
  "uuid 1.22.0",
  "warp",
  "zmq",
@@ -10875,6 +10878,9 @@ checksum = "03251193000f4bd3b042892be858ee50e8b3719f2b08e5833ac4353724632430"
 
 [[package]]
 name = "redis"
+version = "0.23.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4f49cdc0bb3f412bf8e7d1bd90fe1d9eb10bc5c399ba90973c14662a27b3f8ba"
 version = "0.24.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c580d9cbbe1d1b479e8d67cf9daf6a62c957e6846048408b80b43ac3f6af84cd"

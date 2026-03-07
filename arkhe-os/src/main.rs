@@ -1,26 +1,6 @@
 //! Interface de linha de comando para o arkhe-os.
 //! Permite criar tarefas e executar ciclos de escalonamento.
 
-mod kernel;
-mod intention;
-mod net;
-mod phys;
-mod sensors;
-mod telemetry;
-mod anchor;
-mod quantum;
-mod lmt;
-mod maestro;
-mod security;
-mod physics;
-mod db;
-
-#[cfg(test)]
-mod tests;
-
-#[cfg(test)]
-mod maestro_tests;
-
 use std::sync::Arc;
 use tokio::sync::{mpsc, Mutex, RwLock};
 use clap::Parser;
@@ -31,19 +11,21 @@ use chrono::Utc;
 use std::collections::BTreeMap;
 use tokio::time::{sleep, Duration};
 
-use kernel::syscall::{SyscallHandler, SyscallResult};
-use intention::parser::parse_intention_block;
-use db::ledger::{TeknetLedger, HandoverRecord};
+use arkhe_os::kernel::syscall::{SyscallHandler, SyscallResult};
+use arkhe_os::intention::parser::parse_intention_block;
+use arkhe_os::db::ledger::{TeknetLedger, HandoverRecord};
 use arkhe_db::schema::{FutureCommitment, CommitmentStatus};
-use phys::ibm_client::QuantumAntenna;
-use sensors::ZPFEvent;
-use crate::quantum::berry::{TopologicalQubit};
-use telemetry::{BioEvent, GlobalState};
-use net::stack::NetEvent;
-use lmt::field::MeaningField;
-use maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine};
-use maestro::spine::PsiState;
-use security::{XenoFirewall, XenoRiskLevel};
+use arkhe_os::phys::ibm_client::QuantumAntenna;
+use arkhe_os::sensors::ZPFEvent;
+use arkhe_os::quantum::berry::{TopologicalQubit};
+use arkhe_os::telemetry::{BioEvent, GlobalState};
+use arkhe_os::net::stack::NetEvent;
+use arkhe_os::lmt::field::MeaningField;
+use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine};
+use arkhe_os::maestro::spine::PsiState;
+use arkhe_os::security::{XenoFirewall, XenoRiskLevel};
+use arkhe_os::week5::TemporalSubstrate;
+use arkhe_os::{sensors, telemetry, net};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -55,6 +37,14 @@ struct Args {
     /// Miller Limit for Wave-Cloud nucleation
     #[arg(short, long, default_value_t = 4.64)]
     miller: f64,
+
+    /// PostgreSQL database URL
+    #[arg(long, default_value = "postgres://postgres:postgres@localhost/arkhe")]
+    database_url: String,
+
+    /// Redis URL
+    #[arg(long, default_value = "redis://127.0.0.1/")]
+    redis_url: String,
 }
 
 #[tokio::main]
@@ -87,6 +77,29 @@ async fn main() -> anyhow::Result<()> {
     let state = Arc::new(GlobalState {
         phi_q: RwLock::new(restored_phi_q),
         coherence_history: RwLock::new(vec![]),
+    });
+
+    // Week 5 Temporal Substrate
+    let mut substrate = TemporalSubstrate::new(10, 0.1, 1.0);
+
+    // Optional connections to PG and Redis
+    if let Ok(pool) = sqlx::PgPool::connect(&args.database_url).await {
+        substrate.set_memory(pool).await;
+    }
+    if let Ok(client) = redis::Client::open(args.redis_url.as_str()) {
+        if let Ok(conn) = client.get_multiplexed_tokio_connection().await {
+            substrate.set_messages(conn).await;
+        }
+    }
+
+    let substrate = Arc::new(substrate);
+    let substrate_init = substrate.clone();
+    tokio::spawn(async move {
+        if let Err(e) = substrate_init.initialize_bridge().await {
+            eprintln!("[WEEK5] Error initializing bridge: {}", e);
+        } else {
+            substrate_init.maintain_coherence().await;
+        }
     });
 
     let (zpf_tx, mut zpf_rx) = mpsc::channel::<ZPFEvent>(1000);
@@ -129,6 +142,7 @@ async fn main() -> anyhow::Result<()> {
 
     // 4. Fusion Engine
     let event_buffer_fusion = event_buffer.clone();
+    let substrate_fusion = substrate.clone();
     tokio::spawn(async move {
         let mut analytics = sensors::analytics::MultivariateAnalytics::new(100);
         let mut entropy_engine = sensors::entropy::TransferEntropy::new(100);
@@ -155,6 +169,10 @@ async fn main() -> anyhow::Result<()> {
                             if resonance > 0.8 {
                                 println!("\n[LMT] TRUTH PULSE: Resonance {:.3} at {}", resonance, timestamp_ns);
                             }
+
+                            // Update H in Constitutional Guard
+                            let mut guard = substrate_fusion.constitution.write().await;
+                            guard.update_h(1.0, 1.0, 0.1); // Placeholder values
                         }
                     }
                 }
@@ -183,6 +201,7 @@ async fn main() -> anyhow::Result<()> {
     // 5. Background Physics Recalibration
     let antenna = QuantumAntenna::new("SIMULATED_TOKEN".to_string());
     let state_phys = state.clone();
+    let substrate_phys = substrate.clone();
     tokio::spawn(async move {
         loop {
             sleep(Duration::from_secs(30)).await;
@@ -190,6 +209,10 @@ async fn main() -> anyhow::Result<()> {
                 let mut phi = state_phys.phi_q.write().await;
                 *phi = real_phi_q;
                 println!("\n[SYSTEM] Vácuo recalibrado via hardware físico: φ_q = {:.3}", real_phi_q);
+
+                // Update S-Index
+                let mut monitor = substrate_phys.s_index.write().await;
+                monitor.compute(real_phi_q, 1.0, 1.0);
             }
         }
     });
@@ -224,7 +247,10 @@ async fn main() -> anyhow::Result<()> {
 
         if input == "status" {
             let phi = *state.phi_q.read().await;
-            println!("[SYS] φ_q = {:.3} | Status: {}", phi, if phi > args.miller { "WAVE-CLOUD" } else { "STOCHASTIC" });
+            let h = substrate.constitution.read().await.h;
+            let s = substrate.s_index.read().await.current_s;
+            println!("[SYS] φ_q = {:.3} | H = {:.3} | S = {:.3}", phi, h, s);
+            println!("[SYS] Status: {}", if phi > args.miller { "WAVE-CLOUD" } else { "STOCHASTIC" });
             continue;
         }
 
