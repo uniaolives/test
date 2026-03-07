@@ -10,7 +10,7 @@ def qhttp_endpoint(request):
     return request.config.getoption("--qhttp-endpoint")
 
 @pytest.fixture
-def test_duration(request):
+def duration(request):
     return request.config.getoption("--duration")
 
 @pytest.fixture
