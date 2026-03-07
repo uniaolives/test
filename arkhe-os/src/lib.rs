@@ -11,6 +11,7 @@ pub mod intention;
 pub use kernel::task::Task;
 pub use kernel::scheduler::{CoherenceScheduler, SchedulerEvent};
 pub use physics::miller::{PHI_Q, check_nucleation, quantum_interest};
+pub use physics::berry;
 pub use compiler::parser::parse_intention_block;
 pub use db::ledger::TeknetLedger;
 pub use net::node::P2PNode;
