@@ -651,6 +651,9 @@ name = "arkhe-os"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "arkhe-db",
+ "bincode 1.3.3",
+ "chrono",
  "bincode 1.3.3",
  "chrono",
  "env_logger",
