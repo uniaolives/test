@@ -4,6 +4,9 @@ pub mod compiler;
 pub mod db;
 pub mod net;
 pub mod phys;
+pub mod quantum;
+pub mod sensors;
+pub mod telemetry;
 
 pub use kernel::task::Task;
 pub use kernel::scheduler::{CoherenceScheduler, SchedulerEvent};
