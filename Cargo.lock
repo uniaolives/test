@@ -651,6 +651,20 @@ name = "arkhe-os"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "bincode 1.3.3",
+ "chrono",
+ "env_logger",
+ "futures-util",
+ "log",
+ "nom 7.1.3",
+ "rand 0.8.5",
+ "reqwest 0.11.27",
+ "rocksdb",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.69",
+ "tokio",
+ "warp",
  "arkhe-db",
  "bincode 1.3.3",
  "chrono",
@@ -1462,6 +1476,24 @@ dependencies = [
  "quote",
  "regex",
  "rustc-hash 1.1.0",
+ "shlex",
+ "syn 2.0.117",
+]
+
+[[package]]
+name = "bindgen"
+version = "0.72.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "993776b509cfb49c750f11b8f07a46fa23e0a1386ffc01fb1e7d343efc387895"
+dependencies = [
+ "bitflags 2.11.0",
+ "cexpr",
+ "clang-sys",
+ "itertools 0.12.1",
+ "proc-macro2",
+ "quote",
+ "regex",
+ "rustc-hash 2.1.1",
  "shlex",
  "syn 2.0.117",
 ]
@@ -7996,6 +8028,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "lz4-sys"
+version = "1.11.1+lz4-1.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6bd8c0d6c6ed0cd30b3652886bb8711dc4bb01d637a68105a3d5158039b418e6"
+dependencies = [
+ "cc",
+ "libc",
+]
 name = "lru-slab"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -10295,6 +10335,8 @@ checksum = "8cc2c5017e4b43d5995dcea317bc46c1e09404c0a9664d2908f7f02dfe943d75"
 dependencies = [
  "bytes",
  "pin-project-lite",
+ "quinn-proto",
+ "quinn-udp",
  "quinn-proto 0.10.6",
  "quinn-udp 0.4.1",
  "rustc-hash 1.1.0",
