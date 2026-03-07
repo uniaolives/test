@@ -15,10 +15,6 @@ pub use node::P2PNode;
 pub use bio::BioAntenna;
 pub use bio_socket::start_bio_server;
 
-pub use protocol::HandoverData;
-pub use node::P2PNode;
-use libp2p::{gossipsub, mdns, swarm::NetworkBehaviour};
-
 #[derive(NetworkBehaviour)]
 pub struct ArkheNetBehavior {
     pub gossipsub: gossipsub::Behaviour,
