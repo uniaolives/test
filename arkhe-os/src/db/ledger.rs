@@ -33,19 +33,6 @@ impl TeknetLedger {
     pub fn save_vacuum_state(&self, current_phi_q: f64, last_task_id: u64) -> Result<(), String> {
         self.db.put("state:phi_q", current_phi_q.to_le_bytes()).map_err(|e| e.to_string())?;
         self.db.put("state:last_id", last_task_id.to_le_bytes()).map_err(|e| e.to_string())?;
-    // Placeholder for RocksDB
-}
-
-impl TeknetLedger {
-    pub fn new(_path: &str) -> Result<Self, String> {
-        Ok(Self {})
-    }
-
-    pub fn commit_handover(&self, _record: &HandoverRecord) -> Result<(), String> {
-        Ok(())
-    }
-
-    pub fn save_vacuum_state(&self, _current_phi_q: f64, _last_task_id: u64) -> Result<(), String> {
         Ok(())
     }
 
@@ -61,6 +48,5 @@ impl TeknetLedger {
             .unwrap_or(0);
 
         (phi_q, last_id)
-        (1.0, 0)
     }
 }
