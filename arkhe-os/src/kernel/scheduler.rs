@@ -6,11 +6,6 @@ use super::allocator::CoherenceAllocator;
 use crate::physics::miller::PHI_Q;
 
 /// Eventos que o escalonador pode gerar.
-use std::collections::BinaryHeap;
-use super::task::Task;
-use super::allocator::CoherenceAllocator;
-use crate::lib::miller::PHI_Q;
-
 pub enum SchedulerEvent {
     TaskStarted(Task),
     TaskCompleted(Task),
@@ -48,14 +43,6 @@ impl CoherenceScheduler {
     pub fn tick(&mut self) -> Option<SchedulerEvent> {
         self.tick_count += 1;
 
-        // Se há uma tarefa em execução, decrementar o tempo restante
-        if let Some(task) = &mut self.running_task {
-            // Simula execução por um tick
-            if task.time_consumed >= task.estimated_duration {
-                // Tarefa concluída
-    pub fn tick(&mut self) -> Option<SchedulerEvent> {
-        self.tick_count += 1;
-
         if let Some(task) = &mut self.running_task {
             if task.time_consumed >= task.estimated_duration {
                 let completed = task.clone();
@@ -75,9 +62,6 @@ impl CoherenceScheduler {
             match self.allocator.allocate(&next_task) {
                 Ok(_) => {
                     // Verificar risco de nucleação
-        if let Some(next_task) = self.task_queue.pop() {
-            match self.allocator.allocate(&next_task) {
-                Ok(_) => {
                     let phi = self.allocator.current_phi_q();
                     if phi > PHI_Q {
                         self.events.push(SchedulerEvent::WaveCloudNucleation { phi_q: phi });
@@ -88,15 +72,11 @@ impl CoherenceScheduler {
                 Err(_e) => {
                     // Coerência insuficiente: recolocar na fila e emitir aviso
                     let avail = self.allocator.available();
+                    let required = next_task.coherence_required;
                     self.task_queue.push(next_task);
                     Some(SchedulerEvent::CoherenceWarning {
                         available: avail,
-                        required: 0.0, // poderíamos extrair do erro
-                Err(_) => {
-                    self.task_queue.push(next_task);
-                    Some(SchedulerEvent::CoherenceWarning {
-                        available: self.allocator.available(),
-                        required: 0.0,
+                        required,
                     })
                 }
             }
@@ -115,9 +95,6 @@ impl CoherenceScheduler {
         )
     }
 
-    pub fn events(&self) -> &[SchedulerEvent] {
-        &self.events
-    }
     /// Lista todos os eventos ocorridos.
     pub fn events(&self) -> &[SchedulerEvent] {
         &self.events
