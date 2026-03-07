@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from .models_pydantic import KatharosVector, StateLayer, SystemState
 from .dependencies import get_dmr_instance, RUST_AVAILABLE
+from .database import get_db, init_db, check_db_health, get_db_stats, SessionLocal
 from .database import get_db, init_db, check_db_health, get_db_stats
 from .repositories.dmr_repository import DMRRepository
 from .hyperclaw.loops import HyperClawOrchestrator, ContextFrame
@@ -94,6 +95,9 @@ async def audit_middleware(request: Request, call_next):
     process_time = (time.time() - start_time) * 1000
 
     if OPERATIONAL_MODE in ["FULL", "DATABASE ONLY"]:
+        db = None
+        try:
+            db = SessionLocal()
         try:
             db = next(get_db())
             repo = DMRRepository(db)
@@ -109,6 +113,9 @@ async def audit_middleware(request: Request, call_next):
             )
         except Exception as e:
             print(f"Audit log failed: {e}")
+        finally:
+            if db:
+                db.close()
 
     return response
 
