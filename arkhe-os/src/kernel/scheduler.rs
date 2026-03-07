@@ -58,8 +58,6 @@ impl CoherenceScheduler {
 
         // Se não há tarefa em execução, pegar a próxima da fila
         if let Some(next_task) = self.task_queue.pop() {
-            match self.allocator.allocate(&next_task) {
-                Ok(_) => {
             // Tentar alocar coerência para ela
             match self.allocator.allocate(&next_task) {
                 Ok(_) => {
@@ -72,11 +70,6 @@ impl CoherenceScheduler {
                     Some(SchedulerEvent::TaskStarted(next_task))
                 }
                 Err(_) => {
-                    self.task_queue.push(next_task);
-                    Some(SchedulerEvent::CoherenceWarning {
-                        available: self.allocator.available(),
-                        required: 0.0,
-                Err(_e) => {
                     // Coerência insuficiente: recolocar na fila e emitir aviso
                     let avail = self.allocator.available();
                     let required = next_task.coherence_required;
