@@ -6,6 +6,7 @@ qiskit
 qiskit-algorithms
 aiohttp
 aioredis
+redis
 cryptography
 pika
 requests

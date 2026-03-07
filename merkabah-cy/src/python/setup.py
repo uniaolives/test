@@ -10,6 +10,8 @@ setup(
         "requests",
         "fastapi",
         "uvicorn",
-        "cryptography"
+        "cryptography",
+        "redis",
+        "aioredis"
     ],
 )
