@@ -31,6 +31,7 @@ impl CoherenceAllocator {
     }
 
     /// Tenta alocar coerência para uma tarefa.
+    /// Retorna a quantidade alocada ou um erro.
     pub fn allocate(&mut self, task: &super::task::Task) -> Result<f64, AllocError> {
         let required = task.coherence_required;
         let available = self.available_coherence - self.reserved_coherence;
