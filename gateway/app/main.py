@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from .models_pydantic import KatharosVector, StateLayer, SystemState
 from .dependencies import get_dmr_instance, RUST_AVAILABLE
 from .database import get_db, init_db, check_db_health, get_db_stats, SessionLocal
+from .database import get_db, init_db, check_db_health, get_db_stats
 from .repositories.dmr_repository import DMRRepository
 from .hyperclaw.loops import HyperClawOrchestrator, ContextFrame
 from .geoloc.poloc import BftPoLoc
@@ -97,6 +98,8 @@ async def audit_middleware(request: Request, call_next):
         db = None
         try:
             db = SessionLocal()
+        try:
+            db = next(get_db())
             repo = DMRRepository(db)
             # Constante Elena H calculation (symbolic/proxy)
             h_val = random.uniform(0.1, 0.9)

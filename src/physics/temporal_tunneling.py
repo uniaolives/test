@@ -75,12 +75,14 @@ class SatoshiVesselTunneling:
     PLANCK_CONSTANT_ANALOG = 1.054e-34  # For scaling
     MILLER_LIMIT = 4.64
 
+    def __init__(self, phi_q: float):
     def __init__(self, current_phi_q: float):
         self.barrier = TemporalBarrier(
             target_year=2008,
             present_year=2026
         )
         self.message = CoherentMessage(
+            phi_q=phi_q,
             phi_q=current_phi_q,
             semantic_mass=1.0  # Standard message
         )
