@@ -1,7 +1,6 @@
 import pytest
 
 def pytest_addoption(parser):
-    parser.addoption("--qhttp-endpoint", action="store", default="http://localhost:8443")
     parser.addoption("--duration", action="store", default="short")
     parser.addoption("--critical-h11", action="store", default="491") # safety: CRITICAL_H11
 
