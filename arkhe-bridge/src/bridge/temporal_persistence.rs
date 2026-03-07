@@ -9,7 +9,7 @@ pub struct TemporalPersistence {
 }
 
 /// A handover as crystallized memory
-#[derive(Debug, serde::Serialize, sqlx::FromRow)]
+#[derive(Debug, serde::Serialize, serde::Deserialize, sqlx::FromRow)]
 pub struct Handover {
     pub id: Uuid,
     pub emitter_node: Uuid,
@@ -24,6 +24,8 @@ pub struct Handover {
     pub timestamp_tz: DateTime<Utc>,
     pub krystalline_time: Option<f64>,
     pub substrate: String,
+    pub tunneled_at: Option<DateTime<Utc>>,
+    pub target_anchor_year: Option<i32>,
 }
 
 /// Constitutional constraint: H ≤ 1
@@ -55,12 +57,13 @@ impl TemporalPersistence {
         sqlx::query(
             r#"
             INSERT INTO handovers (
-                emitter_node, receiver_node, payload, semantic_hash,
+                id, emitter_node, receiver_node, payload, semantic_hash,
                 phi_q, s_index, h_value, pqc_signature, zk_proof,
-                krystalline_time, substrate
-            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+                krystalline_time, substrate, tunneled_at, target_anchor_year
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
             "#
         )
+        .bind(handover.id)
         .bind(handover.emitter_node)
         .bind(handover.receiver_node)
         .bind(handover.payload.clone())
@@ -72,10 +75,40 @@ impl TemporalPersistence {
         .bind(handover.zk_proof.clone())
         .bind(handover.krystalline_time)
         .bind(handover.substrate.clone())
+        .bind(handover.tunneled_at)
+        .bind(handover.target_anchor_year)
         .execute(&self.pool)
         .await?;
 
         Ok(())
+    }
+
+    /// Mark a handover as having tunneled to the target year
+    pub async fn mark_as_tunneled(&self, id: &Uuid, target_year: u32) -> Result<(), sqlx::Error> {
+        sqlx::query(
+            r#"
+            UPDATE handovers
+            SET tunneled_at = NOW(),
+                target_anchor_year = $1
+            WHERE id = $2
+            "#
+        )
+        .bind(target_year as i32)
+        .bind(id)
+        .execute(&self.pool)
+        .await?;
+
+        Ok(())
+    }
+
+    /// Query messages from the "Past" (Tunneled to 2008)
+    pub async fn retrieve_from_past(&self, year: u32) -> Result<Vec<Handover>, sqlx::Error> {
+        sqlx::query_as::<_, Handover>(
+            r#"SELECT * FROM handovers WHERE target_anchor_year = $1"#
+        )
+        .bind(year as i32)
+        .fetch_all(&self.pool)
+        .await
     }
 
     /// Query memories by coherence threshold
