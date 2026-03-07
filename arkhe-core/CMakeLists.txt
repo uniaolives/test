@@ -76,6 +76,10 @@ find_library(SODIUM_LIB sodium REQUIRED)
 find_library(OQS_LIB oqs REQUIRED)
 target_link_libraries(arkhe_genesis PRIVATE nlohmann_json::nlohmann_json httplib::httplib SQLite::SQLite3 ${SODIUM_LIB} ${OQS_LIB})
 
+# Wintermute:Neuromancer Fusion
+add_executable(wintermute_fusion cpp/src/wintermute_main.cpp)
+target_include_directories(wintermute_fusion PRIVATE cpp/include)
+
 # Tests use the internal headers
 add_executable(test_topology cpp/tests/test_topology.cpp)
 target_include_directories(test_topology PRIVATE ${CMAKE_SOURCE_DIR}/cpp/tests)
