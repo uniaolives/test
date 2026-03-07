@@ -26,6 +26,7 @@ public:
     // Calculates "Quantum Interest" for a CTC of duration dt
     // Based on SED/Miller Framework: Interest is the ZPF density debt.
     double calculate_quantum_interest(double dt, double energy_density) {
+        if (dt == 0) return 0.0;
         if (std::abs(dt) < 1e-100) return 0.0;
         double abs_dt = std::abs(dt);
 
@@ -35,6 +36,10 @@ public:
         // Topological factor scales with ZPF density deficit over time
         double topological_factor = std::exp(density_ratio * abs_dt);
 
+        // Chronology protection mechanism (Novikov consistency cost)
+        double protection_mechanism = planck_scale_ / (abs_dt + 1e-50);
+
+        return topological_factor * protection_mechanism * MillerLimit::PLANCK_ENERGY;
         // Chronology protection mechanism: Prohibitive for macro-CTCs
         // We want short trips to be affordable but macro trips (like 1s) to be huge.
         // abs_dt = 1e-43 -> cost low
@@ -46,6 +51,10 @@ public:
 
     // Verifies if the traverse is topologically permitted (Monodromy)
     bool check_monodromy_iteration(int iterations) {
+        // Phase 3: Inversion (Pure Retrocausality)
+        // Phase 0, 6: Identity (Normal Causality)
+        int phase = iterations % 6;
+        return (phase == 3 || phase == 0);
         // Phase 3: Inversion (Pure Retrocausality) - True
         // Phase 0, 6: Identity (Normal Causality) - False
         int phase = std::abs(iterations) % 6;

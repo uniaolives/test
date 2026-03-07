@@ -26,7 +26,6 @@ bincode = "1.3.3"
 arkhe-db = { path = "../arkhe-db" }
 libp2p = { version = "0.53", features = ["tcp", "dns", "tokio", "noise", "yamux", "gossipsub", "mdns", "macros"] }
 futures = "0.3"
-futures-util = "0.3"
 rand = "0.8"
 zmq = "0.10"
 tokio-tungstenite = "0.20"
