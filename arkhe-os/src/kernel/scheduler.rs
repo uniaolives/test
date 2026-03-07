@@ -69,7 +69,7 @@ impl CoherenceScheduler {
                     self.running_task = Some(next_task.clone());
                     Some(SchedulerEvent::TaskStarted(next_task))
                 }
-                Err(_e) => {
+                Err(_) => {
                     // Coerência insuficiente: recolocar na fila e emitir aviso
                     let avail = self.allocator.available();
                     let required = next_task.coherence_required;
@@ -102,8 +102,6 @@ impl CoherenceScheduler {
 
     /// Injeta coerência diretamente no sistema (ex.: via ponte biocibernética)
     pub fn inject_coherence(&mut self, delta: f64) {
-        // Atualiza a coerência disponível no alocador (ou um campo global se preferir)
-        // Por agora, vamos apenas logar o impacto no φ_q
         println!("[SCHEDULER] Coerência injetada: +{:.3}", delta);
     }
 }

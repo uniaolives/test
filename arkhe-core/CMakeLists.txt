@@ -12,11 +12,20 @@ find_package(pybind11 QUIET)
 add_library(arkhe_cpp SHARED
     cpp/src/kernel.cpp
     cpp/src/nexus_node.cpp
+    cpp/src/arkhe_vessel.cpp
 )
 
 target_include_directories(arkhe_cpp PUBLIC
-    ${CMAKE_SOURCE_DIR}/cpp/include
+    ${PROJECT_SOURCE_DIR}/cpp/include
 )
+
+# Python Module
+if(pybind11_FOUND)
+    pybind11_add_module(arkhe_core
+        cpp/src/python_bindings.cpp
+    )
+    target_link_libraries(arkhe_core PRIVATE arkhe_cpp)
+endif()
 
 # Main executable
 add_executable(arkhen_node cpp/src/main.cpp)
@@ -80,9 +89,8 @@ target_link_libraries(arkhe_genesis PRIVATE nlohmann_json::nlohmann_json httplib
 add_executable(wintermute_fusion cpp/src/wintermute_main.cpp)
 target_include_directories(wintermute_fusion PRIVATE cpp/include)
 
-# Tests use the internal headers
+# Tests
 add_executable(test_topology cpp/tests/test_topology.cpp)
-target_include_directories(test_topology PRIVATE ${CMAKE_SOURCE_DIR}/cpp/tests)
 target_link_libraries(test_topology arkhe_cpp Catch2::Catch2)
 # Tests
 add_executable(test_topology cpp/tests/test_topology.cpp)
