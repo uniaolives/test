@@ -7,6 +7,7 @@ module MerkabahCY
 
 using LinearAlgebra
 using Statistics
+using Random
 using DifferentialEquations
 using Flux
 using Graphs
