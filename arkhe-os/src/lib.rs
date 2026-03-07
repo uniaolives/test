@@ -7,6 +7,10 @@ pub mod phys;
 pub mod quantum;
 pub mod sensors;
 pub mod telemetry;
+pub mod telemetry;
+pub mod sensors;
+pub mod intention;
+pub mod zkproof;
 
 pub use kernel::task::Task;
 pub use kernel::scheduler::{CoherenceScheduler, SchedulerEvent};
@@ -16,3 +20,6 @@ pub use compiler::parser::parse_intention_block;
 pub use db::ledger::TeknetLedger;
 pub use net::node::P2PNode;
 pub use phys::ibm_client::QuantumAntenna;
+
+#[cfg(test)]
+mod tests;

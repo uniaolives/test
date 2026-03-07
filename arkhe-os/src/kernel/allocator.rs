@@ -82,16 +82,27 @@ impl CoherenceAllocator {
 
     /// Retorna a densidade φ_q equivalente (coerência convertida).
     pub fn current_phi_q(&self) -> f64 {
-        // A densidade é a coerência disponível convertida + baseline
-        let baseline_density = 1.0; // ρ₀
-        baseline_density + crate::physics::miller::ZPF_COUPLING * self.available_coherence
+        // A densidade local é a soma da baseline do vácuo e a injecção via coerência.
+        // O factor de acoplamento ZPF_COUPLING define quanto a coerência afecta o vácuo.
+        // Para ultrapassar o Miller Limit (4.64), local deve ser > 10^117.64.
+
+        let baseline = 1e113; // ρ₀
+
+        // Coerência injectada em grande escala (ex.: 1e118 para nucleação)
+        let injected = crate::physics::miller::ZPF_COUPLING * self.available_coherence * 1e118;
+        let local = baseline + injected;
+
+        if local <= 0.0 {
+            return 0.0;
+        }
+        (local / baseline).log10().max(0.0)
     }
 
     /// Verifica se o sistema está próximo da nucleação (φ_q próximo de 4.64).
     pub fn nucleation_risk(&self) -> f64 {
         let phi = self.current_phi_q();
         if phi > PHI_Q {
-            1.0 // já nucleou
+            1.0
         } else {
             (phi / PHI_Q).min(1.0)
         }
