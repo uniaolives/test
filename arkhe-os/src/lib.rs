@@ -8,6 +8,7 @@ pub mod telemetry;
 pub mod sensors;
 pub mod intention;
 pub mod zkproof;
+pub mod security;
 
 pub use kernel::task::Task;
 pub use kernel::scheduler::{CoherenceScheduler, SchedulerEvent};
