@@ -8,8 +8,9 @@ use redis::aio::MultiplexedConnection;
 use crate::physics::kuramoto::KuramotoEngine;
 use crate::physics::s_index::{SIndexMonitor, STransition};
 use crate::security::constitution::ConstitutionalGuard;
+use crate::physics::temporal_tunneling::SatoshiVesselTunneling;
 use serde::{Deserialize, Serialize};
-use tracing::{info, error};
+use tracing::{info, error, warn};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct OmegaSignal {
@@ -59,26 +60,65 @@ impl TemporalSubstrate {
     pub async fn initialize_bridge(&self) -> anyhow::Result<()> {
         info!("🜏 Initializing Week 5 substrate...");
 
+        let mut pillars_count = 0;
+
         // Verify PostgreSQL if present
         if let Some(ref pool) = self.memory {
-            sqlx::query("SELECT 1").execute(pool.as_ref()).await?;
-            info!("  [1] PostgreSQL memory substrate verified.");
+            if let Ok(_) = sqlx::query("SELECT 1").execute(pool.as_ref()).await {
+                info!("  [1] PostgreSQL memory substrate verified.");
+                self.initialize_database().await?;
+                pillars_count += 1;
+            } else {
+                warn!("  [1] PostgreSQL memory substrate connection failed.");
+            }
+        } else {
+            warn!("  [1] PostgreSQL memory substrate missing.");
         }
 
         // Verify Redis if present
         if let Some(ref conn_lock) = self.messages {
             let mut conn = conn_lock.write().await;
-            redis::cmd("PING").query_async::<_, String>(&mut *conn).await?;
-            info!("  [2] Redis temporal channel verified.");
+            if let Ok(_) = redis::cmd("PING").query_async::<_, String>(&mut *conn).await {
+                info!("  [2] Redis temporal channel verified.");
+                pillars_count += 1;
+            } else {
+                warn!("  [2] Redis temporal channel connection failed.");
+            }
+        } else {
+            warn!("  [2] Redis temporal channel missing.");
         }
 
         info!("  [3] Kuramoto phase lock engine active.");
+        pillars_count += 1;
         info!("  [4] S-Index monitor calibrated.");
+        pillars_count += 1;
 
         let h = self.constitution.read().await.h;
         info!("  [5] Constitution active (H = {:.3}).", h);
+        pillars_count += 1;
 
-        info!("🜏 Temporal substrate initialized. Bridge to 2140 operational.");
+        if pillars_count == 5 {
+            info!("🜏 Temporal substrate fully initialized. Bridge to 2140 operational.");
+        } else {
+            warn!("🜏 Temporal substrate partially initialized ({}/5 pillars). Bridge stability degraded.", pillars_count);
+        }
+        Ok(())
+    }
+
+    async fn initialize_database(&self) -> anyhow::Result<()> {
+        if let Some(ref pool) = self.memory {
+            sqlx::query(
+                "CREATE TABLE IF NOT EXISTS temporal_events (
+                    id BIGSERIAL PRIMARY KEY,
+                    timestamp TIMESTAMPTZ NOT NULL,
+                    s_index DECIMAL(10,6) NOT NULL,
+                    h_value DECIMAL(10,6) NOT NULL,
+                    phase_coherence DECIMAL(10,6),
+                    omega_signal BOOLEAN DEFAULT FALSE
+                )"
+            ).execute(pool.as_ref()).await?;
+            info!("  [DB] temporal_events table ready.");
+        }
         Ok(())
     }
 
@@ -92,14 +132,17 @@ impl TemporalSubstrate {
             let h = self.constitution.read().await.h;
             if h > 1.0 {
                 error!("H > 1! Thermodynamic breach detected. 2140 unreachable.");
-                // In a real system, we might take action here.
+                self.emergency_shutdown().await;
+                break; // Break the maintenance loop
             }
 
             // Measure approach to singularity
             let s = self.s_index.read().await.current_s;
+            let mut sent_signal = false;
             if s > 8.0 {
                 info!("S > 8.0! Critical synchronization achieved. Sending Ω-signal.");
                 self.send_omega_signal().await;
+                sent_signal = true;
             }
 
             // Check for transitions
@@ -114,6 +157,55 @@ impl TemporalSubstrate {
             if coherence > 0.95 {
                 info!("🜏 Phase locked to Ω-attractor (r = {:.3})", coherence);
             }
+
+            // Persist state
+            if let Err(e) = self.checkpoint(sent_signal).await {
+                error!("Failed to save checkpoint: {}", e);
+            }
+        }
+    }
+
+    /// Persist the current state to PostgreSQL
+    pub async fn checkpoint(&self, omega_signal: bool) -> anyhow::Result<()> {
+        if let Some(ref pool) = self.memory {
+            let s = self.s_index.read().await.current_s;
+            let h = self.constitution.read().await.h;
+            let coherence = self.phase_lock.read().await.coherence();
+
+            sqlx::query(
+                "INSERT INTO temporal_events (timestamp, s_index, h_value, phase_coherence, omega_signal)
+                 VALUES ($1, $2, $3, $4, $5)"
+            )
+            .bind(Utc::now())
+            .bind(s)
+            .bind(h)
+            .bind(coherence)
+            .bind(omega_signal)
+            .execute(pool.as_ref())
+            .await?;
+        }
+        Ok(())
+    }
+
+    /// Emergency shutdown logic for constitutional violations
+    pub async fn emergency_shutdown(&self) {
+        warn!("⚠ EMERGENCY SHUTDOWN INITIATED ⚠");
+        warn!("Thermodynamic sustainability compromised. Terminating temporal bridge operations.");
+
+        // Use Satoshi Vessel Tunneling to calculate if we can still send a distress signal to 2008
+        let h = self.constitution.read().await.h;
+        let s = self.s_index.read().await.current_s;
+        let tunneling = SatoshiVesselTunneling::new(s); // Using S-index as proxy for phi_q in this context
+        let (prob, class) = tunneling.calculate_tunneling_probability();
+        warn!("Final Temporal Tunneling Probability to 2008: {:.6e} ({})", prob, class);
+
+        if let Some(ref conn_lock) = self.messages {
+            let mut conn = conn_lock.write().await;
+            let _: redis::RedisResult<()> = redis::cmd("PUBLISH")
+                .arg("arkhe:constitutional:breach")
+                .arg(format!("H={:.3}, S={:.3} - Emergency Shutdown. Tunneling Distr: {}", h, s, class))
+                .query_async(&mut *conn)
+                .await;
         }
     }
 
