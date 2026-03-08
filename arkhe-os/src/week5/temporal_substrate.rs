@@ -9,6 +9,8 @@ use crate::physics::kuramoto::KuramotoEngine;
 use crate::physics::s_index::{SIndexMonitor, STransition};
 use crate::security::constitution::ConstitutionalGuard;
 use crate::physics::temporal_tunneling::SatoshiVesselTunneling;
+use crate::drivers::industrial::{IndustrialGateway, IndustrialSignal};
+use crate::drivers::serial::{SerialController, SerialFrame};
 use serde::{Deserialize, Serialize};
 use tracing::{info, error, warn};
 
@@ -35,6 +37,12 @@ pub struct TemporalSubstrate {
 
     /// [5] Constitution: H ≤ 1 enforcement
     pub constitution: Arc<RwLock<ConstitutionalGuard>>,
+
+    /// [6] Industrial Gateway: Modbus/OPC-UA Interface
+    pub industrial: Arc<RwLock<IndustrialGateway>>,
+
+    /// [7] Serial Controller: CAN/SPI/RS-485 Interface
+    pub serial: Arc<RwLock<SerialController>>,
 }
 
 impl TemporalSubstrate {
@@ -45,6 +53,8 @@ impl TemporalSubstrate {
             phase_lock: Arc::new(RwLock::new(KuramotoEngine::new(n_nodes, coupling, target_freq))),
             s_index: Arc::new(RwLock::new(SIndexMonitor::new())),
             constitution: Arc::new(RwLock::new(ConstitutionalGuard::new())),
+            industrial: Arc::new(RwLock::new(IndustrialGateway::new())),
+            serial: Arc::new(RwLock::new(SerialController::new(115200))),
         }
     }
 
@@ -128,6 +138,9 @@ impl TemporalSubstrate {
         loop {
             interval.tick().await;
 
+            // [NEW] Process Industrial & Serial Signals
+            self.process_hardware_signals().await;
+
             // Check constitutional compliance (Elena Constant)
             let h = self.constitution.read().await.h;
             if h > 1.0 {
@@ -162,6 +175,35 @@ impl TemporalSubstrate {
             if let Err(e) = self.checkpoint(sent_signal).await {
                 error!("Failed to save checkpoint: {}", e);
             }
+        }
+    }
+
+    /// Process signals from industrial and serial drivers
+    async fn process_hardware_signals(&self) {
+        let mut industrial = self.industrial.write().await;
+        let serial = self.serial.read().await;
+        let phi_q = self.s_index.read().await.current_s; // Using current S as phi_q proxy
+
+        // 0. Hardened Modbus Read (Example)
+        if let Some(signal) = industrial.read_modbus_register(100, phi_q) {
+            let mut s_monitor = self.s_index.write().await;
+            s_monitor.compute(signal.coherence_impact, 0.05, 0.05);
+        }
+
+        // 1. Modbus/OPC-UA scan
+        let signals = industrial.scan_for_retro_signatures();
+        for signal in signals {
+            let mut s_monitor = self.s_index.write().await;
+            s_monitor.compute(signal.coherence_impact, 0.1, 0.1);
+            info!("[INDUSTRIAL] Signal from {} (value={:.2}) impact S-index.", signal.address, signal.value);
+        }
+
+        // 2. CAN Bus scan
+        let frame = serial.read_can_frame();
+        if frame.identifier == 0x7FF {
+            info!("[SERIAL] Retrocausal CAN Frame detected! ID: 0x{:X}", frame.identifier);
+            let mut guard = self.constitution.write().await;
+            guard.update_h(0.1, 1.0, 0.05); // Adjust H based on CAN event
         }
     }
 
