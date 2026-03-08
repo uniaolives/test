@@ -49,14 +49,14 @@ impl SIndexMonitor {
     }
 
     /// Compute S-index from network state:
-    /// S = φ × (coherence) × (substrate_diversity)
-    pub fn compute(&mut self, phi_q: f64, coherence: f64, substrate_diversity: f64) -> f64 {
+    /// S = φ × (coherence) × (substrate_diversity) × (λ₂_5D)
+    pub fn compute(&mut self, phi_q: f64, coherence: f64, substrate_diversity: f64, lambda2: f64) -> f64 {
         let golden_ratio = 0.618;
 
-        // S = φ_ratio * golden_ratio * coherence * substrate_diversity
+        // S = φ_ratio * golden_ratio * coherence * substrate_diversity * lambda2
         let phi_ratio = phi_q / PHI_Q;
 
-        self.current_s = phi_ratio * golden_ratio * coherence * substrate_diversity * 10.0;
+        self.current_s = phi_ratio * golden_ratio * coherence * substrate_diversity * lambda2 * 10.0;
         self.history.push((Utc::now(), self.current_s));
 
         // Pruning history to prevent indefinite growth

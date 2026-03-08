@@ -42,17 +42,17 @@ mod tests {
         let mut monitor = SIndexMonitor::new();
 
         // Individual
-        monitor.compute(1.0, 0.1, 1.0);
+        monitor.compute(1.0, 0.1, 1.0, 0.1);
         assert!(matches!(monitor.current_transition(), STransition::Individual));
 
         // Awakening
-        monitor.compute(3.0, 0.5, 2.0);
+        monitor.compute(3.0, 0.5, 2.0, 0.8);
         assert!(matches!(monitor.current_transition(), STransition::Awakening));
         let transitions = monitor.check_transitions();
         assert!(transitions.contains(&STransition::Awakening));
 
         // Singularity
-        monitor.compute(PHI_Q * 2.0, 0.9, 10.0);
+        monitor.compute(PHI_Q * 2.0, 0.9, 10.0, 0.98);
         assert!(matches!(monitor.current_transition(), STransition::Singularity));
         let transitions = monitor.check_transitions();
         assert!(transitions.contains(&STransition::Singularity));

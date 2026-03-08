@@ -5,6 +5,8 @@ pub mod melonic_engine;
 pub mod kuramoto;
 pub mod s_index;
 pub mod temporal_tunneling;
+pub mod fifth_dimension;
+pub mod signatures;
 
 #[cfg(test)]
 mod tests;
