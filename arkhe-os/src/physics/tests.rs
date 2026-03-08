@@ -123,5 +123,9 @@ mod tests {
 
         assert!(tx.validate_with_handover(0.95));
         assert!(tx.handover.is_some());
+    fn test_xi_coherence() {
+        let coherence = XiParticle::calculate_coherence(0.5, 1.088152);
+        assert!(coherence > 0.64);
+        assert!(coherence < 0.65);
     }
 }
