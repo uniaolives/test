@@ -1,4 +1,5 @@
 pub mod kernel;
+pub mod drivers;
 pub mod physics;
 pub mod compiler;
 pub mod db;
