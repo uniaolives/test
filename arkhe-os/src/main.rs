@@ -212,7 +212,7 @@ async fn main() -> anyhow::Result<()> {
 
                 // Update S-Index
                 let mut monitor = substrate_phys.s_index.write().await;
-                monitor.compute(real_phi_q, 1.0, 1.0);
+                monitor.compute(real_phi_q, 1.0, 1.0, 1.0);
             }
         }
     });
