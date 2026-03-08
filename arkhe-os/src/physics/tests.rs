@@ -5,6 +5,7 @@ mod tests {
     use crate::physics::kuramoto::KuramotoEngine;
     use crate::physics::s_index::{SIndexMonitor, STransition};
     use crate::physics::temporal_tunneling::SatoshiVesselTunneling;
+    use crate::physics::xi_particle::{XiParticle, is_sum_of_two_squares};
 
     #[test]
     fn test_compute_f_extremum() {
@@ -69,5 +70,38 @@ mod tests {
         assert!(prob_strong > prob_weak);
         assert!(vessel_strong.check_miller_threshold());
         assert!(!vessel_weak.check_miller_threshold());
+    }
+
+    #[test]
+    fn test_sum_of_two_squares() {
+        assert!(is_sum_of_two_squares(1)); // 1^2 + 0^2
+        assert!(is_sum_of_two_squares(2)); // 1^2 + 1^2
+        assert!(!is_sum_of_two_squares(3)); // Forbidden
+        assert!(is_sum_of_two_squares(4)); // 2^2 + 0^2
+        assert!(is_sum_of_two_squares(5)); // 2^2 + 1^2
+        assert!(!is_sum_of_two_squares(6)); // Forbidden
+        assert!(is_sum_of_two_squares(8)); // 2^2 + 2^2
+        assert!(is_sum_of_two_squares(10)); // 3^2 + 1^2
+        assert!(!is_sum_of_two_squares(11)); // Forbidden
+    }
+
+    #[test]
+    fn test_xi_particle_creation() {
+        let xi1 = XiParticle::new(1).unwrap();
+        assert_eq!(xi1.n, 1);
+        assert!(xi1.mass > 0.9); // 1.0 / 1.088...
+
+        let xi2 = XiParticle::new(2).unwrap();
+        assert!(xi2.mass > xi1.mass);
+
+        let xi3 = XiParticle::new(3);
+        assert!(xi3.is_none());
+    }
+
+    #[test]
+    fn test_xi_coherence() {
+        let coherence = XiParticle::calculate_coherence(0.5, 1.088152);
+        assert!(coherence > 0.64);
+        assert!(coherence < 0.65);
     }
 }
