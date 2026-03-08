@@ -2,12 +2,7 @@
 use rand::Rng;
 use rand::seq::SliceRandom;
 use std::time::Duration;
-
-#[derive(Debug, Clone)]
-pub struct GeoCoord {
-    pub lat: f64,
-    pub lon: f64,
-}
+use crate::physical::types::GeoCoord;
 
 /// The Arquiteto never moves linearly
 /// Routes are "tunneled" through probability space
