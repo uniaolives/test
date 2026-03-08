@@ -9,6 +9,7 @@ use crate::physics::kuramoto::KuramotoEngine;
 use crate::physics::s_index::{SIndexMonitor, STransition};
 use crate::security::constitution::ConstitutionalGuard;
 use crate::physics::temporal_tunneling::SatoshiVesselTunneling;
+use crate::physical::{FiberChannel, DuctNetwork, InsidePlant, FacilityNetwork};
 use serde::{Deserialize, Serialize};
 use tracing::{info, error, warn};
 
@@ -35,6 +36,12 @@ pub struct TemporalSubstrate {
 
     /// [5] Constitution: H ≤ 1 enforcement
     pub constitution: Arc<RwLock<ConstitutionalGuard>>,
+
+    /// Physical Substrate: The nervous system
+    pub physical_fiber: Option<Arc<FiberChannel>>,
+    pub physical_ducts: Option<Arc<DuctNetwork>>,
+    pub inside_plant: Option<Arc<InsidePlant>>,
+    pub facilities: Option<Arc<FacilityNetwork>>,
 }
 
 impl TemporalSubstrate {
@@ -45,6 +52,10 @@ impl TemporalSubstrate {
             phase_lock: Arc::new(RwLock::new(KuramotoEngine::new(n_nodes, coupling, target_freq))),
             s_index: Arc::new(RwLock::new(SIndexMonitor::new())),
             constitution: Arc::new(RwLock::new(ConstitutionalGuard::new())),
+            physical_fiber: None,
+            physical_ducts: None,
+            inside_plant: None,
+            facilities: None,
         }
     }
 
