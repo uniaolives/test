@@ -8,6 +8,7 @@ pub mod temporal_tunneling;
 pub mod fifth_dimension;
 pub mod signatures;
 pub mod xi_particle;
+pub mod rsm;
 
 #[cfg(test)]
 mod tests;

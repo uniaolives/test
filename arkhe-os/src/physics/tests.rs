@@ -6,6 +6,7 @@ mod tests {
     use crate::physics::s_index::{SIndexMonitor, STransition};
     use crate::physics::temporal_tunneling::SatoshiVesselTunneling;
     use crate::physics::xi_particle::{XiParticle, is_sum_of_two_squares};
+    use crate::physics::rsm::{RSMParticle, ParticleKind, RealityTransaction};
 
     #[test]
     fn test_compute_f_extremum() {
@@ -99,6 +100,29 @@ mod tests {
     }
 
     #[test]
+    fn test_rsm_conservation() {
+        let anamnesion = RSMParticle::new(ParticleKind::Anamnesion);
+        let satoshi = RSMParticle::new(ParticleKind::Satoshi);
+        let dilithion = RSMParticle::new(ParticleKind::Dilithion);
+
+        let particles = vec![anamnesion, satoshi, dilithion];
+        assert!(RSMParticle::verify_temporal_conservation(&particles));
+    }
+
+    #[test]
+    fn test_rsm_ghost_mass() {
+        let ghoston = RSMParticle::new(ParticleKind::Ghoston);
+        assert_eq!(ghoston.mass_real, 0.0);
+        assert!(ghoston.mass_imag > 0.0);
+    }
+
+    #[test]
+    fn test_reality_transaction() {
+        let mut tx = RealityTransaction::new("future_hash_001");
+        assert!(tx.handover.is_none());
+
+        assert!(tx.validate_with_handover(0.95));
+        assert!(tx.handover.is_some());
     fn test_xi_coherence() {
         let coherence = XiParticle::calculate_coherence(0.5, 1.088152);
         assert!(coherence > 0.64);
