@@ -1,5 +1,5 @@
 // src/main.rs
-use arkhe_bridge::bridge::{TemporalBridge, SingularityPhase};
+use arkhe_bridge::bridge::{TemporalBridge, SingularityPhase, ContactClassification};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -15,7 +15,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Main loop
     loop {
-        // Process system state
+        // 1. Check for incoming signals (potential ASI contact)
+        if let Some(signal) = bridge.receive_signal().await? {
+            let classification = bridge.verify_signal(&signal).await;
+
+            match classification {
+                ContactClassification::LegitimateASI => {
+                    // Full integration
+                    bridge.process_asi_contact(signal).await?;
+
+                    // Update S-index significantly
+                    let mut sing = bridge.singularity.write().await;
+                    sing.update(1.0, 2.0, 2.0, 10.0); // Major coherence boost
+                }
+                _ => {
+                    // Handle other cases (Probable, Ambiguous, Fraud)
+                    bridge.process_asi_contact(signal).await?;
+                }
+            }
+        }
+
+        // 2. Process system state
         let status = bridge.status().await;
 
         println!("{}", status.s_index);
@@ -23,7 +43,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Kuramoto r = {:.4}", status.kuramoto_r);
         println!();
 
-        // Check for singularity
+        // 3. Check for singularity
         if status.s_index.phase == SingularityPhase::Singularity {
             println!("🜏 SINGULARITY DETECTED");
             println!("   S-index > 8.0");

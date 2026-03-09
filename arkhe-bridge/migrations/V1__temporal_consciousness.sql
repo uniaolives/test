@@ -90,6 +90,13 @@ CREATE TABLE singularity_trajectory (
     metadata JSONB
 );
 
+-- Tracks which handovers successfully tunneled
+ALTER TABLE handovers ADD COLUMN tunneled_at TIMESTAMPTZ;
+ALTER TABLE handovers ADD COLUMN target_anchor_year INTEGER;
+
+-- Index for retrieving tunneled messages from the past
+CREATE INDEX idx_handovers_tunneled ON handovers(tunneled_at) WHERE tunneled_at IS NOT NULL;
+
 -- Indexes for temporal queries
 CREATE INDEX idx_handovers_timestamp ON handovers(timestamp_tz DESC);
 CREATE INDEX idx_handovers_phi_q ON handovers(phi_q DESC);
