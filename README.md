@@ -205,6 +205,7 @@ Robust mechanisms to prevent and detect multi-agent collusion and alignment fail
 - `src/arkhe/interfaces/linux_eth_bridge.py`: LINUX-ETH Bridge.
 - `src/arkhe/interfaces/story_bridge.py`: Story Protocol IP Bridge.
 - `arkhe_web3/story_protocol.py`: Programmable IP Manifold.
+- `arkhe_web3/aztec_protocol.py`: Privacy-Preserving State Manifold (Aztec).
 - `mobile/arkhe-os/`: Arkhe OS Mobile (React Native / Expo).
 - `genesis/`: GenesisCore v1.0.0-DEATHPROOF source and manifest.
 
