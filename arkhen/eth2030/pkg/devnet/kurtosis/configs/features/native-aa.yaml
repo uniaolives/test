@@ -1,0 +1,38 @@
+# Native AA — Account Abstraction via SetCode (EIP-7702)
+# Tests: SetCode authorization, delegated execution, AA opcodes
+# Verify: SetCode txs execute, delegation chains work, gas accounting correct
+participants:
+  - el_type: geth
+    el_image: eth2030:local
+    cl_type: lighthouse
+    cl_image: sigp/lighthouse:latest
+    count: 2
+
+network_params:
+  network: kurtosis
+  seconds_per_slot: 2
+  genesis_delay: 10
+
+additional_services:
+  - dora
+  - spamoor
+  - rakoon
+  - assertoor
+
+spamoor_params:
+  spammers:
+    - scenario: setcodetx
+      name: "EIP-7702 SetCode Spam"
+      config:
+        throughput: 50
+        max_pending: 100
+        max_wallets: 50
+
+rakoon_params:
+  tx_type: eip7702
+  workers: 10
+  batch_size: 200
+  fuzzing: true
+
+assertoor_params:
+  run_stability_check: true

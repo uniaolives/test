@@ -82,10 +82,6 @@ impl CoherenceAllocator {
 
     /// Retorna a densidade φ_q equivalente (coerência convertida).
     pub fn current_phi_q(&self) -> f64 {
-        // A densidade local é a soma da baseline do vácuo e a injecção via coerência.
-        // O factor de acoplamento ZPF_COUPLING define quanto a coerência afecta o vácuo.
-        // Para ultrapassar o Miller Limit (4.64), local deve ser > 10^117.64.
-
         let baseline = 1e113; // ρ₀
 
         // Coerência injectada em grande escala (ex.: 1e118 para nucleação)

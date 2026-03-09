@@ -1,4 +1,4 @@
-use crate::maestro::spine::PsiState;
+use crate::maestro::core::PsiState;
 
 #[derive(Debug, PartialEq)]
 pub enum XenoRiskLevel {
@@ -23,7 +23,10 @@ impl XenoFirewall {
         let density = handover_content.split_whitespace().count() as f64;
 
         // 3. Lógica de Contenção (Xenocontainment)
-        if has_future_leak && psi.current_coherence < 0.8 {
+        // Usando psi.coherence_trace como substituto para current_coherence se necessário
+        let current_coherence = psi.coherence_trace.last().cloned().unwrap_or(0.5);
+
+        if has_future_leak && current_coherence < 0.8 {
             return XenoRiskLevel::Critical; // Bloquear por instabilidade
         }
 

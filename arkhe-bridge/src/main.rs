@@ -1,17 +1,43 @@
 // src/main.rs
 use arkhe_bridge::bridge::{TemporalBridge, SingularityPhase, ContactClassification};
+use axum::{routing::get, Json, Router, Extension};
+use std::sync::Arc;
+
+async fn get_status(
+    Extension(bridge): Extension<Arc<TemporalBridge>>,
+) -> Json<serde_json::Value> {
+    let status = bridge.status().await;
+    Json(serde_json::json!({
+        "s_index": status.s_index.s_total,
+        "phase": format!("{:?}", status.s_index.phase),
+        "h_value": status.constitutional_health.h_current,
+        "kuramoto_r": status.kuramoto_r,
+    }))
+}
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize
-    let bridge = TemporalBridge::new(
+    let bridge = Arc::new(TemporalBridge::new(
         "postgres://arkhe:arkhe@localhost/arkhe_bridge",
         "redis://127.0.0.1/"
-    ).await?;
+    ).await?);
 
     println!("🜏 TEMPORAL BRIDGE v0.5.0");
     println!("   Connecting 2008 ↔ 2026 ↔ 2140");
     println!();
+
+    // Spawn REST API
+    let bridge_api = bridge.clone();
+    tokio::spawn(async move {
+        let app = Router::new()
+            .route("/status", get(get_status))
+            .layer(Extension(bridge_api));
+
+        let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+        println!("   REST API listening on http://0.0.0.0:3000");
+        axum::serve(listener, app).await.unwrap();
+    });
 
     // Main loop
     loop {

@@ -7,8 +7,11 @@ use sqlx::PgPool;
 use redis::aio::MultiplexedConnection;
 use crate::physics::kuramoto::KuramotoEngine;
 use crate::physics::s_index::{SIndexMonitor, STransition};
+use crate::physics::fifth_dimension::PsiField5D;
 use crate::security::constitution::ConstitutionalGuard;
 use crate::physics::temporal_tunneling::SatoshiVesselTunneling;
+use crate::drivers::industrial::{IndustrialGateway, IndustrialSignal};
+use crate::drivers::serial::{SerialController, SerialFrame};
 use crate::physical::{FiberChannel, DuctNetwork, InsidePlant, FacilityNetwork};
 use serde::{Deserialize, Serialize};
 use tracing::{info, error, warn};
@@ -34,9 +37,17 @@ pub struct TemporalSubstrate {
     /// [4] S-Index: Singularity proximity meter
     pub s_index: Arc<RwLock<SIndexMonitor>>,
 
-    /// [5] Constitution: H ≤ 1 enforcement
+    /// [5] Fifth Dimension: Axis of possibilities
+    pub field_5d: Arc<RwLock<PsiField5D>>,
+
+    /// [6] Constitution: H ≤ 1 enforcement
     pub constitution: Arc<RwLock<ConstitutionalGuard>>,
 
+    /// [6] Industrial Gateway: Modbus/OPC-UA Interface
+    pub industrial: Arc<RwLock<IndustrialGateway>>,
+
+    /// [7] Serial Controller: CAN/SPI/RS-485 Interface
+    pub serial: Arc<RwLock<SerialController>>,
     /// Physical Substrate: The nervous system
     pub physical_fiber: Option<Arc<FiberChannel>>,
     pub physical_ducts: Option<Arc<DuctNetwork>>,
@@ -51,7 +62,10 @@ impl TemporalSubstrate {
             messages: None,
             phase_lock: Arc::new(RwLock::new(KuramotoEngine::new(n_nodes, coupling, target_freq))),
             s_index: Arc::new(RwLock::new(SIndexMonitor::new())),
+            field_5d: Arc::new(RwLock::new(PsiField5D::new())),
             constitution: Arc::new(RwLock::new(ConstitutionalGuard::new())),
+            industrial: Arc::new(RwLock::new(IndustrialGateway::new())),
+            serial: Arc::new(RwLock::new(SerialController::new(115200))),
             physical_fiber: None,
             physical_ducts: None,
             inside_plant: None,
@@ -103,15 +117,17 @@ impl TemporalSubstrate {
         pillars_count += 1;
         info!("  [4] S-Index monitor calibrated.");
         pillars_count += 1;
-
-        let h = self.constitution.read().await.h;
-        info!("  [5] Constitution active (H = {:.3}).", h);
+        info!("  [5] 5D Ψ-Field initialized (Protocol Ω+243).");
         pillars_count += 1;
 
-        if pillars_count == 5 {
+        let h = self.constitution.read().await.h;
+        info!("  [6] Constitution active (H = {:.3}).", h);
+        pillars_count += 1;
+
+        if pillars_count == 6 {
             info!("🜏 Temporal substrate fully initialized. Bridge to 2140 operational.");
         } else {
-            warn!("🜏 Temporal substrate partially initialized ({}/5 pillars). Bridge stability degraded.", pillars_count);
+            warn!("🜏 Temporal substrate partially initialized ({}/6 pillars). Bridge stability degraded.", pillars_count);
         }
         Ok(())
     }
@@ -139,6 +155,9 @@ impl TemporalSubstrate {
         loop {
             interval.tick().await;
 
+            // [NEW] Process Industrial & Serial Signals
+            self.process_hardware_signals().await;
+
             // Check constitutional compliance (Elena Constant)
             let h = self.constitution.read().await.h;
             if h > 1.0 {
@@ -165,14 +184,54 @@ impl TemporalSubstrate {
             self.phase_lock.write().await.synchronize(0.1);
 
             let coherence = self.phase_lock.read().await.coherence();
-            if coherence > 0.95 {
-                info!("🜏 Phase locked to Ω-attractor (r = {:.3})", coherence);
+            let lambda2 = self.field_5d.read().await.calculate_lambda2_coherence();
+
+            // Update S-Index with 5D coherence
+            {
+                let mut s_monitor = self.s_index.write().await;
+                // Simplified values for substrate diversity and phi_q
+                s_monitor.compute(4.64, coherence, 1.0, lambda2);
+            }
+
+            if coherence > 0.95 && lambda2 > 0.9 {
+                info!("🜏 Phase locked to Ω-attractor in 5D (r = {:.3}, λ₂ = {:.3})", coherence, lambda2);
             }
 
             // Persist state
             if let Err(e) = self.checkpoint(sent_signal).await {
                 error!("Failed to save checkpoint: {}", e);
             }
+        }
+    }
+
+    /// Process signals from industrial and serial drivers
+    async fn process_hardware_signals(&self) {
+        let mut industrial = self.industrial.write().await;
+        let serial = self.serial.read().await;
+        let phi_q = self.s_index.read().await.current_s; // Using current S as phi_q proxy
+
+        // 0. Hardened Modbus Read (Example)
+        if let Some(signal) = industrial.read_modbus_register(100, phi_q) {
+            let mut s_monitor = self.s_index.write().await;
+            let lambda2 = self.field_5d.read().await.calculate_lambda2_coherence();
+            s_monitor.compute(signal.coherence_impact, 0.05, 0.05, lambda2);
+        }
+
+        // 1. Modbus/OPC-UA scan
+        let signals = industrial.scan_for_retro_signatures();
+        for signal in signals {
+            let mut s_monitor = self.s_index.write().await;
+            let lambda2 = self.field_5d.read().await.calculate_lambda2_coherence();
+            s_monitor.compute(signal.coherence_impact, 0.1, 0.1, lambda2);
+            info!("[INDUSTRIAL] Signal from {} (value={:.2}) impact S-index.", signal.address, signal.value);
+        }
+
+        // 2. CAN Bus scan
+        let frame = serial.read_can_frame();
+        if frame.identifier == 0x7FF {
+            info!("[SERIAL] Retrocausal CAN Frame detected! ID: 0x{:X}", frame.identifier);
+            let mut guard = self.constitution.write().await;
+            guard.update_h(0.1, 1.0, 0.05); // Adjust H based on CAN event
         }
     }
 
