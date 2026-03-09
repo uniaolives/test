@@ -31,6 +31,8 @@ pub enum TemporalChannelType {
     Constitutional,
     /// Singularity tracking
     Singularity,
+    /// Spatial anomalies (Orbs/Wormholes)
+    SpatialAnomalies,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -40,6 +42,7 @@ pub enum MessagePayload {
     ConstitutionalAlert { h_value: f64 },
     SingularityApproach { s_index: f64, distance_to_omega: f64 },
     GhostCluster { orbit_id: String, stability: f64 },
+    OrbDetection { id: String, lat: f64, lon: f64, altitude: f64, coherence: f64, origin: String },
 }
 
 impl TemporalChannel {
@@ -62,6 +65,7 @@ impl TemporalChannel {
             TemporalChannelType::Omega => "arkhe:2140",
             TemporalChannelType::Constitutional => "arkhe:constitutional",
             TemporalChannelType::Singularity => "arkhe:singularity",
+            TemporalChannelType::SpatialAnomalies => "arkhe:anomalies",
         };
 
         let payload = serde_json::to_string(&message).unwrap();
@@ -88,6 +92,25 @@ impl TemporalChannel {
         };
 
         self.publish(TemporalChannelType::Constitutional, message)
+    }
+
+    /// Emit orb detection signal
+    pub fn emit_orb_signal(&self, anomaly: &crate::bridge::orb_detector::SpatialAnomaly) -> Result<(), redis::RedisError> {
+        let message = TemporalMessage {
+            channel: TemporalChannelType::SpatialAnomalies,
+            timestamp: Utc::now().timestamp(),
+            phi_q: anomaly.localized_coherence,
+            payload: MessagePayload::OrbDetection {
+                id: anomaly.id.clone(),
+                lat: anomaly.location.lat,
+                lon: anomaly.location.lon,
+                altitude: anomaly.altitude_km,
+                coherence: anomaly.localized_coherence,
+                origin: format!("{:?}", anomaly.origin),
+            },
+        };
+
+        self.publish(TemporalChannelType::SpatialAnomalies, message)
     }
 
     /// Emit singularity approach signal
