@@ -190,6 +190,7 @@ Robust mechanisms to prevent and detect multi-agent collusion and alignment fail
 - **BIO-TECH:** Drone-mediated implant and telemetry of nano-cargo.
 - **Q-TECH:** BB84 QKD security for drone swarm communication.
 - **LINUX-ETH:** Hybrid bridge between OS processes and decentralized ledger.
+- **STORY-IP:** Programmable Intellectual Property management via Story Protocol.
 - **TRI-HYBRID:** Simultaneous Q+BIO+TECH operation in unified Arkhe(n) nodes.
 
 ## 🛤️ Components
@@ -202,6 +203,8 @@ Robust mechanisms to prevent and detect multi-agent collusion and alignment fail
 - `src/arkhe/interfaces/bio_tech.py`: BIO-TECH Delivery.
 - `src/arkhe/interfaces/quantum_tech.py`: Q-TECH Security.
 - `src/arkhe/interfaces/linux_eth_bridge.py`: LINUX-ETH Bridge.
+- `src/arkhe/interfaces/story_bridge.py`: Story Protocol IP Bridge.
+- `arkhe_web3/story_protocol.py`: Programmable IP Manifold.
 - `mobile/arkhe-os/`: Arkhe OS Mobile (React Native / Expo).
 - `genesis/`: GenesisCore v1.0.0-DEATHPROOF source and manifest.
 

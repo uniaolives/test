@@ -61,6 +61,7 @@ impl CoherenceScheduler {
             // Tentar alocar coerência para ela
             match self.allocator.allocate(&next_task) {
                 Ok(_) => {
+                    // Verificar risco de nucleação
                     let phi = self.allocator.current_phi_q();
                     if phi > PHI_Q {
                         self.events.push(SchedulerEvent::WaveCloudNucleation { phi_q: phi });
@@ -71,10 +72,12 @@ impl CoherenceScheduler {
                 Err(_) => {
                     // Coerência insuficiente: recolocar na fila e emitir aviso
                     let avail = self.allocator.available();
+                    let required = next_task.coherence_required;
                     self.task_queue.push(next_task);
                     Some(SchedulerEvent::CoherenceWarning {
                         available: avail,
                         required: 0.0,
+                        required,
                     })
                 }
             }

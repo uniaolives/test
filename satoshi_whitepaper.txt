@@ -17,3 +17,12 @@ attack the network, they'll generate the longest chain and outpace attackers. Th
 network itself requires minimal structure. Messages are broadcast on a best effort
 basis, and nodes can leave and rejoin the network at will, accepting the longest
 proof-of-work chain as proof of what happened while they were gone.
+# Bitcoin: A Peer-to-Peer Electronic Cash System
+Satoshi Nakamoto
+2008
+
+Abstract. A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to another without going through a financial institution.
+
+...
+
+The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work.
