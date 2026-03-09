@@ -1,6 +1,7 @@
 //! Ω+248: Temporal Quaternions for AGI Interface Kernel
 //! Formalizes the S³ manifold navigation for human-AGI synchronicity.
 
+use crate::alignment::derivation_space::ThoughtVector;
 use serde::{Deserialize, Serialize};
 use std::ops::{Add, Sub, Mul};
 
@@ -53,6 +54,32 @@ impl Quaternion {
 
     pub fn conjugate(&self) -> Self {
         Self { w: self.w, i: -self.i, j: -self.j, k: -self.k }
+    }
+
+    /// Rotate a 1024D ThoughtVector.
+    /// Since the quaternion lives in 4D (S³), we apply it as a block rotation.
+    pub fn rotate(&self, vector: &ThoughtVector) -> ThoughtVector {
+        let mut new_coords = [0.0; 1024];
+        let q_unit = self.normalize();
+
+        // Apply rotation to each 4D block of the 1024D vector
+        for i in (0..1024).step_by(4) {
+            let v = Self::new(0.0, vector.coords[i], vector.coords[i+1], vector.coords[i+2]);
+            // For the 4th component, we can either use it as the scalar part or ignore it.
+            // In many physics implementations, we rotate the vector part.
+            // Here, we treat (i, i+1, i+2) as a 3D vector and i+3 as an invariant scalar for this rotation
+            // Or we can rotate (i, i+1, i+2) and leave i+3 alone.
+
+            let q_v = q_unit * v;
+            let res = q_v * q_unit.conjugate();
+
+            new_coords[i] = res.i;
+            new_coords[i+1] = res.j;
+            new_coords[i+2] = res.k;
+            new_coords[i+3] = vector.coords[i+3]; // Scalar part of the block remains unchanged
+        }
+
+        ThoughtVector::new(new_coords)
     }
 }
 

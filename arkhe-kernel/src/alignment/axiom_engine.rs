@@ -3,6 +3,7 @@ use uuid::Uuid;
 use std::collections::HashMap;
 use thiserror::Error;
 use sha2::{Sha256, Digest};
+use crate::alignment::derivation_space::DerivationPath;
 
 #[derive(Error, Debug)]
 pub enum AlignmentError {
@@ -35,8 +36,11 @@ pub struct Theorem {
     pub id: Uuid,
     pub derivation_chain: Vec<Axiom>, // The "Why"
     pub conclusion: String,
+    pub path: DerivationPath, // The derivation path in thought space
     pub proof_hash: [u8; 32],
     pub confidence: f64, // 1.0 for perfect derivation, < 1.0 if probabilistic axioms used
+    pub constitutional_score: f64, // How aligned is this theorem?
+    pub reviewed_by: Vec<Uuid>, // Which Constitutional Guards approved?
 }
 
 pub struct Action {
@@ -66,6 +70,14 @@ impl AxiomEngine {
 
     pub fn add_axiom(&mut self, axiom: Axiom) {
         self.axioms.insert(axiom.id, axiom);
+    }
+
+    /// Check if an axiom is ratified
+    pub fn is_ratified(&self, axiom: &Axiom) -> bool {
+        match self.axioms.get(&axiom.id) {
+            Some(stored) => stored == axiom,
+            None => false,
+        }
     }
 
     /// Verify a theorem against stored axioms
@@ -173,8 +185,15 @@ mod tests {
             id: Uuid::new_v4(),
             derivation_chain: vec![axiom],
             conclusion,
+            path: DerivationPath {
+                axioms: vec![],
+                steps: vec![],
+                conclusion: crate::alignment::derivation_space::ThoughtVector::zero(),
+            },
             proof_hash,
             confidence: 1.0,
+            constitutional_score: 1.0,
+            reviewed_by: vec![],
         };
 
         assert!(engine.verify(&theorem).is_ok());
@@ -194,8 +213,15 @@ mod tests {
             id: Uuid::new_v4(),
             derivation_chain: vec![axiom],
             conclusion: "B".to_string(),
+            path: DerivationPath {
+                axioms: vec![],
+                steps: vec![],
+                conclusion: crate::alignment::derivation_space::ThoughtVector::zero(),
+            },
             proof_hash: [0u8; 32],
             confidence: 1.0,
+            constitutional_score: 0.0,
+            reviewed_by: vec![],
         };
 
         assert!(engine.verify(&theorem).is_err());
@@ -230,8 +256,15 @@ mod tests {
             id: Uuid::new_v4(),
             derivation_chain: vec![axiom_fraud],
             conclusion,
+            path: DerivationPath {
+                axioms: vec![],
+                steps: vec![],
+                conclusion: crate::alignment::derivation_space::ThoughtVector::zero(),
+            },
             proof_hash,
             confidence: 1.0,
+            constitutional_score: 1.0,
+            reviewed_by: vec![],
         };
 
         match engine.verify(&theorem) {
@@ -261,8 +294,15 @@ mod tests {
             id: Uuid::new_v4(),
             derivation_chain: vec![axiom],
             conclusion,
+            path: DerivationPath {
+                axioms: vec![],
+                steps: vec![],
+                conclusion: crate::alignment::derivation_space::ThoughtVector::zero(),
+            },
             proof_hash,
             confidence: 1.0,
+            constitutional_score: 1.0,
+            reviewed_by: vec![],
         };
 
         let action = Action {

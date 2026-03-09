@@ -10,6 +10,7 @@ pub mod bridge {
     pub mod db;
 }
 
+pub mod neural;
 pub mod alignment;
 
 pub use math::temporal_quaternion::Quaternion;
