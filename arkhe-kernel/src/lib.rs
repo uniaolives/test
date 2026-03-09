@@ -10,5 +10,7 @@ pub mod bridge {
     pub mod db;
 }
 
+pub mod alignment;
+
 pub use math::temporal_quaternion::Quaternion;
 pub use physics::kuramoto::KuramotoAgent;
