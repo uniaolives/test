@@ -149,5 +149,9 @@ mod tests {
         let q = ArkheQuaternion::identity();
         let (theta, _) = q.to_bloch_coordinates();
         assert_eq!(theta, 0.0); // North pole
+    fn test_xi_coherence() {
+        let coherence = XiParticle::calculate_coherence(0.5, 1.088152);
+        assert!(coherence > 0.64);
+        assert!(coherence < 0.65);
     }
 }
