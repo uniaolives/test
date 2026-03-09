@@ -1,6 +1,7 @@
 pub mod axiom_engine;
 pub mod constitutional_axioms;
 pub mod derivation_space;
+pub mod zk_noir;
 pub mod axiom_lifecycle;
 pub mod axiom_guard;
 
