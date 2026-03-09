@@ -5,6 +5,15 @@ pub mod compiler;
 pub mod db;
 pub mod net;
 pub mod phys;
+pub mod amt;
+pub mod hmt;
+pub mod maestro;
+pub mod observability;
+pub mod telemetry;
+pub mod sensors;
+pub mod quantum;
+pub mod lmt;
+pub mod security;
 pub mod quantum;
 pub mod sensors;
 pub mod telemetry;
@@ -15,6 +24,8 @@ pub mod anchor;
 pub mod lmt;
 pub mod maestro;
 pub mod week5;
+pub mod physical;
+pub mod rio;
 
 pub use kernel::task::Task;
 pub use kernel::scheduler::{CoherenceScheduler, SchedulerEvent};
@@ -27,3 +38,5 @@ pub use phys::ibm_client::QuantumAntenna;
 
 #[cfg(test)]
 mod tests;
+#[cfg(test)]
+mod physical_tests;

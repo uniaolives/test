@@ -76,6 +76,7 @@ impl CoherenceScheduler {
                     self.task_queue.push(next_task);
                     Some(SchedulerEvent::CoherenceWarning {
                         available: avail,
+                        required: 0.0,
                         required,
                     })
                 }

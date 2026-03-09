@@ -2,6 +2,7 @@
 use std::collections::HashMap;
 use std::time::{Instant, Duration};
 use std::f64::consts::PI;
+use crate::physical::types::GeoCoord;
 
 /// Agencies in Rio 2026 security apparatus
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -125,12 +126,6 @@ impl AgencySynchronizer {
         println!("🜏 COORDINATED COMMAND ISSUED: {:?}", command);
         Ok(())
     }
-}
-
-#[derive(Debug)]
-pub struct GeoCoord {
-    pub lat: f64,
-    pub lon: f64,
 }
 
 #[derive(Debug)]

@@ -82,6 +82,8 @@ impl CoherenceAllocator {
 
     /// Retorna a densidade φ_q equivalente (coerência convertida).
     pub fn current_phi_q(&self) -> f64 {
+        let baseline_density = 1.0; // ρ₀
+        baseline_density + crate::physics::miller::ZPF_COUPLING * self.available_coherence
         // A densidade local é a soma da baseline do vácuo e a injecção via coerência.
         // O factor de acoplamento ZPF_COUPLING define quanto a coerência afecta o vácuo.
         // Para ultrapassar o Miller Limit (4.64), local deve ser > 10^117.64.
