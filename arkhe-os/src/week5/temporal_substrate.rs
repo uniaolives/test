@@ -213,14 +213,16 @@ impl TemporalSubstrate {
         // 0. Hardened Modbus Read (Example)
         if let Some(signal) = industrial.read_modbus_register(100, phi_q) {
             let mut s_monitor = self.s_index.write().await;
-            s_monitor.compute(signal.coherence_impact, 0.05, 0.05);
+            let lambda2 = self.field_5d.read().await.calculate_lambda2_coherence();
+            s_monitor.compute(signal.coherence_impact, 0.05, 0.05, lambda2);
         }
 
         // 1. Modbus/OPC-UA scan
         let signals = industrial.scan_for_retro_signatures();
         for signal in signals {
             let mut s_monitor = self.s_index.write().await;
-            s_monitor.compute(signal.coherence_impact, 0.1, 0.1);
+            let lambda2 = self.field_5d.read().await.calculate_lambda2_coherence();
+            s_monitor.compute(signal.coherence_impact, 0.1, 0.1, lambda2);
             info!("[INDUSTRIAL] Signal from {} (value={:.2}) impact S-index.", signal.address, signal.value);
         }
 

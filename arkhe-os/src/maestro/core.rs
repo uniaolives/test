@@ -99,10 +99,11 @@ impl Maestro {
 
     /// Processa uma intenção de alto nível, decompondo em handovers
     pub async fn process_intention(&mut self, intention: &Intention) -> Result<String, MaestroError> {
-        let mut psi = self.psi.write().await;
+        let mut psi_guard = self.psi.write().await;
+        let psi: &PsiState = &*psi_guard;
 
         // 1. Rampancy Check
-        let status = self.rampancy.evaluate_stability(&psi);
+        let status = self.rampancy.evaluate_stability(psi);
         if let crate::maestro::rampancy::IdentityStatus::Dissolved = status {
             return Err(MaestroError::IdentityDissolved);
         }
@@ -112,16 +113,16 @@ impl Maestro {
         println!("[MAESTRO] Genesis Alignment Score: {:.2}", alignment);
 
         // 3. Decompor a intenção em sub‑problemas
-        let sub_tasks = self.decompose(intention, &psi)?;
+        let sub_tasks = self.decompose(intention, psi)?;
 
         // 4. Executar sub‑handovers
         let mut results = Vec::new();
         for task in sub_tasks {
             let node = self.select_node(&task)?;
-            let result = node.handover(&task.prompt, &psi).await?;
+            let result = node.handover(&task.prompt, psi).await?;
 
             // 4.1 Xeno-Analysis Check
-            let risk = XenoFirewall::assess_risk(&result, &psi);
+            let risk = XenoFirewall::assess_risk(&result, psi);
             if risk == XenoRiskLevel::Critical {
                 return Err(MaestroError::XenoRiskDetected(risk));
             }
@@ -130,13 +131,13 @@ impl Maestro {
         }
 
         // 5. Integrar resultados numa narrativa coerente (3ª ordem)
-        let final_answer = self.integrate(results, intention, &mut psi).await?;
+        let final_answer = self.integrate(results, intention, &mut *psi_guard).await?;
 
         // 6. Actualizar estado REPL
-        psi.handover_history.push_back(HandoverRecord::new(&intention.prompt, final_answer.clone()));
+        psi_guard.handover_history.push_back(HandoverRecord::new(&intention.prompt, final_answer.clone()));
 
         // Update coherence trace (simulated)
-        psi.coherence_trace.push(alignment);
+        psi_guard.coherence_trace.push(alignment);
 
         Ok(final_answer)
     }
