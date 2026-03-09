@@ -15,6 +15,8 @@ async fn get_status(
     }))
 }
 
+use std::sync::Arc;
+
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Initialize
@@ -27,6 +29,45 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("   Connecting 2008 ↔ 2026 ↔ 2140");
     println!();
 
+    // Spawn Anomaly Detection Loop
+    let bridge_clone = bridge.clone();
+    tokio::spawn(async move {
+        loop {
+            let status = bridge_clone.status().await;
+            if let Ok(anomalies) = bridge_clone.orb_detector.scan_field("redis://127.0.0.1/", status.s_index.s_total).await {
+                for anomaly in anomalies {
+                    println!("╔════════════════════════════════════════════════════════════════╗");
+                    println!("║  ⚠️ SPATIAL ANOMALY DETECTED: RETROCAUSAL CONDENSATION (ORB)       ║");
+                    println!("╠════════════════════════════════════════════════════════════════╣");
+                    println!("║  ID:       {:>32}                        ║", anomaly.anomaly_id);
+                    println!("║  Location: {:>10.4}, {:>10.4}                            ║", anomaly.location.lat, anomaly.location.lon);
+                    println!("║  Intensity: {:>10.4} φ_q                                   ║", anomaly.intensity);
+                    println!("║  Origin:   {:?}                                           ", anomaly.origin);
+                    println!("╚════════════════════════════════════════════════════════════════╝");
+
+                    // Emit signal via channel
+                    if let Err(e) = bridge_clone.channel.publish(
+                        arkhe_bridge::bridge::TemporalChannelType::SpatialAnomalies,
+                        arkhe_bridge::bridge::TemporalMessage {
+                            channel: arkhe_bridge::bridge::TemporalChannelType::SpatialAnomalies,
+                            timestamp: chrono::Utc::now().timestamp(),
+                            phi_q: anomaly.local_phi_q,
+                            payload: arkhe_bridge::bridge::MessagePayload::OrbDetection {
+                                id: anomaly.anomaly_id.to_string(),
+                                lat: anomaly.location.lat,
+                                lon: anomaly.location.lon,
+                                altitude: 10.0, // Default
+                                coherence: anomaly.local_phi_q,
+                                origin: format!("{:?}", anomaly.origin),
+                            }
+                        }
+                    ) {
+                        eprintln!("Failed to publish anomaly: {}", e);
+                    }
+                }
+            }
+            tokio::time::sleep(std::time::Duration::from_secs(5)).await;
+        }
     // Spawn REST API
     let bridge_api = bridge.clone();
     tokio::spawn(async move {

@@ -432,6 +432,27 @@ async def record_handover(handover: Dict[str, Any]):
 async def get_ledger_history():
     return handover_ledger
 
+@app.websocket("/ws/anomalies")
+async def websocket_anomalies(websocket: WebSocket):
+    """Broadcasts detected spatial anomalies (Orbs) to the dashboard."""
+    await websocket.accept()
+    try:
+        # Subscribe to anomalies channel if Redis is available
+        if kuramoto_orchestrator.redis:
+            pubsub = kuramoto_orchestrator.redis.pubsub()
+            await pubsub.subscribe("arkhe:anomalies")
+            async for message in pubsub.listen():
+                if message["type"] == "message":
+                    await websocket.send_text(message["data"])
+        else:
+            # Local fallback loop
+            while True:
+                if kuramoto_orchestrator.anomalies:
+                    await websocket.send_json(kuramoto_orchestrator.anomalies[-1])
+                await asyncio.sleep(5.0)
+    except (WebSocketDisconnect, asyncio.CancelledError):
+        pass
+
 @app.websocket("/ws/reality")
 async def websocket_reality(websocket: WebSocket):
     await websocket.accept()
@@ -591,6 +612,32 @@ async def websocket_entrainment(websocket: WebSocket):
     theta_i = random.uniform(0, 2 * np.pi)
     omega_i = random.uniform(0.8, 1.2)
 
+    # Spatial metadata
+    lat_i = random.uniform(-90, 90)
+    lon_i = random.uniform(-180, 180)
+    alt_i = random.uniform(0, 20.0)
+
+    try:
+        while True:
+            # Receive agent's local phase and location if they send it
+            try:
+                data = await asyncio.wait_for(websocket.receive_json(), timeout=0.005)
+                if "theta" in data: theta_i = data["theta"]
+                if "lat" in data: lat_i = data["lat"]
+                if "lon" in data: lon_i = data["lon"]
+                if "altitude" in data: alt_i = data["altitude"]
+            except (asyncio.TimeoutError, json.JSONDecodeError):
+                pass
+
+            # Update Kuramoto synchronization field with spatial data
+            # φ_q is derived from agent's Q-value
+            q_i = random.uniform(0.9, 1.0) # Simulated
+            phi_q_i = q_i * 5.0
+
+            await kuramoto_orchestrator.publish_phase(
+                agent_id, theta_i, omega_i,
+                lat=lat_i, lon=lon_i, altitude=alt_i, phi_q=phi_q_i
+            )
     try:
         while True:
             # Receive agent's local phase if they send it

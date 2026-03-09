@@ -98,6 +98,14 @@ impl TemporalChannel {
     pub fn emit_orb_signal(&self, anomaly: &crate::bridge::orb_detector::SpatialAnomaly) -> Result<(), redis::RedisError> {
         let message = TemporalMessage {
             channel: TemporalChannelType::SpatialAnomalies,
+            timestamp: chrono::Utc::now().timestamp(),
+            phi_q: anomaly.local_phi_q,
+            payload: MessagePayload::OrbDetection {
+                id: anomaly.anomaly_id.to_string(),
+                lat: anomaly.location.lat,
+                lon: anomaly.location.lon,
+                altitude: anomaly.altitude_km,
+                coherence: anomaly.local_phi_q,
             timestamp: Utc::now().timestamp(),
             phi_q: anomaly.localized_coherence,
             payload: MessagePayload::OrbDetection {
