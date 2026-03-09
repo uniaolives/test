@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 use crate::physics::arkhe_orb_core::Orb;
+use super::payload::OrbPayload;
 use anyhow::Result;
 use async_trait::async_trait;
 
@@ -20,6 +21,7 @@ pub struct PropagationReceipt {
 
 #[async_trait]
 pub trait ProtocolBridge: Send + Sync {
+    async fn propagate(&self, orb: &Orb, payload: &OrbPayload) -> Result<PropagationReceipt>;
     async fn propagate(&self, orb: &Orb) -> Result<PropagationReceipt>;
     fn has_memory(&self, orb_id: &OrbId) -> bool;
 }
@@ -41,6 +43,18 @@ impl UniversalOrbPropagator {
     }
 
     /// Propagates an orb through ALL registered protocols simultaneously
+    pub async fn propagate_everywhere(&self, orb: &Orb, payload: &OrbPayload) -> Result<Vec<PropagationReceipt>> {
+        use futures::future::join_all;
+
+        let futures: Vec<_> = self.protocols.values()
+            .map(|bridge| bridge.propagate(orb, payload))
+            .collect();
+
+        let results = join_all(futures).await;
+        let mut receipts = Vec::new();
+
+        for res in results {
+            receipts.push(res?);
     pub async fn propagate_everywhere(&self, orb: &Orb) -> Result<Vec<PropagationReceipt>> {
         let mut receipts = Vec::new();
 
