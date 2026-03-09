@@ -2,6 +2,7 @@ pub mod protocol;
 pub mod node;
 pub mod bio;
 pub mod bio_socket;
+pub mod mqtt;
 pub mod multimodal_anchor;
 pub mod stack;
 
