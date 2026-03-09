@@ -11,6 +11,14 @@ ethers = { version = "2.0", features = ["ws"] }
 ipfs-api-backend-hyper = "0.6"
 tokio-modbus = "0.9"
 opcua-client = "0.9"
+arkhe-tor = { path = "../crates/arkhe-tor" }
+crc = "3.0"
+rumqttc = "0.23"
+coap = "0.13"
+lightning = "0.0.118"
+tonic = "0.10"
+sqlx = { workspace = true }
+redis = { version = "0.23", features = ["tokio-comp", "aio"] }
 arti-client = { version = "0.19", default-features = false, features = ["tokio", "native-tls"] }
 crc = "3.0"
 rumqttc = "0.23"

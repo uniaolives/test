@@ -1,6 +1,8 @@
 // arkhe-os/src/bridge/rf/mod.rs
 pub mod satellite_bridge;
 pub mod ham_radio_bridge;
+pub mod wspr_bridge;
+pub mod tracking_bridge;
 
 #[derive(Debug, Clone)]
 pub struct RfFrame {

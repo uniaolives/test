@@ -23,6 +23,8 @@ pub mod week5;
 pub mod physical;
 pub mod rio;
 pub mod wearable;
+pub mod orb;
+pub mod bridge;
 pub mod temporal;
 pub mod propagation;
 pub mod bridge;
