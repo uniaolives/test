@@ -1,3 +1,4 @@
+pub mod impossible;
 // arkhe-os/src/bridge/mod.rs
 pub mod tcpip;
 pub mod rf;
