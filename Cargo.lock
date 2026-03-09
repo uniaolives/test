@@ -644,6 +644,7 @@ version = "0.1.0"
 dependencies = [
  "chrono",
  "serde",
+ "serde_arrays",
  "serde_json",
  "sha2 0.10.9",
  "sqlx",
