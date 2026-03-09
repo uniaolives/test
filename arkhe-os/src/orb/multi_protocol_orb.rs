@@ -58,6 +58,7 @@ impl MultiProtocolOrb {
         let mut report = PropagationReport::new();
 
         for year in (1900..=2500).step_by(50) {
+        for year in (2000..=2030).step_by(10) {
             let target = Destination::at_year(year);
             let plan = self.router.route(&self.core, target);
             let receipts = self.router.execute(&plan, &self.core).await;

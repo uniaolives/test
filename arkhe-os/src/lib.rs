@@ -2,6 +2,7 @@ pub mod kernel;
 pub mod drivers;
 pub mod neural;
 pub mod physics;
+pub mod topology;
 pub mod compiler;
 pub mod db;
 pub mod net;
@@ -23,6 +24,9 @@ pub mod physical;
 pub mod rio;
 pub mod wearable;
 pub mod orb;
+pub mod bridge;
+pub mod temporal;
+pub mod propagation;
 
 pub use kernel::task::Task;
 pub use kernel::scheduler::{CoherenceScheduler, SchedulerEvent};
