@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arkhe(n) Kernel Dashboard</title>
+    <style>
+        body { margin: 0; background-color: #000; color: #0f0; font-family: 'Courier New', Courier, monospace; overflow: hidden; }
+        #overlay { position: absolute; top: 10px; left: 10px; z-index: 100; pointer-events: none; }
+        #canvas-container { width: 100vw; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="overlay">
+        <h1>ARKHE(N) KERNEL V1.0</h1>
+        <p>STATUS: ACTIVE</p>
+        <p>COHERENCE: <span id="coherence">0.00</span></p>
+        <p>PHASE: <span id="phase">0.00</span> rad</p>
+    </div>
+    <div id="canvas-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
