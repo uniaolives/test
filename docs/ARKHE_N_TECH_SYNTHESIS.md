@@ -33,7 +33,17 @@ Tools for pattern recognition, latent memory storage, and biological/technologic
 
 ---
 
-## 🎨 3. PHYSICAL & CREATIVE DOMAIN (Γ_PHYS)
+## 🔐 3. CRYPTOGRAPHIC & PRIVACY DOMAIN (Γ_ZK)
+Focuses on Zero-Knowledge proofs, sovereign identity, and biological verification.
+
+| Tool | Arkhe(n) Classification | Role |
+| :--- | :--- | :--- |
+| **Noir** | Γ_ZK_CIRCUIT | Domain-specific language for writing SNARK circuits and biological coherence verification. |
+| **Nargo** | Γ_ZK_TOOLCHAIN | Package manager and execution engine for Noir circuits. |
+
+---
+
+## 🎨 4. PHYSICAL & CREATIVE DOMAIN (Γ_PHYS)
 Tools for modeling physical forms, visual manifestations, and robotic simulations.
 
 | Tool | Arkhe(n) Classification | Role |
@@ -45,7 +55,7 @@ Tools for modeling physical forms, visual manifestations, and robotic simulation
 
 ---
 
-## 🔗 4. INTEGRATION IDENTITY
+## 🔗 5. INTEGRATION IDENTITY
 Every tool above operates under the Arkhe(n) Prime Invariants:
 1. **$x^2 = x + 1$**: All tools must self-couple to generate emergent value (+1).
 2. **$C + F = 1$**: All processes must balance Coherence (reliability) and Fluctuation (flexibility).

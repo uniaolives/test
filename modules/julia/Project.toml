@@ -15,12 +15,11 @@ Symbolics = "0c5d862f-8b57-4792-8d23-627444de63c7"
 Tullio = "bc48ee85-29a4-5162-ae0b-a64e1601d4bc"
 
 [compat]
-DifferentialEquations = "8"
-Flux = "0.16"
-GraphNeuralNetworks = "0.6"
-Graphs = "1.9"
-Optim = "1.7"
-Symbolics = "5, 6"
-Tullio = "0.3"
+Symbolics = "5, 6, 7"
 julia = "1.10"
 
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c523dd2ae4"
+
+[targets]
+test = ["Test"]
