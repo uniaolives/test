@@ -7,6 +7,7 @@ mod tests {
     use crate::physics::temporal_tunneling::SatoshiVesselTunneling;
     use crate::physics::xi_particle::{XiParticle, is_sum_of_two_squares};
     use crate::physics::rsm::{RSMParticle, ParticleKind, RealityTransaction};
+    use crate::physics::quaternion::ArkheQuaternion;
 
     #[test]
     fn test_compute_f_extremum() {
@@ -123,6 +124,31 @@ mod tests {
 
         assert!(tx.validate_with_handover(0.95));
         assert!(tx.handover.is_some());
+    }
+
+    #[test]
+    fn test_quaternion_multiplication() {
+        let q1 = ArkheQuaternion::new(0.0, 1.0, 0.0, 0.0); // i
+        let q2 = ArkheQuaternion::new(0.0, 0.0, 1.0, 0.0); // j
+        let res = q1 * q2;
+        assert_eq!(res, ArkheQuaternion::new(0.0, 0.0, 0.0, 1.0)); // k
+    }
+
+    #[test]
+    fn test_quaternion_rotation() {
+        let q = ArkheQuaternion::new(0.707, 0.0, 0.707, 0.0); // 90 deg about Y
+        let (rx, ry, rz) = q.rotate_vector(1.0, 0.0, 0.0);
+        // Expect roughly (0, 0, -1)
+        assert!(rx.abs() < 0.1);
+        assert!(ry.abs() < 0.1);
+        assert!(rz < -0.9);
+    }
+
+    #[test]
+    fn test_bloch_mapping() {
+        let q = ArkheQuaternion::identity();
+        let (theta, _) = q.to_bloch_coordinates();
+        assert_eq!(theta, 0.0); // North pole
     fn test_xi_coherence() {
         let coherence = XiParticle::calculate_coherence(0.5, 1.088152);
         assert!(coherence > 0.64);
