@@ -43,6 +43,10 @@ tracing = "0.1"
 tracing-subscriber = "0.3"
 metrics = "0.21"
 metrics-exporter-prometheus = "0.12"
+sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono"] }
+redis = { version = "0.23", features = ["tokio-comp", "aio"] }
+rumqttc = "0.23"
+num-complex = "0.4"
 
 [dev-dependencies]
 reqwest = { version = "0.11", features = ["json"] }
@@ -52,4 +56,3 @@ sqlx = { version = "0.7", default-features = false, features = ["runtime-tokio-r
 redis = { version = "0.23", features = ["tokio-comp", "aio"] }
 rumqttc = "0.23"
 tracing = "0.1"
-num-complex = "0.4"
