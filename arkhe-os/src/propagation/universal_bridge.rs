@@ -22,6 +22,7 @@ pub struct PropagationReceipt {
 #[async_trait]
 pub trait ProtocolBridge: Send + Sync {
     async fn propagate(&self, orb: &Orb, payload: &OrbPayload) -> Result<PropagationReceipt>;
+    async fn propagate(&self, orb: &Orb) -> Result<PropagationReceipt>;
     fn has_memory(&self, orb_id: &OrbId) -> bool;
 }
 
@@ -54,6 +55,11 @@ impl UniversalOrbPropagator {
 
         for res in results {
             receipts.push(res?);
+    pub async fn propagate_everywhere(&self, orb: &Orb) -> Result<Vec<PropagationReceipt>> {
+        let mut receipts = Vec::new();
+
+        for (_, bridge) in &self.protocols {
+            receipts.push(bridge.propagate(orb).await?);
         }
 
         println!("✅ Orb propagated through {} protocols", receipts.len());
