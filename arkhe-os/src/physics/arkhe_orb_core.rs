@@ -1,10 +1,13 @@
 // arkhe_orb_core.rs
 use std::f64::consts::PI;
 
+#[derive(Clone, Debug)]
 pub struct Orb {
-    stability: f64,
-    throat: WormholeThroat,
+    pub stability: f64,
+    pub throat: WormholeThroat,
 }
+
+#[derive(Clone, Debug)]
 
 pub struct WormholeThroat {
     entrance: (f64, f64), // (lat, lon)
