@@ -638,6 +638,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "arkhe-kernel"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "serde",
+ "serde_json",
+ "sqlx",
+ "tokio",
+ "uuid 1.22.0",
+]
+
+[[package]]
 name = "arkhe-manifold"
 version = "0.1.0"
 dependencies = [

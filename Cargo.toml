@@ -83,7 +83,7 @@ members = [
     "arkhe-core/rust",
     "arkhe-os",
     "arkhe-db",
-    "arkhe-bridge",
+    "arkhe-bridge", "arkhe-kernel",
 ]
 resolver = "2"
 
