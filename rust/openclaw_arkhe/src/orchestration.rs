@@ -2,7 +2,7 @@
 
 use crate::agent::{OpenClawArkheAgent, AgentId};
 use std::collections::HashMap;
-use digital_memory_ring::zk_lottery::{ZkLottery, LotteryWeight};
+use dmr_bridge::zk_lottery::{ZkLottery, LotteryWeight};
 use bls12_381::Scalar;
 
 #[derive(Debug, Clone, PartialEq)]
