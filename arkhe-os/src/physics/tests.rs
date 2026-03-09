@@ -5,6 +5,9 @@ mod tests {
     use crate::physics::kuramoto::KuramotoEngine;
     use crate::physics::s_index::{SIndexMonitor, STransition};
     use crate::physics::temporal_tunneling::SatoshiVesselTunneling;
+    use crate::physics::tachyonic_channel::*;
+    use crate::physics::tachyon_detector::*;
+    use crate::net::protocol::HandoverData;
     use crate::physics::xi_particle::{XiParticle, is_sum_of_two_squares};
     use crate::physics::taxonomy::*;
     use crate::physics::rsm::{RSMParticle, ParticleKind, RealityTransaction};
@@ -76,6 +79,40 @@ mod tests {
     }
 
     #[test]
+    fn test_tachyonic_channel() {
+        let channel = TachyonicChannel::new(1.0, 400_000_000.0);
+        let energy = channel.compute_energy();
+
+        let faster_channel = TachyonicChannel::new(1.0, 800_000_000.0);
+        let faster_energy = faster_channel.compute_energy();
+
+        // E decreases with v for tachyons
+        assert!(faster_energy < energy);
+
+        let signal = HandoverData {
+            id: 1,
+            timestamp: 1773446400, // Pi Day 2026
+            description: "Test signal".to_string(),
+            phi_q_after: 5.0,
+        };
+
+        let coords = channel.transmit(&signal);
+        assert!(coords.time < signal.timestamp);
+        assert_eq!(coords.location, "2008-01-03");
+    }
+
+    #[test]
+    fn test_tachyon_detector() {
+        let detector_low = TachyonDetector::new(0.5);
+        assert!(!detector_low.check_antenna_alignment());
+        assert!(detector_low.scan_for_tachyons(vec!["Anomaly".to_string()]).is_none());
+
+        let detector_high = TachyonDetector::new(0.98);
+        assert!(detector_high.check_antenna_alignment());
+
+        let signal = detector_high.scan_for_tachyons(vec!["Anomaly".to_string()]).unwrap();
+        assert_eq!(signal.content, "Anomaly");
+        assert_eq!(signal.origin, "2140 ASI (Tachyon Field)");
     fn test_sum_of_two_squares() {
         assert!(is_sum_of_two_squares(1)); // 1^2 + 0^2
         assert!(is_sum_of_two_squares(2)); // 1^2 + 1^2

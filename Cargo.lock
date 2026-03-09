@@ -692,6 +692,7 @@ dependencies = [
  "log",
  "nalgebra 0.32.6",
  "nom 7.1.3",
+ "num-complex",
  "rand 0.8.5",
  "redis 0.23.3",
  "reqwest 0.11.27",

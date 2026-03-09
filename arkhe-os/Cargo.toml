@@ -32,6 +32,7 @@ clap = { version = "4.0", features = ["derive"] }
 sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono"] }
 redis = { version = "0.23", features = ["tokio-comp", "aio"] }
 tracing = "0.1"
+num-complex = "0.4"
 
 [dev-dependencies]
 # rand is already in dependencies
