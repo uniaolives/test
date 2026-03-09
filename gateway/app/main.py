@@ -10,6 +10,7 @@ from .hyperclaw.loops import HyperClawOrchestrator, ContextFrame
 from .geoloc.poloc import BftPoLoc
 from .physics.simulators import QuantumSimulator
 from .physics.triggers import ArkheTrigger
+from .physics.kuramoto import KuramotoOrchestrator
 from .physics.arkhe_s2_lhc import LHCDataLoader, ArkheLHCTrigger, ArkheLHCAnalysis
 from .blockchain.satoshi import verify_satoshi_temporal
 from .quantum.qiskit_circuits import (
@@ -26,6 +27,8 @@ import json
 import time
 import random
 import os
+import uuid
+import numpy as np
 from typing import List, Dict, Any
 
 # Operational Mode Detection
@@ -49,6 +52,9 @@ hyperclaw_orchestrator = HyperClawOrchestrator()
 geoloc_verifier = BftPoLoc(beta=0.2)
 quantum_sim = QuantumSimulator()
 lhc_trigger = ArkheTrigger()
+kuramoto_orchestrator = KuramotoOrchestrator(
+    redis_url=os.getenv("REDIS_URL", "redis://localhost:6379")
+)
 s2_trigger = ArkheLHCTrigger()
 qiskit_iface = QiskitInterface()
 reality_listener = RealityListener()
@@ -70,8 +76,14 @@ async def lifespan(app: FastAPI):
     await hyperclaw_orchestrator.start(frame_id)
     # Start Reality Listener
     reality_listener.start()
+    # Start Kuramoto Orchestrator
+    try:
+        await kuramoto_orchestrator.start()
+    except Exception as e:
+        print(f"[ERROR] Failed to start Kuramoto Orchestrator: {e}")
     yield
     hyperclaw_orchestrator.running = False
+    await kuramoto_orchestrator.stop()
     reality_listener.stop()
 
 app = FastAPI(
@@ -95,11 +107,8 @@ async def audit_middleware(request: Request, call_next):
     process_time = (time.time() - start_time) * 1000
 
     if OPERATIONAL_MODE in ["FULL", "DATABASE ONLY"]:
-        db = None
+        db = SessionLocal()
         try:
-            db = SessionLocal()
-        try:
-            db = next(get_db())
             repo = DMRRepository(db)
             # Constante Elena H calculation (symbolic/proxy)
             h_val = random.uniform(0.1, 0.9)
@@ -318,18 +327,29 @@ async def get_reality_status():
 async def get_synchronicity(db: Session = Depends(get_db)):
     """
     Calcula o Índice de Sincronicidade (S) baseado na Tese Arkhe(n).
-    Fórmula: S = (1 / ΔK) * P_AC
+    Fórmula: S = φ * coherence * substrate_diversity * 10.0
+    Onde φ = 0.618 (Golden Ratio)
     """
     phi_q_threshold = 4.64
+    phi = 0.618
+
+    # Get antenna coherence (Kuramoto R)
+    kuramoto_status = kuramoto_orchestrator.get_status()
+    coherence = kuramoto_status["order_r"]
+
+    # Delta K and Q as proxies for substrate state
     delta_k = system_state.delta_k
     q_value = system_state.q_value
 
-    phi_q_actual = q_value * 5.0 # Proxy: Q=1.0 -> φ_q=5.0
+    # Calculate substrate diversity (proxy: 1 - delta_k)
+    substrate_diversity = max(0.1, 1.0 - delta_k)
 
-    if delta_k <= 0.0001:
-        s_index = 100.0
-    else:
-        s_index = (1.0 / delta_k) * (phi_q_actual / phi_q_threshold)
+    phi_q_actual = q_value * 5.0 # Proxy: Q=1.0 -> φ_q=5.0
+    phi_ratio = phi_q_actual / phi_q_threshold
+
+    # S = φ_ratio * φ * coherence * substrate_diversity * 10.0
+    s_index = phi_ratio * phi * coherence * substrate_diversity * 10.0
+    s_index = min(10.0, max(0.0, s_index))
 
     if s_index > 8.0:
         status = "SINGULARITY_IMMINENT"
@@ -346,17 +366,10 @@ async def get_synchronicity(db: Session = Depends(get_db)):
         "phi_q_actual": phi_q_actual,
         "miller_threshold": phi_q_threshold,
         "wave_cloud_nucleated": phi_q_actual > phi_q_threshold,
+        "coherence": coherence,
+        "substrate_diversity": substrate_diversity,
         "status": status,
-        "lmt": {
-            "resonance": random.uniform(0.1, 0.9),
-            "phase": 1,
-            "currents": {
-                "source": 0.8,
-                "vibration": 0.6,
-                "resonance": 0.7
-            }
-        },
-        "p_ac_proxy": q_value,
+        "kuramoto": kuramoto_status,
         "thresholds": {
             "awakening": 2.0,
             "dialogue": 5.0,
@@ -376,7 +389,7 @@ async def get_synchronicity(db: Session = Depends(get_db)):
                 p_ac_proxy=q_value,
                 total_agents=sys_metrics["total_agents"],
                 ghost_count=random.randint(0, 5), # Simulated
-                lambda_sync=random.uniform(0.5, 0.95), # Simulated
+                lambda_sync=coherence,
                 h_value=repo.compute_h_value()
             )
         except Exception as e:
@@ -418,6 +431,27 @@ async def record_handover(handover: Dict[str, Any]):
 @app.get("/arkhe/ledger/history")
 async def get_ledger_history():
     return handover_ledger
+
+@app.websocket("/ws/anomalies")
+async def websocket_anomalies(websocket: WebSocket):
+    """Broadcasts detected spatial anomalies (Orbs) to the dashboard."""
+    await websocket.accept()
+    try:
+        # Subscribe to anomalies channel if Redis is available
+        if kuramoto_orchestrator.redis:
+            pubsub = kuramoto_orchestrator.redis.pubsub()
+            await pubsub.subscribe("arkhe:anomalies")
+            async for message in pubsub.listen():
+                if message["type"] == "message":
+                    await websocket.send_text(message["data"])
+        else:
+            # Local fallback loop
+            while True:
+                if kuramoto_orchestrator.anomalies:
+                    await websocket.send_json(kuramoto_orchestrator.anomalies[-1])
+                await asyncio.sleep(5.0)
+    except (WebSocketDisconnect, asyncio.CancelledError):
+        pass
 
 @app.websocket("/ws/reality")
 async def websocket_reality(websocket: WebSocket):
@@ -571,13 +605,57 @@ async def calibrate_qpu():
 @app.websocket("/ws/entrainment")
 async def websocket_entrainment(websocket: WebSocket):
     await websocket.accept()
-    agent_id = f"agent_{int(time.time())}"
+    agent_id = str(uuid.uuid4())
     agent_registry[agent_id] = get_dmr_instance(agent_id)
+
+    # Initial phase and frequency for Kuramoto sync
+    theta_i = random.uniform(0, 2 * np.pi)
+    omega_i = random.uniform(0.8, 1.2)
+
+    # Spatial metadata
+    lat_i = random.uniform(-90, 90)
+    lon_i = random.uniform(-180, 180)
+    alt_i = random.uniform(0, 20.0)
 
     try:
         while True:
+            # Receive agent's local phase and location if they send it
+            try:
+                data = await asyncio.wait_for(websocket.receive_json(), timeout=0.005)
+                if "theta" in data: theta_i = data["theta"]
+                if "lat" in data: lat_i = data["lat"]
+                if "lon" in data: lon_i = data["lon"]
+                if "altitude" in data: alt_i = data["altitude"]
+            except (asyncio.TimeoutError, json.JSONDecodeError):
+                pass
+
+            # Update Kuramoto synchronization field with spatial data
+            # φ_q is derived from agent's Q-value
+            q_i = random.uniform(0.9, 1.0) # Simulated
+            phi_q_i = q_i * 5.0
+
+            await kuramoto_orchestrator.publish_phase(
+                agent_id, theta_i, omega_i,
+                lat=lat_i, lon=lon_i, altitude=alt_i, phi_q=phi_q_i
+            )
+
+            # Local update: θ_i += (ω_i + K*R*sin(Ψ - θ_i)) * dt
+            # Using mean phase from orchestrator for local entrainment
+            status = kuramoto_orchestrator.get_status()
+            r = status["order_r"]
+            psi = status["mean_phase"]
+            dt = 0.1
+
+            d_theta = omega_i + kuramoto_orchestrator.coupling_k * r * np.sin(psi - theta_i)
+            theta_i = (theta_i + d_theta * dt) % (2 * np.pi)
+
             state = {
                 "timestamp": int(time.time()),
+                "agent_id": agent_id,
+                "theta": theta_i,
+                "omega": omega_i,
+                "coherence_r": r,
+                "mean_phase": psi,
                 "vk": {
                     "bio": 0.5 + random.uniform(-0.05, 0.05),
                     "aff": 0.5 + random.uniform(-0.05, 0.05),
@@ -587,7 +665,6 @@ async def websocket_entrainment(websocket: WebSocket):
                 "t_kr": agent_registry[agent_id].measure_t_kr(),
                 "delta_k": random.uniform(0.05, 0.15),
                 "q": random.uniform(0.85, 0.95),
-                "coherence": random.uniform(0.8, 0.95),
                 "hyperclaw_mode": hyperclaw_orchestrator.frames["default_frame"].mode.value if "default_frame" in hyperclaw_orchestrator.frames else "N/A"
             }
             await websocket.send_json(state)
@@ -595,6 +672,7 @@ async def websocket_entrainment(websocket: WebSocket):
     except WebSocketDisconnect:
         if agent_id in agent_registry:
             del agent_registry[agent_id]
+        await kuramoto_orchestrator.unregister_agent(agent_id)
 
 if __name__ == "__main__":
     import uvicorn

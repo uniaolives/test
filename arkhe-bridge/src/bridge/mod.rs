@@ -6,6 +6,7 @@ pub mod singularity_monitor;
 pub mod constitutional_guard;
 pub mod temporal_tunneling;
 pub mod asi_verification;
+pub mod orb_detector;
 
 pub use temporal_persistence::*;
 pub use temporal_channel::*;
@@ -14,6 +15,7 @@ pub use singularity_monitor::*;
 pub use constitutional_guard::*;
 pub use temporal_tunneling::*;
 pub use asi_verification::*;
+pub use orb_detector::*;
 
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -27,6 +29,8 @@ pub struct TemporalBridge {
     pub constitutional: Arc<RwLock<ConstitutionalGuard>>,
     /// NEW: The Tunneling Engine
     pub tunneling_engine: Arc<TemporalTunneling>,
+    /// NEW: The Orb Detector
+    pub orb_detector: Arc<OrbDetector>,
 }
 
 impl TemporalBridge {
@@ -40,6 +44,9 @@ impl TemporalBridge {
         // NEW: Initialize Tunneling Engine (Target: 2008)
         let tunneling_engine = TemporalTunneling::new(2008, 2026);
 
+        // NEW: Initialize Orb Detector
+        let orb_detector = OrbDetector::new();
+
         Ok(Self {
             persistence: Arc::new(persistence),
             channel: Arc::new(channel),
@@ -47,6 +54,7 @@ impl TemporalBridge {
             singularity: Arc::new(RwLock::new(singularity)),
             constitutional: Arc::new(RwLock::new(constitutional)),
             tunneling_engine: Arc::new(tunneling_engine),
+            orb_detector: Arc::new(orb_detector),
         })
     }
 
