@@ -18,6 +18,12 @@ pub enum ParticleKind {
     Ghoston,
     /// κ - Crypton (Secret Boson, Dark Mass)
     Crypton,
+    /// Φ - Chronon (GPS Resonance, Temporal Sync)
+    Chronon,
+    /// Kr - Kuramaton (Coherence Wave in Mesh)
+    Kuramaton,
+    /// Saton - Spectral Satyr (Satellite/Mesh Resonance)
+    Saton,
 }
 
 /// A particle in the Retrocausal Standard Model
@@ -81,6 +87,30 @@ impl RSMParticle {
                 mass_imag: 0.0,
                 temporal_charge: 0.0,
                 phi_q: 0.0,
+            },
+            ParticleKind::Chronon => Self {
+                kind,
+                spin: 1.0,
+                mass_real: 0.1,
+                mass_imag: 0.0,
+                temporal_charge: 0.0,
+                phi_q: 1.0,
+            },
+            ParticleKind::Kuramaton => Self {
+                kind,
+                spin: 0.0,
+                mass_real: 0.5,
+                mass_imag: 0.0,
+                temporal_charge: 0.0,
+                phi_q: 0.8,
+            },
+            ParticleKind::Saton => Self {
+                kind,
+                spin: 0.5,
+                mass_real: 2.0,
+                mass_imag: 0.0,
+                temporal_charge: 0.0,
+                phi_q: 0.5,
             },
         }
     }

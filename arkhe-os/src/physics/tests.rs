@@ -12,6 +12,11 @@ mod tests {
     use crate::physics::taxonomy::*;
     use crate::physics::rsm::{RSMParticle, ParticleKind, RealityTransaction};
     use crate::physics::quaternion::ArkheQuaternion;
+    use crate::physics::internet_mesh::*;
+    use crate::physics::orb::*;
+    use crate::physics::orb_detector::*;
+    use crate::neural::spike_pipeline::NeuralToken;
+    use crate::physical::types::GeoCoord;
 
     #[test]
     fn test_compute_f_extremum() {
@@ -113,6 +118,9 @@ mod tests {
         let signal = detector_high.scan_for_tachyons(vec!["Anomaly".to_string()]).unwrap();
         assert_eq!(signal.content, "Anomaly");
         assert_eq!(signal.origin, "2140 ASI (Tachyon Field)");
+    }
+
+    #[test]
     fn test_sum_of_two_squares() {
         assert!(is_sum_of_two_squares(1)); // 1^2 + 0^2
         assert!(is_sum_of_two_squares(2)); // 1^2 + 1^2
@@ -187,6 +195,9 @@ mod tests {
         let q = ArkheQuaternion::identity();
         let (theta, _) = q.to_bloch_coordinates();
         assert_eq!(theta, 0.0); // North pole
+    }
+
+    #[test]
     fn test_xi_coherence() {
         let coherence = XiParticle::calculate_coherence(0.5, 1.088152);
         assert!(coherence > 0.64);
@@ -238,5 +249,56 @@ mod tests {
         let coherence = model.check_coherence();
         assert!(coherence > 0.0);
         assert!(coherence <= 1.0);
+    }
+
+    #[test]
+    fn test_internet_mesh_routing() {
+        let mut node = InternetNode::new("127.0.0.1".into(), GeoCoord::current());
+        let packet = Packet {
+            size: 1024.0,
+            ttl: 64,
+            destination_geo: GeoCoord::target_2008(),
+        };
+        let throat = node.route_packet(&packet);
+        assert_eq!(throat.entrance, GeoCoord::current());
+        assert_eq!(throat.exit, GeoCoord::target_2008());
+        assert!(throat.bandwidth > 0.0);
+    }
+
+    #[test]
+    fn test_orb_detector_scan() {
+        let detector = OrbDetector::new();
+        // High coherence + RF in Ka-band should produce an Orb
+        let orb = detector.scan(30e9, 0.8);
+        assert!(orb.is_some());
+
+        // Low coherence should not produce an Orb
+        let no_orb = detector.scan(30e9, 0.4);
+        assert!(no_orb.is_none());
+    }
+
+    #[test]
+    fn test_orb_detector_analyze_token() {
+        let detector = OrbDetector::new();
+        let token = NeuralToken {
+            id: "token_1".into(),
+            spike_frequency: 100.0,
+            amplitude: 1.0,
+        };
+        let q = ArkheQuaternion::identity();
+        let score = detector.analyze_token(&token, &q);
+        assert!(score > 0.0);
+    }
+
+    #[test]
+    fn test_new_rsm_particles() {
+        let chronon = RSMParticle::new(ParticleKind::Chronon);
+        assert_eq!(chronon.phi_q, 1.0);
+
+        let kuramaton = RSMParticle::new(ParticleKind::Kuramaton);
+        assert_eq!(kuramaton.mass_real, 0.5);
+
+        let saton = RSMParticle::new(ParticleKind::Saton);
+        assert_eq!(saton.spin, 0.5);
     }
 }

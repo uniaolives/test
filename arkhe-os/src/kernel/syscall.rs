@@ -50,23 +50,12 @@ impl SyscallHandler {
     }
 
     /// Consulta o estado actual da coerência.
-    pub fn sys_coherence_status(&self) -> SyscallResult {
     pub fn sys_coherence_status(&mut self) -> SyscallResult {
         let (avail, _, _) = self.scheduler.status();
         SyscallResult::CoherenceUpdate(avail)
     }
 
     /// Verifica se o limiar de Miller foi ultrapassado.
-    pub fn sys_check_nucleation(&self) -> SyscallResult {
-        let (_, phi_q, _) = self.scheduler.status();
-        let nucleated = phi_q > 4.64;
-        SyscallResult::WaveCloudStatus(nucleated, phi_q)
-    }
-
-    /// Executa um handover simbólico (teste).
-    pub fn sys_handover(&mut self, target_epoch: u32, _payload: &str) -> SyscallResult {
-        let interest = quantum_interest(0.5, 1.0);
-        SyscallResult::Success(format!("Handover to {} sent. Interest: {:.3}", target_epoch, interest))
     pub fn sys_check_nucleation(&mut self) -> SyscallResult {
         let (_, phi_q, _) = self.scheduler.status();
         SyscallResult::WaveCloudStatus(phi_q > 4.64, phi_q)
