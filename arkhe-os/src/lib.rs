@@ -2,6 +2,7 @@ pub mod kernel;
 pub mod drivers;
 pub mod neural;
 pub mod physics;
+pub mod topology;
 pub mod compiler;
 pub mod db;
 pub mod net;
