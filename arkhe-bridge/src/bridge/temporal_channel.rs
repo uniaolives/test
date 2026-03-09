@@ -106,6 +106,14 @@ impl TemporalChannel {
                 lon: anomaly.location.lon,
                 altitude: anomaly.altitude_km,
                 coherence: anomaly.local_phi_q,
+            timestamp: Utc::now().timestamp(),
+            phi_q: anomaly.localized_coherence,
+            payload: MessagePayload::OrbDetection {
+                id: anomaly.id.clone(),
+                lat: anomaly.location.lat,
+                lon: anomaly.location.lon,
+                altitude: anomaly.altitude_km,
+                coherence: anomaly.localized_coherence,
                 origin: format!("{:?}", anomaly.origin),
             },
         };

@@ -3,12 +3,14 @@ import asyncio
 import json
 import time
 from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 import redis.asyncio as redis
 
 class KuramotoOrchestrator:
     """
     Kuramoto Synchronization Orchestrator for distributed agents.
     Implements a Mean-Field aggregator with Spatial Anomaly (Orb) detection.
+    Implements a Mean-Field aggregator for antenna coherence ($R$).
     """
     def __init__(self, coupling_k: float = 2.5, redis_url: str = "redis://localhost:6379"):
         self.coupling_k = coupling_k
@@ -25,6 +27,9 @@ class KuramotoOrchestrator:
         self.anomalies: List[Dict] = []
         self.phi_q_threshold = 4.64
         self.intensity_threshold = 3.0
+
+        self.order_r: float = 0.0
+        self.mean_phase: float = 0.0
 
         self.running = False
         self._lock = asyncio.Lock()
@@ -77,6 +82,7 @@ class KuramotoOrchestrator:
                                     "altitude": data.get("altitude", 0.0),
                                     "phi_q": data.get("phi_q", 1.0)
                                 }
+                            # O(N) update of mean field
                             self._update_mean_field()
                     except Exception as e:
                         print(f"[KURAMOTO] Error parsing message: {e}")
@@ -129,6 +135,15 @@ class KuramotoOrchestrator:
                     self.node_metadata[agent_id] = {
                         "lat": lat, "lon": lon, "altitude": altitude, "phi_q": phi_q
                     }
+    async def publish_phase(self, agent_id: str, theta: float, omega: float):
+        """Broadcasts an agent's phase to the network."""
+        if self.redis:
+            payload = json.dumps({"theta": theta, "omega": omega, "timestamp": time.time()})
+            await self.redis.publish(f"phase:{agent_id}", payload)
+        else:
+            # Local fallback for tests/mock
+            async with self._lock:
+                self.phases[agent_id] = theta
                 self._update_mean_field()
 
     async def unregister_agent(self, agent_id: str):
@@ -188,6 +203,7 @@ class KuramotoOrchestrator:
                         await self.redis.publish("arkhe:anomalies", json.dumps(anomaly))
 
             self.anomalies = new_anomalies[-100:] # Keep last 100
+                self._update_mean_field()
 
     def get_coherence(self) -> float:
         return self.order_r
@@ -208,4 +224,5 @@ class KuramotoOrchestrator:
             "status": status,
             "active_agents": len(self.phases),
             "detected_anomalies": len(self.anomalies)
+            "active_agents": len(self.phases)
         }

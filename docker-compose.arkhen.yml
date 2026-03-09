@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # O Kernel
+  arkhe-core:
+    build:
+      context: ./arkhe-os
+      dockerfile: ../Dockerfile.claude
+    ports:
+      - "8080:8080"
+    environment:
+      - RUST_LOG=info
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - qdrant
+      - prometheus
+
+  # O Cérebro de Memória (RAG)
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - ./qdrant_storage:/qdrant/storage
+
+  # O Sistema Nervoso (Métricas)
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  # A Visualização (Dashboards)
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "3000:3000"
+
+  # O Orquestrador No-Code
+  n8n:
+    image: n8nio/n8n
+    ports:
+      - "5678:5678"

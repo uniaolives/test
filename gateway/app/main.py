@@ -638,6 +638,18 @@ async def websocket_entrainment(websocket: WebSocket):
                 agent_id, theta_i, omega_i,
                 lat=lat_i, lon=lon_i, altitude=alt_i, phi_q=phi_q_i
             )
+    try:
+        while True:
+            # Receive agent's local phase if they send it
+            try:
+                data = await asyncio.wait_for(websocket.receive_json(), timeout=0.005)
+                if "theta" in data:
+                    theta_i = data["theta"]
+            except (asyncio.TimeoutError, json.JSONDecodeError):
+                pass
+
+            # Update Kuramoto synchronization field
+            await kuramoto_orchestrator.publish_phase(agent_id, theta_i, omega_i)
 
             # Local update: θ_i += (ω_i + K*R*sin(Ψ - θ_i)) * dt
             # Using mean phase from orchestrator for local entrainment

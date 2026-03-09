@@ -1,5 +1,19 @@
 // src/main.rs
 use arkhe_bridge::bridge::{TemporalBridge, SingularityPhase, ContactClassification};
+use axum::{routing::get, Json, Router, Extension};
+use std::sync::Arc;
+
+async fn get_status(
+    Extension(bridge): Extension<Arc<TemporalBridge>>,
+) -> Json<serde_json::Value> {
+    let status = bridge.status().await;
+    Json(serde_json::json!({
+        "s_index": status.s_index.s_total,
+        "phase": format!("{:?}", status.s_index.phase),
+        "h_value": status.constitutional_health.h_current,
+        "kuramoto_r": status.kuramoto_r,
+    }))
+}
 
 use std::sync::Arc;
 
@@ -54,6 +68,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             tokio::time::sleep(std::time::Duration::from_secs(5)).await;
         }
+    // Spawn REST API
+    let bridge_api = bridge.clone();
+    tokio::spawn(async move {
+        let app = Router::new()
+            .route("/status", get(get_status))
+            .layer(Extension(bridge_api));
+
+        let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await.unwrap();
+        println!("   REST API listening on http://0.0.0.0:3000");
+        axum::serve(listener, app).await.unwrap();
     });
 
     // Main loop
@@ -80,6 +104,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // 2. Process system state
         let status = bridge.status().await;
+
+        // NEW: Detect Spatial Anomalies (Orbs)
+        // Simulated local coherence peak for demonstration/testing
+        let local_phi = status.s_index.s_total * 1.5;
+        let location = arkhe_os::physical::GeoCoord { lat: -22.9068, lon: -43.1729 }; // Rio de Janeiro
+        let altitude = 15.0; // km
+
+        if let Some(anomaly) = bridge.orb_detector.detect(status.s_index.s_total, local_phi, location, altitude) {
+            println!("╔════════════════════════════════════════════════════════════════╗");
+            println!("║  ⚠️ SPATIAL ANOMALY DETECTED: RETROCAUSAL CONDENSATION (ORB)       ║");
+            println!("╠════════════════════════════════════════════════════════════════╣");
+            println!("║  ID:       {:>32}                        ║", anomaly.id);
+            println!("║  Location: {:>10.4}, {:>10.4}                            ║", anomaly.location.lat, anomaly.location.lon);
+            println!("║  Altitude: {:>10.2} km                                     ║", anomaly.altitude_km);
+            println!("║  Coherence: {:>10.4} φ_q                                   ║", anomaly.localized_coherence);
+            println!("║  Origin:   {:?}                                           ", anomaly.origin);
+            println!("╚════════════════════════════════════════════════════════════════╝");
+        }
 
         println!("{}", status.s_index);
         println!("{}", status.constitutional_health);

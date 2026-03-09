@@ -1,5 +1,8 @@
-//! Placeholder para futuros drivers de hardware quântico.
-//! Exemplo: controlo de cavidades ressonantes, leitura de sensores ZPF, etc.
+//! Drivers de hardware para o ArkheOS.
+//! Suporta protocolos industriais, seriais e hardware quântico.
+
+pub mod industrial;
+pub mod serial;
 
 pub struct QuantumHardware {
     // ...

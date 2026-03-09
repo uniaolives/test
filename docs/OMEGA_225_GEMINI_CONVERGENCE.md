@@ -16,6 +16,12 @@ The **GEMINI (Granularly Expanding Memory for Intracellular Narrative Integratio
 
 ### 🜂 III. MATHEMATICAL INTEGRATION
 
+The physical measurement of Time in Katharós Range ($t_{KR}$) is now possible via GEMINI layer thickness:
+
+$$t_{KR}(t) = \sum_{n} \text{Thickness}(\text{Layer}_n) \cdot \mathbb{I}(\text{Intensity}_n < \text{Threshold})$$
+
+Where:
+- $\text{Thickness}_n$ corresponds to the duration of state $n$.
 The physical measurement of Time in Katharós Range ({KR}$) is now possible via GEMINI layer thickness:
 
 1334t_{KR}(t) = \sum_{n} \text{Thickness}(\text{Layer}_n) \cdot \mathbb{I}(\text{Intensity}_n < \text{Threshold})1334
