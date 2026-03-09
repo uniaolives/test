@@ -15,6 +15,7 @@ pub mod xi_particle;
 pub mod taxonomy;
 pub mod rsm;
 pub mod quaternion;
+pub mod arkhe_orb_core;
 pub mod internet_mesh;
 pub mod orb;
 pub mod orb_detector;
