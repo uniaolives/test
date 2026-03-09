@@ -7,6 +7,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 pub enum QuantumProtocol {
     KatharosEntanglement,
     SacralTransfer,
+    VkPolicySync, // Ω+224: Synchronization of VK_oc and Actor-Critic policies
 }
 
 pub struct QhttpGateway {
@@ -35,6 +36,10 @@ impl QhttpGateway {
             },
             QuantumProtocol::SacralTransfer => {
                 println!("qhttp://: Transferring accumulated t_KR to {}", target_node);
+                true
+            },
+            QuantumProtocol::VkPolicySync => {
+                println!("qhttp://: Synchronizing VK_oc and Policy gradients with {}", target_node);
                 true
             }
         }

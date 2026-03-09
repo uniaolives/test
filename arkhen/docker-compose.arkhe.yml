@@ -1,0 +1,96 @@
+# docker-compose.arkhe.yml
+# Stack completo para desenvolvimento e produção
+
+version: '3.8'
+
+services:
+  # Núcleo Arkhe(n) em Rust
+  arkhe-core:
+    build:
+      context: .
+      dockerfile: Dockerfile.arkhe
+    environment:
+      - RUST_LOG=info
+      - ORCH_CORE_ENABLED=true
+    volumes:
+      - ./data/timechain:/data/timechain
+    networks:
+      - arkhe-mesh
+
+  # API Node.js + Webpack
+  arkhe-api:
+    image: node:20-slim
+    command: npm start
+    ports:
+      - "8080:8080"
+    environment:
+      - REACT_APP_TOTEM=${TOTEM}
+      - REACT_APP_PHI=${PHI}
+    depends_on:
+      - arkhe-core
+      - vector-db
+    networks:
+      - arkhe-mesh
+
+  # Banco de dados vetorial híbrido
+  vector-db:
+    image: semitechnologies/weaviate:1.23.0
+    ports:
+      - "8081:8080"
+    environment:
+      QUERY_DEFAULTS_LIMIT: 25
+      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
+      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
+      DEFAULT_VECTORIZER_MODULE: 'none'
+      ENABLE_MODULES: ''
+      CLUSTER_HOSTNAME: 'node1'
+    networks:
+      - arkhe-mesh
+
+  # ML Training com TensorFlow
+  ml-trainer:
+    image: tensorflow/tensorflow:2.15.0-gpu
+    environment:
+      - TF_FORCE_GPU_ALLOW_GROWTH=true
+    volumes:
+      - ./data/checkpoints:/app/checkpoints
+      - ./data/datasets:/app/datasets:ro
+    networks:
+      - arkhe-mesh
+
+  # Simulação Blender/Godot
+  sim-renderer:
+    image: ubuntu:22.04
+    command: tail -f /dev/null
+    networks:
+      - arkhe-mesh
+
+  # Análise R
+  r-analytics:
+    image: rocker/tidyverse:4.3
+    volumes:
+      - ./analysis:/home/rstudio/analysis
+      - ./data:/home/rstudio/data
+    networks:
+      - arkhe-mesh
+
+  # Testes Jest/Cypress
+  test-runner:
+    image: cypress/included:13.6.0
+    depends_on:
+      - arkhe-api
+      - arkhe-core
+    networks:
+      - arkhe-mesh
+
+networks:
+  arkhe-mesh:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
+          gateway: 172.28.0.1
+
+volumes:
+  timechain-data:
+  weaviate-data:

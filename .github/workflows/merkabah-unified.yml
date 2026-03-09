@@ -170,11 +170,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install test dependencies
+        run: |
+          pip install pytest pytest-asyncio requests
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
           cache: 'pip'
+
+      - name: Install dependencies
+        working-directory: merkabah-cy
+        run: |
+          pip install -r src/python/requirements.txt
+          pip install pytest pytest-asyncio
 
       - name: Start services with Docker Compose
         working-directory: merkabah-cy
@@ -218,8 +227,6 @@ jobs:
         run: |
           export PYTHONPATH=$PYTHONPATH:$(pwd)/src
           python3 -m pytest tests/test_hyperprompt.py tests/test_temporal_navigation.py tests/test_mummer_mnemosyne.py tests/test_acps_convergence.py -v
-          python3 -m pytest tests/test_hyperprompt.py tests/test_temporal_navigation.py -v
-          python3 -m pytest tests/test_hyperprompt.py -v
 
   # =============================================================================
   # FASE 4: BENCHMARK EM CLUSTER (Condicional)

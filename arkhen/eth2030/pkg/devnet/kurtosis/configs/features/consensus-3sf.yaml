@@ -1,0 +1,31 @@
+# 3SF + Quick Slots — 3-Slot Finality, 6-Second Slots, 4-Slot Epochs
+# Tests: fast finality, quick block production, epoch transitions
+# Verify: finality in 3 slots, 6s block times, 4-slot epoch structure
+participants:
+  - el_type: geth
+    el_image: eth2030:local
+    cl_type: lighthouse
+    cl_image: sigp/lighthouse:latest
+    count: 2
+
+network_params:
+  network: kurtosis
+  seconds_per_slot: 6
+  genesis_delay: 10
+
+additional_services:
+  - dora
+  - spamoor
+  - assertoor
+
+spamoor_params:
+  spammers:
+    - scenario: eoatx
+      name: "Quick Slot Load"
+      config:
+        throughput: 50
+        max_pending: 100
+        max_wallets: 50
+
+assertoor_params:
+  run_stability_check: true

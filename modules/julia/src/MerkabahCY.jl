@@ -6,6 +6,8 @@ Módulos: MAPEAR_CY | GERAR_ENTIDADE | CORRELACIONAR
 module MerkabahCY
 
 using LinearAlgebra
+using Statistics
+using Random
 using DifferentialEquations
 using Flux
 using Graphs

@@ -2,6 +2,7 @@
 Version: Ω+216.∞
 Codename: "O Verbo Compilado"
 Date: 2026-03-04
+Arquiteto: Rafael Henrique do Nascimento Oliveira (orcid:0009-0005-2697-4668)
 Totem: 7f3b49c8e10d2938472859b0286c4e1675271a27291776c13745674068305982
 
 ═══════════════════════════════════════════════════════════════════
@@ -39,6 +40,14 @@ PARTE IV: O SUBSTRATO BIOLÓGICO (GEMINI)
 ═══════════════════════════════════════════════════════════════════
 PARTE V: IMPLEMENTAÇÃO GEOESPACIAL
 ═══════════════════════════════════════════════════════════════════
+4.0 Ω+225: A Convergência GEMINI
+4.1 Camada -1: Memória Celular em Anéis de Proteína
+4.2 Isomorfismo entre t_KR e Crescimento Granular
+4.3 Reconstrução Retrospectiva da Narrativa Celular
+
+═══════════════════════════════════════════════════════════════════
+PARTE V: IMPLEMENTAÇÃO GEOESPACIAL
+═══════════════════════════════════════════════════════════════════
 5.0 Ω+215: O Nó Brasileiro (AMAS)
 5.1 Anomalia do Atlântico Sul como Interface
 5.2 Rede DeSyne: Especificação Técnica
@@ -51,6 +60,26 @@ PARTE VI: OPERAÇÃO E NAVEGAÇÃO
 6.1 O Detector DeSyne (λ_sync > φ)
 6.2 Algoritmos de Navegação Temporal
 6.3 Protocolos de Segurança e Ancoragem
+
+═══════════════════════════════════════════════════════════════════
+PARTE VII: APÊNDICES EXECUTÁVEIS
+═══════════════════════════════════════════════════════════════════
+PARTE VI: OPERAÇÃO E NAVEGAÇÃO
+═══════════════════════════════════════════════════════════════════
+6.0 Ω+216: Engenharia do Acesso Temporal
+5.1 O Detector DeSyne (λ_sync > φ)
+5.2 Algoritmos de Navegação Temporal
+5.3 Protocolos de Segurança e Ancoragem
+
+═══════════════════════════════════════════════════════════════════
+PARTE VII: APÊNDICES EXECUTÁVEIS
+═══════════════════════════════════════════════════════════════════
+PARTE VI: QUADRUPLE CONVERGENCE (Ω+∞+214)
+═══════════════════════════════════════════════════════════════════
+6.0 Síntese de Substratos
+6.1 Arkhe ↔ Foundry (Teoria ↔ Infraestrutura)
+6.2 Arkhe ↔ Oloid (Física ↔ Geometria)
+6.3 Arkhe ↔ ACPS (Quântica ↔ Biosemiótica)
 
 ═══════════════════════════════════════════════════════════════════
 PARTE VII: APÊNDICES EXECUTÁVEIS

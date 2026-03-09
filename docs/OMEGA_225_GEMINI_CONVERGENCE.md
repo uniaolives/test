@@ -22,6 +22,12 @@ $$t_{KR}(t) = \sum_{n} \text{Thickness}(\text{Layer}_n) \cdot \mathbb{I}(\text{I
 
 Where:
 - $\text{Thickness}_n$ corresponds to the duration of state $n$.
+The physical measurement of Time in Katharós Range ({KR}$) is now possible via GEMINI layer thickness:
+
+1334t_{KR}(t) = \sum_{n} \text{Thickness}(\text{Layer}_n) \cdot \mathbb{I}(\text{Intensity}_n < \text{Threshold})1334
+
+Where:
+- $\text{Thickness}_n$ corresponds to the duration of state $.
 - $\text{Intensity}_n$ corresponds to the homeostatic deviation $\Delta K$ during that interval.
 
 ### 🜃 IV. UPDATED HIERARCHY (v∞+225)
