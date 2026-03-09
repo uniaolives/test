@@ -25,6 +25,8 @@ pub mod rio;
 pub mod wearable;
 pub mod orb;
 pub mod bridge;
+pub mod temporal;
+pub mod propagation;
 
 pub use kernel::task::Task;
 pub use kernel::scheduler::{CoherenceScheduler, SchedulerEvent};
