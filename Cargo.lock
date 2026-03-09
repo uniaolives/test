@@ -521,6 +521,7 @@ version = "0.5.0"
 dependencies = [
  "anyhow",
  "arkhe-db",
+ "arkhe-os",
  "axum 0.7.9",
  "chrono",
  "rand 0.8.5",

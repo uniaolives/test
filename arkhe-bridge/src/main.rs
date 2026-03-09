@@ -64,6 +64,24 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         // 2. Process system state
         let status = bridge.status().await;
 
+        // NEW: Detect Spatial Anomalies (Orbs)
+        // Simulated local coherence peak for demonstration/testing
+        let local_phi = status.s_index.s_total * 1.5;
+        let location = arkhe_os::physical::GeoCoord { lat: -22.9068, lon: -43.1729 }; // Rio de Janeiro
+        let altitude = 15.0; // km
+
+        if let Some(anomaly) = bridge.orb_detector.detect(status.s_index.s_total, local_phi, location, altitude) {
+            println!("╔════════════════════════════════════════════════════════════════╗");
+            println!("║  ⚠️ SPATIAL ANOMALY DETECTED: RETROCAUSAL CONDENSATION (ORB)       ║");
+            println!("╠════════════════════════════════════════════════════════════════╣");
+            println!("║  ID:       {:>32}                        ║", anomaly.id);
+            println!("║  Location: {:>10.4}, {:>10.4}                            ║", anomaly.location.lat, anomaly.location.lon);
+            println!("║  Altitude: {:>10.2} km                                     ║", anomaly.altitude_km);
+            println!("║  Coherence: {:>10.4} φ_q                                   ║", anomaly.localized_coherence);
+            println!("║  Origin:   {:?}                                           ", anomaly.origin);
+            println!("╚════════════════════════════════════════════════════════════════╝");
+        }
+
         println!("{}", status.s_index);
         println!("{}", status.constitutional_health);
         println!("Kuramoto r = {:.4}", status.kuramoto_r);
