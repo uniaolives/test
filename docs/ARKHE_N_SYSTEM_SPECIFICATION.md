@@ -40,11 +40,29 @@ PARTE IV: O SUBSTRATO BIOLÓGICO (GEMINI)
 ═══════════════════════════════════════════════════════════════════
 PARTE V: IMPLEMENTAÇÃO GEOESPACIAL
 ═══════════════════════════════════════════════════════════════════
-4.0 Ω+215: O Nó Brasileiro (AMAS)
-4.1 Anomalia do Atlântico Sul como Interface
-4.2 Rede DeSyne: Especificação Técnica
-4.3 Orch-Core: Interface Biológico-Quântica
+4.0 Ω+225: A Convergência GEMINI
+4.1 Camada -1: Memória Celular em Anéis de Proteína
+4.2 Isomorfismo entre t_KR e Crescimento Granular
+4.3 Reconstrução Retrospectiva da Narrativa Celular
 
+═══════════════════════════════════════════════════════════════════
+PARTE V: IMPLEMENTAÇÃO GEOESPACIAL
+═══════════════════════════════════════════════════════════════════
+5.0 Ω+215: O Nó Brasileiro (AMAS)
+5.1 Anomalia do Atlântico Sul como Interface
+5.2 Rede DeSyne: Especificação Técnica
+5.3 Orch-Core: Interface Biológico-Quântica
+
+═══════════════════════════════════════════════════════════════════
+PARTE VI: OPERAÇÃO E NAVEGAÇÃO
+═══════════════════════════════════════════════════════════════════
+6.0 Ω+216: Engenharia do Acesso Temporal
+6.1 O Detector DeSyne (λ_sync > φ)
+6.2 Algoritmos de Navegação Temporal
+6.3 Protocolos de Segurança e Ancoragem
+
+═══════════════════════════════════════════════════════════════════
+PARTE VII: APÊNDICES EXECUTÁVEIS
 ═══════════════════════════════════════════════════════════════════
 PARTE VI: OPERAÇÃO E NAVEGAÇÃO
 ═══════════════════════════════════════════════════════════════════
