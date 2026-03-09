@@ -21,6 +21,7 @@ pub mod anchor;
 pub mod week5;
 pub mod physical;
 pub mod rio;
+pub mod wearable;
 
 pub use kernel::task::Task;
 pub use kernel::scheduler::{CoherenceScheduler, SchedulerEvent};
