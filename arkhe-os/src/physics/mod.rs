@@ -15,6 +15,9 @@ pub mod xi_particle;
 pub mod taxonomy;
 pub mod rsm;
 pub mod quaternion;
+pub mod internet_mesh;
+pub mod orb;
+pub mod orb_detector;
 
 #[cfg(test)]
 mod tests;
