@@ -15,6 +15,7 @@ impl Destination {
     pub fn at_year(year: i32) -> Self {
         let years_from_1970 = year - 1970;
         Self {
+            timestamp: (years_from_1970 as u64).wrapping_mul(365 * 24 * 3600),
             timestamp: (years_from_1970 as u64) * 365 * 24 * 3600,
             distance_m: 0.0,
         }
@@ -68,6 +69,22 @@ impl ProtocolRouter {
         coherence_preserved * latency_penalty * reach_match * orb.coherence
     }
 
+    pub fn route(&self, orb: &OrbCore, target: Destination) -> RoutePlan {
+        let mut candidates: Vec<(ProtocolId, f64)> = self.encoders.iter()
+            .enumerate()
+            .map(|(id, encoder)| {
+                let fitness = self.calculate_fitness(orb, encoder.as_ref(), &target);
+                (id, fitness)
+            })
+            .filter(|(_, fitness)| *fitness > 0.0)
+            .collect();
+
+        // Sort by fitness descending
+        candidates.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+
+        let hops = candidates.into_iter()
+            .map(|(protocol, _)| Hop { protocol })
+            .collect();
     pub fn route(&self, orb: &OrbCore, _target: Destination) -> RoutePlan {
         // Simplified routing: take all compatible protocols
         let mut hops = Vec::new();

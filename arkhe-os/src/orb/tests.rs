@@ -59,6 +59,8 @@ async fn test_multi_protocol_propagation() {
     let orb = MultiProtocolOrb::spawn_universal(0.95, 2.0, router);
     let report = orb.propagate_to_all_eras().await;
 
+    // Years 1900..=2500 by 50 = 13 eras. 2 encoders per era = 26.
+    assert_eq!(report.successes.len(), 26);
     // Years 2000, 2010, 2020, 2030 = 4 eras. 2 encoders per era.
     assert_eq!(report.successes.len(), 8);
 }
