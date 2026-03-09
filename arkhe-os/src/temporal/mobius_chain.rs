@@ -48,15 +48,6 @@ impl MobiusBlock {
         a.mobius_link == b.hash || b.mobius_link == a.hash
     }
 
-    fn compute_past_equivalent(hash: &Hash) -> Hash {
-        let mut equiv = *hash;
-        // Simple mock: flip bits or apply a constant transformation for "the other side"
-        for byte in equiv.iter_mut() {
-            *byte ^= 0xFF;
-        }
-        equiv
-    }
-
     fn compute_future_equivalent(hash: &Hash) -> Hash {
         let mut equiv = *hash;
         for byte in equiv.iter_mut() {
