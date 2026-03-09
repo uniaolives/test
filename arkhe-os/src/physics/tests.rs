@@ -15,8 +15,10 @@ mod tests {
     use crate::physics::internet_mesh::*;
     use crate::physics::orb::*;
     use crate::physics::orb_detector::*;
+    use crate::physics::mobius_temporal::*;
     use crate::neural::spike_pipeline::NeuralToken;
     use crate::physical::types::GeoCoord;
+    use std::f64::consts::PI;
 
     #[test]
     fn test_compute_f_extremum() {
@@ -300,5 +302,70 @@ mod tests {
 
         let saton = RSMParticle::new(ParticleKind::Saton);
         assert_eq!(saton.spin, 0.5);
+    }
+
+    #[test]
+    fn test_mobius_parametrize() {
+        let mobius = MobiusTemporalSurface::new();
+
+        // At u = 0
+        let (pos0, orient0) = mobius.parametrize(0.0, 0.0);
+        assert!((pos0.x - 1.0).abs() < 1e-9);
+        assert_eq!(orient0, 1.0);
+
+        // At u = 2PI (one full loop)
+        let (pos2pi, orient2pi) = mobius.parametrize(2.0 * PI, 0.0);
+        // Position should be same as u=0 for v=0
+        assert!((pos2pi.x - 1.0).abs() < 1e-9);
+        // Orientation should be inverted
+        assert_eq!(orient2pi, -1.0);
+
+        // At u = 4PI (two full loops)
+        let (_, orient4pi) = mobius.parametrize(4.0 * PI, 0.0);
+        assert_eq!(orient4pi, 1.0);
+    }
+
+    #[test]
+    fn test_mobius_time_to_mobius() {
+        let mobius = MobiusTemporalSurface::new();
+        let t_cycle = 100.0;
+
+        let p1 = mobius.time_to_mobius(25.0, t_cycle);
+        assert!((p1.u - PI / 2.0).abs() < 1e-9);
+        assert_eq!(p1.causal_orient, 1.0);
+
+        let p2 = mobius.time_to_mobius(125.0, t_cycle);
+        assert!((p2.u - 2.5 * PI).abs() < 1e-9);
+        assert_eq!(p2.causal_orient, -1.0);
+    }
+
+    #[test]
+    fn test_arkhe_temporal_loop() {
+        let loop_temporal = ArkheTemporalLoop::new();
+
+        // 2008 (Start of loop)
+        let handover_2008 = HandoverData {
+            id: 1,
+            timestamp: 0,
+            description: "2008 Handover".into(),
+            phi_q_after: 1.0,
+        };
+        assert!(!loop_temporal.is_retrocausal(&handover_2008));
+        assert_eq!(loop_temporal.causal_orientation(0.0), 1.0);
+
+        // Mid loop (~2074)
+        let mid_time = (loop_temporal.anchor_2140 - loop_temporal.anchor_2008) / 2.0;
+        assert_eq!(loop_temporal.causal_orientation(mid_time), 1.0);
+
+        // After one full loop (e.g., in the "inverted" phase)
+        let late_time = (loop_temporal.anchor_2140 - loop_temporal.anchor_2008) * 1.5;
+        let handover_late = HandoverData {
+            id: 2,
+            timestamp: late_time as i64,
+            description: "Future Inverted Handover".into(),
+            phi_q_after: 1.0,
+        };
+        assert!(loop_temporal.is_retrocausal(&handover_late));
+        assert_eq!(loop_temporal.causal_orientation(late_time), -1.0);
     }
 }
