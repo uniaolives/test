@@ -1,0 +1,3 @@
+[submodule "skills/medical-skills"]
+	path = skills/medical-skills
+	url = https://github.com/MedClaw-Org/OpenClaw-Medical-Skills.git
