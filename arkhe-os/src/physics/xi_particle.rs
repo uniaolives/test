@@ -16,6 +16,8 @@ impl XiParticle {
     pub const M0: f64 = 1.0;
     /// Default coupling constant α
     pub const ALPHA: f64 = 0.5;
+    /// Coupling constant J_0
+    pub const J0: f64 = 1.0;
     /// Arithmetic height L'(E,1) for the curve E200b2 (microtubule curve)
     /// This value is characteristic of the resonant modes in microtubules.
     pub const L_PRIME_E200B2: f64 = 1.088152;
@@ -45,6 +47,15 @@ impl XiParticle {
     /// λ₂ = 1 / (1 + α * L'(E,1))
     pub fn calculate_coherence(alpha: f64, l_prime: f64) -> f64 {
         1.0 / (1.0 + alpha * l_prime)
+    }
+
+    /// g_NN' = J0 / |N - N'|^0.5
+    pub fn calculate_coupling(n1: u64, n2: u64, j0: f64) -> f64 {
+        if n1 == n2 {
+            return 0.0; // Avoid division by zero
+        }
+        let diff = (n1 as f64 - n2 as f64).abs();
+        j0 / diff.sqrt()
     }
 }
 
