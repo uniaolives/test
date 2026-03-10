@@ -1,4 +1,6 @@
 syntax = "proto3";
+// DEPRECATED: This service is being replaced by Conjure-based HandoverService.
+// See arkhe-api/src/main/conjure/arkhe-handover.yml
 package arkhen;
 
 service ArkhenService {

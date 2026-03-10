@@ -2,22 +2,11 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 use tracing::info;
-
-#[derive(Debug, Serialize, Deserialize)]
-struct HandoverRequest {
-    context_summary: String,
-    priority: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct HandoverResponse {
-    status: String,
-    handover_id: String,
-    phi_remote: f64,
-}
+use arkhe_api_rust::objects::com::palantir::arkhe::api::{
+    HandoverRequest, HandoverResponse, Orb, CoherenceMetric
+};
 
 #[tokio::main]
 async fn main() {
@@ -25,7 +14,8 @@ async fn main() {
 
     let app = Router::new()
         .route("/health", get(health_check))
-        .route("/handover", post(handle_handover));
+        .route("/handover/sync", post(handle_handover))
+        .route("/temporal/emit", post(handle_emit));
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 7473));
     info!("Mock CERN Node escutando em {}", addr);
@@ -40,9 +30,18 @@ async fn health_check() -> &'static str {
 
 async fn handle_handover(Json(payload): Json<HandoverRequest>) -> Json<HandoverResponse> {
     info!("Recebido handover: {:?}", payload);
-    Json(HandoverResponse {
-        status: "synced".to_string(),
-        handover_id: "test-handover-uuid".to_string(),
-        phi_remote: 0.618,
-    })
+    Json(HandoverResponse::builder()
+        .status("synced")
+        .handover_id("test-handover-uuid")
+        .phi_remote(0.618)
+        .build())
+}
+
+async fn handle_emit(Json(payload): Json<Orb>) -> Json<CoherenceMetric> {
+    info!("Recebido orb: {:?}", payload);
+    Json(CoherenceMetric::builder()
+        .global_r(0.95)
+        .node_lambda(payload.lambda2())
+        .stable(true)
+        .build())
 }

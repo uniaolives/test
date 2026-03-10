@@ -1,5 +1,12 @@
 pluginManagement {
     repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
         google()
         mavenCentral()
         gradlePluginPortal()
@@ -14,3 +21,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "SascSentinel"
 include ":app"
+include ":arkhe-api"
+include ":arkhe-api:arkhe-api-rust"
