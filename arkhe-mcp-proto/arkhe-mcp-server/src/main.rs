@@ -11,7 +11,7 @@ use chrono::Utc;
 
 use phi::SimpleThermalizer;
 use ledger::{PersonalLedger, LedgerEntry, EntryMetadata};
-use arkhe_qhttp_client::{QHttpClient, HandoverRequest, AgentCard};
+use arkhe_qhttp_client::{QHttpClient, HandoverRequest, AgentCard, Orb};
 use corus::Corus;
 
 struct NaturalSelf {
@@ -66,9 +66,9 @@ async fn main() -> anyhow::Result<()> {
                 "set_phi_state".into(),
                 "save_insight".into(),
                 "sync_context_to_quantum".into(),
+                "emit_orb".into(),
                 "resolve_natural_coupling".into()
             ],
-            mcp_capabilities: vec!["get_phi_state".into(), "save_insight".into(), "sync_context".into(), "resolve_natural_coupling".into()],
             a2a_discoveries: Vec::new(),
         }),
         unnatural: UnnaturalSelf {
@@ -82,13 +82,7 @@ async fn main() -> anyhow::Result<()> {
         qhttp: QHttpClient::new(),
     });
 
-    // Simulando o registro e execução de ferramentas MCP
-    // Em uma implementação real com mcp-rust-sdk, usaríamos o router do SDK.
-
     info!("Arkhe MCP Server pronto e aguardando comandos via stdio (simulado)");
-
-    // Para o propósito do protótipo e testes, vamos apenas manter o processo vivo
-    // No mundo real, aqui estaria o loop de leitura do stdio conforme especificação MCP.
 
     loop {
         tokio::time::sleep(tokio::time::Duration::from_secs(3600)).await;
@@ -137,14 +131,29 @@ pub async fn handle_tool_call(state: &AppState, name: &str, params: Value) -> Va
         }
         "sync_context_to_quantum" => {
             let endpoint = env::var("ARKHE_QHTTP_ENDPOINT").unwrap_or_else(|_| "http://localhost:7473".to_string());
-            let req = HandoverRequest {
-                target_node: params["target_node"].as_str().unwrap_or("unknown").to_string(),
-                context_summary: params["context_summary"].as_str().unwrap_or("").to_string(),
-                priority: params["priority"].as_str().unwrap_or("normal").to_string(),
-            };
+            let req = HandoverRequest::builder()
+                .id(0)
+                .target_node(params["target_node"].as_str().unwrap_or("unknown"))
+                .context_summary(params["context_summary"].as_str().unwrap_or(""))
+                .priority(params["priority"].as_str().unwrap_or("normal"))
+                .build();
             match state.qhttp.sync_context(&endpoint, req).await {
                 Ok(resp) => json!(resp),
                 Err(e) => json!(format!("Erro de sincronização: {}", e)),
+            }
+        }
+        "emit_orb" => {
+            let endpoint = env::var("ARKHE_QHTTP_ENDPOINT").unwrap_or_else(|_| "http://localhost:7473".to_string());
+            let orb = Orb::builder()
+                .id(params["id"].as_str().unwrap_or("unknown"))
+                .lambda2(params["lambda2"].as_f64().unwrap_or(0.0))
+                .phi_q(params["phi_q"].as_f64().unwrap_or(0.0))
+                .h_value(params["h_value"].as_f64().unwrap_or(0.0))
+                .timestamp(Utc::now().to_rfc3339())
+                .build();
+            match state.qhttp.emit_orb(&endpoint, orb).await {
+                Ok(resp) => json!(resp),
+                Err(e) => json!(format!("Erro de emissão: {}", e)),
             }
         }
         "resolve_natural_coupling" => {
