@@ -1,0 +1,5 @@
+apiVersion: v2
+name: arkhe-platform
+description: Temporal Microservices Platform with AGI Orchestration
+version: 4.0.0
+appVersion: "2026.3.14-pi"

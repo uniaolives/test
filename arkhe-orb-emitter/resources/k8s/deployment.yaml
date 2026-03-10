@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arkhe-orb-emitter
+  namespace: arkhe-system
+spec:
+  replicas: 7
+  selector:
+    matchLabels:
+      app: orb-emitter
+  template:
+    metadata:
+      labels:
+        app: orb-emitter
+        coherence-tier: high
+    spec:
+      containers:
+        - name: emitter
+          image: arkhe.io/arkhe-orb-emitter:v4.0.0-pi
+          ports:
+            - containerPort: 8080
+              name: http4
+          env:
+            - name: HTTP4_PORT
+              value: "8080"
+            - name: DATOMIC_URI
+              value: "datomic:mem://arkhe-orb-emitter"

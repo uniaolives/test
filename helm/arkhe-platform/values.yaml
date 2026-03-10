@@ -1,0 +1,38 @@
+arkhe:
+  global:
+    temporalZone: present
+    defaultCoherence: 0.95
+    merkabahConsensus: true
+
+  orbNodes:
+    replicaCount: 7
+    image:
+      repository: arkhe.io/orb-node
+      tag: v4.0.0-http4
+    resources:
+      coherenceMemory: 4Gi
+      temporalBuffer: 1Gi
+      qpuCores: 2
+    entanglement:
+      autoPeer: true
+      meshTopology: hypercube
+
+  http4:
+    enabled: true
+    qhttp:
+      enabled: true
+      quantumKeyDistribution: true
+    retrocausalBufferMs: 5000
+
+  merkabah:
+    scheduler:
+      enabled: true
+      algorithm: kuramoto-synchronized
+    consensus:
+      type: temporal-byzantine
+      threshold: 0.67
+
+  monitoring:
+    prometheus:
+      scrapeTemporalMetrics: true
+      kuramotoDashboard: true
