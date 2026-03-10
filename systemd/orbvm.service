@@ -1,0 +1,12 @@
+[Unit]
+Description=OrbVM Runtime
+Requires=timechain-sync.service
+
+[Service]
+ExecStart=/usr/bin/orbvm-runtime --config /etc/orbvm/engine.conf
+Restart=always
+User=arkhe
+Group=arkhe
+
+[Install]
+WantedBy=multi-user.target
