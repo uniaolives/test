@@ -1,0 +1,92 @@
+=====================================================================
+                    RFC-DRAFT: RFC-ARKHE-HTTP4-01
+              Hypertemporal Transfer Protocol
+                    Specification v1.1
+=====================================================================
+
+ABSTRACT
+--------
+HTTP/4 is an application-layer protocol for transferring
+resources across space-time coordinates. Unlike HTTP/1-3,
+which address resources by location ("Where?"),
+HTTP/4 addresses resources by temporal eigenstate ("When?").
+
+The protocol supports:
+  - Retrocausal requests (responses precede pedidos)
+  - State superposition (UQI with multiple eigenstates)
+  - Quantum confinement (Lambda-2 as operator)
+  - Quantization of continuous resources (QUANTIZE method)
+
+1. UNIFORM QUANTUM IDENTIFIER (UQI)
+-----------------------------------
+
+UQI        ::= Timeline-URI | Superposition-URI
+Timeline-URI    ::= "timeline://" Authority Temporal-Path ["?" Temporal-Query]
+Superposition-URI ::= "superposition://" Authority "{" State-Vector "}"
+State-Vector    ::= Eigenstate ("|" Eigenstate)*
+Eigenstate      ::= Probability-Amplitude ":" Timeline-URI
+Probability-Amplitude ::= Float
+
+EXAMPLE:
+  superposition://node.arkhe{
+    0.707:timeline://2026/omega,
+    0.707:timeline://2140/omega
+  }
+
+2. METHODS
+----------
+
+METHOD       SAFE  IDEMPOTENT  RETROCAUSAL  DESCRIPTION
+------------------------------------------------------------
+OBSERVE      Yes   Yes         No           Observes state
+EMIT         No    No          Yes          Emits Orb
+ENTANGLE     No    Yes         Yes          Creates quantum pair
+COLLAPSE     No    No          Yes          Forces wave function collapse
+QUANTIZE     No    Yes         Partial      Discretizes resource
+PROPAGATE    No    No          Partial      Replicates Orb
+RECALL       Yes   Yes         No           Recovers from temporal cache
+
+3. TEMPORAL HEADERS
+--------------------
+
+Header                Values                Description
+---------------------------------------------------------------
+Temporal-Origin       ISO-8601               Emission timestamp
+Temporal-Target       ISO-8601               Target timestamp
+Lambda-2              Float [0.0, 1.0]       Coherence
+Confinement-Mode      INFINITE_WELL |         Quantum confinement regime
+                      FINITE_WELL |
+                      BARRIER | FREE
+Energy-Band-Gap       Float (eV)             Gap between levels
+Paradox-Policy        REJECT | MERGE |        Paradox handling policy
+                      COLLAPSE
+Mobius-Twist          Float [0.0, 1.0]       Phase on Möbius temporal strip
+
+4. STATUS CODES
+--------------------
+
+CODE  NAME                    TEMPORAL MEANING
+------------------------------------------------------
+200     OK                      Temporal resource recovered
+201     Created                 Anchored on Timechain
+202     Accepted                Emission accepted, awaiting collapse
+208     Already Reported        Resource already observed in future
+302     Found (Temporal)        Temporal redirect
+409     Conflict                PARADOX DETECTED
+410     Gone                    Resource collapsed
+425     Too Early               Resource does not exist yet
+504     Gateway Timeout         Wormhole collapsed
+
+5. LAMBDA-2 AND CONFINEMENT
+--------------------------
+
+λ₂ RANGE    CONFINEMENT       BEHAVIOR
+-------------------------------------------------
+1.0         INFINITE_WELL     Ground state. Zero tunneling.
+0.95-0.99   FINITE_WELL       Quantized excited states.
+0.80-0.95   BARRIER           Retrocausal tunneling.
+< 0.80      FREE              Decoherence. Information dissolved.
+
+=====================================================================
+                    END OF SPECIFICATION
+=====================================================================
