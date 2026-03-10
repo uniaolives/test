@@ -1,0 +1,29 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: orbs.arkhe.io
+spec:
+  group: arkhe.io
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                lambda2:
+                  type: number
+                targetTime:
+                  type: string
+                  format: date-time
+                payload:
+                  type: string
+  scope: Namespaced
+  names:
+    plural: orbs
+    singular: orb
+    kind: Orb

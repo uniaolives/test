@@ -1,0 +1,19 @@
+{:paths ["src" "resources"]
+ :deps
+ {org.clojure/clojure {:mvn/version "1.11.1"}
+  org.clojure/core.async {:mvn/version "1.6.681"}
+  org.clojure/spec.alpha {:mvn/version "0.3.218"}
+  com.twitter/finagle-http_2.13 {:mvn/version "22.12.0"}
+  com.twitter/finagle-core_2.13 {:mvn/version "22.12.0"}
+  com.datomic/datomic-pro {:mvn/version "1.0.7075"}
+  com.xtdb/xtdb-core {:mvn/version "1.24.0"}
+  org.apache.kafka/kafka-clients {:mvn/version "3.6.1"}
+  software.amazon.awssdk/dynamodb {:mvn/version "2.21.0"}
+  io.prometheus/simpleclient {:mvn/version "0.16.0"}
+  io.prometheus/simpleclient_httpserver {:mvn/version "0.16.0"}
+  metosin/jsonista {:mvn/version "0.3.8"}
+  com.cognitect/transit-clj {:mvn/version "1.0.333"}
+  org.bouncycastle/bcprov-jdk18on {:mvn/version "1.77"}
+  org.slf4j/slf4j-api {:mvn/version "2.0.9"}
+  ch.qos.logback/logback-classic {:mvn/version "1.4.11"}
+  io.kubernetes/client-java {:mvn/version "19.0.0"}}}

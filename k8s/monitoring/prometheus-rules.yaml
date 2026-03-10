@@ -1,0 +1,11 @@
+groups:
+- name: arkhe.rules
+  rules:
+  - alert: CoherenceDecoherence
+    expr: arkhe_lambda_2 < 0.618
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "System Decoherence Detected"
+      description: "Lambda-2 has dropped below the Golden Ratio (0.618). Risk of temporal instability."
