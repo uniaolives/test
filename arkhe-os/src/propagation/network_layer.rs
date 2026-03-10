@@ -10,6 +10,7 @@ pub struct NetworkBridge;
 #[async_trait]
 impl ProtocolBridge for NetworkBridge {
     async fn propagate(&self, _orb: &Orb, _payload: &OrbPayload) -> Result<PropagationReceipt> {
+    async fn propagate(&self, _orb: &Orb) -> Result<PropagationReceipt> {
         // Inject into TCP/IP headers, DNS TXT records, or BGP routes
         Ok(PropagationReceipt {
             protocol: ProtocolType::Network,
