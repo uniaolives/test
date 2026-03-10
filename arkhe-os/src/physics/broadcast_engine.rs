@@ -25,6 +25,21 @@ impl HybridMemory {
     }
 }
 
+pub struct HyperspaceConnector {
+    pub peer_id: String,
+}
+
+impl HyperspaceConnector {
+    pub fn gossip_finding(&self, finding: &str) {
+        println!("Agent {} gossiping finding: {}", self.peer_id, finding);
+    }
+}
+
+pub struct TemporalFramebuffer {}
+
+pub struct BroadcastEngine {
+    /// P2P Gossip and Research Loop
+    pub hyperspace: HyperspaceConnector,
 pub struct TemporalFramebuffer {}
 
 pub struct BroadcastEngine {
@@ -44,6 +59,11 @@ pub struct BroadcastEngine {
 impl BroadcastEngine {
     /// Processa frame com coerência temporal garantida
     pub fn process_frame(&mut self, input: PhaseFrame) -> ProcessedFrame {
+        // 0. Hyperspace Research Pulse
+        if self.sync.coherence() > 0.98 {
+            self.hyperspace.gossip_finding("High coherence achieved via White Dispersion.");
+        }
+
         // 1. Aplica dispersão de White (preserva bordas, suaviza ruído)
         let dispersed = self.dispersion.apply(input);
 

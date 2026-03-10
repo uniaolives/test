@@ -19,6 +19,7 @@ const StatusLight: React.FC<StatusLightProps> = ({ status }) => (
 
 export const CoherenceMonitor: React.FC = () => {
   const [lambda, setLambda] = useState(0);
+  const [hyperspace, setHyperspace] = useState({ peerId: '12D3KooWRx43', points: 120, pulse: 0 });
 
   useEffect(() => {
     // In a real scenario, this would connect to the actual Timechain stream
@@ -53,6 +54,12 @@ export const CoherenceMonitor: React.FC = () => {
   return (
     <div className="monitor">
       <h1>Global Coherence (λ₂)</h1>
+      <div className="hyperspace-status" style={{ marginBottom: '20px', padding: '10px', backgroundColor: '#f0f0f0', borderRadius: '5px' }}>
+        <h3>Hyperspace AGI Network</h3>
+        <p><strong>Peer ID:</strong> {hyperspace.peerId}</p>
+        <p><strong>Total Points:</strong> {hyperspace.points}</p>
+        <p><strong>Pulse Round:</strong> {hyperspace.pulse}</p>
+      </div>
       <div className="gauge-container" style={{ border: '1px solid #ccc', width: '300px', height: '30px' }}>
         <div className="gauge" style={{
             width: `${lambda * 100}%`,
