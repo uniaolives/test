@@ -45,6 +45,19 @@ impl TemporalOrb {
         };
 
         Ok(())
+    }
+
+    /// Calculate retrocausal tunneling probability
+    /// Based on White et al. (2026) dispersion: T ~ exp(-2 * kappa * L)
+    pub fn retrocausal_tunneling_probability(&self, delta_t_secs: f64) -> f64 {
+        let l = delta_t_secs.abs();
+
+        // kappa depends on dispersion constant D (modulated by lambda_2)
+        // kappa = sqrt(2m(V-E))/hbar. Modulated: kappa = (1.0 - lambda_2)
+        let kappa = 1.0 - self.lambda_2;
+
+        // T = exp(-2 * kappa * L)
+        (-2.0 * kappa * l).exp()
                 TemporalEigenstate { n: 1, probability: 1.0, mode: "GROUND_ANCHORED".to_string() }
             ],
             ConfinementMode::FiniteWell => vec![
