@@ -49,8 +49,18 @@ impl Http4Router {
                 // Para este MVO, retornamos um estado de exemplo
                 Ok(Http4Response::State(vec![0x42; 32]))
             }
+            Http4Method::EMIT => {
+                // Satellite-specific EMIT logic: transmit via OAM-entangled channel
+                if let Some(oam) = request.headers.oam_state {
+                    println!("[HTTP/4] Emitting via Satellite OCA (OAM l={})", oam);
+                }
+                Ok(Http4Response::ChannelOpen)
+            }
             Http4Method::ENTANGLE => {
-                // Aqui interagiríamos com o campo Kuramoto
+                // Established entangled channel for retrocausal communication
+                if let Some(ts) = request.headers.retrocausal_timestamp {
+                    println!("[HTTP/4] Entangling at adjusted CSU timestamp: {}", ts);
+                }
                 Ok(Http4Response::ChannelOpen)
             }
             Http4Method::COLLAPSE => {
