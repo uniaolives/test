@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from './store/index';
 import { ArkheSphere } from './components/ArkheSphere';
 import { ControlPanel } from './components/ControlPanel';
+import { TzinorGate } from './components/TzinorGate';
 import { connectWebSocket, disconnectWebSocket } from './services/websocket';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
@@ -31,6 +32,7 @@ const App: React.FC = () => {
         </div>
         <div className="controls-overlay">
           <ControlPanel />
+          <TzinorGate />
         </div>
       </main>
     </div>
