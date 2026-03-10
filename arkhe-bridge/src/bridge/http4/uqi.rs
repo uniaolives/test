@@ -34,6 +34,14 @@ impl FromStr for Uqi {
             if parts.len() < 2 {
                 return Err(anyhow!("Invalid timeline URI"));
             }
+
+            // Basic query param parsing for t= and lambda=
+            let path_parts: Vec<&str> = parts[1].splitn(2, '?').collect();
+            let path = format!("/{}", path_parts[0]);
+
+            Ok(Uqi::Classical(ClassicalUri {
+                host: parts[0].to_string(),
+                path,
             Ok(Uqi::Classical(ClassicalUri {
                 host: parts[0].to_string(),
                 path: format!("/{}", parts[1]),

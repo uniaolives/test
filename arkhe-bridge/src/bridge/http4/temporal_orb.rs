@@ -1,3 +1,8 @@
+use super::eigenstate::TemporalEigenstate;
+use super::confinement::QuantumWell;
+use super::methods::ConfinementMode;
+use super::temporal_schrodinger::TemporalSchrodinger;
+use anyhow::Result;
 use super::methods::ConfinementMode;
 
 pub struct TemporalOrb {
@@ -23,11 +28,23 @@ impl TemporalOrb {
     }
 
     /// Applies "quantum confinement" logic to determine eigenstates
+    pub fn confine(&mut self, well: &QuantumWell) -> Result<()> {
     pub fn confine(&mut self) {
         let mode = ConfinementMode::from_lambda2(self.lambda_2);
 
         self.eigenstates = match mode {
             ConfinementMode::InfiniteWell => vec![
+                TemporalEigenstate::new(1, "GROUND", 1.0, "GROUND_ANCHORED")
+            ],
+            ConfinementMode::FiniteWell | ConfinementMode::Barrier => {
+                TemporalSchrodinger::solve(well, 3)?
+            },
+            ConfinementMode::Free => vec![
+                TemporalEigenstate::new(1, "DECOHERENT", 0.1, "FREE")
+            ],
+        };
+
+        Ok(())
                 TemporalEigenstate { n: 1, probability: 1.0, mode: "GROUND_ANCHORED".to_string() }
             ],
             ConfinementMode::FiniteWell => vec![
