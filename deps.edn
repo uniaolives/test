@@ -1,0 +1,4 @@
+{:paths ["src/clojure" "tests"]
+ :deps
+ {org.clojure/clojure {:mvn/version "1.11.1"}
+  org.clojure/spec.alpha {:mvn/version "0.3.218"}}}
