@@ -1,0 +1,84 @@
+types:
+  definitions:
+    default-package: com.palantir.arkhe.api
+    objects:
+      HandoverRequest:
+        fields:
+          id: integer
+          targetNode: string
+          contextSummary: string
+          priority: string
+      HandoverResponse:
+        fields:
+          status: string
+          handoverId: string
+          phiRemote: double
+      HandoverStatus:
+        fields:
+          success: boolean
+          phi: double
+      AgentCard:
+        fields:
+          name: string
+          skills: list<string>
+          endpoint: string
+          identityTraces: list<string>
+          authRequirements: string
+      Orb:
+        fields:
+          id: string
+          lambda2: double
+          phiQ: double
+          hValue: double
+          timestamp: string
+      CoherenceMetric:
+        fields:
+          globalR: double
+          nodeLambda: double
+          stable: boolean
+      TemporalTrajectory:
+        fields:
+          points: list<double>
+          curvature: double
+
+services:
+  HandoverService:
+    name: Handover Service
+    package: com.palantir.arkhe.api
+    base-path: /handover
+    endpoints:
+      syncContext:
+        http: POST /sync
+        args:
+          request: HandoverRequest
+        returns: HandoverResponse
+      streamHandover:
+        http: POST /stream
+        args:
+          handover: HandoverRequest
+        returns: HandoverStatus
+  TemporalService:
+    name: Temporal Service
+    package: com.palantir.arkhe.api
+    base-path: /temporal
+    endpoints:
+      emit:
+        http: POST /emit
+        args:
+          orb: Orb
+        returns: CoherenceMetric
+      observe:
+        http: GET /observe/{id}
+        args:
+          id: string
+        returns: Orb
+      collapse:
+        http: POST /collapse/{id}
+        args:
+          id: string
+        returns: boolean
+      quantize:
+        http: POST /quantize
+        args:
+          trajectory: TemporalTrajectory
+        returns: list<Orb>

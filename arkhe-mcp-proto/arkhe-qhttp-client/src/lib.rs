@@ -1,28 +1,10 @@
-use serde::{Deserialize, Serialize};
 use anyhow::Result;
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct HandoverRequest {
-    pub target_node: String,
-    pub context_summary: String,
-    pub priority: String,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct HandoverResponse {
-    pub status: String,
-    pub handover_id: String,
-    pub phi_remote: f64,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct AgentCard {
-    pub name: String,
-    pub skills: Vec<String>,
-    pub endpoint: String,
-    pub identity_traces: Vec<String>, // Patterns of prior couplings
-    pub auth_requirements: String,
-}
+pub use arkhe_api_rust::objects::com::palantir::arkhe::api::{
+    HandoverRequest, HandoverResponse, AgentCard, Orb, CoherenceMetric, TemporalTrajectory
+};
+pub use arkhe_api_rust::clients::com::palantir::arkhe::api::{
+    HandoverService, AsyncHandoverService, TemporalService, AsyncTemporalService
+};
 
 pub struct QHttpClient {
     client: reqwest::Client,
@@ -36,11 +18,22 @@ impl QHttpClient {
     }
 
     pub async fn sync_context(&self, endpoint: &str, req: HandoverRequest) -> Result<HandoverResponse> {
-        let resp = self.client.post(format!("{}/handover", endpoint))
+        let resp = self.client.post(format!("{}/handover/sync", endpoint))
             .json(&req)
             .send()
             .await?
             .json::<HandoverResponse>()
+            .await?;
+        Ok(resp)
+    }
+
+    // New temporal emission method using Conjure types
+    pub async fn emit_orb(&self, endpoint: &str, orb: Orb) -> Result<CoherenceMetric> {
+        let resp = self.client.post(format!("{}/temporal/emit", endpoint))
+            .json(&orb)
+            .send()
+            .await?
+            .json::<CoherenceMetric>()
             .await?;
         Ok(resp)
     }

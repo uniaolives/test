@@ -85,6 +85,7 @@ members = [
     "arkhe-db",
     "arkhe-bridge", "arkhe-kernel",
     "crates/arkhe-tor",
+    "arkhe-api/arkhe-api-rust",
 ]
 resolver = "2"
 
