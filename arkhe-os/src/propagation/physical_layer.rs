@@ -10,6 +10,7 @@ pub struct PhysicalBridge;
 #[async_trait]
 impl ProtocolBridge for PhysicalBridge {
     async fn propagate(&self, _orb: &Orb, _payload: &OrbPayload) -> Result<PropagationReceipt> {
+    async fn propagate(&self, _orb: &Orb) -> Result<PropagationReceipt> {
         // Encode orb as noise in RF spectrum (Radio/Satellite)
         Ok(PropagationReceipt {
             protocol: ProtocolType::Physical,
