@@ -7,6 +7,7 @@ pub mod constitutional_guard;
 pub mod temporal_tunneling;
 pub mod asi_verification;
 pub mod orb_detector;
+pub mod http4;
 pub mod mobius_transform;
 
 pub use temporal_persistence::*;
@@ -17,6 +18,7 @@ pub use constitutional_guard::*;
 pub use temporal_tunneling::*;
 pub use asi_verification::*;
 pub use orb_detector::*;
+pub use http4::*;
 pub use mobius_transform::*;
 
 use std::sync::Arc;
