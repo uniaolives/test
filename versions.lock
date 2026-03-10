@@ -1,0 +1,123 @@
+# Run ./gradlew writeVersionsLocks to regenerate this file. Blank lines are to minimize merge conflicts.
+
+androidx.activity:activity:1.8.0 (3 constraints: 902844ae)
+
+androidx.annotation:annotation:1.6.0 (39 constraints: 924ba0f8)
+
+androidx.annotation:annotation-experimental:1.3.0 (3 constraints: 472492d5)
+
+androidx.annotation:annotation-jvm:1.6.0 (1 constraints: d60d9831)
+
+androidx.appcompat:appcompat:1.6.1 (4 constraints: bb388418)
+
+androidx.appcompat:appcompat-resources:1.6.1 (1 constraints: eb0c6210)
+
+androidx.arch.core:core-common:2.2.0 (5 constraints: 964dff25)
+
+androidx.arch.core:core-runtime:2.2.0 (3 constraints: 28326e71)
+
+androidx.cardview:cardview:1.0.0 (1 constraints: 980fd385)
+
+androidx.collection:collection:1.1.0 (16 constraints: 50f1b827)
+
+androidx.concurrent:concurrent-futures:1.1.0 (2 constraints: 841b2259)
+
+androidx.constraintlayout:constraintlayout:2.1.4 (2 constraints: a2144c9e)
+
+androidx.constraintlayout:constraintlayout-core:1.0.4 (1 constraints: 24136f19)
+
+androidx.coordinatorlayout:coordinatorlayout:1.1.0 (1 constraints: 990fd685)
+
+androidx.core:core:1.12.0 (20 constraints: 0d25c661)
+
+androidx.core:core-ktx:1.12.0 (4 constraints: 14308356)
+
+androidx.cursoradapter:cursoradapter:1.0.0 (1 constraints: e40c4f10)
+
+androidx.customview:customview:1.1.0 (4 constraints: ec3fc8ed)
+
+androidx.documentfile:documentfile:1.0.0 (1 constraints: c211e4eb)
+
+androidx.drawerlayout:drawerlayout:1.1.1 (2 constraints: 7d1c2bda)
+
+androidx.dynamicanimation:dynamicanimation:1.0.0 (1 constraints: 980fd385)
+
+androidx.emoji2:emoji2:1.2.0 (2 constraints: d51b55b8)
+
+androidx.emoji2:emoji2-views-helper:1.2.0 (1 constraints: e60c5510)
+
+androidx.fragment:fragment:1.3.6 (3 constraints: dd29f355)
+
+androidx.interpolator:interpolator:1.0.0 (2 constraints: 1f1dcae9)
+
+androidx.legacy:legacy-support-core-utils:1.0.0 (1 constraints: a412950d)
+
+androidx.lifecycle:lifecycle-common:2.6.1 (7 constraints: c4758921)
+
+androidx.lifecycle:lifecycle-livedata:2.6.1 (7 constraints: 82715a76)
+
+androidx.lifecycle:lifecycle-livedata-core:2.6.1 (7 constraints: 6a71687e)
+
+androidx.lifecycle:lifecycle-process:2.6.1 (7 constraints: 70718f92)
+
+androidx.lifecycle:lifecycle-runtime:2.6.1 (10 constraints: ed9860b2)
+
+androidx.lifecycle:lifecycle-viewmodel:2.6.1 (10 constraints: 2b96ce8d)
+
+androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1 (8 constraints: 987a6d40)
+
+androidx.loader:loader:1.0.0 (2 constraints: c31dcc35)
+
+androidx.localbroadcastmanager:localbroadcastmanager:1.0.0 (1 constraints: c211e4eb)
+
+androidx.print:print:1.0.0 (1 constraints: c211e4eb)
+
+androidx.profileinstaller:profileinstaller:1.3.0 (2 constraints: 241c3cab)
+
+androidx.recyclerview:recyclerview:1.1.0 (2 constraints: ea1cde07)
+
+androidx.resourceinspection:resourceinspection-annotation:1.0.1 (2 constraints: 7d1c56da)
+
+androidx.savedstate:savedstate:1.2.1 (4 constraints: 343ab52e)
+
+androidx.startup:startup-runtime:1.1.1 (3 constraints: a62cd23a)
+
+androidx.tracing:tracing:1.0.0 (2 constraints: e41ab73d)
+
+androidx.transition:transition:1.2.0 (1 constraints: 9a0fd985)
+
+androidx.vectordrawable:vectordrawable:1.1.0 (3 constraints: f934a1ff)
+
+androidx.vectordrawable:vectordrawable-animated:1.1.0 (1 constraints: ed10b4ba)
+
+androidx.versionedparcelable:versionedparcelable:1.1.1 (1 constraints: ae08598b)
+
+androidx.viewpager:viewpager:1.0.0 (1 constraints: 020c7af1)
+
+androidx.viewpager2:viewpager2:1.0.0 (1 constraints: 980fd385)
+
+com.google.android.material:material:1.11.0 (1 constraints: 35052c3b)
+
+com.google.errorprone:error_prone_annotations:2.15.0 (1 constraints: cf0fb695)
+
+com.google.guava:listenablefuture:1.0 (2 constraints: 3623c2bf)
+
+org.jetbrains:annotations:13.0 (1 constraints: df0e795c)
+
+org.jetbrains.kotlin:kotlin-bom:1.8.22 (1 constraints: d40fc195)
+
+org.jetbrains.kotlin:kotlin-stdlib:1.9.22 (19 constraints: 421d25ec)
+
+org.jetbrains.kotlin:kotlin-stdlib-common:1.9.22 (3 constraints: 9332319e)
+
+org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22 (3 constraints: f62d8270)
+
+org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22 (4 constraints: 67476c83)
+
+org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4 (3 constraints: ce374f60)
+
+org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.6.4 (2 constraints: f729a8e2)
+
+org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4 (2 constraints: 1228010c)
+
+org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.6.4 (2 constraints: da261285)

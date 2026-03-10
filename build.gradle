@@ -14,4 +14,7 @@ allprojects {
         conjureCompiler 'com.palantir.conjure:conjure:4.55.0'
         conjureGenerators 'com.palantir.conjure.rust:conjure-rust:5.10.0'
     }
+    id("com.android.application") version "8.2.2" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.22" apply false
+    id("com.palantir.consistent-versions") version "3.13.0"
 }

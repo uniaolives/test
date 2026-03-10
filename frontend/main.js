@@ -5,6 +5,14 @@ const teDisplay = document.getElementById('te-display');
 const pressureDisplay = document.getElementById('hmt-pressure');
 const flowDisplay = document.getElementById('hmt-flow');
 const stateDisplay = document.getElementById('state-display');
+const statusEl = document.getElementById('status');
+const vkEl = document.getElementById('vk');
+const tkrEl = document.getElementById('t_kr');
+
+const modeEl = document.createElement('div');
+modeEl.id = 'hyperclaw_mode';
+modeEl.className = 'stat';
+document.getElementById('info').appendChild(modeEl);
 
 // Setup Three.js
 const scene = new THREE.Scene();
@@ -32,38 +40,70 @@ scene.add(ring);
 
 camera.position.z = 7;
 
-// WebSocket Reality Stream
+// Unified WebSocket Reality Stream
 const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/reality`);
 
+socket.onopen = () => {
+    statusEl.innerText = "Status: Connected";
+};
+
 socket.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    updateUI(data);
-    updateVisuals(data);
+    try {
+        const data = JSON.parse(event.data);
+        updateUI(data);
+        updateVisuals(data);
+    } catch (e) {
+        console.error("Error parsing WebSocket data:", e);
+    }
+};
+
+socket.onclose = () => {
+    statusEl.innerText = "Status: Disconnected";
 };
 
 function updateUI(data) {
-    qDisplay.innerText = data.q_value.toFixed(3);
-    sDisplay.innerText = data.s_index.toFixed(3);
-    if (data.te_coupling) teDisplay.innerText = data.te_coupling.toFixed(3);
+    // Basic metrics
+    if (data.q_value !== undefined) qDisplay.innerText = data.q_value.toFixed(3);
+    if (data.s_index !== undefined) sDisplay.innerText = data.s_index.toFixed(3);
+
+    // Derived metrics
+    if (data.p_ac !== undefined) pressureDisplay.innerText = data.p_ac.toFixed(3);
+    if (data.te_coupling !== undefined) teDisplay.innerText = data.te_coupling.toFixed(3);
+
+    // Hydraulic data
     if (data.hydraulic) {
         pressureDisplay.innerText = data.hydraulic.pressure.toFixed(3);
         flowDisplay.innerText = `${data.hydraulic.state} (v=${data.hydraulic.flow_rate.toFixed(2)})`;
     }
-    stateDisplay.innerText = data.state;
 
-    const color = data.q_value > 0.9 ? '#ff0066' : data.q_value > 0.7 ? '#ffff00' : '#00ffcc';
+    // State
+    if (data.state) stateDisplay.innerText = data.state;
+
+    // VK and other info
+    if (data.vk) {
+        vkEl.innerText = `VK: B:${data.vk.bio.toFixed(2)} A:${data.vk.aff.toFixed(2)} S:${data.vk.soc.toFixed(2)} C:${data.vk.cog.toFixed(2)}`;
+    }
+    if (data.t_kr !== undefined) {
+        tkrEl.innerText = `t_KR: ${data.t_kr}s`;
+    }
+    if (data.hyperclaw_mode) {
+        modeEl.innerText = `Mode: ${data.hyperclaw_mode}`;
+    }
+
+    const color = (data.q_value || 0) > 0.9 ? '#ff0066' : (data.q_value || 0) > 0.7 ? '#ffff00' : '#00ffcc';
     qDisplay.style.color = color;
 }
 
 function updateVisuals(data) {
-    let scale = 1 + (data.q_value * 0.8);
+    const q = data.q_value || 0;
+    const s = data.s_index || 0;
+
+    let scale = 1 + (q * 0.8);
     if (data.te_coupling) scale += (data.te_coupling * 0.5);
     if (data.hydraulic) scale += (data.hydraulic.pressure * 0.2);
 
-    const scale = 1 + (data.q_value * 0.8);
     sphere.scale.lerp(new THREE.Vector3(scale, scale, scale), 0.1);
 
-    const q = data.q_value;
     if (q > 0.95) {
         material.color.setHex(0xff0066);
         material.opacity = 1.0;
@@ -76,7 +116,7 @@ function updateVisuals(data) {
     }
 
     ring.rotation.z += 0.01 * (1 + q * 10);
-    ring.scale.set(1 + data.s_index / 5, 1 + data.s_index / 5, 1);
+    ring.scale.set(1 + s / 5, 1 + s / 5, 1);
 }
 
 function animate() {
@@ -92,27 +132,3 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
-const statusEl = document.getElementById('status');
-const vkEl = document.getElementById('vk');
-const tkrEl = document.getElementById('t_kr');
-const modeEl = document.createElement('div');
-modeEl.id = 'hyperclaw_mode';
-modeEl.className = 'stat';
-document.getElementById('info').appendChild(modeEl);
-
-const ws = new WebSocket(`ws://${window.location.hostname}:8000/ws/entrainment`);
-
-ws.onopen = () => {
-    statusEl.innerText = "Status: Metabolizing";
-};
-
-ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    vkEl.innerText = `VK: B:${data.vk.bio.toFixed(2)} A:${data.vk.aff.toFixed(2)} S:${data.vk.soc.toFixed(2)} C:${data.vk.cog.toFixed(2)}`;
-    tkrEl.innerText = `t_KR: ${data.t_kr}s`;
-    modeEl.innerText = `Mode: ${data.hyperclaw_mode || 'N/A'}`;
-};
-
-ws.onclose = () => {
-    statusEl.innerText = "Status: Disconnected";
-};
