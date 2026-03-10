@@ -17,13 +17,17 @@ HERMES_PATH = Path(__file__).parent.parent / "agents" / "hermes-agent"
 if str(HERMES_PATH) not in sys.path:
     sys.path.append(str(HERMES_PATH))
 
-# Mocking the Hermes dependency behavior to ensure functional integration in restricted environments.
-# In a real environment with all dependencies installed, this would load the actual modules.
-HERMES_AVAILABLE = True
-SKILLS_DIR = Path.home() / ".hermes" / "skills"
-
-def skills_list():
-    return "[]"
+try:
+    import tools.skills_tool as skills_tool
+    skills_list = skills_tool.skills_list
+    SKILLS_DIR = skills_tool.SKILLS_DIR
+    HERMES_AVAILABLE = True
+except (ImportError, AttributeError):
+    # Fallback to mock behavior if dependencies are not met
+    HERMES_AVAILABLE = False
+    SKILLS_DIR = Path.home() / ".hermes" / "skills"
+    def skills_list():
+        return "[]"
 
 class HermesNode(Agent):
     """
@@ -55,13 +59,23 @@ class HermesNode(Agent):
         # Simulation of skill extraction using Hermes naming conventions
         skill_name = task_description.lower().replace(" ", "-")
 
+        # We check if the skill already exists using the Hermes toolset
+        try:
+            current_skills_json = skills_list()
+            import json
+            current_skills = json.loads(current_skills_json)
+            exists = any(s.get('name') == skill_name for s in current_skills.get('skills', []))
+        except Exception:
+            exists = False
+
         # In a production environment, this would involve trajectory analysis.
         # Here we use the Hermes-agent skill directory structure.
         simulated_skill = {
             "name": skill_name,
             "path": str(SKILLS_DIR / skill_name),
             "protocol": Protocol.CREATIVE,
-            "auto_generated": True
+            "auto_generated": True,
+            "already_exists": exists
         }
 
         self.skills_created.append(simulated_skill)

@@ -17,7 +17,7 @@ rumqttc = "0.23"
 coap = "0.13"
 lightning = "0.0.118"
 tonic = "0.10"
-sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "chrono"] }
+sqlx = { version = "0.7", default-features = false, features = ["runtime-tokio-rustls", "postgres", "chrono"] }
 redis = { version = "0.23", features = ["tokio-comp", "aio"] }
 arti-client = { version = "0.19", default-features = false, features = ["tokio", "native-tls"] }
 serde = { version = "1.0", features = ["derive"] }
