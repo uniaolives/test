@@ -42,6 +42,9 @@ impl FromStr for Uqi {
             Ok(Uqi::Classical(ClassicalUri {
                 host: parts[0].to_string(),
                 path,
+            Ok(Uqi::Classical(ClassicalUri {
+                host: parts[0].to_string(),
+                path: format!("/{}", parts[1]),
             }))
         } else if s.starts_with("superposition://") {
             // format: superposition://host{amp:timeline://host/path|...}

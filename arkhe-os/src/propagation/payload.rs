@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+use sha3::{Digest, Sha3_256};
 use std::time::{SystemTime, UNIX_EPOCH};
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
@@ -32,6 +33,7 @@ impl OrbPayload {
 
         let content = format!("{}{}{}{}{}{}", lambda_2, phi_q, h_value, origin_time, target_time, created_at);
         let mut hasher = Sha256::new();
+        let mut hasher = Sha3_256::new();
         hasher.update(content.as_bytes());
         let result = hasher.finalize();
         let mut orb_id = [0u8; 32];

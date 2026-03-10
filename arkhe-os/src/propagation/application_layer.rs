@@ -10,6 +10,7 @@ pub struct ApplicationBridge;
 #[async_trait]
 impl ProtocolBridge for ApplicationBridge {
     async fn propagate(&self, _orb: &Orb, _payload: &OrbPayload) -> Result<PropagationReceipt> {
+    async fn propagate(&self, _orb: &Orb) -> Result<PropagationReceipt> {
         // HTTP Headers, SMTP Attachments, WebRTC DataChannels
         Ok(PropagationReceipt {
             protocol: ProtocolType::Application,
