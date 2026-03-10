@@ -19,6 +19,7 @@ pub mod arkhe_orb_core;
 pub mod internet_mesh;
 pub mod orb;
 pub mod orb_detector;
+pub mod mobius_temporal;
 
 #[cfg(test)]
 mod tests;

@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+use sha3::{Digest, Sha3_256};
 
 pub type Hash = [u8; 32];
 
@@ -19,6 +20,7 @@ impl MobiusBlock {
         // But on the Möbius strip, 0.0 and 1.0 are adjacent!
 
         let mut hasher = Sha256::new();
+        let mut hasher = Sha3_256::new();
         hasher.update(&data);
         let hash_vec = hasher.finalize().to_vec();
         let mut base_hash = [0u8; 32];
