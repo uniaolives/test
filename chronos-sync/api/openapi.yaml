@@ -1,0 +1,61 @@
+openapi: 3.1.0
+info:
+  title: Chronos Sync API
+  version: 1.0.0
+  description: Distributed Logical Clock Synchronization for SaaS applications.
+
+paths:
+  /v1/time/sync:
+    post:
+      summary: Synchronize local time with Chronos network
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                local_timestamp:
+                  type: string
+                  format: date-time
+                confidence_interval_ms:
+                  type: number
+                  description: Estimated local clock error bound
+      responses:
+        '200':
+          description: Synchronized time returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chronos_timestamp:
+                    type: string
+                    format: date-time
+                  coherence_score:
+                    type: number
+                    description: "Global coherence (λ₂) at time of commit"
+                    minimum: 0
+                    maximum: 1
+                  timechain_proof:
+                    type: string
+                    description: Hash anchoring this timestamp
+
+  /v1/coherence/status:
+    get:
+      summary: Get current cluster coherence status
+      responses:
+        '200':
+          description: Cluster status report
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  lambda_2:
+                    type: number
+                    description: Global order parameter r(t)
+                  nodes_online:
+                    type: integer
+                  stability:
+                    type: string
+                    enum: [STABLE, FLUCTUATING, PARADOX_RISK]
