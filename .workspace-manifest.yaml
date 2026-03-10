@@ -10,6 +10,9 @@ repositories:
   harmonia:
     path: harmonia
     strategy: submodule
+  hermes-agent:
+    path: agents/hermes-agent
+    strategy: submodule
   medical-skills:
     path: skills/medical-skills
     strategy: submodule
