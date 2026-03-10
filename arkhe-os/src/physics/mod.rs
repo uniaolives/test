@@ -20,6 +20,7 @@ pub mod internet_mesh;
 pub mod orb;
 pub mod orb_detector;
 pub mod mobius_temporal;
+pub mod broadcast_engine;
 
 #[cfg(test)]
 mod tests;
