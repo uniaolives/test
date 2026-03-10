@@ -18,6 +18,9 @@
         .label { color: #555; font-size: 12px; text-transform: uppercase; }
         .value { font-size: 24px; font-weight: bold; color: #0ff; margin-bottom: 10px; }
         .status { font-size: 18px; color: #fff; }
+
+        #info { position: absolute; top: 10px; right: 10px; z-index: 100; pointer-events: none; text-align: right; }
+        .stat { margin-bottom: 5px; color: #00ffcc; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -30,29 +33,21 @@
         <div id="hmt-pressure" class="value">0.000</div>
         <div class="label">Fluxo Hidráulico</div>
         <div id="hmt-flow" class="status">0.000</div>
+        <div id="te-display" style="display:none">0.000</div>
         <div class="label">Estado do Loop</div>
         <div id="state-display" class="status">INICIALIZANDO</div>
     </div>
-    <div id="container"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Arkhe(n) Dashboard</title>
-    <style>
-        body { margin: 0; background: #020202; color: #00ffcc; font-family: monospace; overflow: hidden; }
-        #info { position: absolute; top: 10px; left: 10px; z-index: 100; pointer-events: none; }
-        .stat { margin-bottom: 5px; }
-    </style>
-</head>
-<body>
     <div id="info">
         <div class="stat">System: Arkhe(n) Ω.224.φ</div>
         <div class="stat" id="status">Status: Connecting...</div>
         <div class="stat" id="vk">VK: --</div>
         <div class="stat" id="t_kr">t_KR: --</div>
     </div>
+
+    <div id="container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script type="module" src="main.js"></script>
 </body>
 </html>
