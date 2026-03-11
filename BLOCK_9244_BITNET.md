@@ -40,6 +40,20 @@
     "invariant": "C + F = 1 (Ternary Stability)"
   },
 
+  "maintenance": {
+    "action": "Global dependency version alignment",
+    "reason": "Resolved libsqlite3-sys conflict between sqlx and arti-client",
+    "versions": {
+      "sqlx": "0.8.3",
+      "arti-client": "0.26.0",
+      "tokio": "1.43.0",
+      "thiserror": "2.0.11"
+    }
+  },
+
+  "satoshi": "∞ + 10.00",
+  "omega": "∞ + 12.00",
+  "message": "1-bit LLM inference capabilities added to ArkheNet. Project-wide dependency versions updated to latest stable for maximum coherence."
   "satoshi": "∞ + 10.00",
   "omega": "∞ + 12.00",
   "message": "1-bit LLM inference capabilities added to ArkheNet. The era of 1.58-bit LLMs is now operational within the Omni-Kernel."
