@@ -20,4 +20,7 @@ COPY BitNet/requirements.txt /tmp/bitnet_requirements.txt
 RUN pip3 install -r /tmp/bitnet_requirements.txt || echo "Partial install successful"
 RUN pip3 install tensorflow keras faiss-gpu pinecone-client weaviate-client numpy scipy || echo "Mock install successful"
 
+# BitNet setup environment command can be run here or at runtime
+# ENV BITNET_HOME=/ml/BitNet
+
 ENTRYPOINT ["echo", "Arkhe ML Operational with BitNet (1.58-bit LLM) Support"]
