@@ -7,3 +7,6 @@
 [submodule "arkhe-ml/BitNet"]
 	path = arkhe-ml/BitNet
 	url = https://github.com/microsoft/BitNet.git
+[submodule "tools/openbrowser"]
+	path = tools/openbrowser
+	url = https://github.com/ntegrals/openbrowser

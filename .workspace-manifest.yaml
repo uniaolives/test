@@ -19,6 +19,9 @@ repositories:
   medical-skills:
     path: skills/medical-skills
     strategy: submodule
+  openbrowser:
+    path: tools/openbrowser
+    strategy: submodule
   rust:
     path: rust
     strategy: submodule
