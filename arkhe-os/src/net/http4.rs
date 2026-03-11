@@ -38,6 +38,8 @@ pub struct TemporalHeaders {
     pub confinement: ConfinementMode,
     pub paradox_policy: ParadoxPolicy,
     pub mobius_twist: f64,
+    pub oam_state: Option<i32>,            // Orbital Angular Momentum (l)
+    pub retrocausal_timestamp: Option<i64>, // CSU-adjusted timestamp
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

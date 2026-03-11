@@ -8,6 +8,7 @@ use crate::bridge::blockchain::bitcoin_bridge::BitcoinBridge;
 use crate::orb::core::OrbPayload;
 use thiserror::Error;
 use chrono::Utc;
+use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum Http4Error {
@@ -79,6 +80,17 @@ impl Http4Router {
             }
             Http4Method::ENTANGLE => {
                 // Aqui interagiríamos com o campo Kuramoto
+                // Satellite-specific EMIT logic: transmit via OAM-entangled channel
+                if let Some(oam) = request.headers.oam_state {
+                    println!("[HTTP/4] Emitting via Satellite OCA (OAM l={})", oam);
+                }
+                Ok(Http4Response::ChannelOpen)
+            }
+            Http4Method::ENTANGLE => {
+                // Established entangled channel for retrocausal communication
+                if let Some(ts) = request.headers.retrocausal_timestamp {
+                    println!("[HTTP/4] Entangling at adjusted CSU timestamp: {}", ts);
+                }
                 Ok(Http4Response::ChannelOpen)
             }
             Http4Method::COLLAPSE => {
