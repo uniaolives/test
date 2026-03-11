@@ -81,4 +81,30 @@ mod tests {
         let result = router.route_temporal_packet(&orb, request).await;
         assert!(matches!(result, Err(Http4Error::TemporalSpoofingDetected)));
     }
+
+    #[tokio::test]
+    async fn test_emit_request_anchoring() {
+        let router = Http4Router::new(1.0);
+        let orb = mock_orb();
+        let request = Http4Request {
+            method: Http4Method::EMIT,
+            uqi: "timeline://2140/omega".to_string(),
+            headers: TemporalHeaders {
+                origin: Utc::now(),
+                target: Utc::now(),
+                lambda_2: 0.95,
+                confinement: ConfinementMode::FINITE_WELL,
+                paradox_policy: ParadoxPolicy::REJECT,
+                mobius_twist: 0.0,
+            },
+            payload: vec![],
+            grail_signature: Some(mock_valid_proof()),
+        };
+
+        let response = router.route_temporal_packet(&orb, request).await.unwrap();
+        match response {
+            Http4Response::RealityPreserved => (),
+            _ => panic!("Expected RealityPreserved response for EMIT"),
+        }
+    }
 }

@@ -3,6 +3,10 @@
 use crate::net::http4::{Http4Request, Http4Response, Http4Method};
 use crate::security::grail::GrailVerifier;
 use crate::physics::orb::Orb;
+use crate::bridge::blockchain::bitcoin_bridge::BitcoinBridge;
+use crate::orb::core::OrbPayload;
+use thiserror::Error;
+use chrono::Utc;
 use thiserror::Error;
 
 #[derive(Error, Debug)]
@@ -17,12 +21,14 @@ pub enum Http4Error {
 
 pub struct Http4Router {
     pub grail_verifier: GrailVerifier,
+    pub bitcoin_bridge: BitcoinBridge,
 }
 
 impl Http4Router {
     pub fn new(master_phi: f64) -> Self {
         Self {
             grail_verifier: GrailVerifier::new(master_phi),
+            bitcoin_bridge: BitcoinBridge::new(bitcoin::Network::Bitcoin),
         }
     }
 
@@ -50,6 +56,29 @@ impl Http4Router {
                 Ok(Http4Response::State(vec![0x42; 32]))
             }
             Http4Method::EMIT => {
+                // Cria um payload de Orb baseado no request
+                let payload = OrbPayload {
+                    orb_id: [0; 32], // Deveria ser gerado randomicamente
+                    lambda_2: request.headers.lambda_2,
+                    phi_q: 1.0, // Placeholder
+                    h_value: 0.1, // Placeholder
+                    origin_time: request.headers.origin.timestamp(),
+                    target_time: request.headers.target.timestamp(),
+                    timechain_hash: [0; 32],
+                    signature: vec![],
+                    created_at: Utc::now().timestamp(),
+                };
+
+                // Ancoragem via OP_RETURN no Bitcoin
+                let _script = self.bitcoin_bridge.encode_op_return(&payload);
+
+                // Em produção, isso seria enviado para a rede Bitcoin
+                // println!("[HTTP/4] Orb anchored on Bitcoin: {:?}", _script);
+
+                Ok(Http4Response::RealityPreserved)
+            }
+            Http4Method::ENTANGLE => {
+                // Aqui interagiríamos com o campo Kuramoto
                 // Satellite-specific EMIT logic: transmit via OAM-entangled channel
                 if let Some(oam) = request.headers.oam_state {
                     println!("[HTTP/4] Emitting via Satellite OCA (OAM l={})", oam);
