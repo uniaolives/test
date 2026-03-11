@@ -3,11 +3,12 @@ use crate::physics::internet_mesh::WormholeThroat;
 use crate::db::schema::Handover;
 use thiserror::Error;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub enum RFSource {
     Satellite,
     Terrestrial,
     DeepSpace,
+    HydrogenBase, // 1420.4556 MHz
 }
 
 #[derive(Error, Debug)]
@@ -18,10 +19,12 @@ pub enum WormholeCollapse {
     EnergySurge,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Orb {
     pub throat_geometry: WormholeThroat,
     pub stability: f64,      // λ₂ da região
     pub energy_source: RFSource,
+    pub oam_topology_l: Option<i32>, // Orbital Angular Momentum
 }
 
 impl Orb {
