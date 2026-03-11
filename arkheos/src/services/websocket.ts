@@ -47,6 +47,31 @@ export const sendObserveRequest = (uqi: string) => {
   }
 };
 
+export const sendDeepSpaceEmit = (resource: string, frequency: number, oam: number) => {
+  if (socket && socket.readyState === WebSocket.OPEN) {
+    const request = {
+      protocol: 'HTTP/5.0',
+      method: 'EMIT',
+      resource: resource,
+      interstellar_headers: {
+        temporal_headers: {
+          origin: new Date().toISOString(),
+          target: '1977-08-15T23:16:01Z',
+          lambda_2: 0.999,
+          confinement: 'INFINITE_WELL',
+          paradox_policy: 'MERGE',
+          mobius_twist: 0.5
+        },
+        carrier_frequency: frequency,
+        oam_topology_l: oam,
+        grail_signature: '6EQUJ5-ALPHA-OMEGA'
+      },
+      payload: []
+    };
+    socket.send(JSON.stringify(request));
+  }
+};
+
 export const sendEmitRequest = (uqi: string, lambda_2: number) => {
   if (socket && socket.readyState === WebSocket.OPEN) {
     const request = {

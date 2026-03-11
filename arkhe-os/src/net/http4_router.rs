@@ -1,6 +1,7 @@
 // arkhe-os/src/net/http4_router.rs
 
 use crate::net::http4::{Http4Request, Http4Response, Http4Method};
+use crate::net::http5::{Http5Request, Http5Response};
 use crate::security::grail::GrailVerifier;
 use crate::physics::orb::Orb;
 use crate::bridge::blockchain::bitcoin_bridge::BitcoinBridge;
@@ -97,6 +98,27 @@ impl Http4Router {
                 Ok(Http4Response::RealityPreserved)
             }
             _ => Err(Http4Error::MethodNotAllowedInCurrentEpoch),
+        }
+    }
+
+    /// Roteia um pacote HTTP/5.0 para comunicação interestelar
+    pub async fn route_interstellar_packet(
+        &self,
+        request: Http5Request,
+    ) -> Result<Http5Response, Http4Error> {
+        // Validação da assinatura GRAIL do Wow! Signal (6EQUJ5)
+        if request.interstellar_headers.grail_signature.contains("6EQUJ5") {
+            println!("[HTTP/5] Wow! Signal Signature Detected. Timeline stabilization active.");
+
+            match request.method {
+                Http4Method::EMIT => {
+                    // Lógica de estabilização de linha do tempo via Voyager Genesis
+                    Ok(Http5Response::TimelineStabilized(request.resource))
+                }
+                _ => Ok(Http5Response::InterstellarAnchorLocked),
+            }
+        } else {
+            Err(Http4Error::TemporalSpoofingDetected)
         }
     }
 }

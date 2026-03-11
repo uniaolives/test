@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { Button, Card, Elevation, Icon, Tag } from '@blueprintjs/core';
+import { sendObserveRequest, sendEmitRequest, sendDeepSpaceEmit } from '../services/websocket';
 import { sendObserveRequest, sendEmitRequest } from '../services/websocket';
 import { sendObserveRequest } from '../services/websocket';
 
@@ -18,6 +19,26 @@ export const TzinorGate: React.FC = () => {
     sendEmitRequest(uqi, lambda);
   };
 
+  const handleDeepSpaceEmit = () => {
+    console.log("[HTTP/5] Emitting Voyager Genesis (1420.45 MHz)");
+    sendDeepSpaceEmit('/heliosphere/voyager_genesis', 1420.4556, 100);
+  };
+
+  return (
+    <div className="tzinor-gate">
+      <h3 className="bp5-heading">
+        <Icon icon="layout-skew-grid" /> TZINOR GATE (HTTP/4/5)
+        <Button
+          minimal
+          small
+          intent="danger"
+          icon="Locate"
+          className="voyager-btn"
+          onClick={handleDeepSpaceEmit}
+        >
+          VOYAGER GENESIS
+        </Button>
+      </h3>
   return (
     <div className="tzinor-gate">
       <h3 className="bp5-heading">

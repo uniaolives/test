@@ -5,6 +5,7 @@ interface OrbData {
   uqi: string;
   lambda_2: number;
   validated: boolean;
+  type?: 'TERRESTRIAL' | 'SATELLITE' | 'INTERSTELLAR';
 }
 
 interface TeknetState {
