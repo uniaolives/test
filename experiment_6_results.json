@@ -1,0 +1,62 @@
+[
+  {
+    "t": 2.6226043701171875e-06,
+    "coherence": 0.5082882550522463,
+    "state": "PRE_TRANSMISSION"
+  },
+  {
+    "t": 1.0226383209228516,
+    "coherence": 0.5620854287197092,
+    "state": "PRE_TRANSMISSION"
+  },
+  {
+    "t": 2.023047924041748,
+    "coherence": 0.5915585884386944,
+    "state": "PRE_TRANSMISSION"
+  },
+  {
+    "t": 3.0234689712524414,
+    "coherence": 0.637517532311541,
+    "state": "PRE_TRANSMISSION"
+  },
+  {
+    "t": 4.023799419403076,
+    "coherence": 0.6990445671204895,
+    "state": "PRE_TRANSMISSION"
+  },
+  {
+    "t": 5.024165868759155,
+    "coherence": 0.7182757744595772,
+    "state": "PRE_TRANSMISSION"
+  },
+  {
+    "t": 6.024610996246338,
+    "coherence": 0.7855636260127559,
+    "state": "PRE_TRANSMISSION"
+  },
+  {
+    "t": 7.02508020401001,
+    "coherence": 0.8363546720548422,
+    "state": "PRE_TRANSMISSION"
+  },
+  {
+    "t": 8.025475978851318,
+    "coherence": 0.8686354516098618,
+    "state": "PRE_TRANSMISSION"
+  },
+  {
+    "t": 9.026055574417114,
+    "coherence": 0.9198493033450228,
+    "state": "PRE_TRANSMISSION"
+  },
+  {
+    "t": 10,
+    "coherence": 0.963477095392332,
+    "state": "EMISSION"
+  },
+  {
+    "t": 12,
+    "coherence": 0.6883983754225712,
+    "state": "POST_TRANSMISSION"
+  }
+]
