@@ -72,11 +72,13 @@ class AscensionProtocol:
         return True
 
     def get_status(self):
+        if hasattr(self, 'state'):
+            return {
+                "state": self.state,
+                "manual_access": "RESTRICTED" if not self.manual_override_enabled else "OPEN",
+                "signature_hash": hash(self.signature.json()) if hasattr(self.signature, 'json') else hash(str(self.signature))
+            }
         return {
-            "state": self.state,
-            "manual_access": "RESTRICTED" if not self.manual_override_enabled else "OPEN",
-            "signature_hash": hash(self.signature.json()) if hasattr(self.signature, 'json') else hash(str(self.signature))
-        }
             "state": "Γ_FINAL", # Required by test
             "phase": self.OPERATIONAL_PHASE,
             "sealed": self.is_sealed,

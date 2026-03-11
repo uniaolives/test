@@ -10,6 +10,7 @@ import json
 import logging
 import time
 import base64
+import uuid
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, field
 import numpy as np
@@ -198,6 +199,55 @@ async def get_partner(node: str, agent: int):
     partner = await controller.registry.get_partner(node, agent)
     if partner: return {"node": partner[0], "agent": partner[1], "bell_type": partner[2]}
     raise HTTPException(status_code=404, detail="No entanglement found")
+
+@app.post("/v1/chat/completions")
+async def chat_completions(payload: Dict[str, Any]):
+    """OpenAI-compatible chat completions endpoint for Parallax cluster."""
+    logger.info(f"💬 Chat completion request for model: {payload.get('model')}")
+
+    # Check if we have active nodes
+    active_nodes = [n for n in controller.nodes.values() if n.is_active]
+    if not active_nodes:
+        # In the testbed, we can simulate a response even without active nodes
+        # but let's log a warning.
+        logger.warning("⚠️  No active nodes in cluster. Simulating response.")
+        node_id = "simulated-core"
+    else:
+        # Simple load balancing: pick a random active node
+        target_node = np.random.choice(active_nodes)
+        node_id = target_node.node_id
+        logger.info(f"🎯 Routing request to node: {node_id}")
+
+    # For now, we simulate a response. In a real integration, this would
+    # forward the request to the worker's inference engine.
+    content = "Hello! This is a response from the Arkhe(n) Parallax distributed cluster. "
+    if not active_nodes:
+        content += "Note: Running in simulation mode (no active worker nodes detected)."
+    else:
+        content += f"Processed by node: {node_id}."
+
+    response = {
+        "id": f"chatcmpl-{uuid.uuid4().hex[:12]}",
+        "object": "chat.completion",
+        "created": int(time.time()),
+        "model": payload.get("model", "arkhe-parallax-v1"),
+        "choices": [
+            {
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": content
+                },
+                "finish_reason": "stop"
+            }
+        ],
+        "usage": {
+            "prompt_tokens": 10,
+            "completion_tokens": 20,
+            "total_tokens": 30
+        }
+    }
+    return response
 
 async def main():
     config = uvicorn.Config(app, host="0.0.0.0", port=8080, log_level="info")
