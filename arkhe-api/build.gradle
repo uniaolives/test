@@ -13,6 +13,7 @@ tasks.register('manualCompileConjureGo', Exec) {
     def conjureGoExec = project.findProperty('conjureGoExecutable') ?:
                        System.getenv('CONJURE_GO_EXECUTABLE') ?:
                        "conjure-go"
+                       "${System.getProperty('user.home')}/go/bin/conjure-go"
 
     executable conjureGoExec
     args '--output', 'generated-go', 'build/conjure-ir/arkhe-api.conjure.json'

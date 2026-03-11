@@ -5,6 +5,9 @@ pub mod bio_socket;
 pub mod mqtt;
 pub mod multimodal_anchor;
 pub mod stack;
+pub mod http4;
+pub mod http4_router;
+pub mod http4_tests;
 
 pub use protocol::HandoverData;
 pub use node::P2PNode;
