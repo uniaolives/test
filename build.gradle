@@ -3,6 +3,8 @@ plugins {
     id 'com.android.application' version '8.2.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.9.22' apply false
     id 'com.palantir.conjure' version '5.64.0' apply false
+    id 'com.palantir.consistent-versions' version '3.13.0'
+    id 'com.palantir.baseline-error-prone' version '0.12.0' apply false
 }
 
 allprojects {
@@ -11,10 +13,7 @@ allprojects {
         conjureGenerators
     }
     dependencies {
-        conjureCompiler 'com.palantir.conjure:conjure:4.55.0'
-        conjureGenerators 'com.palantir.conjure.rust:conjure-rust:5.10.0'
+        conjureCompiler 'com.palantir.conjure:conjure'
+        conjureGenerators 'com.palantir.conjure.rust:conjure-rust'
     }
-    id("com.android.application") version "8.2.2" apply false
-    id("org.jetbrains.kotlin.android") version "1.9.22" apply false
-    id("com.palantir.consistent-versions") version "3.13.0"
 }

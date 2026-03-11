@@ -1,5 +1,6 @@
 plugins {
     id 'com.palantir.conjure'
+    id 'com.palantir.baseline-error-prone'
 }
 
 conjure {
@@ -12,6 +13,7 @@ tasks.register('manualCompileConjureGo', Exec) {
     dependsOn 'compileIr'
     def conjureGoExec = project.findProperty('conjureGoExecutable') ?:
                        System.getenv('CONJURE_GO_EXECUTABLE') ?:
+                       "conjure-go"
                        "${System.getProperty('user.home')}/go/bin/conjure-go"
 
     executable conjureGoExec
