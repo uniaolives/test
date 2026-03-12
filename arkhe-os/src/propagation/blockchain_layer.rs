@@ -10,7 +10,6 @@ pub struct BlockchainBridge;
 #[async_trait]
 impl ProtocolBridge for BlockchainBridge {
     async fn propagate(&self, _orb: &Orb, _payload: &OrbPayload) -> Result<PropagationReceipt> {
-    async fn propagate(&self, _orb: &Orb) -> Result<PropagationReceipt> {
         // Bitcoin OP_RETURN, Ethereum Contract Logs, Timechain Blocks
         Ok(PropagationReceipt {
             protocol: ProtocolType::Blockchain,
