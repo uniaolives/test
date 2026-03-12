@@ -255,8 +255,8 @@ async fn main() -> anyhow::Result<()> {
 
         if input == "twist" {
             let mut tq = top_qubit.lock().await;
-            tq.circumnavigate();
-            println!("[KNT] Berry Phase: {:.3} | Periodicity: {}", tq.berry_phase, tq.is_coherent());
+            let current_phase = tq.circulate();
+            println!("[KNT] Berry Phase: {:.3} rad | Active: {}", current_phase, tq.is_non_trivial());
             continue;
         }
 

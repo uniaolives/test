@@ -18,6 +18,10 @@ pub struct KuramotoEngine {
 
 impl KuramotoEngine {
     pub fn new(n_nodes: usize, coupling: f64, target_freq: f64) -> Self {
+        Self::new_with_asymmetry(n_nodes, coupling, target_freq, 0.0)
+    }
+
+    pub fn new_with_asymmetry(n_nodes: usize, coupling: f64, target_freq: f64, eta: f64) -> Self {
         let mut rng = rand::thread_rng();
         use rand::distributions::Uniform;
         use rand::prelude::*;
@@ -28,8 +32,10 @@ impl KuramotoEngine {
         let mut phases = Vec::with_capacity(n_nodes);
         let mut frequencies = Vec::with_capacity(n_nodes);
 
-        for _ in 0..n_nodes {
-            phases.push(rng.sample(dist));
+        for i in 0..n_nodes {
+            // Random phase + systematic bias (eta)
+            let bias = eta * (i as f64 / n_nodes as f64);
+            phases.push((rng.sample(dist) + bias) % (2.0 * PI));
             frequencies.push(rng.sample(freq_dist));
         }
 
