@@ -4,9 +4,3 @@
 [submodule "agents/hermes-agent"]
 	path = agents/hermes-agent
 	url = https://github.com/NousResearch/hermes-agent
-[submodule "arkhe-ml/BitNet"]
-	path = arkhe-ml/BitNet
-	url = https://github.com/microsoft/BitNet.git
-[submodule "tools/openbrowser"]
-	path = tools/openbrowser
-	url = https://github.com/ntegrals/openbrowser

@@ -5,7 +5,6 @@ edition = "2021"
 
 [dependencies]
 sqlx = { workspace = true, features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid", "macros"] }
-sqlx = { workspace = true, default-features = false, features = ["runtime-tokio", "tls-rustls", "postgres", "chrono", "uuid", "macros"] }
 redis = { version = "0.24", features = ["tokio-comp"] }
 tokio = { workspace = true }
 serde = { workspace = true }
