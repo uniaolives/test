@@ -33,6 +33,7 @@ impl ModbusBridge {
         // Escrever em holding registers
         self.client.write_multiple_registers(start_register, &registers).await
             .map_err(|e| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, e.to_string())))?
+            .map_err(|e: ExceptionCode| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, format!("Modbus exception: {:?}", e))))?;
             .map_err(|e| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, format!("Modbus exception: {:?}", e))))?;
 
         Ok(())

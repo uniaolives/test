@@ -1,6 +1,6 @@
 // arkhe-os/src/bridge/tcpip/coap_bridge.rs
 
-use coap::CoAPClient;
+use coap::UdpCoAPClient;
 use crate::orb::core::OrbPayload;
 use crate::bridge::BridgeError;
 
@@ -18,6 +18,7 @@ impl CoapBridge {
 
         for url in &self.endpoints {
             let request_data = data.clone();
+            UdpCoAPClient::post(url, request_data).await
             // In coap 0.24, post is likely async if using tokio features,
             // but the error suggests it returns a Result directly.
             // Let's check the implementation again or try without await.

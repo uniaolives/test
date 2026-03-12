@@ -30,6 +30,7 @@ use super::dark::i2p_bridge::I2pBridge;
 use super::dark::p2p_dark_bridge::DarkP2PBridge;
 use crate::orb::core::OrbPayload;
 use std::collections::HashMap;
+use tor_rtcompat::PreferredRuntime;
 
 pub struct UniversalOrbRouter {
     pub http: HttpBridge,
@@ -63,7 +64,7 @@ pub struct UniversalOrbRouter {
     pub wifi_direct: MeshExtBridge,
     pub thread: MeshExtBridge,
     pub nfc: MeshExtBridge,
-    pub tor: TorBridge,
+    pub tor: TorBridge<PreferredRuntime>,
     pub i2p: I2pBridge,
     pub freenet: DarkP2PBridge,
     pub scuttlebutt: DarkP2PBridge,

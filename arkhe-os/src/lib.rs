@@ -29,6 +29,7 @@ pub mod propagation;
 pub mod bridge;
 pub mod orb;
 pub mod satellite;
+pub mod network;
 
 pub use kernel::task::Task;
 pub use kernel::scheduler::{CoherenceScheduler, SchedulerEvent};

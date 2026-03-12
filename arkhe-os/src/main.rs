@@ -21,6 +21,7 @@ use arkhe_os::quantum::berry::{TopologicalQubit};
 use arkhe_os::telemetry::{BioEvent, GlobalState};
 use arkhe_os::net::stack::NetEvent;
 use arkhe_os::lmt::field::MeaningField;
+use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine};
 use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine, PsiState};
 use arkhe_os::security::{XenoFirewall, XenoRiskLevel};
 use arkhe_os::week5::TemporalSubstrate;
@@ -107,6 +108,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Topological Hardware Simulation
     let top_qubit = Arc::new(Mutex::new(TopologicalQubit::new()));
+    let event_buffer: Arc<Mutex<BTreeMap<u64, String>>> = Arc::new(Mutex::new(BTreeMap::new()));
     let _event_buffer: Arc<Mutex<BTreeMap<u64, String>>> = Arc::new(Mutex::new(BTreeMap::new()));
 
     // 2. Setup P2P
@@ -276,6 +278,7 @@ async fn main() -> anyhow::Result<()> {
 
                 match orchestrator_clone.process_intent(&intent_text, &maestro_psi).await {
                     Ok(resp) => {
+                        let mut core_psi = arkhe_os::maestro::core::PsiState::default();
                         // Create a temporary core::PsiState for the firewall
                         let mut core_psi = PsiState::default();
                         core_psi.coherence_trace.push(current_phi);

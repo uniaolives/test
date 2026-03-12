@@ -5,6 +5,15 @@ use crate::propagation::payload::OrbPayload;
 use crate::bridge::BridgeError;
 use std::str::FromStr;
 use tokio::io::AsyncWriteExt;
+use tor_rtcompat::Runtime;
+
+pub struct TorBridge<R: Runtime> {
+    client: TorClient<R>,
+    hidden_services: Vec<String>,
+}
+
+impl<R: Runtime> TorBridge<R> {
+    pub fn new(client: TorClient<R>, services: Vec<String>) -> Self {
 use tor_rtcompat::PreferredRuntime;
 
 pub struct TorBridge {

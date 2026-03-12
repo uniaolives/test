@@ -13,13 +13,14 @@ mod tests {
     fn mock_orb() -> Orb {
         Orb {
             throat_geometry: WormholeThroat {
-                entrance: GeoCoord { lat: 0.0, lon: 0.0, alt: 0.0 },
-                exit: GeoCoord { lat: 0.0, lon: 0.0, alt: 0.0 },
+                entrance: GeoCoord { lat: 0.0, lon: 0.0 },
+                exit: GeoCoord { lat: 0.0, lon: 0.0 },
                 duration_ms: 1000.0,
                 bandwidth: 1e9,
             },
             stability: 0.99,
             energy_source: RFSource::Satellite,
+            oam_topology_l: None,
         }
     }
 
@@ -46,6 +47,8 @@ mod tests {
                 confinement: ConfinementMode::INFINITE_WELL,
                 paradox_policy: ParadoxPolicy::REJECT,
                 mobius_twist: 0.0,
+                oam_state: None,
+                retrocausal_timestamp: None,
             },
             payload: vec![],
             grail_signature: Some(mock_valid_proof()),
@@ -72,6 +75,8 @@ mod tests {
                 confinement: ConfinementMode::INFINITE_WELL,
                 paradox_policy: ParadoxPolicy::REJECT,
                 mobius_twist: 0.0,
+                oam_state: None,
+                retrocausal_timestamp: None,
             },
             payload: vec![],
             grail_signature: Some(mock_valid_proof()),
@@ -96,6 +101,8 @@ mod tests {
                 confinement: ConfinementMode::FINITE_WELL,
                 paradox_policy: ParadoxPolicy::REJECT,
                 mobius_twist: 0.0,
+                oam_state: None,
+                retrocausal_timestamp: None,
             },
             payload: vec![],
             grail_signature: Some(mock_valid_proof()),

@@ -72,9 +72,6 @@ impl Http4Router {
                 // Ancoragem via OP_RETURN no Bitcoin
                 let _script = self.bitcoin_bridge.encode_op_return(&payload);
 
-                // Em produção, isso seria enviado para a rede Bitcoin
-                // println!("[HTTP/4] Orb anchored on Bitcoin: {:?}", _script);
-
                 Ok(Http4Response::RealityPreserved)
             }
             Http4Method::ENTANGLE => {
