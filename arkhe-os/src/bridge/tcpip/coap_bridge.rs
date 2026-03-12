@@ -17,11 +17,13 @@ impl CoapBridge {
         let data = orb.to_bytes();
 
         for url in &self.endpoints {
-            let mut client = CoAPClient::from_url(url)
-                .map_err(|e| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?;
-
-            client.post_with_timeout(&data, std::time::Duration::from_secs(5))
-                .map_err(|e| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?;
+            let request_data = data.clone();
+            // In coap 0.24, post is likely async if using tokio features,
+            // but the error suggests it returns a Result directly.
+            // Let's check the implementation again or try without await.
+            // Wait, the error message said "is not a future", so it's synchronous.
+            let _ = CoAPClient::post(url, request_data)
+                .map_err(|e: std::io::Error| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, e.to_string())))?;
 
             println!("[CoAP] Orb {:?} transmitted to {}", orb.orb_id, url);
         }
