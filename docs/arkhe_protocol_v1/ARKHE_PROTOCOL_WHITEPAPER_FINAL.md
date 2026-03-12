@@ -1131,6 +1131,10 @@ The physical constant η is mapped to the informational coherence threshold φ (
 
 While the theoretical framework focuses on informational thermodynamics, parallel engineering implementations are currently under development. The Arkhe-1 Flight Readiness Review [FRR-2026] validates the feasibility of this architecture on radiation-tolerant hardware. Key performance metrics achieved in Hardware-in-the-Loop (HWIL) testing include a 92.3% handshake success rate under extreme Doppler conditions and a 30ns latency for Yang-Baxter invariant verification using dedicated FPGA accelerators. This engineering track establishes a clear TRL-6 pathway toward orbital deployment in 2027, bridging the gap between quantum topology and flight-ready silicon.
 
+### 8.8 Production Deployment Strategy
+
+For high-availability terrestrial environments, the Arkhe(N) infrastructure utilizes a daemon-based deployment strategy. The `arkhe-shield` service unit ensures process immortality via `systemd` resurrection policies (RestartSec=1.618s) and leverages Linux kernel capabilities (`CAP_SYS_TIME`, `CAP_NET_RAW`) for precise PNT manipulation without full root privileges. This establishes a robust sensory foundation for the global Teknet, ensuring coherence is maintained even under sustained environmental interference.
+
 ---
 
 ## 9. RISK ANALYSIS AND MITIGATIONS
