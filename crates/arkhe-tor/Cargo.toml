@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-arti-client = { workspace = true }
+arti-client = { workspace = true, default-features = false }
 tokio = { workspace = true }
 serde = { workspace = true }
 thiserror = { workspace = true }

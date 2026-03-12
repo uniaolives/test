@@ -22,6 +22,7 @@ use arkhe_os::telemetry::{BioEvent, GlobalState};
 use arkhe_os::net::stack::NetEvent;
 use arkhe_os::lmt::field::MeaningField;
 use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine};
+use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine, PsiState};
 use arkhe_os::security::{XenoFirewall, XenoRiskLevel};
 use arkhe_os::week5::TemporalSubstrate;
 use arkhe_os::{sensors, telemetry, net};
@@ -108,6 +109,7 @@ async fn main() -> anyhow::Result<()> {
     // Topological Hardware Simulation
     let top_qubit = Arc::new(Mutex::new(TopologicalQubit::new()));
     let event_buffer: Arc<Mutex<BTreeMap<u64, String>>> = Arc::new(Mutex::new(BTreeMap::new()));
+    let _event_buffer: Arc<Mutex<BTreeMap<u64, String>>> = Arc::new(Mutex::new(BTreeMap::new()));
 
     // 2. Setup P2P
     let local_key = identity::Keypair::generate_ed25519();
@@ -140,7 +142,7 @@ async fn main() -> anyhow::Result<()> {
     net::stack::start_multimodal_stack(net_tx, state.clone()).await;
 
     // 4. Fusion Engine
-    let event_buffer_fusion = event_buffer.clone();
+    let event_buffer_fusion = _event_buffer.clone();
     let substrate_fusion = substrate.clone();
     tokio::spawn(async move {
         let mut analytics = sensors::analytics::MultivariateAnalytics::new(100);
@@ -264,6 +266,8 @@ async fn main() -> anyhow::Result<()> {
             let intent_text = input[7..].to_string();
             let orchestrator_clone = orchestrator.clone();
 
+            // Map maestro::spine::PsiState to maestro::PsiState for firewall compatibility
+            // Since we're in main, we use orchestrator's view
             let current_phi = *state.phi_q.read().await;
 
             tokio::spawn(async move {
@@ -275,6 +279,8 @@ async fn main() -> anyhow::Result<()> {
                 match orchestrator_clone.process_intent(&intent_text, &maestro_psi).await {
                     Ok(resp) => {
                         let mut core_psi = arkhe_os::maestro::core::PsiState::default();
+                        // Create a temporary core::PsiState for the firewall
+                        let mut core_psi = PsiState::default();
                         core_psi.coherence_trace.push(current_phi);
 
                         let risk = XenoFirewall::assess_risk(&resp, &core_psi);
