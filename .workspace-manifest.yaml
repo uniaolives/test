@@ -7,9 +7,6 @@ repositories:
   aigmi:
     path: aigmi
     strategy: submodule
-  BitNet:
-    path: arkhe-ml/BitNet
-    strategy: submodule
   harmonia:
     path: harmonia
     strategy: submodule
@@ -18,9 +15,6 @@ repositories:
     strategy: submodule
   medical-skills:
     path: skills/medical-skills
-    strategy: submodule
-  openbrowser:
-    path: tools/openbrowser
     strategy: submodule
   rust:
     path: rust

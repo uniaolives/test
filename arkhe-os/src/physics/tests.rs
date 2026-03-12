@@ -43,7 +43,7 @@ mod tests {
 
         // Run many steps to ensure synchronization
         for _ in 0..100 {
-            engine.synchronize(0.1);
+            engine.synchronize(0.1, false);
         }
 
         let final_coherence = engine.coherence();
