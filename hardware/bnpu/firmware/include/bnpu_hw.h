@@ -38,6 +38,12 @@ void hw_set_heater_power(float percent);
 void hw_set_pump_rate(float ml_min);
 void hw_read_sensors(ThermalController* therm, BioMonitor* bio);
 
+// Pressure-Quench Protocol (Hg-1223) HW Interface
+void hw_set_anvil_pressure(float gpa);
+float hw_read_pressure(void);
+void hw_set_cryo_target(float kelvin);
+float hw_read_temp(void);
+
 // Stubs for missing functions
 float calculate_heater_pid(ThermalController* therm);
 float calculate_pump_rate(PumpController* pump);
