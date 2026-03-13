@@ -46,9 +46,14 @@ impl TopologicalQubit {
     pub fn circulate(&mut self) -> f64 {
         self.circumnavigations += 1;
         self.phase_accumulated += self.berry_phase;
-        self.phase_accumulated %= 2.0 * PI;
 
-        if self.circumnavigations % 4 == 0 && self.phase_accumulated.abs() < 1e-10 {
+        // Canonical wrap-around for 4-fold periodicity
+        if self.phase_accumulated >= 2.0 * PI - 1e-10 {
+            self.phase_accumulated = 0.0;
+        }
+
+        // Reset circumnavigations after 4 loops (full period for pi/2 twist)
+        if self.circumnavigations >= 4 {
             self.circumnavigations = 0;
         }
 
@@ -57,5 +62,33 @@ impl TopologicalQubit {
 
     pub fn is_non_trivial(&self) -> bool {
         matches!(self.spin_state, SpinState::SingletP | SpinState::SingletM)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_qubit_periodicity() {
+        let mut qubit = TopologicalQubit::new();
+        qubit.spin_state = SpinState::SingletP;
+
+        // Cycle 1: pi/2
+        qubit.circulate();
+        assert!((qubit.phase_accumulated - PI / 2.0).abs() < 1e-9);
+
+        // Cycle 2: pi
+        qubit.circulate();
+        assert!((qubit.phase_accumulated - PI).abs() < 1e-9);
+
+        // Cycle 3: 3pi/2
+        qubit.circulate();
+        assert!((qubit.phase_accumulated - 1.5 * PI).abs() < 1e-9);
+
+        // Cycle 4: 2pi -> 0
+        qubit.circulate();
+        assert!(qubit.phase_accumulated.abs() < 1e-9);
+        assert_eq!(qubit.circumnavigations, 0);
     }
 }
