@@ -13,6 +13,7 @@ pub struct OrbPayload {
     pub timechain_hash: [u8; 32],
     pub signature: Vec<u8>,
     pub created_at: i64,
+    pub state_delta: Option<crate::orb::core::StateDelta>,
 }
 
 impl OrbPayload {
@@ -24,6 +25,7 @@ impl OrbPayload {
         target_time: i64,
         timechain_hash: Option<[u8; 32]>,
         signature: Option<Vec<u8>>,
+        state_delta: Option<crate::orb::core::StateDelta>,
     ) -> Self {
         let created_at = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -47,6 +49,7 @@ impl OrbPayload {
             timechain_hash: timechain_hash.unwrap_or([0u8; 32]),
             signature: signature.unwrap_or_else(|| b"UNSIGNED".to_vec()),
             created_at,
+            state_delta,
         }
     }
 
@@ -85,6 +88,11 @@ impl OrbPayload {
 
         // Timestamp
         buffer.extend_from_slice(&self.created_at.to_le_bytes());
+
+        // State Delta (Optional - serialized via bincode for simplicity in the binary stream)
+        let delta_bytes = bincode::serialize(&self.state_delta).unwrap_or_default();
+        buffer.extend_from_slice(&(delta_bytes.len() as u32).to_le_bytes());
+        buffer.extend_from_slice(&delta_bytes);
 
         // CRC32
         let crc = crc32fast::hash(&buffer);
@@ -140,6 +148,11 @@ impl OrbPayload {
         let created_at = i64::from_le_bytes(data[offset..offset+8].try_into()?);
         offset += 8;
 
+        let delta_len = u32::from_le_bytes(data[offset..offset+4].try_into()?) as usize;
+        offset += 4;
+        let state_delta = bincode::deserialize(&data[offset..offset+delta_len]).unwrap_or(None);
+        offset += delta_len;
+
         let actual_crc = u32::from_le_bytes(data[offset..offset+4].try_into()?);
         let expected_crc = crc32fast::hash(&data[..offset]);
 
@@ -157,6 +170,7 @@ impl OrbPayload {
             timechain_hash,
             signature,
             created_at,
+            state_delta,
         })
     }
 }

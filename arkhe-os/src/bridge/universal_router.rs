@@ -123,6 +123,7 @@ impl UniversalOrbRouter {
             timechain_hash: orb.timechain_hash,
             signature: orb.signature.clone(),
             created_at: orb.created_at,
+            state_delta: orb.state_delta.clone(),
         };
 
         let tor_res = self.tor.send(&tor_payload).await;

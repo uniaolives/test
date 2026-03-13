@@ -67,6 +67,7 @@ impl Http4Router {
                     timechain_hash: [0; 32],
                     signature: vec![],
                     created_at: Utc::now().timestamp(),
+                    state_delta: None,
                 };
 
                 // Ancoragem via OP_RETURN no Bitcoin

@@ -15,6 +15,7 @@ pub struct PNTInfo {
     pub transition_flag: bool,
     pub new_mode: Option<ToroidalMode>,
     pub accumulated_phase: f64,
+    pub state_delta: Option<crate::orb::core::StateDelta>,
 }
 
 /// Toroide Yin-Yang: Fluxo autorreflexivo de informação
@@ -130,6 +131,7 @@ impl YinYangTorus {
         new_info.transition_flag = true;
         new_info.new_mode = Some(self.mode.clone());
         new_info.accumulated_phase = 2.0 * PI * self.mobius_twist; // Berry phase total
+        new_info.state_delta = info.state_delta.clone();
 
         new_info
     }
