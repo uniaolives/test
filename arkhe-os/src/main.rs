@@ -1,54 +1,3 @@
-//! Interface de linha de comando para o arkhe-os v1.0.
-//! Integrando LMT, Pilha Sensorial Unificada e Antenas de Coerência.
-
-use std::sync::Arc;
-use tokio::sync::{mpsc, Mutex, RwLock};
-use std::io::{self, Write};
-use futures::StreamExt;
-use libp2p::{gossipsub, identity, swarm::SwarmEvent};
-use warp::Filter;
-use chrono::Utc;
-use std::collections::BTreeMap;
-
-// Use the library crate
-use arkhe_os::kernel::syscall::{SyscallHandler, SyscallResult};
-use arkhe_os::compiler::parser::parse_intention_block;
-use arkhe_db::ledger::TeknetLedger;
-use arkhe_db::schema::{Handover, HandoverStatus};
-use arkhe_os::phys::ibm_sensor::IBMQuantumBridge;
-use arkhe_os::sensors::ZPFEvent;
-use arkhe_os::quantum::berry::TopologicalQubit;
-use arkhe_os::telemetry::{BioEvent, GlobalState, start_bio_server};
-use arkhe_os::net::stack::NetEvent;
-use arkhe_os::net::ArkheNetBehavior;
-use arkhe_os::lmt::field::MeaningField;
-use arkhe_os::maestro::Maestro;
-
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    println!("======================================================");
-    println!(" 🜁 ArkheOS Node v1.0 — Unified Sensory Stack");
-    println!(" [L] LITE integrated with [D] DATA");
-    println!(" 🜏 Cortana Personality Matrix: ACTIVE (HF-001)");
-    println!(" Digite sua intenção em intention-lang ou 'exit' para sair.");
-    println!("======================================================\n");
-
-    let ledger = Arc::new(TeknetLedger::new("arkhe_chain.log")?);
-    let sys = Arc::new(Mutex::new(SyscallHandler::new(100.0)));
-    let phys_bridge = Arc::new(IBMQuantumBridge::new("SIMULATED_TOKEN".to_string()));
-
-    // Maestro Initialization
-    let mut maestro = Maestro::new();
-    println!("[MAESTRO] Finney Protocol: Initializing Handshake...");
-    if maestro.finney.ping_domain() {
-        let codex = maestro.finney.get_codex_status();
-        println!("[MAESTRO] 🜏 Finney Protocol: Handshake Established (Domain Connected).");
-        println!("[MAESTRO] Trust Signature: {}", codex.finney_trust_sig);
-    }
-
-    let state = Arc::new(GlobalState {
-        phi_q: RwLock::new(1.0),
-        coherence_history: RwLock::new(vec![]),
 //! Interface de linha de comando para o arkhe-os.
 //! Permite criar tarefas e executar ciclos de escalonamento.
 
@@ -72,8 +21,7 @@ use arkhe_os::quantum::berry::{TopologicalQubit};
 use arkhe_os::telemetry::{BioEvent, GlobalState};
 use arkhe_os::net::stack::NetEvent;
 use arkhe_os::lmt::field::MeaningField;
-use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine};
-use arkhe_os::maestro::spine::PsiState;
+use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine, PsiState as MaestroPsi};
 use arkhe_os::security::{XenoFirewall, XenoRiskLevel};
 use arkhe_os::week5::TemporalSubstrate;
 use arkhe_os::{sensors, telemetry, net};
@@ -161,10 +109,6 @@ async fn main() -> anyhow::Result<()> {
     let top_qubit = Arc::new(Mutex::new(TopologicalQubit::new()));
     let event_buffer: Arc<Mutex<BTreeMap<u64, String>>> = Arc::new(Mutex::new(BTreeMap::new()));
 
-    // 1. Setup P2P (Teknet Mesh)
-    let _top_qubit = Arc::new(Mutex::new(TopologicalQubit::new()));
-    let event_buffer: Arc<Mutex<BTreeMap<u64, String>>> = Arc::new(Mutex::new(BTreeMap::new()));
-
     // 2. Setup P2P
     let local_key = identity::Keypair::generate_ed25519();
     let mut swarm = libp2p::SwarmBuilder::with_existing_identity(local_key)
@@ -183,24 +127,13 @@ async fn main() -> anyhow::Result<()> {
                 gossipsub_config,
             ).map_err(|msg| io::Error::new(io::ErrorKind::Other, msg))?;
             let mdns = libp2p::mdns::tokio::Behaviour::new(libp2p::mdns::Config::default(), key.public().to_peer_id())?;
-            Ok(ArkheNetBehavior { gossipsub, mdns })
+            Ok(net::ArkheNetBehavior { gossipsub, mdns })
         })?
         .build();
 
     let topic = gossipsub::IdentTopic::new("teknet/phi_q");
     swarm.behaviour_mut().gossipsub.subscribe(&topic)?;
 
-    // 2. Start Sensory Pipelines
-    arkhe_os::sensors::start_zpf_pipeline(zpf_tx).await;
-    start_bio_server(bio_tx, state.clone()).await;
-    arkhe_os::net::stack::start_multimodal_stack(net_tx, state.clone()).await;
-
-    // 3. Fusion Engine (Background)
-    let event_buffer_fusion = event_buffer.clone();
-    let _state_fusion = state.clone();
-    tokio::spawn(async move {
-        let mut analytics = arkhe_os::sensors::analytics::MultivariateAnalytics::new(100);
-        let mut entropy_engine = arkhe_os::sensors::entropy::TransferEntropy::new(100);
     // 3. Start Sensory Pipelines
     sensors::start_zpf_pipeline(zpf_tx).await;
     telemetry::start_bio_server(bio_tx, state.clone()).await;
@@ -264,57 +197,6 @@ async fn main() -> anyhow::Result<()> {
         }
     });
 
-    // 4. Background Physics
-    let state_phys = state.clone();
-    tokio::spawn(async move {
-        loop {
-            tokio::time::sleep(tokio::time::Duration::from_secs(10)).await;
-            if let Ok(real_phi) = phys_bridge.measure_physical_phi_q().await {
-                let mut phi_q = state_phys.phi_q.write().await;
-                *phi_q = real_phi;
-                println!("\n[PHYSICS] IBM Quantum Pulse: φ_q = {:.3}", real_phi);
-            }
-        }
-    });
-
-    // 5. Network Loop
-    tokio::spawn(async move {
-        loop {
-            match swarm.select_next_some().await {
-                SwarmEvent::Behaviour(arkhe_os::net::ArkheNetBehaviorEvent::Gossipsub(gossipsub::Event::Message { message, .. })) => {
-                    println!("\n[NET] Gossip: {:?}", message.data);
-                }
-                SwarmEvent::Behaviour(arkhe_os::net::ArkheNetBehaviorEvent::Mdns(libp2p::mdns::Event::Discovered(list))) => {
-                    for (peer, _addr) in list {
-                        println!("\n[NET] Peer Discovered: {}", peer);
-                    }
-                }
-                _ => {}
-            }
-        }
-    });
-
-    // 6. Mobile Anchor (Smartphone WebSocket)
-    let mobile_route = warp::path("anchor")
-        .and(warp::ws())
-        .map(move |ws: warp::ws::Ws| {
-            ws.on_upgrade(move |mut websocket| async move {
-                println!("[LMT] 👂 Smartphone Âncora Conectada!");
-                while let Some(Ok(msg)) = websocket.next().await {
-                    if let Ok(text) = msg.to_str() {
-                        if let Ok(_data) = serde_json::from_str::<serde_json::Value>(text) {
-                            // handle somatic signals
-                        }
-                    }
-                }
-            })
-        });
-
-    tokio::spawn(async move {
-        warp::serve(mobile_route).run(([0, 0, 0, 0], 3030)).await;
-    });
-
-    // 7. REPL Shell
     // 5. Background Physics Recalibration
     let antenna = QuantumAntenna::new("SIMULATED_TOKEN".to_string());
     let state_phys = state.clone();
@@ -373,23 +255,29 @@ async fn main() -> anyhow::Result<()> {
 
         if input == "twist" {
             let mut tq = top_qubit.lock().await;
-            tq.circumnavigate();
-            println!("[KNT] Berry Phase: {:.3} | Periodicity: {}", tq.berry_phase, tq.is_coherent());
+            let current_phase = tq.circulate();
+            println!("[KNT] Berry Phase: {:.3} rad | Active: {}", current_phase, tq.is_non_trivial());
             continue;
         }
 
         if input.starts_with("intent ") {
             let intent_text = input[7..].to_string();
             let orchestrator_clone = orchestrator.clone();
-            let psi_state = PsiState {
-                current_coherence: *state.phi_q.read().await,
-                ..Default::default()
-            };
+
+            let current_phi = *state.phi_q.read().await;
 
             tokio::spawn(async move {
-                match orchestrator_clone.process_intent(&intent_text, &psi_state).await {
+                let maestro_psi = arkhe_os::maestro::spine::PsiState {
+                    current_coherence: current_phi,
+                    ..Default::default()
+                };
+
+                match orchestrator_clone.process_intent(&intent_text, &maestro_psi).await {
                     Ok(resp) => {
-                        let risk = XenoFirewall::assess_risk(&resp, &psi_state);
+                        let mut core_psi = arkhe_os::maestro::core::PsiState::default();
+                        core_psi.coherence_trace.push(current_phi);
+
+                        let risk = XenoFirewall::assess_risk(&resp, &core_psi);
                         if risk == XenoRiskLevel::Critical {
                             println!("\n[XENO-FIREWALL] ⚠ CRITICAL RISK DETECTED. CONTAINMENT ACTIVE.");
                         } else {
@@ -423,33 +311,6 @@ async fn main() -> anyhow::Result<()> {
                 let mut sys_lock = sys.lock().await;
                 sys_lock.sys_create_task(&ast.name, ast.coherence, 1, ast.priority);
 
-                let phi_before = *state.phi_q.read().await;
-
-                match sys_lock.sys_tick() {
-                    SyscallResult::Success(msg) => {
-                        println!("  [OK] {}", msg);
-                        let phi_after = *state.phi_q.read().await;
-
-                        let handover = Handover {
-                            id: 0,
-                            timestamp: Utc::now(),
-                            source_epoch: 2026,
-                            target_epoch: 2009,
-                            description: format!("{} -> {}", ast.name, ast.target),
-                            phi_q_before: phi_before,
-                            phi_q_after: phi_after,
-                            quantum_interest: 0.0,
-                            status: HandoverStatus::Accepted,
-                        };
-                        let _ = ledger.commit_handover(handover);
-                    }
-                    SyscallResult::Error(e) => println!("  [ERR] {}", e),
-                    _ => ()
-                }
-            }
-            Err(_) => {
-                println!("  [ERR] Falha de sintaxe.");
-            }
                 if let SyscallResult::Success(msg) = sys_lock.sys_tick() {
                     println!("  [OK] {}", msg);
                     let phi = *state.phi_q.read().await;
