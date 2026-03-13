@@ -16,6 +16,7 @@ use super::blockchain::ethereum_bridge::EthereumBridge;
 use super::blockchain::ipfs_bridge::IpfsBridge;
 use super::blockchain::lightning_bridge::LightningBridge;
 use super::blockchain::solid_bridge::SolidBridge;
+use super::blockchain::akasha_bridge::AkashaBridge;
 use super::industrial::modbus_bridge::ModbusBridge;
 use super::industrial::opcua_bridge::OpcUaBridge;
 use super::industrial::canbus_bridge::CanBusBridge;
@@ -50,6 +51,7 @@ pub struct UniversalOrbRouter {
     pub ipfs: IpfsBridge,
     pub lightning: LightningBridge,
     pub solid: SolidBridge,
+    pub akasha: AkashaBridge,
     pub modbus: ModbusBridge,
     pub opc_ua: OpcUaBridge,
     pub canbus: CanBusBridge,
@@ -92,6 +94,7 @@ impl UniversalOrbRouter {
         self.ais.inject_orb(orb);
 
         let btc_script = self.bitcoin.encode_op_return(orb);
+        let akasha_res = self.akasha.emit_aks_orb(orb).await;
         let eth_res = self.ethereum.send_orb(orb).await;
         let ipfs_res = self.ipfs.publish(orb).await;
         let lightning_res = self.lightning.send_orb_payment(orb, "inv123").await;
@@ -142,6 +145,7 @@ impl UniversalOrbRouter {
         results.record("satellite", !sat_frames.is_empty());
         results.record("ham_radio", !ham_msg.is_empty());
         results.record("bitcoin", !btc_script.is_empty());
+        results.record("akasha", akasha_res.is_ok());
         results.record("ethereum", eth_res.is_ok());
         results.record("ipfs", ipfs_res.is_ok());
         results.record("lightning", lightning_res.is_ok());

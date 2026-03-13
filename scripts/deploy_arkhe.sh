@@ -22,6 +22,7 @@ command -v systemctl >/dev/null 2>&1 || { echo "systemd não disponível"; exit 
 # 2. Compilação otimizada
 echo "[2/6] Compilando motor toroidal..."
 RUSTFLAGS="-C target-cpu=native -C opt-level=3" \
+    cargo build --release --bin arkhe-shield
     cargo build --release --bin arkhe-os
 
 # 3. Preparação de usuário e diretórios
@@ -37,6 +38,7 @@ sudo chmod 755 /var/log/arkhe
 
 # 4. Instalação do binário
 echo "[4/6] Instalando binário..."
+sudo cp target/release/arkhe-shield "${BINARY_PATH}"
 sudo cp target/release/arkhe-os "${BINARY_PATH}"
 sudo chown root:root "${BINARY_PATH}"
 sudo chmod 755 "${BINARY_PATH}"

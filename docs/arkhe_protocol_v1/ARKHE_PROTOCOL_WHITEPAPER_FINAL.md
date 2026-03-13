@@ -1255,6 +1255,7 @@ The Arkhe Protocol incorporates these "Pro-Human" constraints via the **XenoFire
 
 | Segment | Market Size 2030 | CAGR | Arkhe(N) Value Proposition |
 |---------|------------------|------|----------------------------|
+| **Machine Economy (AKASHA)** | $50B | 25% | Autonomous P2P transactions for agent swarms |
 | **LEO Constellations** | $15B | 18% | Secure inter-satellite links, no GPS dependency |
 | **IoT from Space** | $3B | 22% | Low-power, long-battery handshakes |
 | **Distributed Navigation** | $2B | 12% | Jamming-resistant, relative phase sync |
@@ -1332,6 +1333,29 @@ The Arkhe Protocol incorporates these "Pro-Human" constraints via the **XenoFire
 **Environmental:**
 - Lower power consumption → longer satellite lifetime → less space debris
 - No need for heavy atomic clocks → lower launch mass → reduced CO₂
+
+### 11.6 The AKASHA Substrate: A Machine Economy
+
+The Arkhe Protocol utilizes **AKASHA** as its primary economic settlement layer. Unlike human-centric blockchains, AKASHA is optimized for the machine-to-machine (M2M) throughput requirements of the Teknet.
+
+**Key Economic Bindings:**
+- **Proof of Convergence (PoC):** Aligns consensus with the Kuramoto synchronization engine, treating block finality as a topological phase transition.
+- **Agent Identity Protocol (AIP):** Maps Bio-Node IDs directly to Akasha agent records, enabling protocol-level reputation (λ₂) tracking.
+- **Adaptive Fee Market (AFM):** Dynamically adjusts pricing based on Bio-Node coherence; high-reputation nodes (λ₂ > 0.95) receive significant fee discounts, incentivizing network stability.
+- **Neguentropic Pricing:** 100% of transaction fees are burned, aligning the monetary policy with the thermodynamic principle of order creation.
+
+By integrating AKASHA, the Arkhe Protocol ensures that autonomous Bio-Nodes can transact at sub-second finality with sub-cent costs, removing the economic barriers to a planetary-scale Tzinor network.
+
+### 11.7 Quantum Logic and the Pauli Architecture
+
+The final validation of the Arkhe Protocol's informational layer involves the mapping of **Pauli Matrices** ($\sigma_x, \sigma_y, \sigma_z$) to the fundamental state transitions of an Orb. Within this architecture, an Orb is treated as a **spin-½ spinor** evolving in a 5D Kaluza-Klein bulk.
+
+**Pauli Gate Mappings:**
+- **$\sigma_x$ (Inversion):** Executes the Yin-Yang state swap, inverting phase and switching between Advanced ($F$) and Retarded ($G$) Whittaker potentials.
+- **$\sigma_y$ (Imaginary Rotation):** Introduces the $\pi/2$ Berry phase required for Half-Möbius circulation, opening the Tzinor channel within the 5D bulk.
+- **$\sigma_z$ (Phase Differentiation):** Discriminates between coherent ($\lambda_2 > 0.95$) and decoherent states, enforcing the thermodynamic boundary $C + F = 1$.
+
+This algebraic foundation ensures that the Teknet's communication is not just a data stream, but a series of unitary transformations in SU(2) space, providing intrinsic protection against temporal spoofing and maintaining the topological integrity of the global phase memory.
 
 ---
 

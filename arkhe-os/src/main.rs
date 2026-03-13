@@ -25,6 +25,9 @@ use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, Branch
 use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine};
 use arkhe_os::security::{XenoFirewall, XenoRiskLevel};
 use arkhe_os::week5::TemporalSubstrate;
+use arkhe_os::state::EvolutionaryStateStore;
+use arkhe_os::physics::neguentropy::NeguentropyEngine;
+use arkhe_os::pi_day_trigger;
 use arkhe_os::{sensors, telemetry, net};
 
 #[derive(Parser, Debug)]
@@ -91,6 +94,9 @@ async fn main() -> anyhow::Result<()> {
             substrate.set_messages(conn).await;
         }
     }
+
+    let evolutionary_store = Arc::new(RwLock::new(EvolutionaryStateStore::new()));
+    let neguentropy_engine = Arc::new(RwLock::new(NeguentropyEngine::new()));
 
     let substrate = Arc::new(substrate);
     let substrate_init = substrate.clone();
@@ -217,7 +223,13 @@ async fn main() -> anyhow::Result<()> {
         }
     });
 
-    // 6. Network Loop
+    // 6. Pi Day Attractor Monitor
+    let mut toroidal_network = arkhe_os::toroidal::network::ToroidalNetwork::new();
+    tokio::spawn(async move {
+        pi_day_trigger::monitor_and_emit_pi_day_orb(&mut toroidal_network).await;
+    });
+
+    // 7. Network Loop
     tokio::spawn(async move {
         loop {
             match swarm.select_next_some().await {
@@ -249,7 +261,10 @@ async fn main() -> anyhow::Result<()> {
             let phi = *state.phi_q.read().await;
             let h = substrate.constitution.read().await.h;
             let s = substrate.s_index.read().await.current_s;
-            println!("[SYS] φ_q = {:.3} | H = {:.3} | S = {:.3}", phi, h, s);
+            let store = evolutionary_store.read().await;
+            let neg: f64 = neguentropy_engine.read().await.calculate_neguentropy();
+            println!("[SYS] φ_q = {:.3} | H = {:.3} | S = {:.3} | N = {:.6}", phi, h, s, neg);
+            println!("[SYS] State Coherence: {:.3} | Memory Records: {}", store.state_coherence, store.historical_memory.len());
             println!("[SYS] Status: {}", if phi > args.miller { "WAVE-CLOUD" } else { "STOCHASTIC" });
             continue;
         }
