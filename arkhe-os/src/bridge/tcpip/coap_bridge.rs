@@ -1,6 +1,6 @@
 // arkhe-os/src/bridge/tcpip/coap_bridge.rs
 
-use coap::CoAPClient;
+use coap::UdpCoAPClient;
 use crate::orb::core::OrbPayload;
 use crate::bridge::BridgeError;
 
@@ -17,11 +17,9 @@ impl CoapBridge {
         let data = orb.to_bytes();
 
         for url in &self.endpoints {
-            let mut client = CoAPClient::from_url(url)
-                .map_err(|e| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?;
-
-            client.post_with_timeout(&data, std::time::Duration::from_secs(5))
-                .map_err(|e| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?;
+            let request_data = data.clone();
+            UdpCoAPClient::post(url, request_data).await
+                .map_err(|e: std::io::Error| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, e.to_string())))?;
 
             println!("[CoAP] Orb {:?} transmitted to {}", orb.orb_id, url);
         }
