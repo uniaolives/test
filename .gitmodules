@@ -16,3 +16,6 @@
 [submodule "languages/motoko"]
 	path = languages/motoko
 	url = https://github.com/caffeinelabs/motoko
+[submodule "tools/edit-banana"]
+	path = tools/edit-banana
+	url = https://github.com/BIT-DataLab/Edit-Banana
