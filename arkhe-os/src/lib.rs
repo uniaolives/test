@@ -31,6 +31,8 @@ pub mod bridge;
 pub mod orb;
 pub mod satellite;
 pub mod network;
+pub mod state;
+pub mod pi_day_trigger;
 
 pub use kernel::task::Task;
 pub use kernel::scheduler::{CoherenceScheduler, SchedulerEvent};
