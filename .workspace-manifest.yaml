@@ -19,6 +19,12 @@ repositories:
   medical-skills:
     path: skills/medical-skills
     strategy: submodule
+  openbrowser:
+    path: tools/openbrowser
+    strategy: submodule
+  xai-sdk:
+    path: tools/xai-sdk
+    strategy: submodule
   rust:
     path: rust
     strategy: submodule
@@ -27,6 +33,9 @@ repositories:
     strategy: submodule
   web777_ontology:
     path: web777_ontology
+    strategy: submodule
+  motoko:
+    path: languages/motoko
     strategy: submodule
 strategy: multi-repo-with-manifest
 version: '2.0'
