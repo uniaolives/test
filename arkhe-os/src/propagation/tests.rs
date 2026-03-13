@@ -15,7 +15,6 @@ async fn test_universal_propagation() {
     let payload = OrbPayload::create(0.8, 4.64, 0.618, 1740000000, 1200000000, None, None);
 
     let receipts = propagator.propagate_everywhere(&orb, &payload).await.unwrap();
-    let receipts = propagator.propagate_everywhere(&orb).await.unwrap();
 
     assert_eq!(receipts.len(), 2);
 
