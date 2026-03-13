@@ -1,5 +1,4 @@
 use serde::{Deserialize, Serialize};
-use sha2::{Digest, Sha256};
 use sha3::{Digest, Sha3_256};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -32,7 +31,6 @@ impl OrbPayload {
             .as_secs() as i64;
 
         let content = format!("{}{}{}{}{}{}", lambda_2, phi_q, h_value, origin_time, target_time, created_at);
-        let mut hasher = Sha256::new();
         let mut hasher = Sha3_256::new();
         hasher.update(content.as_bytes());
         let result = hasher.finalize();
@@ -57,7 +55,8 @@ impl OrbPayload {
     }
 
     pub fn is_retrocausal(&self) -> bool {
-        self.target_time < self.origin_time
+        // Retrocausal if targeting future (attractor)
+        self.target_time > self.origin_time
     }
 
     pub fn temporal_span(&self) -> i64 {
@@ -159,13 +158,5 @@ impl OrbPayload {
             signature,
             created_at,
         })
-        // Use bincode for internal use, but we might want a manual implementation
-        // to match the exact byte layout specified in the Python version if needed for cross-language.
-        // For now, let's use bincode as it's already in arkhe-os dependencies.
-        bincode::serialize(self).unwrap()
-    }
-
-    pub fn from_bytes(data: &[u8]) -> bincode::Result<Self> {
-        bincode::deserialize(data)
     }
 }

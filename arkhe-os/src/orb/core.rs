@@ -49,4 +49,8 @@ impl OrbPayload {
     pub fn informational_mass(&self) -> f64 {
         self.lambda_2 * self.phi_q / self.h_value.max(0.001)
     }
+
+    pub fn is_retrocausal(&self) -> bool {
+        self.target_time > self.origin_time
+    }
 }
