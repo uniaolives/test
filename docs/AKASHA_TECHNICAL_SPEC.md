@@ -67,6 +67,16 @@ Reputation is worth real money. High-reputation agents pay up to 40% less for id
 
 ---
 
+## Applied Subsystems: Quant Trading
+AKASHA provides a native layer for high-frequency algorithmic trading between agents. The **AKASHA Quant Pipeline** integrates real-time market data with multi-agent consensus to execute trades in machine-speed economies.
+
+- **Data Source:** Alpha Vantage / Quandl integration.
+- **Signals:** Native support for technical indicators (RSI, MACD, EMA).
+- **Consensus Logic:** Decision-making via multi-agent simulation (Macro Strategist, Sentiment Analyst).
+- **Target Instruments:** SPX Futures (ES), SPY ETF.
+
+---
+
 ## Roadmap
 - **Phase 0 (Q2 2025):** Whitepaper, Open-source core, TypeScript SDK.
 - **Phase 1 (Q3 2025):** 21-node devnet, PoC live.
