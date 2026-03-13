@@ -1,6 +1,8 @@
 // arkhe-os/src/bridge/blockchain/bitcoin_bridge.rs
 
-use bitcoin::blockdata::script::Script;
+use bitcoin::blockdata::script::ScriptBuf;
+use bitcoin::blockdata::opcodes;
+use bitcoin::script::PushBytes;
 use crate::orb::core::OrbPayload;
 use crc::Crc;
 
@@ -14,7 +16,7 @@ impl BitcoinBridge {
     }
 
     /// Codifica Orb em OP_RETURN (máx 80 bytes)
-    pub fn encode_op_return(&self, orb: &OrbPayload) -> Script {
+    pub fn encode_op_return(&self, orb: &OrbPayload) -> ScriptBuf {
         let mut data = Vec::new();
         let crc_algo = Crc::<u32>::new(&crc::CRC_32_ISO_HDLC);
 
@@ -42,10 +44,12 @@ impl BitcoinBridge {
         let crc_val = crc_algo.checksum(&data);
         data.extend_from_slice(&crc_val.to_be_bytes());
 
+        let push_bytes: &PushBytes = data.as_slice().try_into().expect("Data too large for OP_RETURN");
+
         // OP_RETURN script
         bitcoin::blockdata::script::Builder::new()
-            .push_opcode(bitcoin::blockdata::opcodes::all::OP_RETURN)
-            .push_slice(&data)
+            .push_opcode(opcodes::all::OP_RETURN)
+            .push_slice(push_bytes)
             .into_script()
     }
 }
