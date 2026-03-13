@@ -32,7 +32,6 @@ impl OrbPayload {
             .as_secs() as i64;
 
         let content = format!("{}{}{}{}{}{}", lambda_2, phi_q, h_value, origin_time, target_time, created_at);
-        let mut hasher = Sha256::new();
         let mut hasher = Sha3_256::new();
         hasher.update(content.as_bytes());
         let result = hasher.finalize();
@@ -159,13 +158,13 @@ impl OrbPayload {
             signature,
             created_at,
         })
-        // Use bincode for internal use, but we might want a manual implementation
-        // to match the exact byte layout specified in the Python version if needed for cross-language.
-        // For now, let's use bincode as it's already in arkhe-os dependencies.
+    }
+
+    pub fn to_bincode(&self) -> Vec<u8> {
         bincode::serialize(self).unwrap()
     }
 
-    pub fn from_bytes(data: &[u8]) -> bincode::Result<Self> {
+    pub fn from_bincode(data: &[u8]) -> bincode::Result<Self> {
         bincode::deserialize(data)
     }
 }

@@ -1,8 +1,7 @@
 // arkhe-os/src/bridge/dark/tor_bridge.rs
 
-use arkhe_tor::arti_client::{TorClient, TorAddr};
 use arti_client::{TorClient, TorAddr};
-use crate::orb::core::OrbPayload;
+use crate::propagation::payload::OrbPayload;
 use crate::bridge::BridgeError;
 use std::str::FromStr;
 use tokio::io::AsyncWriteExt;
@@ -13,7 +12,6 @@ pub struct TorBridge {
 }
 
 impl TorBridge {
-    pub fn new(client: TorClient<arkhe_tor::arti_client::DefaultRuntime>, services: Vec<String>) -> Self {
     pub fn new(client: TorClient<arti_client::DefaultRuntime>, services: Vec<String>) -> Self {
         Self { client, hidden_services: services }
     }

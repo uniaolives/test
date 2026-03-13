@@ -75,7 +75,7 @@ impl server::Handler for OrbSshHandler {
             info!("Received AgentMessage: {:?}", msg);
             // Acknowledgement
             let ack = b"MESSAGE_RECEIVED\n";
-            session.data(channel, ack.to_vec().into())?;
+            let _ = session.data(channel, ack.to_vec().into());
         } else {
             error!("Received malformed data over SSH channel");
         }
