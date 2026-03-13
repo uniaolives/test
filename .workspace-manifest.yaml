@@ -16,6 +16,12 @@ repositories:
   medical-skills:
     path: skills/medical-skills
     strategy: submodule
+  openbrowser:
+    path: tools/openbrowser
+    strategy: submodule
+  xai-sdk:
+    path: tools/xai-sdk
+    strategy: submodule
   rust:
     path: rust
     strategy: submodule
