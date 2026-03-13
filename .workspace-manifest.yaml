@@ -31,5 +31,8 @@ repositories:
   web777_ontology:
     path: web777_ontology
     strategy: submodule
+  motoko:
+    path: languages/motoko
+    strategy: submodule
 strategy: multi-repo-with-manifest
 version: '2.0'

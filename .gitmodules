@@ -13,3 +13,6 @@
 [submodule "tools/xai-sdk"]
 	path = tools/xai-sdk
 	url = https://github.com/xai-org/xai-sdk-python
+[submodule "languages/motoko"]
+	path = languages/motoko
+	url = https://github.com/caffeinelabs/motoko
