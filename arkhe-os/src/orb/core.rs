@@ -32,6 +32,16 @@ pub struct OrbPayload {
 
     /// Timestamp de criação
     pub created_at: i64,
+
+    /// Delta de estado evolutivo (Cortex/Whittaker context)
+    pub state_delta: Option<StateDelta>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+pub struct StateDelta {
+    pub new_context: Vec<u8>,
+    pub memory_update: Vec<u8>,
+    pub decay_rate: f64,
 }
 
 impl OrbPayload {
@@ -48,5 +58,9 @@ impl OrbPayload {
     /// Calcula o "peso" informacional do Orb
     pub fn informational_mass(&self) -> f64 {
         self.lambda_2 * self.phi_q / self.h_value.max(0.001)
+    }
+
+    pub fn is_retrocausal(&self) -> bool {
+        self.target_time > self.origin_time
     }
 }

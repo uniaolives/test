@@ -3,61 +3,68 @@ name = "arkhe-os"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "arkhe-shield"
+path = "src/main.rs"
+
 [dependencies]
-base64 = "0.21"
-blake3 = "1.5"
-bitcoin = "0.30"
+base64 = "0.22.1"
+blake3 = "1.5.5"
+bitcoin = { version = "0.32.5", features = ["serde", "rand-std"] }
 ethers = { version = "2.0", features = ["ws"] }
 ipfs-api-backend-hyper = "0.6"
-tokio-modbus = "0.9"
+tokio-modbus = "0.15"
 opcua-client = "0.9"
 arkhe-tor = { path = "../crates/arkhe-tor" }
 crc = "3.0"
-rumqttc = "0.23"
-coap = "0.13"
+rumqttc = "0.24"
+coap = "0.24"
 lightning = "0.0.118"
-tonic = "0.10"
-sqlx = { workspace = true, default-features = false, features = ["runtime-tokio-rustls", "postgres", "chrono"] }
-redis = { version = "0.23", features = ["tokio-comp", "aio"] }
-arti-client = { workspace = true, default-features = false }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-chrono = { version = "0.4", features = ["serde"] }
+tonic = "0.12"
+sqlx = { workspace = true, features = ["runtime-tokio-rustls", "postgres", "chrono"] }
+redis = { version = "0.24", features = ["tokio-comp", "aio"] }
+arti-client = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
 anyhow = "1.0"
 nom = "7.1"
-thiserror = "1.0"
+thiserror = { workspace = true }
 log = "0.4"
-env_logger = "0.10"
-tokio = { version = "1", features = ["full"] }
+env_logger = "0.11"
+clap = { version = "4.5", features = ["derive"] }
+tokio = { workspace = true }
 warp = "0.3"
 futures-util = "0.3"
-reqwest = { version = "0.11", features = ["json"] }
+reqwest = { version = "0.12", features = ["json"] }
 bincode = "1.3.3"
 arkhe-db = { path = "../arkhe-db" }
 libp2p = { version = "0.53", features = ["tcp", "dns", "tokio", "noise", "yamux", "gossipsub", "mdns", "macros"] }
 futures = "0.3"
 rocksdb = "0.21.0"
+tor-rtcompat = { workspace = true }
+reed-solomon-erasure = "6.0"
 rand = "0.8"
 zmq = "0.10"
-tokio-tungstenite = "0.20"
+tokio-tungstenite = "0.26"
 uuid = { version = "1.0", features = ["v4", "serde"] }
 statrs = "0.16"
 sha3 = "0.10"
 sha2 = "0.10"
 crc32fast = "1.3"
 num-complex = "0.4"
-nalgebra = "0.32"
+nalgebra = { version = "0.32", features = ["serde-serialize"] }
 async-trait = "0.1"
-tracing = "0.1"
+tracing = { workspace = true }
 tracing-subscriber = "0.3"
 metrics = "0.21"
 metrics-exporter-prometheus = "0.12"
 
 [dev-dependencies]
-reqwest = { version = "0.11", features = ["json"] }
+reqwest = { version = "0.12", features = ["json"] }
 rand = "0.8"
-clap = { version = "4.0", features = ["derive"] }
-sqlx = { workspace = true, default-features = false, features = ["runtime-tokio-rustls", "postgres", "chrono", "macros"] }
-redis = { version = "0.23", features = ["tokio-comp", "aio"] }
-rumqttc = "0.23"
-tracing = "0.1"
+clap = { version = "4.5", features = ["derive"] }
+sqlx = { workspace = true, features = ["runtime-tokio-rustls", "postgres", "chrono", "macros"] }
+redis = { version = "0.24", features = ["tokio-comp", "aio"] }
+rumqttc = "0.24"
+tracing = { workspace = true }

@@ -1,60 +1,46 @@
-use serde::{Deserialize, Serialize};
-use sha2::{Digest, Sha256};
-use sha3::{Digest, Sha3_256};
+// src/temporal/mobius_chain.rs
 
-pub type Hash = [u8; 32];
+use sha3::{Digest as _, Sha3_256};
+use crate::physics::mobius_temporal::MobiusTemporalSurface;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct MobiusBlock {
-    pub hash: Hash,
+    pub timestamp: i64,
+    pub prev_hash: [u8; 32],
     pub data: Vec<u8>,
-    // In a normal blockchain: prev_hash points to the past
-    // In a MobiusChain: prev_hash points to... itself?
-    pub mobius_link: Hash, // Points to the "other side" of the strip
+    pub twist: f64,
 }
 
 impl MobiusBlock {
-    /// Create a block in a state of temporal superposition
-    pub fn create_superposed(data: Vec<u8>, temporal_phase: f64) -> Self {
-        // temporal_phase: 0.0 = "past", 1.0 = "future", 0.5 = "present"
-        // But on the Möbius strip, 0.0 and 1.0 are adjacent!
+    pub fn calculate_hash(&self) -> [u8; 32] {
+        // let mut _hasher = Sha3_256::new();
+        // hash content
+        [0u8; 32]
+    }
 
-        let mut hasher = Sha256::new();
-        let mut hasher = Sha3_256::new();
-        hasher.update(&data);
-        let hash_vec = hasher.finalize().to_vec();
-        let mut base_hash = [0u8; 32];
-        base_hash.copy_from_slice(&hash_vec);
-
-        let (hash, mobius_link) = if temporal_phase > 0.5 {
-            // We are in the "future", our hash is the transformed one,
-            // and we link back to the "past" (base)
-            let h = Self::compute_future_equivalent(&base_hash);
-            (h, base_hash)
-        } else {
-            // We are in the "past", our hash is the base,
-            // and we link to the "future" (transformed)
-            let ml = Self::compute_future_equivalent(&base_hash);
-            (base_hash, ml)
-        };
-
+    pub fn create_superposed(data: Vec<u8>, twist: f64) -> Self {
         Self {
-            hash,
+            timestamp: 0,
+            prev_hash: [0u8; 32],
             data,
-            mobius_link,
+            twist,
         }
     }
 
-    /// Checks if two blocks are the "same edge" of the strip
     pub fn are_mobius_equivalent(a: &Self, b: &Self) -> bool {
-        a.mobius_link == b.hash || b.mobius_link == a.hash
+        a.data == b.data && (a.twist - b.twist).abs() > 0.9 // Simplified
     }
+}
 
-    fn compute_future_equivalent(hash: &Hash) -> Hash {
-        let mut equiv = *hash;
-        for byte in equiv.iter_mut() {
-            *byte ^= 0xFF;
+pub struct MobiusChain {
+    pub blocks: Vec<MobiusBlock>,
+    pub topology: MobiusTemporalSurface,
+}
+
+impl MobiusChain {
+    pub fn new() -> Self {
+        Self {
+            blocks: Vec::new(),
+            topology: MobiusTemporalSurface::new(),
         }
-        equiv
     }
 }
