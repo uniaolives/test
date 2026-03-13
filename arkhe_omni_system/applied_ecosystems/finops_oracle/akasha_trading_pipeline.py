@@ -6,6 +6,7 @@ and multi-agent consensus for SPX trading.
 """
 
 import os
+import sys
 import json
 import logging
 import requests
@@ -166,6 +167,32 @@ class SentimentAnalyst(AKASHAQuantAgent):
             "rationale": f"RSI is at {rsi:.2f} suggesting {sentiment} exhaustion."
         }
 
+class AutoAnalystIntegrator:
+    """Integrates FireBird Auto-Analyst for deeper statistical profiling."""
+
+    def __init__(self, backend_path: str):
+        self.backend_path = backend_path
+        sys.path.append(backend_path)
+
+    def generate_statistical_profile(self, df: pd.DataFrame) -> str:
+        """Uses Auto-Analyst to generate a statistical summary of market data."""
+        logger.info("📈 Generating Auto-Analyst statistical profile...")
+
+        # Save temp CSV for Auto-Analyst to consume
+        temp_csv = "temp_market_data.csv"
+        df.to_csv(temp_csv, index=True)
+
+        try:
+            from src.utils.dataset_description_generator import generate_dataset_description
+            description = generate_dataset_description({"market_data": df}, "", ["market_data"])
+            return description
+        except Exception as e:
+            logger.error(f"❌ Auto-Analyst profiling failed: {e}")
+            return "Profile generation failed."
+        finally:
+            if os.path.exists(temp_csv):
+                os.remove(temp_csv)
+
 class TradingSimulation:
     """Orchestrates multi-agent consensus for trading decisions."""
 
@@ -174,6 +201,11 @@ class TradingSimulation:
             MacroStrategist("Strategos-1", "Macro"),
             SentimentAnalyst("Sentic-1", "Sentiment")
         ]
+        self.analyst = AutoAnalystIntegrator(
+            os.path.join(os.getcwd(), "tools/auto-analyst/auto-analyst-backend")
+        )
+
+    def run(self, context: Dict, df: pd.DataFrame) -> Dict:
 
     def run(self, context: Dict) -> Dict:
         logger.info("🤖 Running Multi-Agent Trading Simulation...")
@@ -213,6 +245,12 @@ def run_pipeline():
     context = converter.to_structured_context(processed_data)
     logger.info(f"📊 Market Context: {json.dumps(context, indent=2)}")
 
+    # 4. Auto-Analyst Profile
+    profile = sim.analyst.generate_statistical_profile(processed_data)
+    logger.info(f"📋 Auto-Analyst Profile: {profile[:200]}...")
+
+    # 5. Simulate
+    trade_signal = sim.run(context, processed_data)
     # 4. Simulate
     trade_signal = sim.run(context)
 

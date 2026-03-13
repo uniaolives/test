@@ -37,5 +37,8 @@ repositories:
   motoko:
     path: languages/motoko
     strategy: submodule
+  auto-analyst:
+    path: tools/auto-analyst
+    strategy: submodule
 strategy: multi-repo-with-manifest
 version: '2.0'

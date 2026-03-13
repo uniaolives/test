@@ -19,3 +19,6 @@
 [submodule "tools/edit-banana"]
 	path = tools/edit-banana
 	url = https://github.com/BIT-DataLab/Edit-Banana
+[submodule "tools/auto-analyst"]
+	path = tools/auto-analyst
+	url = https://github.com/FireBird-Technologies/Auto-Analyst
