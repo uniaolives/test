@@ -87,6 +87,7 @@ impl OrbCompressor {
             timechain_hash,
             signature: b"COMPRESSED".to_vec(),
             created_at,
+            state_delta: None,
         })
     }
 

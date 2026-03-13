@@ -278,10 +278,17 @@ async fn main() -> anyhow::Result<()> {
                         core_psi.coherence_trace.push(current_phi);
 
                         let risk = XenoFirewall::assess_risk(&resp, &core_psi);
-                        if risk == XenoRiskLevel::Critical {
-                            println!("\n[XENO-FIREWALL] ⚠ CRITICAL RISK DETECTED. CONTAINMENT ACTIVE.");
-                        } else {
-                            println!("\n[MAESTRO] Response: {}", resp);
+                        match risk {
+                            XenoRiskLevel::Critical => {
+                                println!("\n[XENO-FIREWALL] ⚠ CRITICAL RISK DETECTED. CONTAINMENT ACTIVE.");
+                            },
+                            XenoRiskLevel::Enfeeblement => {
+                                println!("\n[XENO-FIREWALL] ⚠ ENFEEBLEMENT RISK: Proposed action may decrease human agency. FLAG ACTIVE.");
+                                println!("\n[MAESTRO] Response (CAUTION): {}", resp);
+                            },
+                            _ => {
+                                println!("\n[MAESTRO] Response: {}", resp);
+                            }
                         }
                     },
                     Err(e) => println!("\n[MAESTRO] Error: {}", e),

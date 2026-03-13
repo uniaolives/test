@@ -37,7 +37,7 @@ pub struct OrbPayload {
     pub state_delta: Option<StateDelta>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct StateDelta {
     pub new_context: Vec<u8>,
     pub memory_update: Vec<u8>,
