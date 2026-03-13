@@ -7,3 +7,18 @@
 [submodule "arkhe-ml/BitNet"]
 	path = arkhe-ml/BitNet
 	url = https://github.com/microsoft/BitNet.git
+[submodule "tools/openbrowser"]
+	path = tools/openbrowser
+	url = https://github.com/ntegrals/openbrowser
+[submodule "tools/xai-sdk"]
+	path = tools/xai-sdk
+	url = https://github.com/xai-org/xai-sdk-python
+[submodule "languages/motoko"]
+	path = languages/motoko
+	url = https://github.com/caffeinelabs/motoko
+[submodule "tools/edit-banana"]
+	path = tools/edit-banana
+	url = https://github.com/BIT-DataLab/Edit-Banana
+[submodule "tools/auto-analyst"]
+	path = tools/auto-analyst
+	url = https://github.com/FireBird-Technologies/Auto-Analyst
