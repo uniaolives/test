@@ -21,6 +21,8 @@ blake3 = "1.5"
 russh = "0.45"
 russh-keys = "0.45"
 async-trait = "0.1"
+arkhe-tor = { path = "../crates/arkhe-tor" }
+tokio-socks = "0.5"
 nalgebra = { version = "0.32", features = ["serde-serialize"] }
 ndarray = { version = "0.15", features = ["serde"] }
 ndarray-stats = "0.5"

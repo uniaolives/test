@@ -43,5 +43,20 @@ repositories:
   aeris-radar:
     path: hardware/radar/aeris-10
     strategy: submodule
+  wsnet:
+    path: tools/wsnet
+    strategy: submodule
+  ws-vcpkg-registry:
+    path: tools/ws-vcpkg-registry
+    strategy: submodule
+  windscribe-desktop:
+    path: clients/windscribe-desktop
+    strategy: submodule
+  windscribe-android:
+    path: clients/windscribe-android
+    strategy: submodule
+  windscribe-ios:
+    path: clients/windscribe-ios
+    strategy: submodule
 strategy: multi-repo-with-manifest
 version: '2.0'

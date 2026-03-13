@@ -173,4 +173,12 @@ impl OrbPayload {
             state_delta,
         })
     }
+
+    pub fn to_bincode(&self) -> Vec<u8> {
+        bincode::serialize(self).unwrap()
+    }
+
+    pub fn from_bincode(data: &[u8]) -> bincode::Result<Self> {
+        bincode::deserialize(data)
+    }
 }

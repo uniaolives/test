@@ -7,6 +7,7 @@ use async_trait::async_trait;
 use russh::*;
 use russh_keys::*;
 use anyhow::{Result, anyhow};
+use tokio_socks::tcp::Socks5Stream;
 
 /// Internal handler for SSH client events.
 struct Client {}
@@ -31,6 +32,42 @@ pub struct SshClient {
 }
 
 impl SshClient {
+    /// Establishes a new SSH connection via a Tor SOCKS5 proxy.
+    pub async fn connect_via_tor(
+        proxy_addr: &str,
+        target_addr: &str,
+        target_port: u16,
+        user: &str,
+        key_path: Option<&str>,
+    ) -> Result<Self> {
+        let config = client::Config::default();
+        let config = Arc::new(config);
+        let sh = Client {};
+
+        // Connect to Tor SOCKS5 proxy
+        let stream = Socks5Stream::connect(proxy_addr, (target_addr, target_port)).await
+            .map_err(|e| anyhow!("Failed to connect to Tor proxy at {}: {}", proxy_addr, e))?;
+
+        let mut session = client::connect_stream(config, stream, sh).await
+            .map_err(|e| anyhow!("Failed to establish SSH over Tor stream: {}", e))?;
+
+        if let Some(path) = key_path {
+            let key = load_secret_key(path, None)
+                .map_err(|e| anyhow!("Failed to load SSH private key from {}: {}", path, e))?;
+
+            let auth_res = session.authenticate_public_key(user, Arc::new(key)).await
+                .map_err(|e| anyhow!("SSH public key authentication error (Tor): {}", e))?;
+
+            if !auth_res {
+                return Err(anyhow!("SSH authentication failed over Tor for user '{}'", user));
+            }
+        } else {
+            return Err(anyhow!("No SSH authentication method provided for Tor connection"));
+        }
+
+        Ok(Self { session })
+    }
+
     /// Establishes a new SSH connection using public key authentication.
     pub async fn connect(host: &str, port: u16, user: &str, key_path: Option<&str>) -> Result<Self> {
         let config = client::Config::default();
