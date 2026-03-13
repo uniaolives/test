@@ -22,3 +22,6 @@
 [submodule "tools/auto-analyst"]
 	path = tools/auto-analyst
 	url = https://github.com/FireBird-Technologies/Auto-Analyst
+[submodule "hardware/radar/aeris-10"]
+	path = hardware/radar/aeris-10
+	url = https://github.com/NawfalMotii79/PLFM_RADAR

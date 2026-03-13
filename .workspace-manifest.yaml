@@ -40,5 +40,8 @@ repositories:
   auto-analyst:
     path: tools/auto-analyst
     strategy: submodule
+  aeris-radar:
+    path: hardware/radar/aeris-10
+    strategy: submodule
 strategy: multi-repo-with-manifest
 version: '2.0'
