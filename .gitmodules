@@ -52,3 +52,6 @@
 [submodule "proof/lean/riemann-hypothesis"]
 	path = proof/lean/riemann-hypothesis
 	url = https://github.com/math-inc/RiemannHypothesisCurves
+[submodule "tools/transparency"]
+	path = tools/transparency
+	url = https://github.com/dark-bio/transparency

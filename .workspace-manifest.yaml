@@ -70,5 +70,8 @@ repositories:
   riemann-hypothesis-lean:
     path: proof/lean/riemann-hypothesis
     strategy: submodule
+  dark-bio-transparency:
+    path: tools/transparency
+    strategy: submodule
 strategy: multi-repo-with-manifest
 version: '2.0'
