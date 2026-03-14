@@ -16,7 +16,6 @@ impl Destination {
         let years_from_1970 = year - 1970;
         Self {
             timestamp: (years_from_1970 as u64).wrapping_mul(365 * 24 * 3600),
-            timestamp: (years_from_1970 as u64) * 365 * 24 * 3600,
             distance_m: 0.0,
         }
     }
@@ -85,12 +84,6 @@ impl ProtocolRouter {
         let hops = candidates.into_iter()
             .map(|(protocol, _)| Hop { protocol })
             .collect();
-    pub fn route(&self, orb: &OrbCore, _target: Destination) -> RoutePlan {
-        // Simplified routing: take all compatible protocols
-        let mut hops = Vec::new();
-        for i in 0..self.encoders.len() {
-            hops.push(Hop { protocol: i });
-        }
 
         RoutePlan {
             hops,
