@@ -33,6 +33,7 @@ impl<R: Runtime> TorBridge<R> {
                 .map_err(|e: arti_client::Error| BridgeError::Tor(e.to_string()))?;
 
             // Enviar Orb
+            let _ = stream.write_all(&data).await;
             stream.write_all(&data).await
                 .map_err(|e: std::io::Error| BridgeError::Tor(e.to_string()))?;
         }

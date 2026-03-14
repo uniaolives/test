@@ -40,3 +40,15 @@
 [submodule "clients/windscribe-ios"]
 	path = clients/windscribe-ios
 	url = https://github.com/Windscribe/iOS-App
+[submodule "proof/lean/sphere-packing"]
+	path = proof/lean/sphere-packing
+	url = https://github.com/math-inc/Sphere-Packing-Lean
+[submodule "proof/lean/hypergraphs"]
+	path = proof/lean/hypergraphs
+	url = https://github.com/math-inc/FrontierMathOpen-Hypergraphs
+[submodule "tools/lean-paranoia"]
+	path = tools/lean-paranoia
+	url = https://github.com/math-inc/LeanParanoia
+[submodule "proof/lean/riemann-hypothesis"]
+	path = proof/lean/riemann-hypothesis
+	url = https://github.com/math-inc/RiemannHypothesisCurves

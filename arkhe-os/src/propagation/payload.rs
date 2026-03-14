@@ -1,3 +1,5 @@
+// arkhe-os/src/propagation/payload.rs
+pub use crate::orb::core::OrbPayload;
 use serde::{Deserialize, Serialize};
 use sha3::{Digest, Sha3_256};
 use std::time::{SystemTime, UNIX_EPOCH};

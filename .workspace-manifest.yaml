@@ -58,5 +58,17 @@ repositories:
   windscribe-ios:
     path: clients/windscribe-ios
     strategy: submodule
+  sphere-packing-lean:
+    path: proof/lean/sphere-packing
+    strategy: submodule
+  hypergraphs-lean:
+    path: proof/lean/hypergraphs
+    strategy: submodule
+  lean-paranoia:
+    path: tools/lean-paranoia
+    strategy: submodule
+  riemann-hypothesis-lean:
+    path: proof/lean/riemann-hypothesis
+    strategy: submodule
 strategy: multi-repo-with-manifest
 version: '2.0'
