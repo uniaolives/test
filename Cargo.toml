@@ -86,6 +86,8 @@ members = [
     "arkhe-bridge", "arkhe-kernel",
     "crates/arkhe-tor",
     "arkhe-api/arkhe-api-rust",
+    "arkhe-linux/core/orbctl",
+    "orbvm",
 ]
 resolver = "2"
 

@@ -56,6 +56,7 @@ impl MultiProtocolOrb {
     pub async fn propagate_to_all_eras(&self) -> PropagationReport {
         let mut report = PropagationReport::new();
 
+        for year in (2000..=2030).step_by(10) {
         for year in (1900..=2500).step_by(50) {
             let target = Destination::at_year(year);
             let plan = self.router.route(&self.core, target);

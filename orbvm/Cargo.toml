@@ -1,0 +1,65 @@
+[package]
+name = "orbvm"
+version = "1.0.0"
+edition = "2021"
+authors = ["Rafael Oliveira <rafael@arkhe.io>"]
+
+[dependencies]
+# Core dependencies
+tokio = { version = "1.35", features = ["full"] }
+futures = "0.3"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bincode = "1.3"
+toml = "0.8"
+
+# Cryptography
+sha3 = "0.10"
+ed25519-dalek = "2.0"
+rand = "0.8"
+chacha20poly1305 = "0.10"
+blake3 = "1.5"
+
+# Networking
+russh = { version = "0.40", features = ["openssl"] }
+russh-keys = { version = "0.40", features = ["openssl"] }
+arti-client = { version = "0.23", features = ["tokio", "rustls"] }
+tor-hsservice = "0.6"
+async-trait = "0.1"
+
+# Numerical
+ndarray = { version = "0.15", features = ["rayon"] }
+ndarray-linalg = { version = "0.16", features = ["netlib-system"] }
+num-complex = { version = "0.4", features = ["serde"] }
+num-traits = "0.2"
+
+# Logging
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "json"] }
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+# CLI
+clap = { version = "4.4", features = ["derive", "env"] }
+
+# Industrial
+tokio-modbus = { version = "0.10", features = ["tcp", "server"] }
+
+# Serialization
+base64 = "0.22"
+hex = "0.4"
+chrono = { version = "0.4", features = ["serde"] }
+
+[[bin]]
+name = "orbvm-cli"
+path = "src/bin/orbvm-cli.rs"
+
+[[bin]]
+name = "orbvm-server"
+path = "src/bin/orbvm-server.rs"
+
+[[bin]]
+name = "orbvm-tunnel"
+path = "src/bin/orbvm-tunnel.rs"

@@ -11,3 +11,6 @@ __pycache__/
 *$py.class
 .gradle/
 arkhe_chain_db/
+orbvm/target/
+target/
+Cargo.lock
