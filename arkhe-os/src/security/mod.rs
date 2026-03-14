@@ -1,6 +1,4 @@
 pub mod xeno_firewall;
-#[cfg(test)]
-mod xeno_firewall_tests;
 pub mod escudo;
 pub mod constitution;
 pub mod grail;

@@ -18,10 +18,6 @@ pub struct KuramotoEngine {
 
 impl KuramotoEngine {
     pub fn new(n_nodes: usize, coupling: f64, target_freq: f64) -> Self {
-        Self::new_with_asymmetry(n_nodes, coupling, target_freq, 0.0)
-    }
-
-    pub fn new_with_asymmetry(n_nodes: usize, coupling: f64, target_freq: f64, eta: f64) -> Self {
         let mut rng = rand::thread_rng();
         use rand::distributions::Uniform;
         use rand::prelude::*;
@@ -32,10 +28,8 @@ impl KuramotoEngine {
         let mut phases = Vec::with_capacity(n_nodes);
         let mut frequencies = Vec::with_capacity(n_nodes);
 
-        for i in 0..n_nodes {
-            // Random phase + systematic bias (eta)
-            let bias = eta * (i as f64 / n_nodes as f64);
-            phases.push((rng.sample(dist) + bias) % (2.0 * PI));
+        for _ in 0..n_nodes {
+            phases.push(rng.sample(dist));
             frequencies.push(rng.sample(freq_dist));
         }
 
@@ -47,14 +41,13 @@ impl KuramotoEngine {
         }
     }
 
-    /// Update phases using the Kuramoto equation with Berry phase correction:
-    /// dθ_i/dt = ω_i + (K/N) * Σ sin(θ_j - θ_i) + (π/2) * κ(r_i)
-    pub fn synchronize(&mut self, dt: f64, half_mobius: bool) {
+    /// Update phases using the Kuramoto equation:
+    /// dθ_i/dt = ω_i + (K/N) * Σ sin(θ_j - θ_i)
+    pub fn synchronize(&mut self, dt: f64) {
         let n = self.phases.len();
         if n == 0 { return; }
 
         let mut d_phases = vec![0.0; n];
-        let berry_phase = if half_mobius { PI / 2.0 } else { 0.0 };
 
         for i in 0..n {
             let mut sum_sin = 0.0;
@@ -66,13 +59,7 @@ impl KuramotoEngine {
             // Include coupling to target frequency as well
             let target_pull = (self.target_frequency * dt - self.phases[i]).sin();
 
-            // κ(r_i) - local topological curvature proxied by target pull intensity
-            let curvature = target_pull.abs();
-
-            d_phases[i] = self.frequencies[i]
-                + (self.coupling / n as f64) * sum_sin
-                + self.coupling * target_pull
-                + berry_phase * curvature;
+            d_phases[i] = self.frequencies[i] + (self.coupling / n as f64) * sum_sin + self.coupling * target_pull;
         }
 
         for i in 0..n {

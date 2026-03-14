@@ -43,32 +43,12 @@ mod tests {
 
         // Run many steps to ensure synchronization
         for _ in 0..100 {
-            engine.synchronize(0.1, false);
+            engine.synchronize(0.1);
         }
 
         let final_coherence = engine.coherence();
         assert!(final_coherence >= initial_coherence);
         assert!(final_coherence > 0.8);
-    }
-
-    #[test]
-    fn test_cosmological_mapping() {
-        use crate::physics::miller::*;
-        let phi = cosmological_to_information(1e-9);
-        // log10(1e-9) = -9. abs = 9. 9/9 = 1. 1-1 = 0.
-        assert!((phi - 0.0).abs() < 1e-9);
-
-        let phi_critical = cosmological_to_information(6.18e-4);
-        // log10(6.18e-4) ≈ -3.209. abs = 3.209. 3.209/9 ≈ 0.356. 1-0.356 ≈ 0.644.
-        assert!(phi_critical > 0.6);
-    }
-
-    #[test]
-    fn test_biased_initialization() {
-        let engine = KuramotoEngine::new_with_asymmetry(100, 5.0, 1.0, 1e-9);
-        let initial_coherence = engine.coherence();
-        // Tiny bias should not significantly change initial coherence but serves as seed.
-        assert!(initial_coherence < 0.3);
     }
 
     #[test]

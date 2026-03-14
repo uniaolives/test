@@ -27,7 +27,7 @@ impl WebSocketBridge {
     /// Transmite Orb em tempo real
     pub async fn broadcast(&mut self, orb: &OrbPayload) {
         let payload = orb.to_bytes();
-        let message = Message::Binary(payload.into());
+        let message = Message::Binary(payload);
 
         for conn in &mut self.connections {
             let _ = conn.send(message.clone()).await;

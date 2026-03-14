@@ -1,10 +1,10 @@
 // arkhe-os/src/bridge/blockchain/bitcoin_bridge.rs
 
 use bitcoin::blockdata::script::ScriptBuf;
-use bitcoin::blockdata::opcodes;
 use bitcoin::script::PushBytes;
 use crate::orb::core::OrbPayload;
 use crc::Crc;
+use std::convert::TryInto;
 
 pub struct BitcoinBridge {
     _network: bitcoin::Network,
@@ -44,11 +44,10 @@ impl BitcoinBridge {
         let crc_val = crc_algo.checksum(&data);
         data.extend_from_slice(&crc_val.to_be_bytes());
 
-        let push_bytes: &PushBytes = data.as_slice().try_into().expect("Data too large for OP_RETURN");
-
         // OP_RETURN script
+        let push_bytes: &PushBytes = data.as_slice().try_into().unwrap();
         bitcoin::blockdata::script::Builder::new()
-            .push_opcode(opcodes::all::OP_RETURN)
+            .push_opcode(bitcoin::blockdata::opcodes::all::OP_RETURN)
             .push_slice(push_bytes)
             .into_script()
     }

@@ -181,7 +181,7 @@ impl TemporalSubstrate {
             }
 
             // Update Kuramoto Phase Lock
-            self.phase_lock.write().await.synchronize(0.1, false);
+            self.phase_lock.write().await.synchronize(0.1);
 
             let coherence = self.phase_lock.read().await.coherence();
             let lambda2 = self.field_5d.read().await.calculate_lambda2_coherence();

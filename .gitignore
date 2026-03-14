@@ -10,4 +10,3 @@ __pycache__/
 *.py[cod]
 *$py.class
 .gradle/
-arkhe_chain_db/

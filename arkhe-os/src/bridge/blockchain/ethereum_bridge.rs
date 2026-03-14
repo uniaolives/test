@@ -28,14 +28,17 @@ impl EthereumBridge {
     pub async fn send_orb(&self, orb: &OrbPayload) -> Result<H256, BridgeError> {
         let orb_bytes = orb.to_bytes();
 
+        // In a real implementation, we'd use an ABI-generated contract binding
+        // Here we simulate the call
         let tx = TransactionRequest::new()
             .to(self.orb_contract)
-            .data(orb_bytes)
+            .data(orb_bytes) // Simplified: just raw bytes as data
             .from(self.wallet.address());
 
-        let pending_tx = self.provider.send_transaction(tx, None).await
+        let tx_typed: ethers::types::transaction::eip2718::TypedTransaction = tx.into();
+        let pending_tx = self.provider.send_transaction(tx_typed, None).await
             .map_err(|e| BridgeError::Blockchain(e.to_string()))?;
 
-        Ok(pending_tx.tx_hash())
+        Ok(*pending_tx)
     }
 }

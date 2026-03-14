@@ -7,6 +7,9 @@ repositories:
   aigmi:
     path: aigmi
     strategy: submodule
+  BitNet:
+    path: arkhe-ml/BitNet
+    strategy: submodule
   harmonia:
     path: harmonia
     strategy: submodule
@@ -72,6 +75,12 @@ repositories:
     strategy: submodule
   dark-bio-transparency:
     path: tools/transparency
+    strategy: submodule
+  mirofish:
+    path: agents/mirofish
+    strategy: submodule
+  signal-forge:
+    path: agents/signal-forge
     strategy: submodule
 strategy: multi-repo-with-manifest
 version: '2.0'

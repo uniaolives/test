@@ -4,12 +4,12 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-serde = { workspace = true }
-serde_json = { workspace = true }
-tokio = { workspace = true }
-sqlx = { workspace = true, features = ["runtime-tokio-rustls", "postgres", "chrono", "uuid"] }
-chrono = { workspace = true }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tokio = { version = "1.0", features = ["full"] }
+sqlx = { workspace = true, default-features = false, features = ["runtime-tokio", "postgres", "chrono", "uuid"] }
+chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1.0", features = ["v4", "serde"] }
-thiserror = { workspace = true }
+thiserror = "1.0"
 sha2 = "0.10"
 serde_arrays = "0.1"

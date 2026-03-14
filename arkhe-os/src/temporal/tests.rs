@@ -86,7 +86,7 @@ fn test_orb_transformation() {
         tunnel_probability: 0.5,
     };
 
-    let orb = OrbPayload::create(0.9, 4.0, 0.5, 1000, 500, None, None, None);
+    let orb = OrbPayload::create(0.9, 4.0, 0.5, 1000, 500, None, None);
     let transformed = timeline.transform_orb(&orb);
 
     // In reverse entropy, H value is flipped in our transform logic

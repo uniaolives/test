@@ -27,16 +27,11 @@ impl TopologicalQubit {
         }
     }
 
-    pub fn circulate(&mut self) -> f64 {
+    pub fn circumnavigate(&mut self) {
         self.circumnavigations += 1;
-        // Half-Möbius: π/2 Berry phase per circulation
-        self.berry_phase = (self.circumnavigations as f64 * (std::f64::consts::PI / 2.0)) % (2.0 * std::f64::consts::PI);
-
-        if self.circumnavigations >= 4 {
-            self.circumnavigations = 0;
-        }
-
-        self.berry_phase
+        // Berry phase accumulates pi/4 per turn, totals pi/2 in 2 turns?
+        // Paper says pi/2 total. pi/2 in 2 turns is pi/4 per turn.
+        self.berry_phase = (self.circumnavigations as f64 * std::f64::consts::FRAC_PI_4) % (2.0 * std::f64::consts::PI);
     }
 
     pub fn trigger_helical_switch(&mut self, stimulus: f64) {
@@ -53,12 +48,8 @@ impl TopologicalQubit {
         }
     }
 
-    pub fn is_non_trivial(&self) -> bool {
-        matches!(self.spin_state, SpinState::SingletP | SpinState::SingletM)
-    }
-
     pub fn is_coherent(&self) -> bool {
         // Coherent if it has completed 4 circumnavigations (periodic return)
-        self.circumnavigations == 0 && self.berry_phase.abs() < 1e-10
+        self.circumnavigations > 0 && self.circumnavigations % 4 == 0
     }
 }

@@ -14,9 +14,6 @@ typedef enum {
     STATE_IDLE,
     STATE_CPA_LOADING,
     STATE_COOLING,
-    STATE_PQP_PRESSURIZING, // Hg-1223 PQP Stage 1
-    STATE_PQP_QUENCH,       // Hg-1223 PQP Stage 2
-    STATE_PQP_RETENTION,    // Hg-1223 PQP Stage 3 (Meta-stable 151K)
     STATE_STASIS,        // Vitrificado (Tzinor Aberto/Pausado)
     STATE_REWARMING,
     STATE_CPA_UNLOADING,
@@ -79,35 +76,6 @@ void update_cooling() {
         hw_set_heater_power(0.0f); // Desliga aquecedor para resfriar
         hw_set_pump_rate(10.0f);   // Ativa fluxo de resfriamento
     } else {
-        // Inicia protocolo de supercondutividade Hg-1223 PQP
-        current_state = STATE_PQP_PRESSURIZING;
-        send_status_update(STATE_PQP_PRESSURIZING);
-    }
-}
-
-// 2.1 Pressure-Quench Protocol (Hg-1223 Validation)
-void update_pqp_pressurizing() {
-    // Aplica 31 GPa para atingir Tc de 164K
-    hw_set_anvil_pressure(31.0f);
-    if (hw_read_pressure() >= 31.0f) {
-        current_state = STATE_PQP_QUENCH;
-    }
-}
-
-void update_pqp_quench() {
-    // Resfriamento rápido a 4.2K e liberação súbita de pressão
-    hw_set_cryo_target(4.2f);
-    if (hw_read_temp() <= 4.2f) {
-        hw_set_anvil_pressure(0.0f); // Fast Release
-        current_state = STATE_PQP_RETENTION;
-    }
-}
-
-void update_pqp_retention() {
-    // Mantém estado meta-estável a 151K à pressão ambiente
-    if (hw_read_temp() > 151.0f) {
-        current_state = STATE_ERROR; // Perda de supercondutividade
-    } else {
         current_state = STATE_STASIS;
         send_status_update(STATE_STASIS);
     }
@@ -166,18 +134,6 @@ int main() {
 
             case STATE_COOLING:
                 update_cooling();
-                break;
-
-            case STATE_PQP_PRESSURIZING:
-                update_pqp_pressurizing();
-                break;
-
-            case STATE_PQP_QUENCH:
-                update_pqp_quench();
-                break;
-
-            case STATE_PQP_RETENTION:
-                update_pqp_retention();
                 break;
 
             case STATE_STASIS:
