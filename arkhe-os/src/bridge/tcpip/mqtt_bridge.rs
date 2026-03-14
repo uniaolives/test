@@ -2,9 +2,11 @@
 
 use rumqttc::{MqttOptions, Client, QoS, Connection};
 use crate::propagation::payload::OrbPayload;
+use rumqttc::{MqttOptions, Connection, QoS, Event, Incoming};
+use crate::orb::core::OrbPayload;
 
 pub struct MqttBridge {
-    client: Client,
+    client: rumqttc::Client,
 }
 
 impl MqttBridge {
@@ -12,7 +14,7 @@ impl MqttBridge {
         let mut mqttoptions = MqttOptions::new("arkhe-orb-node", broker, port);
         mqttoptions.set_keep_alive(std::time::Duration::from_secs(5));
 
-        let (client, mut connection) = Client::new(mqttoptions, 10);
+        let (client, mut connection) = rumqttc::Client::new(mqttoptions, 10);
 
         // Spawn connection loop
         tokio::spawn(async move {
@@ -20,6 +22,17 @@ impl MqttBridge {
                 if let rumqttc::Event::Incoming(rumqttc::Incoming::Publish(publish)) = notification {
                     if let Ok(orb) = OrbPayload::from_bytes(&publish.payload) {
                         println!("[MQTT] Received Orb: {:?}", orb.orb_id);
+            for notification in connection.iter() {
+                match notification {
+                    Ok(Event::Incoming(Incoming::Publish(publish))) => {
+                        if let Ok(orb) = OrbPayload::from_bytes(&publish.payload) {
+                            println!("[MQTT] Received Orb: {:?}", orb.orb_id);
+                        }
+                    }
+                    Ok(_) => {}
+                    Err(e) => {
+                        eprintln!("[MQTT] Connection error: {:?}", e);
+                        tokio::time::sleep(std::time::Duration::from_secs(1)).await;
                     }
                 }
             }

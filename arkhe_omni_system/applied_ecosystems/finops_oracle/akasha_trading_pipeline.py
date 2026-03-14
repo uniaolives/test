@@ -206,6 +206,8 @@ class TradingSimulation:
         )
 
     def run(self, context: Dict, df: pd.DataFrame) -> Dict:
+
+    def run(self, context: Dict) -> Dict:
         logger.info("🤖 Running Multi-Agent Trading Simulation...")
         reports = [agent.analyze(context) for agent in self.agents]
 
@@ -249,6 +251,8 @@ def run_pipeline():
 
     # 5. Simulate
     trade_signal = sim.run(context, processed_data)
+    # 4. Simulate
+    trade_signal = sim.run(context)
 
     logger.info(f"🚀 FINAL TRADING SIGNAL: {trade_signal['consensus_decision']}")
     print(json.dumps(trade_signal, indent=2))
