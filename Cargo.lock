@@ -774,6 +774,8 @@ dependencies = [
  "reqwest 0.11.27",
  "rocksdb",
  "rumqttc 0.23.0",
+ "russh 0.40.2",
+ "russh-keys 0.40.1",
  "serde",
  "serde_json",
  "sha2 0.10.9",
@@ -895,10 +897,14 @@ dependencies = [
 name = "arkhe-tor"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "arti-client",
  "serde",
  "thiserror 2.0.18",
  "tokio",
+ "tokio-socks",
+ "tor-hsservice",
+ "tor-rtcompat",
  "tracing",
 ]
 
@@ -1044,6 +1050,9 @@ dependencies = [
  "tor-dirmgr",
  "tor-error",
  "tor-guardmgr",
+ "tor-hsclient",
+ "tor-hscrypto",
+ "tor-hsservice",
  "tor-keymgr",
  "tor-linkspec",
  "tor-llcrypto",
@@ -1052,6 +1061,7 @@ dependencies = [
  "tor-netdoc",
  "tor-persist",
  "tor-proto",
+ "tor-ptmgr",
  "tor-rtcompat",
  "tracing",
  "void",
@@ -1678,6 +1688,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2af50177e190e07a26ab74f8b1efbfe2ef87da2116221318cb1c2e82baf7de06"
 
 [[package]]
+name = "bcrypt-pbkdf"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6aeac2e1fe888769f34f05ac343bbef98b14d1ffb292ab69d4608b3abc86f2a2"
+dependencies = [
+ "blowfish",
+ "pbkdf2 0.12.2",
+ "sha2 0.10.9",
+]
+
+[[package]]
 name = "bech32"
 version = "0.9.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2094,6 +2115,16 @@ checksum = "15b55663a85f33501257357e6421bb33e769d5c9ffb5ba0921c975a123e35e68"
 dependencies = [
  "block-sys",
  "objc2",
+]
+
+[[package]]
+name = "blowfish"
+version = "0.9.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e412e2cd0f2b2d93e02543ceae7917b3c70331573df19ee046bcbc35e45e87d7"
+dependencies = [
+ "byteorder",
+ "cipher",
 ]
 
 [[package]]
@@ -4360,7 +4391,7 @@ dependencies = [
  "file-format",
  "futures-util",
  "governor",
- "hex-literal",
+ "hex-literal 1.1.0",
  "humantime",
  "hxdmp",
  "iso8601",
@@ -4685,6 +4716,15 @@ dependencies = [
  "rustc_version",
  "syn 2.0.117",
  "unicode-xid",
+]
+
+[[package]]
+name = "des"
+version = "0.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ffdd80ce8ce993de27e9f063a444a4d53ce8e8db4c1f00cc03af5ad5a9867a1e"
+dependencies = [
+ "cipher",
 ]
 
 [[package]]
@@ -5238,7 +5278,7 @@ dependencies = [
  "hmac",
  "pbkdf2 0.11.0",
  "rand 0.8.5",
- "scrypt",
+ "scrypt 0.10.0",
  "serde",
  "serde_json",
  "sha2 0.10.9",
@@ -5908,6 +5948,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "04412b8935272e3a9bae6f48c7bfff74c2911f60525404edfdd28e49884c3bfb"
 dependencies = [
  "libc",
+ "winapi",
+]
+
+[[package]]
+name = "fslock-arti-fork"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8b21bd626aaab7b904b20bef6d9e06298914a0c8d9fb8b010483766b2e532791"
+dependencies = [
+ "libc",
+ "winapi",
+]
+
+[[package]]
+name = "fslock-guard"
+version = "0.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ed387b899db1671a47eaf17e7e6d7008577262c09319cb8e19601371192b526f"
+dependencies = [
+ "fslock-arti-fork",
+ "thiserror 2.0.18",
  "winapi",
 ]
 
@@ -6665,6 +6726,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "growable-bloom-filter"
+version = "2.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d174ccb4ba660d431329e7f0797870d0a4281e36353ec4b4a3c5eab6c2cfb6f1"
+dependencies = [
+ "serde",
+ "serde_bytes",
+ "serde_derive",
+ "xxhash-rust",
+]
+
+[[package]]
 name = "h2"
 version = "0.3.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6895,6 +6968,12 @@ checksum = "fda06d18ac606267c40c04e41b9947729bf8b9efe74bd4e82b61a5f26a510b9f"
 dependencies = [
  "arrayvec 0.7.6",
 ]
+
+[[package]]
+name = "hex-literal"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6fe2267d4ed49bc07b63801559be28c718ea06c4738b7a03c94df7386d2cde46"
 
 [[package]]
 name = "hex-literal"
@@ -8015,6 +8094,16 @@ checksum = "2735847566356cd2179a2a38264839308f7079fa96e6bd5a42d740460e003c56"
 dependencies = [
  "crossbeam",
  "rayon",
+]
+
+[[package]]
+name = "k12"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4dc5fdb62af2f520116927304f15d25b3c2667b4817b90efdc045194c912c54"
+dependencies = [
+ "digest 0.10.7",
+ "sha3",
 ]
 
 [[package]]
@@ -10057,6 +10146,7 @@ checksum = "a5e44f723f1133c9deac646763579fdb3ac745e418f2a7af9cd0c431da1f20b9"
 dependencies = [
  "num-integer",
  "num-traits",
+ "rand 0.8.5",
  "serde",
 ]
 
@@ -10927,12 +11017,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "pkcs5"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e847e2c91a18bfa887dd028ec33f2fe6f25db77db3619024764914affe8b69a6"
+dependencies = [
+ "aes",
+ "cbc",
+ "der",
+ "pbkdf2 0.12.2",
+ "scrypt 0.11.0",
+ "sha2 0.10.9",
+ "spki",
+]
+
+[[package]]
 name = "pkcs8"
 version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f950b2377845cebe5cf8b5165cb3cc1a5e0fa5cfa3e1f7f55707d8fd82e0a7b7"
 dependencies = [
  "der",
+ "pkcs5",
+ "rand_core 0.6.4",
  "spki",
 ]
 
@@ -11589,7 +11696,7 @@ dependencies = [
  "byteorder",
  "bytes",
  "hex",
- "hex-literal",
+ "hex-literal 1.1.0",
  "hxdmp",
  "num_enum",
  "prost 0.14.3",
@@ -12734,6 +12841,183 @@ dependencies = [
 ]
 
 [[package]]
+name = "russh"
+version = "0.40.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "93dab9e1c313d0d04a42e39c0995943fc38c037e2e3fa9c33685777a1aecdfb2"
+dependencies = [
+ "aes",
+ "aes-gcm",
+ "async-trait",
+ "bitflags 2.11.0",
+ "byteorder",
+ "chacha20",
+ "ctr",
+ "curve25519-dalek 4.1.3",
+ "digest 0.10.7",
+ "flate2",
+ "futures",
+ "generic-array",
+ "hex-literal 0.4.1",
+ "hmac",
+ "log",
+ "num-bigint 0.4.6",
+ "once_cell",
+ "poly1305",
+ "rand 0.8.5",
+ "russh-cryptovec",
+ "russh-keys 0.40.1",
+ "sha1",
+ "sha2 0.10.9",
+ "subtle",
+ "thiserror 1.0.69",
+ "tokio",
+ "tokio-util 0.7.18",
+]
+
+[[package]]
+name = "russh"
+version = "0.45.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0a229f2a03daea3f62cee897b40329ce548600cca615906d98d58b8db3029b19"
+dependencies = [
+ "aes",
+ "aes-gcm",
+ "async-trait",
+ "bitflags 2.11.0",
+ "byteorder",
+ "cbc",
+ "chacha20",
+ "ctr",
+ "curve25519-dalek 4.1.3",
+ "des",
+ "digest 0.10.7",
+ "elliptic-curve",
+ "flate2",
+ "futures",
+ "generic-array",
+ "hex-literal 0.4.1",
+ "hmac",
+ "log",
+ "num-bigint 0.4.6",
+ "once_cell",
+ "p256",
+ "p384",
+ "p521",
+ "poly1305",
+ "rand 0.8.5",
+ "rand_core 0.6.4",
+ "russh-cryptovec",
+ "russh-keys 0.45.0",
+ "sha1",
+ "sha2 0.10.9",
+ "ssh-encoding",
+ "ssh-key",
+ "subtle",
+ "thiserror 1.0.69",
+ "tokio",
+]
+
+[[package]]
+name = "russh-cryptovec"
+version = "0.7.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fadd2c0ab350e21c66556f94ee06f766d8bdae3213857ba7610bfd8e10e51880"
+dependencies = [
+ "libc",
+ "winapi",
+]
+
+[[package]]
+name = "russh-keys"
+version = "0.40.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9d0de3cb3cbfa773b7f170b6830565fac207a0d630cc666a29f80097cc374dd8"
+dependencies = [
+ "aes",
+ "async-trait",
+ "bcrypt-pbkdf",
+ "bit-vec 0.6.3",
+ "block-padding",
+ "byteorder",
+ "cbc",
+ "ctr",
+ "data-encoding",
+ "dirs 5.0.1",
+ "ed25519-dalek",
+ "futures",
+ "hmac",
+ "inout",
+ "log",
+ "md5",
+ "num-bigint 0.4.6",
+ "num-integer",
+ "p256",
+ "pbkdf2 0.11.0",
+ "rand 0.7.3",
+ "rand_core 0.6.4",
+ "russh-cryptovec",
+ "serde",
+ "sha1",
+ "sha2 0.10.9",
+ "thiserror 1.0.69",
+ "tokio",
+ "tokio-stream",
+ "yasna",
+]
+
+[[package]]
+name = "russh-keys"
+version = "0.45.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "89757474f7c9ee30121d8cc7fe293a954ba10b204a82ccf5850a5352a532ebc7"
+dependencies = [
+ "aes",
+ "async-trait",
+ "bcrypt-pbkdf",
+ "block-padding",
+ "byteorder",
+ "cbc",
+ "ctr",
+ "data-encoding",
+ "der",
+ "digest 0.10.7",
+ "ecdsa",
+ "ed25519-dalek",
+ "elliptic-curve",
+ "futures",
+ "hmac",
+ "home",
+ "inout",
+ "log",
+ "md5",
+ "num-integer",
+ "p256",
+ "p384",
+ "p521",
+ "pbkdf2 0.11.0",
+ "pkcs1",
+ "pkcs5",
+ "pkcs8",
+ "rand 0.8.5",
+ "rand_core 0.6.4",
+ "rsa",
+ "russh-cryptovec",
+ "sec1",
+ "serde",
+ "sha1",
+ "sha2 0.10.9",
+ "spki",
+ "ssh-encoding",
+ "ssh-key",
+ "thiserror 1.0.69",
+ "tokio",
+ "tokio-stream",
+ "typenum",
+ "zeroize",
+]
+
+[[package]]
 name = "rust-asi-wasm"
 version = "0.1.0"
 dependencies = [
@@ -13253,6 +13537,8 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "arkhe-quantum",
+ "arkhe-tor",
+ "async-trait",
  "atomic 0.6.1",
  "atomic_float 0.1.0",
  "aws-nitro-enclaves-cose",
@@ -13297,6 +13583,8 @@ dependencies = [
  "reqwest 0.11.27",
  "ring 0.17.14",
  "rsa",
+ "russh 0.45.0",
+ "russh-keys 0.45.0",
  "rustfft",
  "sasc-governance",
  "serde",
@@ -13308,6 +13596,7 @@ dependencies = [
  "sha3",
  "thiserror 1.0.69",
  "tokio",
+ "tokio-socks",
  "tracing",
  "tracing-subscriber",
  "uuid 1.22.0",
@@ -13441,6 +13730,17 @@ checksum = "9f9e24d2b632954ded8ab2ef9fea0a0c769ea56ea98bddbafbad22caeeadf45d"
 dependencies = [
  "hmac",
  "pbkdf2 0.11.0",
+ "salsa20",
+ "sha2 0.10.9",
+]
+
+[[package]]
+name = "scrypt"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0516a385866c09368f0b5bcd1caff3366aace790fcd46e2bb032697bb172fd1f"
+dependencies = [
+ "pbkdf2 0.12.2",
  "salsa20",
  "sha2 0.10.9",
 ]
@@ -14608,8 +14908,15 @@ version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "caac132742f0d33c3af65bfcde7f6aa8f62f0e991d80db99149eb9d44708784f"
 dependencies = [
+ "aes",
+ "aes-gcm",
+ "cbc",
+ "chacha20",
  "cipher",
+ "ctr",
+ "poly1305",
  "ssh-encoding",
+ "subtle",
 ]
 
 [[package]]
@@ -14629,6 +14936,9 @@ version = "0.6.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3b86f5297f0f04d08cabaa0f6bff7cb6aec4d9c3b49d87990d63da9d9156a8c3"
 dependencies = [
+ "bcrypt-pbkdf",
+ "ed25519-dalek",
+ "num-bigint-dig",
  "p256",
  "p384",
  "p521",
@@ -15396,6 +15706,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "tokio-socks"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d4770b8024672c1101b3f6733eab95b18007dbe0847a8afe341fcf79e06043f"
+dependencies = [
+ "either",
+ "futures-util",
+ "thiserror 1.0.69",
+ "tokio",
+]
+
+[[package]]
 name = "tokio-stream"
 version = "0.1.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -15667,6 +15989,7 @@ dependencies = [
  "tor-bytes",
  "tor-cert",
  "tor-error",
+ "tor-hscrypto",
  "tor-linkspec",
  "tor-llcrypto",
  "tor-memquota",
@@ -15863,6 +16186,7 @@ dependencies = [
  "thiserror 2.0.18",
  "tor-circmgr",
  "tor-error",
+ "tor-hscrypto",
  "tor-linkspec",
  "tor-llcrypto",
  "tor-netdoc",
@@ -15988,9 +16312,53 @@ dependencies = [
  "tor-netdoc",
  "tor-persist",
  "tor-proto",
+ "tor-protover",
  "tor-relay-selection",
  "tor-rtcompat",
  "tor-units",
+ "tracing",
+]
+
+[[package]]
+name = "tor-hsclient"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9f31d16e217827a6846502b87b507d7d47da42446306c3d6ebbd681e8a73d8f8"
+dependencies = [
+ "async-trait",
+ "derive-deftly 0.14.6",
+ "derive_more 1.0.0",
+ "educe 0.4.23",
+ "either",
+ "futures",
+ "itertools 0.14.0",
+ "oneshot-fused-workaround",
+ "postage",
+ "rand 0.8.5",
+ "retry-error",
+ "safelog",
+ "slotmap-careful",
+ "strum 0.26.3",
+ "thiserror 2.0.18",
+ "tor-async-utils",
+ "tor-basic-utils",
+ "tor-bytes",
+ "tor-cell",
+ "tor-checkable",
+ "tor-circmgr",
+ "tor-config",
+ "tor-dirclient",
+ "tor-error",
+ "tor-hscrypto",
+ "tor-keymgr",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-memquota",
+ "tor-netdir",
+ "tor-netdoc",
+ "tor-persist",
+ "tor-proto",
+ "tor-rtcompat",
  "tracing",
 ]
 
@@ -16000,7 +16368,9 @@ version = "0.26.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b86a73a511b16c23b25175f30c31b241004de410be400603a8e980355dc2bf1"
 dependencies = [
+ "cipher",
  "data-encoding",
+ "derive-deftly 0.14.6",
  "derive_more 1.0.0",
  "digest 0.10.7",
  "itertools 0.14.0",
@@ -16015,7 +16385,67 @@ dependencies = [
  "tor-error",
  "tor-key-forge",
  "tor-llcrypto",
+ "tor-memquota",
  "tor-units",
+ "void",
+ "zeroize",
+]
+
+[[package]]
+name = "tor-hsservice"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e1e310b4401b5b2dea26c50cbd80cb2e39dedea2bcd37fb0d8a21f6ccf119154"
+dependencies = [
+ "amplify",
+ "async-trait",
+ "base64ct",
+ "cfg-if",
+ "derive-deftly 0.14.6",
+ "derive_builder_fork_arti",
+ "derive_more 1.0.0",
+ "digest 0.10.7",
+ "educe 0.4.23",
+ "fs-mistrust",
+ "futures",
+ "growable-bloom-filter",
+ "hex",
+ "humantime",
+ "itertools 0.14.0",
+ "k12",
+ "once_cell",
+ "oneshot-fused-workaround",
+ "postage",
+ "rand 0.8.5",
+ "rand_core 0.6.4",
+ "retry-error",
+ "safelog",
+ "serde",
+ "serde_with",
+ "strum 0.26.3",
+ "thiserror 2.0.18",
+ "tor-async-utils",
+ "tor-basic-utils",
+ "tor-bytes",
+ "tor-cell",
+ "tor-circmgr",
+ "tor-config",
+ "tor-config-path",
+ "tor-dirclient",
+ "tor-error",
+ "tor-hscrypto",
+ "tor-keymgr",
+ "tor-linkspec",
+ "tor-llcrypto",
+ "tor-log-ratelim",
+ "tor-netdir",
+ "tor-netdoc",
+ "tor-persist",
+ "tor-proto",
+ "tor-protover",
+ "tor-relay-selection",
+ "tor-rtcompat",
+ "tracing",
  "void",
 ]
 
@@ -16189,7 +16619,9 @@ dependencies = [
  "async-trait",
  "bitflags 2.11.0",
  "derive_more 1.0.0",
+ "digest 0.10.7",
  "futures",
+ "hex",
  "humantime",
  "itertools 0.14.0",
  "num_enum",
@@ -16198,8 +16630,10 @@ dependencies = [
  "static_assertions",
  "strum 0.26.3",
  "thiserror 2.0.18",
+ "time",
  "tor-basic-utils",
  "tor-error",
+ "tor-hscrypto",
  "tor-linkspec",
  "tor-llcrypto",
  "tor-netdoc",
@@ -16228,6 +16662,7 @@ dependencies = [
  "itertools 0.14.0",
  "once_cell",
  "phf",
+ "rand 0.8.5",
  "serde",
  "serde_with",
  "signature",
@@ -16242,8 +16677,11 @@ dependencies = [
  "tor-cert",
  "tor-checkable",
  "tor-error",
+ "tor-hscrypto",
+ "tor-linkspec",
  "tor-llcrypto",
  "tor-protover",
+ "tor-units",
  "void",
  "weak-table",
  "zeroize",
@@ -16255,11 +16693,13 @@ version = "0.26.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af4c9eb2ac476e1bcce6e1edc23a93fdf2feb2d5996e5cf6e7a29e4a319282d4"
 dependencies = [
+ "amplify",
  "derive-deftly 0.14.6",
  "derive_more 1.0.0",
  "filetime",
  "fs-mistrust",
  "fslock",
+ "fslock-guard",
  "futures",
  "itertools 0.14.0",
  "oneshot-fused-workaround",
@@ -16313,6 +16753,7 @@ dependencies = [
  "tor-checkable",
  "tor-config",
  "tor-error",
+ "tor-hscrypto",
  "tor-linkspec",
  "tor-llcrypto",
  "tor-log-ratelim",
@@ -16322,6 +16763,7 @@ dependencies = [
  "tor-units",
  "tracing",
  "typenum",
+ "visibility",
  "void",
  "zeroize",
 ]
@@ -16334,6 +16776,33 @@ checksum = "9d85616d04baa5940d19877394f9f19640cc2f50e74766d679f7e35350816720"
 dependencies = [
  "caret",
  "thiserror 2.0.18",
+]
+
+[[package]]
+name = "tor-ptmgr"
+version = "0.26.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7d3be2507e687d886c8cc166e4a8072b16a33bb73a63b3c4b2d3fe8677d4ad21"
+dependencies = [
+ "async-trait",
+ "cfg-if",
+ "derive_builder_fork_arti",
+ "fs-mistrust",
+ "futures",
+ "itertools 0.14.0",
+ "oneshot-fused-workaround",
+ "serde",
+ "thiserror 2.0.18",
+ "tor-async-utils",
+ "tor-basic-utils",
+ "tor-chanmgr",
+ "tor-config",
+ "tor-config-path",
+ "tor-error",
+ "tor-linkspec",
+ "tor-rtcompat",
+ "tor-socksproto",
+ "tracing",
 ]
 
 [[package]]
@@ -18913,6 +19382,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "xxhash-rust"
+version = "0.8.15"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fdd20c5420375476fbd4394763288da7eb0cc0b8c11deed431a91562af7335d3"
+
+[[package]]
 name = "yaml-rust"
 version = "0.4.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -18964,6 +19439,8 @@ version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e17bb3549cc1321ae1296b9cdc2698e2b6cb1992adfa19a8c72e5b7a738f44cd"
 dependencies = [
+ "bit-vec 0.6.3",
+ "num-bigint 0.4.6",
  "time",
 ]
 
