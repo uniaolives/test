@@ -22,6 +22,7 @@ pub mod orb_detector;
 pub mod mobius_temporal;
 pub mod broadcast_engine;
 pub mod formal_axioms;
+pub mod neguentropy;
 
 #[cfg(test)]
 mod tests;

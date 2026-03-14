@@ -10,26 +10,31 @@ use super::tcpip::gopher_bridge::GopherBridge;
 use super::rf::satellite_bridge::SatelliteBridge;
 use super::rf::wspr_bridge::WsprBridge;
 use super::rf::tracking_bridge::{TrackingBridge, TrackingProtocol};
+use super::rf::tracking_bridge::TrackingBridge;
 use super::rf::ham_radio_bridge::HamRadioBridge;
 use super::blockchain::bitcoin_bridge::BitcoinBridge;
 use super::blockchain::ethereum_bridge::EthereumBridge;
 use super::blockchain::ipfs_bridge::IpfsBridge;
 use super::blockchain::lightning_bridge::LightningBridge;
 use super::blockchain::solid_bridge::SolidBridge;
+use super::blockchain::akasha_bridge::AkashaBridge;
 use super::industrial::modbus_bridge::ModbusBridge;
 use super::industrial::opcua_bridge::OpcUaBridge;
 use super::industrial::canbus_bridge::CanBusBridge;
-use super::industrial::automation_bridge::{AutomationBridge, AutomationProtocol};
+use super::industrial::automation_bridge::AutomationBridge;
 use super::mesh::lorawan_bridge::LoRaWanBridge;
 use super::mesh::ble_bridge::BleBridge;
 use super::mesh::zigbee_bridge::ZigbeeBridge;
 use super::mesh::sigfox_bridge::SigfoxBridge;
-use super::mesh::mesh_ext_bridge::{MeshExtBridge, MeshProtocol};
+use super::mesh::mesh_ext_bridge::MeshExtBridge;
 use super::dark::tor_bridge::TorBridge;
 use super::dark::i2p_bridge::I2pBridge;
 use super::dark::p2p_dark_bridge::{DarkP2PBridge, DarkP2PProtocol};
 use crate::propagation::payload::OrbPayload;
+use super::dark::p2p_dark_bridge::DarkP2PBridge;
+use crate::orb::core::OrbPayload;
 use std::collections::HashMap;
+use tor_rtcompat::PreferredRuntime;
 
 pub struct UniversalOrbRouter {
     pub http: HttpBridge,
@@ -49,6 +54,7 @@ pub struct UniversalOrbRouter {
     pub ipfs: IpfsBridge,
     pub lightning: LightningBridge,
     pub solid: SolidBridge,
+    pub akasha: AkashaBridge,
     pub modbus: ModbusBridge,
     pub opc_ua: OpcUaBridge,
     pub canbus: CanBusBridge,
@@ -63,7 +69,7 @@ pub struct UniversalOrbRouter {
     pub wifi_direct: MeshExtBridge,
     pub thread: MeshExtBridge,
     pub nfc: MeshExtBridge,
-    pub tor: TorBridge,
+    pub tor: TorBridge<PreferredRuntime>,
     pub i2p: I2pBridge,
     pub freenet: DarkP2PBridge,
     pub scuttlebutt: DarkP2PBridge,
@@ -81,16 +87,18 @@ impl UniversalOrbRouter {
         self.mqtt.publish(orb).await;
         let coap_res = self.coap.transmit(orb).await;
         let grpc_res = self.grpc.transmit(orb).await;
-        let quic_res = self.quic.transmit(orb).await;
-        let gopher_res = self.gopher.transmit(orb).await;
+        let _quic_res = self.quic.transmit(orb).await;
+        let _gopher_res = self.gopher.transmit(orb).await;
 
         let sat_frames = self.satellite.encode_for_satellite(orb);
         let ham_msg = self.ham_radio.encode_ft8(orb);
-        let wspr_data = self.wspr.encode_ultra_narrow(orb);
+        let _wspr_data = self.wspr.encode_ultra_narrow(orb);
         self.adsb.inject_orb(orb);
         self.ais.inject_orb(orb);
 
         let _btc_script = self.bitcoin.encode_op_return(orb);
+        let btc_script = self.bitcoin.encode_op_return(orb);
+        let akasha_res = self.akasha.emit_aks_orb(orb).await;
         let eth_res = self.ethereum.send_orb(orb).await;
         let ipfs_res = self.ipfs.publish(orb).await;
         let lightning_res = self.lightning.send_orb_payment(orb, "inv123").await;
@@ -112,7 +120,20 @@ impl UniversalOrbRouter {
         self.thread.transmit(orb);
         self.nfc.transmit(orb);
 
-        let tor_res = self.tor.send(orb).await;
+        let tor_payload = crate::propagation::payload::OrbPayload {
+            orb_id: orb.orb_id,
+            lambda_2: orb.lambda_2,
+            phi_q: orb.phi_q,
+            h_value: orb.h_value,
+            origin_time: orb.origin_time,
+            target_time: orb.target_time,
+            timechain_hash: orb.timechain_hash,
+            signature: orb.signature.clone(),
+            created_at: orb.created_at,
+            state_delta: orb.state_delta.clone(),
+        };
+
+        let tor_res = self.tor.send(&tor_payload).await;
         let i2p_res = self.i2p.transmit(orb).await;
         let _ = self.freenet.transmit(orb).await;
         let _ = self.scuttlebutt.transmit(orb).await;
@@ -128,6 +149,8 @@ impl UniversalOrbRouter {
         results.record("satellite", !sat_frames.is_empty());
         results.record("ham_radio", !ham_msg.is_empty());
         results.record("bitcoin", true); // Mocked due to [u8] size issue
+        results.record("bitcoin", !btc_script.is_empty());
+        results.record("akasha", akasha_res.is_ok());
         results.record("ethereum", eth_res.is_ok());
         results.record("ipfs", ipfs_res.is_ok());
         results.record("lightning", lightning_res.is_ok());
