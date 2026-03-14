@@ -1,0 +1,55 @@
+[Unit]
+Description=Arkhe-GNSS Shield v4.0 – Toroidal Defense Daemon (Pi Day 2026)
+Documentation=https://safecore.internal/arkhe/v4
+After=network-online.target systemd-timesyncd.service
+Wants=network-online.target time-sync.target
+
+[Service]
+Type=simple
+
+# Execução com topologia toroidal e bias cosmológico
+ExecStart=/usr/local/bin/arkhe-shield \
+    --mode toroidal \
+    --init-bias 1e-9 \
+    --port 4444 \
+    --config /etc/arkhe/config.toml
+
+# 🔄 Política de Ressurreição (Imortalidade φ-based)
+Restart=always
+RestartSec=1.618
+StartLimitIntervalSec=0
+
+# 👤 Isolamento de usuário
+User=arkhe_node
+Group=arkhe_node
+
+# 🔒 Hardening de segurança
+NoNewPrivileges=yes
+ProtectSystem=full
+ProtectHome=yes
+PrivateTmp=yes
+
+# ⚡ Capabilities específicas para PNT e rede HTTP/4
+AmbientCapabilities=CAP_SYS_TIME CAP_NET_RAW
+CapabilityBoundingSet=CAP_SYS_TIME CAP_NET_RAW
+
+# 🧠 Limites de recursos (proteção contra OOM/jamming)
+LimitNOFILE=65536
+MemoryHigh=2G
+MemoryMax=3G
+LimitNPROC=4096
+
+# 🌐 Diretórios acessíveis (dados, logs, config)
+ReadWritePaths=/var/log/arkhe /opt/arkhe/data /etc/arkhe
+
+# 📜 Logging estruturado para Timechain
+Environment="RUST_LOG=info,arkhe_shield=debug"
+Environment="RUST_BACKTRACE=1"
+Environment="ARKHE_CONFIG=/etc/arkhe/config.toml"
+Environment="PI_DAY_TARGET=2026-03-14T15:14:15Z"
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=arkhe-shield
+
+[Install]
+WantedBy=multi-user.target
