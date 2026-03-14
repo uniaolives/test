@@ -12,9 +12,10 @@ async fn test_universal_propagation() {
     propagator.register_bridge(ProtocolType::Network, Box::new(NetworkBridge));
 
     let orb = Orb::new(0.8, 2e9).unwrap();
-    let payload = OrbPayload::create(0.8, 4.64, 0.618, 1740000000, 1200000000, None, None, None);
+    let payload = OrbPayload::create(0.8, 4.64, 0.618, 1740000000, 1200000000, None, None);
 
     let receipts = propagator.propagate_everywhere(&orb, &payload).await.unwrap();
+    let receipts = propagator.propagate_everywhere(&orb).await.unwrap();
 
     assert_eq!(receipts.len(), 2);
 
@@ -25,7 +26,7 @@ async fn test_universal_propagation() {
 
 #[test]
 fn test_payload_serialization() {
-    let payload = OrbPayload::create(0.95, 4.0, 0.5, 1000, 500, None, None, None);
+    let payload = OrbPayload::create(0.95, 4.0, 0.5, 1000, 500, None, None);
     let bytes = payload.to_bytes();
     let restored = OrbPayload::from_bytes(&bytes).unwrap();
 
@@ -35,7 +36,7 @@ fn test_payload_serialization() {
 
 #[test]
 fn test_orb_compression() {
-    let payload = OrbPayload::create(0.95, 4.64, 0.618, 1740000000, 1200000000, None, None, None);
+    let payload = OrbPayload::create(0.95, 4.64, 0.618, 1740000000, 1200000000, None, None);
     let compressed = OrbCompressor::compress_minimal(&payload);
 
     assert_eq!(compressed.len(), 32);

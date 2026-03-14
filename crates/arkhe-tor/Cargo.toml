@@ -7,7 +7,6 @@ edition = "2021"
 arti-client = { workspace = true, default-features = false, features = ["tokio", "native-tls", "onion-service-client", "onion-service-service", "bridge-client", "pt-client"] }
 tor-hsservice = "0.26.0"
 tor-rtcompat = { version = "0.26.0", features = ["tokio", "native-tls"] }
-arti-client = { workspace = true }
 tokio = { workspace = true }
 tokio-socks = "0.5"
 serde = { workspace = true }

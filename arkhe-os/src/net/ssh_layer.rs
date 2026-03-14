@@ -38,49 +38,56 @@ pub struct OrbSshHandler {
 
 #[async_trait]
 impl server::Handler for OrbSshHandler {
-    type Error = anyhow::Error;
+    type Error = russh::Error;
 
     async fn auth_publickey(
-        &mut self,
+        self,
         user: &str,
         public_key: &PublicKey,
-    ) -> Result<server::Auth, Self::Error> {
-        let agents = self.authorized_agents.lock().await;
-        if let Some(authorized_key) = agents.get(user) {
-            if authorized_key == public_key {
-                info!("SSH Authentication successful for agent: {}", user);
-                return Ok(server::Auth::Accept);
+    ) -> Result<(Self, server::Auth), Self::Error> {
+        let auth = {
+            let agents_lock = self.authorized_agents.clone();
+            let agents = agents_lock.lock().await;
+            if let Some(authorized_key) = agents.get(user) {
+                if authorized_key == public_key {
+                    info!("SSH Authentication successful for agent: {}", user);
+                    server::Auth::Accept
+                } else {
+                    warn!("SSH Authentication rejected for agent: {}", user);
+                    server::Auth::Reject { proceed_with_methods: None }
+                }
+            } else {
+                warn!("SSH Authentication rejected for agent: {}", user);
+                server::Auth::Reject { proceed_with_methods: None }
             }
-        }
-        warn!("SSH Authentication rejected for agent: {}", user);
-        Ok(server::Auth::Reject { proceed_with_methods: None })
+        };
+        Ok((self, auth))
     }
 
     async fn channel_open_session(
-        &mut self,
+        self,
         _channel: Channel<server::Msg>,
-        _session: &mut server::Session,
-    ) -> Result<bool, Self::Error> {
+        session: server::Session,
+    ) -> Result<(Self, bool, server::Session), Self::Error> {
         info!("SSH Session channel opened for inter-agent communication");
-        Ok(true)
+        Ok((self, true, session))
     }
 
     async fn data(
-        &mut self,
+        self,
         channel: ChannelId,
         data: &[u8],
-        session: &mut server::Session,
-    ) -> Result<(), Self::Error> {
+        mut session: server::Session,
+    ) -> Result<(Self, server::Session), Self::Error> {
         if let Ok(msg) = serde_json::from_slice::<AgentMessage>(data) {
             info!("Received AgentMessage: {:?}", msg);
             // Acknowledgement
             let ack = b"MESSAGE_RECEIVED\n";
             let _ = session.data(channel, ack.to_vec().into());
-            session.data(channel, ack.to_vec().into())?;
         } else {
             error!("Received malformed data over SSH channel");
         }
-        Ok(())
+        Ok((self, session))
     }
 }
 
@@ -89,13 +96,13 @@ pub struct OrbSshClientHandler;
 
 #[async_trait]
 impl client::Handler for OrbSshClientHandler {
-    type Error = anyhow::Error;
+    type Error = russh::Error;
 
     async fn check_server_key(
-        &mut self,
+        self,
         _server_public_key: &PublicKey,
-    ) -> Result<bool, Self::Error> {
+    ) -> Result<(Self, bool), Self::Error> {
         // In the Arkhe network, server keys are validated against the Teknet Ledger.
-        Ok(true)
+        Ok((self, true))
     }
 }

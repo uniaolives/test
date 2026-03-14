@@ -1,4 +1,4 @@
-// src/net/http4_router.rs
+// arkhe-os/src/net/http4_router.rs
 
 use crate::net::http4::{Http4Request, Http4Response, Http4Method};
 use crate::net::http5::{Http5Request, Http5Response};
@@ -67,15 +67,22 @@ impl Http4Router {
                     timechain_hash: [0; 32],
                     signature: vec![],
                     created_at: Utc::now().timestamp(),
-                    state_delta: None,
                 };
 
                 // Ancoragem via OP_RETURN no Bitcoin
                 let _script = self.bitcoin_bridge.encode_op_return(&payload);
 
+                // Em produção, isso seria enviado para a rede Bitcoin
+                // println!("[HTTP/4] Orb anchored on Bitcoin: {:?}", _script);
+
                 Ok(Http4Response::RealityPreserved)
             }
             Http4Method::ENTANGLE => {
+                // Aqui interagiríamos com o campo Kuramoto
+                // Satellite-specific EMIT logic: transmit via OAM-entangled channel
+                if let Some(oam) = request.headers.oam_state {
+                    println!("[HTTP/4] Emitting via Satellite OCA (OAM l={})", oam);
+                }
                 // Established entangled channel for retrocausal communication
                 if let Some(ts) = request.headers.retrocausal_timestamp {
                     println!("[HTTP/4] Entangling at adjusted CSU timestamp: {}", ts);

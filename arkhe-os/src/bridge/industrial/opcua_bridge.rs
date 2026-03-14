@@ -21,14 +21,11 @@ impl OpcUaBridge {
         let data = orb.to_bytes();
         let variant = Variant::ByteString(data.into());
 
-        let attr = WriteValue {
+        let mut attr = WriteValue {
             node_id,
             attribute_id: AttributeId::Value as u32,
             index_range: UAString::null(),
-            value: DataValue {
-                value: Some(variant),
-                ..Default::default()
-            },
+            value: DataValue::from(variant),
         };
 
         let _ = self.session.write(&[attr])

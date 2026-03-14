@@ -55,3 +55,9 @@
 [submodule "tools/transparency"]
 	path = tools/transparency
 	url = https://github.com/dark-bio/transparency
+[submodule "agents/mirofish"]
+	path = agents/mirofish
+	url = https://github.com/666ghj/MiroFish
+[submodule "agents/signal-forge"]
+	path = agents/signal-forge
+	url = https://github.com/Shahnab/SignalForgeMorseCode
