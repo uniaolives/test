@@ -16,6 +16,15 @@ repositories:
   medical-skills:
     path: skills/medical-skills
     strategy: submodule
+  edit-banana:
+    path: tools/edit-banana
+    strategy: submodule
+  openbrowser:
+    path: tools/openbrowser
+    strategy: submodule
+  xai-sdk:
+    path: tools/xai-sdk
+    strategy: submodule
   rust:
     path: rust
     strategy: submodule
@@ -24,6 +33,45 @@ repositories:
     strategy: submodule
   web777_ontology:
     path: web777_ontology
+    strategy: submodule
+  motoko:
+    path: languages/motoko
+    strategy: submodule
+  auto-analyst:
+    path: tools/auto-analyst
+    strategy: submodule
+  aeris-radar:
+    path: hardware/radar/aeris-10
+    strategy: submodule
+  wsnet:
+    path: tools/wsnet
+    strategy: submodule
+  ws-vcpkg-registry:
+    path: tools/ws-vcpkg-registry
+    strategy: submodule
+  windscribe-desktop:
+    path: clients/windscribe-desktop
+    strategy: submodule
+  windscribe-android:
+    path: clients/windscribe-android
+    strategy: submodule
+  windscribe-ios:
+    path: clients/windscribe-ios
+    strategy: submodule
+  sphere-packing-lean:
+    path: proof/lean/sphere-packing
+    strategy: submodule
+  hypergraphs-lean:
+    path: proof/lean/hypergraphs
+    strategy: submodule
+  lean-paranoia:
+    path: tools/lean-paranoia
+    strategy: submodule
+  riemann-hypothesis-lean:
+    path: proof/lean/riemann-hypothesis
+    strategy: submodule
+  dark-bio-transparency:
+    path: tools/transparency
     strategy: submodule
 strategy: multi-repo-with-manifest
 version: '2.0'

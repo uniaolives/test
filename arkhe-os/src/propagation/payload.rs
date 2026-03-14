@@ -1,3 +1,5 @@
+// arkhe-os/src/propagation/payload.rs
+pub use crate::orb::core::OrbPayload;
 use serde::{Deserialize, Serialize};
 use sha3::{Digest, Sha3_256};
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -172,5 +174,13 @@ impl OrbPayload {
             created_at,
             state_delta,
         })
+    }
+
+    pub fn to_bincode(&self) -> Vec<u8> {
+        bincode::serialize(self).unwrap()
+    }
+
+    pub fn from_bincode(data: &[u8]) -> bincode::Result<Self> {
+        bincode::deserialize(data)
     }
 }

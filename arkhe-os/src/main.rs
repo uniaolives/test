@@ -22,6 +22,7 @@ use arkhe_os::telemetry::{BioEvent, GlobalState};
 use arkhe_os::net::stack::NetEvent;
 use arkhe_os::lmt::field::MeaningField;
 use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine, PsiState as MaestroPsi};
+use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine};
 use arkhe_os::security::{XenoFirewall, XenoRiskLevel};
 use arkhe_os::week5::TemporalSubstrate;
 use arkhe_os::state::EvolutionaryStateStore;
@@ -304,6 +305,10 @@ async fn main() -> anyhow::Result<()> {
                             _ => {
                                 println!("\n[MAESTRO] Response: {}", resp);
                             }
+                        if risk == XenoRiskLevel::Critical {
+                            println!("\n[XENO-FIREWALL] ⚠ CRITICAL RISK DETECTED. CONTAINMENT ACTIVE.");
+                        } else {
+                            println!("\n[MAESTRO] Response: {}", resp);
                         }
                     },
                     Err(e) => println!("\n[MAESTRO] Error: {}", e),
