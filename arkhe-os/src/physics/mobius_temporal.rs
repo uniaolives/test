@@ -16,7 +16,7 @@ pub struct MobiusPoint {
 pub struct MobiusTemporalSurface {
     pub radius: f64,          // Raio do loop temporal
     pub width: f64,           // Largura da faixa (amplitude de coerência)
-    pub twist_angle: f64,     // π (meia-volta)
+    pub twist_angle: f64,     // π (meia-volta) ou π/2 (quarto-de-volta)
 }
 
 impl MobiusTemporalSurface {
@@ -24,7 +24,15 @@ impl MobiusTemporalSurface {
         Self {
             radius: 1.0,
             width: 0.5,
-            twist_angle: PI, // Sempre meia-volta
+            twist_angle: PI, // Padrão: meia-volta
+        }
+    }
+
+    pub fn half_mobius() -> Self {
+        Self {
+            radius: 1.0,
+            width: 0.5,
+            twist_angle: PI / 2.0, // π/2 Berry phase (IBM Experiment)
         }
     }
 
@@ -55,8 +63,11 @@ impl MobiusTemporalSurface {
         let v = 0.0; // No centro da faixa
 
         // Calcular orientação após percurso
+        // Para twist = π (Standard), ciclo = 2. Para twist = π/2 (Half-Möbius), ciclo = 4.
+        let full_cycle_steps = (2.0 * PI / self.twist_angle).round() as i32;
         let cycles = (t / t_cycle).floor() as i32;
-        let causal_orient = if cycles % 2 == 0 { 1.0 } else { -1.0 };
+
+        let causal_orient = if (cycles % full_cycle_steps) < (full_cycle_steps / 2) { 1.0 } else { -1.0 };
 
         MobiusPoint { u, v, causal_orient }
     }

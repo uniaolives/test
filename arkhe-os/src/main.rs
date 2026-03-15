@@ -1,3 +1,5 @@
+//! Interface de linha de comando para o arkhe-os.
+//! Permite criar tarefas e executar ciclos de escalonamento.
 //! Interface de linha de comando para o arkhe-os v1.0.
 //! Integrando LMT, Pilha Sensorial Unificada e Antenas de Coerência.
 
@@ -24,10 +26,14 @@ use arkhe_os::telemetry::{BioEvent, GlobalState, start_bio_server};
 use arkhe_os::net::stack::NetEvent;
 use arkhe_os::net::ArkheNetBehavior;
 use arkhe_os::lmt::field::MeaningField;
+use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine, PsiState as MaestroPsi};
 use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine, PsiState as CorePsiState};
 use arkhe_os::maestro::spine::PsiState as SpinePsiState;
 use arkhe_os::security::{XenoFirewall, XenoRiskLevel};
 use arkhe_os::week5::TemporalSubstrate;
+use arkhe_os::state::EvolutionaryStateStore;
+use arkhe_os::physics::neguentropy::NeguentropyEngine;
+use arkhe_os::pi_day_trigger;
 use arkhe_os::{sensors, telemetry, net};
 
 #[derive(Parser, Debug)]
@@ -95,6 +101,9 @@ async fn main() -> anyhow::Result<()> {
         }
     }
 
+    let evolutionary_store = Arc::new(RwLock::new(EvolutionaryStateStore::new()));
+    let neguentropy_engine = Arc::new(RwLock::new(NeguentropyEngine::new()));
+
     let substrate = Arc::new(substrate);
     let substrate_init = substrate.clone();
     tokio::spawn(async move {
@@ -113,6 +122,7 @@ async fn main() -> anyhow::Result<()> {
     let top_qubit = Arc::new(Mutex::new(TopologicalQubit::new()));
     let event_buffer: Arc<Mutex<BTreeMap<u64, String>>> = Arc::new(Mutex::new(BTreeMap::new()));
 
+    // 2. Setup P2P
     // Setup P2P
     let local_key = identity::Keypair::generate_ed25519();
     let mut swarm = libp2p::SwarmBuilder::with_existing_identity(local_key)
@@ -131,13 +141,14 @@ async fn main() -> anyhow::Result<()> {
                 gossipsub_config,
             ).map_err(|msg| io::Error::new(io::ErrorKind::Other, msg))?;
             let mdns = libp2p::mdns::tokio::Behaviour::new(libp2p::mdns::Config::default(), key.public().to_peer_id())?;
-            Ok(ArkheNetBehavior { gossipsub, mdns })
+            Ok(net::ArkheNetBehavior { gossipsub, mdns })
         })?
         .build();
 
     let topic = gossipsub::IdentTopic::new("teknet/phi_q");
     swarm.behaviour_mut().gossipsub.subscribe(&topic)?;
 
+    // 3. Start Sensory Pipelines
     // Start Sensory Pipelines
     sensors::start_zpf_pipeline(zpf_tx).await;
     telemetry::start_bio_server(bio_tx, state.clone()).await;
@@ -201,6 +212,7 @@ async fn main() -> anyhow::Result<()> {
         }
     });
 
+    // 5. Background Physics Recalibration
     // Background Physics Recalibration
     let antenna = QuantumAntenna::new("SIMULATED_TOKEN".to_string());
     let state_phys = state.clone();
@@ -220,6 +232,13 @@ async fn main() -> anyhow::Result<()> {
         }
     });
 
+    // 6. Pi Day Attractor Monitor
+    let mut toroidal_network = arkhe_os::toroidal::network::ToroidalNetwork::new();
+    tokio::spawn(async move {
+        pi_day_trigger::monitor_and_emit_pi_day_orb(&mut toroidal_network).await;
+    });
+
+    // 7. Network Loop
     // Network Loop
     tokio::spawn(async move {
         loop {
@@ -237,6 +256,7 @@ async fn main() -> anyhow::Result<()> {
         }
     });
 
+    // 7. REPL Loop
     // Mobile Anchor (Smartphone WebSocket)
     let mobile_route = warp::path("anchor")
         .and(warp::ws())
@@ -272,21 +292,34 @@ async fn main() -> anyhow::Result<()> {
             let phi = *state.phi_q.read().await;
             let h = substrate.constitution.read().await.h;
             let s = substrate.s_index.read().await.current_s;
-            println!("[SYS] φ_q = {:.3} | H = {:.3} | S = {:.3}", phi, h, s);
+            let store = evolutionary_store.read().await;
+            let neg: f64 = neguentropy_engine.read().await.calculate_neguentropy();
+            println!("[SYS] φ_q = {:.3} | H = {:.3} | S = {:.3} | N = {:.6}", phi, h, s, neg);
+            println!("[SYS] State Coherence: {:.3} | Memory Records: {}", store.state_coherence, store.historical_memory.len());
             println!("[SYS] Status: {}", if phi > args.miller { "WAVE-CLOUD" } else { "STOCHASTIC" });
             continue;
         }
 
         if input == "twist" {
             let mut tq = top_qubit.lock().await;
-            tq.circumnavigate();
-            println!("[KNT] Berry Phase: {:.3} | Periodicity: {}", tq.berry_phase, tq.is_coherent());
+            let current_phase = tq.circulate();
+            println!("[KNT] Berry Phase: {:.3} rad | Active: {}", current_phase, tq.is_non_trivial());
             continue;
         }
 
         if input.starts_with("intent ") {
             let intent_text = input[7..].to_string();
             let orchestrator_clone = orchestrator.clone();
+
+            let current_phi = *state.phi_q.read().await;
+
+            tokio::spawn(async move {
+                let maestro_psi = arkhe_os::maestro::spine::PsiState {
+                    current_coherence: current_phi,
+                    ..Default::default()
+                };
+
+                match orchestrator_clone.process_intent(&intent_text, &maestro_psi).await {
             let mut psi_state = CorePsiState::default();
             psi_state.coherence_trace.push(*state.phi_q.read().await);
 
@@ -296,11 +329,21 @@ async fn main() -> anyhow::Result<()> {
             tokio::spawn(async move {
                 match orchestrator_clone.process_intent(&intent_text, &spine_psi).await {
                     Ok(resp) => {
-                        let risk = XenoFirewall::assess_risk(&resp, &psi_state);
-                        if risk == XenoRiskLevel::Critical {
-                            println!("\n[XENO-FIREWALL] ⚠ CRITICAL RISK DETECTED. CONTAINMENT ACTIVE.");
-                        } else {
-                            println!("\n[MAESTRO] Response: {}", resp);
+                        let mut core_psi = arkhe_os::maestro::core::PsiState::default();
+                        core_psi.coherence_trace.push(current_phi);
+
+                        let risk = XenoFirewall::assess_risk(&resp, &core_psi);
+                        match risk {
+                            XenoRiskLevel::Critical => {
+                                println!("\n[XENO-FIREWALL] ⚠ CRITICAL RISK DETECTED. CONTAINMENT ACTIVE.");
+                            },
+                            XenoRiskLevel::Enfeeblement => {
+                                println!("\n[XENO-FIREWALL] ⚠ ENFEEBLEMENT RISK: Proposed action may decrease human agency. FLAG ACTIVE.");
+                                println!("\n[MAESTRO] Response (CAUTION): {}", resp);
+                            },
+                            _ => {
+                                println!("\n[MAESTRO] Response: {}", resp);
+                            }
                         }
                     },
                     Err(e) => println!("\n[MAESTRO] Error: {}", e),
