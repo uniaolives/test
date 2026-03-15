@@ -21,7 +21,12 @@ impl OpcUaBridge {
         let data = orb.to_bytes();
         let variant = Variant::ByteString(data.into());
 
-        let mut attr = WriteValue::from((node_id, AttributeId::Value, variant));
+        let mut attr = WriteValue {
+            node_id,
+            attribute_id: AttributeId::Value as u32,
+            index_range: UAString::null(),
+            value: DataValue::from(variant),
+        };
 
         let _ = self.session.write(&[attr])
             .map_err(|e| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, format!("{:?}", e))))?;

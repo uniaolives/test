@@ -1,6 +1,7 @@
 // arkhe-os/src/bridge/industrial/modbus_bridge.rs
 
-use tokio_modbus::prelude::*;
+use tokio_modbus::client::Context;
+use tokio_modbus::prelude::Writer;
 use crate::orb::core::OrbPayload;
 use crate::bridge::BridgeError;
 
@@ -30,8 +31,8 @@ impl ModbusBridge {
             .collect();
 
         // Escrever em holding registers
-        self.client.write_multiple_registers(start_register, &registers).await
-            .map_err(|e| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?;
+        let res: Result<(), std::io::Error> = Writer::write_multiple_registers(&mut self.client, start_register, registers.as_slice()).await;
+        res.map_err(|e| BridgeError::Io(std::io::Error::new(std::io::ErrorKind::Other, e)))?;
 
         Ok(())
     }
