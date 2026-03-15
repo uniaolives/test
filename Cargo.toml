@@ -86,6 +86,8 @@ members = [
     "arkhe-bridge", "arkhe-kernel",
     "crates/arkhe-tor",
     "arkhe-api/arkhe-api-rust",
+    "arkhe-linux/core/orbctl",
+    "orbvm",
 ]
 resolver = "2"
 
@@ -94,9 +96,10 @@ version = "0.1.0"
 edition = "2021"
 
 [workspace.dependencies]
-sqlx = { version = "0.7.4", default-features = false, features = ["runtime-tokio-rustls", "postgres", "chrono", "macros", "uuid", "migrate"] }
-arti-client = { version = "0.19", default-features = false, features = ["tokio", "native-tls"] }
-tokio = { version = "1.0", features = ["full"] }
+tor-rtcompat = { version = "0.23.0", default-features = false, features = ["tokio", "native-tls"] }
+sqlx = { version = "0.8.6", default-features = false, features = ["runtime-tokio-rustls", "postgres", "chrono", "macros", "uuid", "migrate"] }
+arti-client = { version = "0.23.0", default-features = false, features = ["tokio", "native-tls"] }
+tokio = { version = "1.43.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 chrono = { version = "0.4", features = ["serde"] }
