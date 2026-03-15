@@ -16,6 +16,11 @@ pub struct TorBridge<R: Runtime> {
 
 impl<R: Runtime> TorBridge<R> {
     pub fn new(client: TorClient<R>, services: Vec<String>) -> Self {
+    hidden_services: Vec<String>,
+}
+
+impl<R: Runtime> TorBridge<R> {
+    pub fn new(client: TorClient<R>, services: Vec<String>) -> Self {
 pub struct TorBridge {
     client: TorClient<TokioNativeTlsRuntime>,
     hidden_services: Vec<String>,

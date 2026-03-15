@@ -28,6 +28,14 @@ arti-client = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 chrono = { workspace = true }
+lightning = "0.0.118"
+tonic = "0.12"
+sqlx = { workspace = true, features = ["runtime-tokio-rustls", "postgres", "chrono"] }
+redis = { version = "0.24", features = ["tokio-comp", "aio"] }
+arti-client = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+chrono = { workspace = true }
 rumqttc = "0.23"
 coap = "0.13"
 coap-lite = "0.11"
