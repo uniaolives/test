@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use chrono::{DateTime, Utc};
 use crate::security::grail::GrailProof;
 
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Http4Method {
     OBSERVE,
@@ -15,7 +16,7 @@ pub enum Http4Method {
     RECALL,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ConfinementMode {
     INFINITE_WELL,
     FINITE_WELL,
@@ -23,7 +24,7 @@ pub enum ConfinementMode {
     FREE,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub enum ParadoxPolicy {
     REJECT,
     MERGE,

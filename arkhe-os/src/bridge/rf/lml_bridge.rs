@@ -22,6 +22,8 @@ pub enum LmlSymbol {
 impl LmlBridge {
     pub fn new(hardware: Option<LmlHardwareDriver>) -> Self {
         Self { root_prime: 2, hardware }
+    pub fn new() -> Self {
+        Self { root_prime: 2 }
     }
 
     /// Encodes an Orb into a sequence of Phase-Morse symbols.

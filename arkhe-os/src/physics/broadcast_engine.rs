@@ -67,9 +67,7 @@ impl BroadcastEngine {
 
         // 2. Sincroniza com fontes externas (Kuramoto)
         // Note: synchronize in kuramoto.rs takes dt and updates internal state.
-        // The snippet suggests synchronize(dispersed) returning a phase.
-        // We'll adapt it to match the provided architecture.
-        self.sync.synchronize(0.01);
+        self.sync.synchronize(0.01, false);
         let sync_phase = dispersed; // Simplified mapping
 
         // 3. Verifica coerência global (λ₂ > 0.95 para broadcast)
