@@ -3,6 +3,7 @@
 
 pub mod industrial;
 pub mod serial;
+pub mod fpga_lml;
 
 pub struct QuantumHardware {
     // ...

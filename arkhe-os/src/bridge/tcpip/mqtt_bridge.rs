@@ -1,7 +1,7 @@
 // arkhe-os/src/bridge/tcpip/mqtt_bridge.rs
 
-use rumqttc::{MqttOptions, Client, QoS};
-use crate::orb::core::OrbPayload;
+use rumqttc::{MqttOptions, Client, QoS, Connection};
+use crate::propagation::payload::OrbPayload;
 
 pub struct MqttBridge {
     client: Client,
@@ -16,7 +16,7 @@ impl MqttBridge {
 
         // Spawn connection loop
         tokio::spawn(async move {
-            while let Ok(notification) = connection.poll().await {
+            while let Ok(notification) = connection.eventloop.poll().await {
                 if let rumqttc::Event::Incoming(rumqttc::Incoming::Publish(publish)) = notification {
                     if let Ok(orb) = OrbPayload::from_bytes(&publish.payload) {
                         println!("[MQTT] Received Orb: {:?}", orb.orb_id);

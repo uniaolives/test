@@ -40,9 +40,7 @@ pub struct TemporalFramebuffer {}
 pub struct BroadcastEngine {
     /// P2P Gossip and Research Loop
     pub hyperspace: HyperspaceConnector,
-pub struct TemporalFramebuffer {}
 
-pub struct BroadcastEngine {
     /// White's dispersion: ∂²ρ/∂t² = c²∇²ρ - D²∇⁴ρ
     pub dispersion: DispersionSolver,
 

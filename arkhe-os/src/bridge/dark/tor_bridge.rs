@@ -1,20 +1,19 @@
 // arkhe-os/src/bridge/dark/tor_bridge.rs
 
-use arkhe_tor::arti_client::{TorClient, TorAddr};
 use arti_client::{TorClient, TorAddr};
-use crate::orb::core::OrbPayload;
+use tor_rtcompat::tokio::TokioNativeTlsRuntime;
+use crate::propagation::payload::OrbPayload;
 use crate::bridge::BridgeError;
 use std::str::FromStr;
 use tokio::io::AsyncWriteExt;
 
 pub struct TorBridge {
-    client: TorClient<arti_client::DefaultRuntime>,
+    client: TorClient<TokioNativeTlsRuntime>,
     hidden_services: Vec<String>,
 }
 
 impl TorBridge {
-    pub fn new(client: TorClient<arkhe_tor::arti_client::DefaultRuntime>, services: Vec<String>) -> Self {
-    pub fn new(client: TorClient<arti_client::DefaultRuntime>, services: Vec<String>) -> Self {
+    pub fn new(client: TorClient<TokioNativeTlsRuntime>, services: Vec<String>) -> Self {
         Self { client, hidden_services: services }
     }
 
@@ -27,11 +26,10 @@ impl TorBridge {
                 .map_err(|e| BridgeError::Tor(e.to_string()))?;
             let mut stream = self.client.connect(addr)
                 .await
-                .map_err(|e| BridgeError::Tor(e.to_string()))?;
+                .map_err(|e: arti_client::Error| BridgeError::Tor(e.to_string()))?;
 
             // Enviar Orb
-            stream.write_all(&data).await
-                .map_err(|e| BridgeError::Tor(e.to_string()))?;
+            let _ = stream.write_all(&data).await;
         }
 
         Ok(())
