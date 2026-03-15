@@ -1,7 +1,5 @@
 // src/orb/protocol_router.rs
 
-use std::any::Any;
-use std::time::Duration;
 use crate::orb::polymorphic_core::{OrbCore, ProtocolEncoder, Reach};
 
 pub type ProtocolId = usize;
@@ -15,6 +13,7 @@ impl Destination {
     pub fn at_year(year: i32) -> Self {
         let years_from_1970 = year - 1970;
         Self {
+            timestamp: (years_from_1970 as u64) * 365 * 24 * 3600,
             timestamp: (years_from_1970 as u64).wrapping_mul(365 * 24 * 3600),
             distance_m: 0.0,
         }
