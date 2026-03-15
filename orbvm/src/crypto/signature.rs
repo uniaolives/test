@@ -3,6 +3,11 @@ use rand::rngs::OsRng;
 
 pub struct SignatureEngine {
     key: SigningKey,
+use ed25519_dalek::{Keypair, Signer, Signature};
+use rand::rngs::OsRng;
+
+pub struct SignatureEngine {
+    keypair: Keypair,
 }
 
 impl SignatureEngine {
@@ -14,5 +19,11 @@ impl SignatureEngine {
 
     pub fn sign(&self, message: &[u8]) -> Signature {
         self.key.sign(message)
+        let keypair = Keypair::generate(&mut csprng);
+        Self { keypair }
+    }
+
+    pub fn sign(&self, message: &[u8]) -> Signature {
+        self.keypair.sign(message)
     }
 }

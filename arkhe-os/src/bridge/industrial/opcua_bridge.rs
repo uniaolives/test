@@ -29,6 +29,11 @@ impl OpcUaBridge {
                 value: Some(variant),
                 ..Default::default()
             },
+        let mut attr = WriteValue {
+            node_id,
+            attribute_id: AttributeId::Value as u32,
+            index_range: UAString::null(),
+            value: DataValue::from(variant),
         };
 
         let _ = self.session.write(&[attr])
