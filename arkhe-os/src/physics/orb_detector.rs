@@ -30,6 +30,7 @@ impl OrbDetector {
                     },
                     stability: coherence_input,
                     energy_source: RFSource::Satellite,
+                    oam_topology_l: None,
                 });
             }
         }
