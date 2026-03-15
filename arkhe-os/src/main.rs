@@ -1,5 +1,7 @@
 //! Interface de linha de comando para o arkhe-os.
 //! Permite criar tarefas e executar ciclos de escalonamento.
+//! Interface de linha de comando para o arkhe-os v1.0.
+//! Integrando LMT, Pilha Sensorial Unificada e Antenas de Coerência.
 
 use std::sync::Arc;
 use tokio::sync::{mpsc, Mutex, RwLock};
@@ -10,18 +12,23 @@ use libp2p::{gossipsub, identity, swarm::SwarmEvent};
 use chrono::Utc;
 use std::collections::BTreeMap;
 use tokio::time::{sleep, Duration};
+use warp::Filter;
 
+// Use the library crate
 use arkhe_os::kernel::syscall::{SyscallHandler, SyscallResult};
 use arkhe_os::intention::parser::parse_intention_block;
 use arkhe_os::db::ledger::{TeknetLedger, HandoverRecord};
-use arkhe_db::schema::{FutureCommitment, CommitmentStatus};
+use arkhe_db::schema::{FutureCommitment, CommitmentStatus, Handover, HandoverStatus};
 use arkhe_os::phys::ibm_client::QuantumAntenna;
 use arkhe_os::sensors::ZPFEvent;
-use arkhe_os::quantum::berry::{TopologicalQubit};
-use arkhe_os::telemetry::{BioEvent, GlobalState};
+use arkhe_os::quantum::berry::TopologicalQubit;
+use arkhe_os::telemetry::{BioEvent, GlobalState, start_bio_server};
 use arkhe_os::net::stack::NetEvent;
+use arkhe_os::net::ArkheNetBehavior;
 use arkhe_os::lmt::field::MeaningField;
 use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine, PsiState as MaestroPsi};
+use arkhe_os::maestro::{PTPApiWrapper, MaestroSpine, MaestroOrchestrator, BranchingEngine, PsiState as CorePsiState};
+use arkhe_os::maestro::spine::PsiState as SpinePsiState;
 use arkhe_os::security::{XenoFirewall, XenoRiskLevel};
 use arkhe_os::week5::TemporalSubstrate;
 use arkhe_os::state::EvolutionaryStateStore;
@@ -55,7 +62,7 @@ async fn main() -> anyhow::Result<()> {
     env_logger::init();
 
     println!("======================================================");
-    println!(" 🜁 ArkheOS Node v1.0 — LMT Integrated Foundation");
+    println!(" 🜁 ArkheOS Node v1.0 — Unified Sensory Stack");
     println!(" PI DAY (3-14-2026) SINGULARITY TEST ENABLED");
     println!(" Bands: {} | Miller Limit: {}", args.bands, args.miller);
     println!(" [!] Timechain (RocksDB) conectada.");
@@ -116,6 +123,7 @@ async fn main() -> anyhow::Result<()> {
     let event_buffer: Arc<Mutex<BTreeMap<u64, String>>> = Arc::new(Mutex::new(BTreeMap::new()));
 
     // 2. Setup P2P
+    // Setup P2P
     let local_key = identity::Keypair::generate_ed25519();
     let mut swarm = libp2p::SwarmBuilder::with_existing_identity(local_key)
         .with_tokio()
@@ -141,11 +149,12 @@ async fn main() -> anyhow::Result<()> {
     swarm.behaviour_mut().gossipsub.subscribe(&topic)?;
 
     // 3. Start Sensory Pipelines
+    // Start Sensory Pipelines
     sensors::start_zpf_pipeline(zpf_tx).await;
     telemetry::start_bio_server(bio_tx, state.clone()).await;
     net::stack::start_multimodal_stack(net_tx, state.clone()).await;
 
-    // 4. Fusion Engine
+    // Fusion Engine
     let event_buffer_fusion = event_buffer.clone();
     let substrate_fusion = substrate.clone();
     tokio::spawn(async move {
@@ -177,7 +186,7 @@ async fn main() -> anyhow::Result<()> {
 
                             // Update H in Constitutional Guard
                             let mut guard = substrate_fusion.constitution.write().await;
-                            guard.update_h(1.0, 1.0, 0.1); // Placeholder values
+                            guard.update_h(1.0, 1.0, 0.1);
                         }
                     }
                 }
@@ -204,6 +213,7 @@ async fn main() -> anyhow::Result<()> {
     });
 
     // 5. Background Physics Recalibration
+    // Background Physics Recalibration
     let antenna = QuantumAntenna::new("SIMULATED_TOKEN".to_string());
     let state_phys = state.clone();
     let substrate_phys = substrate.clone();
@@ -229,6 +239,7 @@ async fn main() -> anyhow::Result<()> {
     });
 
     // 7. Network Loop
+    // Network Loop
     tokio::spawn(async move {
         loop {
             match swarm.select_next_some().await {
@@ -246,6 +257,27 @@ async fn main() -> anyhow::Result<()> {
     });
 
     // 7. REPL Loop
+    // Mobile Anchor (Smartphone WebSocket)
+    let mobile_route = warp::path("anchor")
+        .and(warp::ws())
+        .map(move |ws: warp::ws::Ws| {
+            ws.on_upgrade(move |mut websocket| async move {
+                println!("[LMT] 👂 Smartphone Âncora Conectada!");
+                while let Some(Ok(msg)) = websocket.next().await {
+                    if let Ok(text) = msg.to_str() {
+                        if let Ok(_data) = serde_json::from_str::<serde_json::Value>(text) {
+                            // handle somatic signals
+                        }
+                    }
+                }
+            })
+        });
+
+    tokio::spawn(async move {
+        warp::serve(mobile_route).run(([0, 0, 0, 0], 3030)).await;
+    });
+
+    // REPL Loop
     loop {
         print!("arkhe> ");
         io::stdout().flush()?;
@@ -288,6 +320,14 @@ async fn main() -> anyhow::Result<()> {
                 };
 
                 match orchestrator_clone.process_intent(&intent_text, &maestro_psi).await {
+            let mut psi_state = CorePsiState::default();
+            psi_state.coherence_trace.push(*state.phi_q.read().await);
+
+            let mut spine_psi = SpinePsiState::default();
+            spine_psi.current_coherence = *state.phi_q.read().await;
+
+            tokio::spawn(async move {
+                match orchestrator_clone.process_intent(&intent_text, &spine_psi).await {
                     Ok(resp) => {
                         let mut core_psi = arkhe_os::maestro::core::PsiState::default();
                         core_psi.coherence_trace.push(current_phi);
@@ -333,19 +373,34 @@ async fn main() -> anyhow::Result<()> {
                 let mut sys_lock = sys.lock().await;
                 sys_lock.sys_create_task(&ast.name, ast.coherence, 1, ast.priority);
 
+                let phi_before = *state.phi_q.read().await;
+
                 if let SyscallResult::Success(msg) = sys_lock.sys_tick() {
                     println!("  [OK] {}", msg);
-                    let phi = *state.phi_q.read().await;
+                    let phi_after = *state.phi_q.read().await;
 
                     let record = HandoverRecord {
                         id: task_id_counter,
                         timestamp: Utc::now(),
                         intention_name: ast.name.clone(),
                         coherence_delta: ast.coherence,
-                        phi_q_after: phi,
+                        phi_q_after: phi_after,
                     };
                     ledger.commit_handover(&record).unwrap();
-                    ledger.save_vacuum_state(phi, task_id_counter).unwrap();
+                    ledger.save_vacuum_state(phi_after, task_id_counter).unwrap();
+
+                    // Also commit to arkhe_db::schema format if needed
+                    let _handover = Handover {
+                        id: task_id_counter,
+                        timestamp: Utc::now(),
+                        source_epoch: 2026,
+                        target_epoch: 2009,
+                        description: format!("{} -> {}", ast.name, ast.target),
+                        phi_q_before: phi_before,
+                        phi_q_after: phi_after,
+                        quantum_interest: 0.0,
+                        status: HandoverStatus::Accepted,
+                    };
 
                     task_id_counter += 1;
                 }

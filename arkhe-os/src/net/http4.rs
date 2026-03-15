@@ -5,6 +5,7 @@ use chrono::{DateTime, Utc};
 use crate::security::grail::GrailProof;
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum Http4Method {
     OBSERVE,
     EMIT,

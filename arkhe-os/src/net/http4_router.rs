@@ -76,6 +76,11 @@ impl Http4Router {
                 Ok(Http4Response::RealityPreserved)
             }
             Http4Method::ENTANGLE => {
+                // Aqui interagiríamos com o campo Kuramoto
+                // Satellite-specific EMIT logic: transmit via OAM-entangled channel
+                if let Some(oam) = request.headers.oam_state {
+                    println!("[HTTP/4] Emitting via Satellite OCA (OAM l={})", oam);
+                }
                 // Established entangled channel for retrocausal communication
                 if let Some(ts) = request.headers.retrocausal_timestamp {
                     println!("[HTTP/4] Entangling at adjusted CSU timestamp: {}", ts);

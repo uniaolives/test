@@ -10,6 +10,8 @@ pub mod http4_router;
 pub mod http4_tests;
 pub mod http5;
 pub mod http5_tests;
+pub mod ssh_layer;
+pub mod tor_layer;
 
 pub use protocol::HandoverData;
 pub use node::P2PNode;

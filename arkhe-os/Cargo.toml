@@ -12,6 +12,7 @@ base64 = "0.22.1"
 blake3 = "1.5.5"
 bitcoin = { version = "0.32.5", features = ["serde", "rand-std"] }
 ethers = { version = "2.0", features = ["ws"] }
+tor-rtcompat = { version = "0.26.0", features = ["tokio", "native-tls"] }
 ipfs-api-backend-hyper = "0.6"
 tokio-modbus = "0.15"
 opcua-client = "0.9"
@@ -27,6 +28,17 @@ arti-client = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 chrono = { workspace = true }
+rumqttc = "0.23"
+coap = "0.13"
+coap-lite = "0.11"
+lightning = "0.0.118"
+tonic = "0.10"
+sqlx = { workspace = true, default-features = false, features = ["runtime-tokio-rustls", "postgres", "chrono"] }
+redis = { version = "0.23", features = ["tokio-comp", "aio"] }
+arti-client = { workspace = true, default-features = false }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
 anyhow = "1.0"
 nom = "7.1"
 thiserror = { workspace = true }
@@ -34,6 +46,9 @@ log = "0.4"
 env_logger = "0.11"
 clap = { version = "4.5", features = ["derive"] }
 tokio = { workspace = true }
+env_logger = "0.10"
+clap = { version = "4.4", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }
 warp = "0.3"
 futures-util = "0.3"
 reqwest = { version = "0.12", features = ["json"] }
@@ -59,6 +74,8 @@ tracing = { workspace = true }
 tracing-subscriber = "0.3"
 metrics = "0.21"
 metrics-exporter-prometheus = "0.12"
+russh = "0.40"
+russh-keys = "0.40"
 
 [dev-dependencies]
 reqwest = { version = "0.12", features = ["json"] }
@@ -68,3 +85,8 @@ sqlx = { workspace = true, features = ["runtime-tokio-rustls", "postgres", "chro
 redis = { version = "0.24", features = ["tokio-comp", "aio"] }
 rumqttc = "0.24"
 tracing = { workspace = true }
+clap = { version = "4.0", features = ["derive"] }
+sqlx = { workspace = true, default-features = false, features = ["runtime-tokio-rustls", "postgres", "chrono", "macros"] }
+redis = { version = "0.23", features = ["tokio-comp", "aio"] }
+rumqttc = "0.23"
+tracing = "0.1"
