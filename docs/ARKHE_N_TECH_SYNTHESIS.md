@@ -52,6 +52,11 @@ Tools for modeling physical forms, visual manifestations, and robotic simulation
 | **Godot** | Γ_SIMULATION | Real-time environment for testing multi-agent swarm dynamics. |
 | **GIMP** | Γ_VISUAL_ENCODING | Generation and editing of visual textures and neural masks. |
 | **Wings 3D** | Γ_GEOMETRIC_PRIMITIVE | Low-level subdivision modeling for optimized spatial nodes. |
+| **Parallax** | Γ_DISTRIBUTED_INFERENCE | Distributed AI model sharding and neural tensor transport. |
+| **SignalForge** | Γ_SIGNAL_RECONSTRUCTION | Resonant signal processing and Morse-to-Intent translation. |
+| **OpenBrowser** | Γ_SWARM_COGNITION | Swarm-based automated browsing and real-time knowledge ingestion. |
+| **LML** | Γ_RETROCAUSAL_COMMS | Luminous Morse Labyrinth for phase-modulated fractal routing. |
+| **Recombination** | Γ_NEURAL_TRANSPARENCY | Cosmological-inspired phase transition for clear information flow. |
 
 ---
 

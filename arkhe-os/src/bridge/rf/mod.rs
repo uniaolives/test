@@ -6,6 +6,7 @@ pub mod tracking_bridge;
 pub mod parallax_bridge;
 pub mod wifi_pi_bridge;
 pub mod irs_bridge;
+pub mod lml_bridge;
 
 #[derive(Debug, Clone)]
 pub struct RfFrame {
