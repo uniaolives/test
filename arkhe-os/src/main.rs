@@ -310,6 +310,13 @@ async fn main() -> anyhow::Result<()> {
         if input.starts_with("intent ") {
             let intent_text = input[7..].to_string();
             let orchestrator_clone = orchestrator.clone();
+            let mut psi_state = CorePsiState::default();
+            psi_state.coherence_trace.push(*state.phi_q.read().await);
+
+            let mut spine_psi = SpinePsiState::default();
+            spine_psi.current_coherence = *state.phi_q.read().await;
+
+            tokio::spawn(async move {
 
             let current_phi = *state.phi_q.read().await;
 

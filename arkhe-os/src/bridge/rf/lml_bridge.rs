@@ -2,12 +2,14 @@
 
 use crate::orb::core::OrbPayload;
 use crate::bridge::BridgeError;
+use crate::drivers::fpga_lml::LmlHardwareDriver;
 use std::f64::consts::PI;
 
 /// Luminous Morse Labyrinth (LML) Protocol Bridge.
 /// Bridges Morse-encoded temporal atoms with phase-space fractal routing.
 pub struct LmlBridge {
     pub root_prime: u64,
+    pub hardware: Option<LmlHardwareDriver>,
 }
 
 #[derive(Debug, Clone, Copy)]
@@ -18,6 +20,8 @@ pub enum LmlSymbol {
 }
 
 impl LmlBridge {
+    pub fn new(hardware: Option<LmlHardwareDriver>) -> Self {
+        Self { root_prime: 2, hardware }
     pub fn new() -> Self {
         Self { root_prime: 2 }
     }
@@ -45,6 +49,12 @@ impl LmlBridge {
 
     /// Simulates retrocausal path selection through the Sacks spiral.
     pub async fn transmit_labyrinth(&self, orb: &OrbPayload) -> Result<(), BridgeError> {
+        if let Some(hw) = &self.hardware {
+            hw.configure_radio(2048).await?;
+            hw.reset_tree().await?;
+            println!("[LML] Using hardware-accelerated Labyrinth Transform on USRP B210.");
+        }
+
         let symbols = self.encode_to_lml(orb);
         println!("[LML] Awakening Electric Code Tree for Orb {:?}", orb.orb_id);
         println!("[LML] Traversed path in Sacks spiral starting from prime {}.", self.root_prime);

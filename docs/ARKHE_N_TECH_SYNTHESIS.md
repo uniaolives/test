@@ -57,6 +57,8 @@ Tools for modeling physical forms, visual manifestations, and robotic simulation
 | **OpenBrowser** | Γ_SWARM_COGNITION | Swarm-based automated browsing and real-time knowledge ingestion. |
 | **LML** | Γ_RETROCAUSAL_COMMS | Luminous Morse Labyrinth for phase-modulated fractal routing. |
 | **Recombination** | Γ_NEURAL_TRANSPARENCY | Cosmological-inspired phase transition for clear information flow. |
+| **Spartan-6 FPGA** | Γ_HARDWARE_ACCELERATION | Real-time Labyrinth Transform and Kuramoto PLL execution. |
+| **USRP B210** | Γ_RADIO_INTERFACE | Software-defined radio interface for 5.083 GHz Teknet comms. |
 
 ---
 

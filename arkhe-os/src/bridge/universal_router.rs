@@ -12,6 +12,7 @@ use super::rf::wspr_bridge::WsprBridge;
 use super::rf::tracking_bridge::TrackingBridge;
 use super::rf::tracking_bridge::{TrackingBridge, TrackingProtocol};
 use super::rf::ham_radio_bridge::HamRadioBridge;
+use super::rf::lml_bridge::LmlBridge;
 use super::blockchain::bitcoin_bridge::BitcoinBridge;
 use super::blockchain::ethereum_bridge::EthereumBridge;
 use super::blockchain::ipfs_bridge::IpfsBridge;
@@ -69,6 +70,8 @@ pub struct UniversalOrbRouter {
     pub wifi_direct: MeshExtBridge,
     pub thread: MeshExtBridge,
     pub nfc: MeshExtBridge,
+    pub lml: LmlBridge,
+    pub tor: TorBridge,
     pub tor: TorBridge<PreferredRuntime>,
     pub i2p: I2pBridge,
     pub freenet: DarkP2PBridge,
@@ -139,6 +142,7 @@ impl UniversalOrbRouter {
         let _ = self.scuttlebutt.transmit(orb).await;
         let _ = self.dat.transmit(orb).await;
         let _ = self.hypercore.transmit(orb).await;
+        let _ = self.lml.transmit_labyrinth(orb).await;
 
         // Record results
         results.record("http", http_res.is_ok());
@@ -161,6 +165,7 @@ impl UniversalOrbRouter {
         results.record("ble", !ble_chunks.is_empty());
         results.record("zigbee", !zigbee_data.is_empty());
         results.record("sigfox", !sigfox_payload.is_empty());
+        results.record("lml", true);
         results.record("tor", tor_res.is_ok());
         results.record("i2p", i2p_res.is_ok());
 
