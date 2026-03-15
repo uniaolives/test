@@ -35,7 +35,7 @@ impl EthereumBridge {
             .data(orb_bytes) // Simplified: just raw bytes as data
             .from(self.wallet.address());
 
-        let tx_typed: TypedTransaction = tx.into();
+        let tx_typed: ethers::types::transaction::eip2718::TypedTransaction = tx.into();
         let pending_tx = self.provider.send_transaction(tx_typed, None).await
             .map_err(|e| BridgeError::Blockchain(e.to_string()))?;
 
