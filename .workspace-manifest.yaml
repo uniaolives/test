@@ -82,5 +82,8 @@ repositories:
   signal-forge:
     path: agents/signal-forge
     strategy: submodule
+  bug-bounty:
+    path: tools/bug-bounty
+    strategy: submodule
 strategy: multi-repo-with-manifest
 version: '2.0'

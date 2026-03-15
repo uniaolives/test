@@ -61,3 +61,6 @@
 [submodule "agents/signal-forge"]
 	path = agents/signal-forge
 	url = https://github.com/Shahnab/SignalForgeMorseCode
+[submodule "tools/bug-bounty"]
+	path = tools/bug-bounty
+	url = https://github.com/shuvonsec/claude-bug-bounty
